@@ -1,0 +1,6 @@
+[submodule "PhysicsCSAlevlProject/libs/MonoGame2DVectorGraphics"]
+	path = PhysicsCSAlevlProject/libs/MonoGame2DVectorGraphics
+	url = https://github.com/Ullerman/MonoGame2DVectorGraphics
+[submodule "PhysicsCSAlevlProject/libs/vectorguilib"]
+	path = PhysicsCSAlevlProject/libs/vectorguilib
+	url = https://github.com/Ullerman/vectorguilib
