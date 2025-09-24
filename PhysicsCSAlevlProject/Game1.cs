@@ -9,10 +9,7 @@ namespace PhysicsCSAlevlProject;
 
 public class Game1 : Game
 {
-    // Physics Scale: 1 pixel = 1 centimeter
-    // Screen size: 500x400 pixels = 5m x 4m (reasonable room size)
-    // Gravity: 9.8 m/s² = 980 cm/s² = 980 pixels/s²
-
+  
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
@@ -45,7 +42,7 @@ public class Game1 : Game
             new Vector2[]
             {
                 new Vector2(220, 20),
-                new Vector2(220 + (cols - 1) * naturalLength, 20),
+                new Vector2(220 + (cols - 1) * naturalLength, 20),\
             }
         );
 
@@ -100,6 +97,64 @@ public class Game1 : Game
         return p;
     }
 
+    private DrawableStick[][] PhysicsConstraints(DrawableStick[][] sticks, float springConstant)
+    {
+        for (int i = 0; i < sticks.Length; i++)
+        {
+            for (int j = 0; j < sticks[i].Length; j++)
+            {
+                DrawableStick s = sticks[i][j];
+                Vector2 stickVector = s.P1.Position - s.P2.Position;
+                float currentLength = stickVector.Length();
+
+                if (currentLength > 0)
+                {
+                    Vector2 stickDir = stickVector / currentLength;
+                    float stretch = currentLength - s.Length;
+
+                    Vector2 springForce = stickDir * stretch * springConstant;
+
+                    s.P1.AccumulatedForce -= springForce;
+                    s.P2.AccumulatedForce += springForce;
+                }
+            }
+        }
+        return sticks;
+    }
+
+    private DrawableParticle[][] PhysicsParticles(
+        DrawableParticle[][] particles,
+        float deltaTime,
+        float drag
+    )
+    {
+        for (int i = 0; i < particles.Length; i++)
+        {
+            for (int j = 0; j < particles[i].Length; j++)
+            {
+                DrawableParticle p = particles[i][j];
+
+                if (p.IsPinned)
+                {
+                    continue;
+                }
+
+                Vector2 totalForce = new Vector2(0, 980) + p.AccumulatedForce;
+                Vector2 acceleration = totalForce / p.Mass;
+
+                Vector2 velocity = p.Position - p.PreviousPosition;
+                velocity *= drag;
+
+                Vector2 previousPosition = p.Position;
+                p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
+                p.PreviousPosition = previousPosition;
+                p = KeepInsideScreen(p);
+                particles[i][j] = p;
+            }
+        }
+        return particles;
+    }
+
     protected override void Update(GameTime gameTime)
     {
         const float fixedDeltaTime = 1f / 1000f;
@@ -118,75 +173,15 @@ public class Game1 : Game
             }
         }
 
-        for (int i = 0; i < _cloth.horizontalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
-            {
-                DrawableStick s = _cloth.horizontalSticks[i][j];
-                Vector2 stickVector = s.P1.Position - s.P2.Position;
-                float currentLength = stickVector.Length();
+        _cloth.horizontalSticks = PhysicsConstraints(
+            _cloth.horizontalSticks,
+            _cloth.springConstant,
+            _cloth.drag
+        );
 
-                if (currentLength > 0)
-                {
-                    Vector2 stickDir = stickVector / currentLength;
-                    float stretch = currentLength - s.Length;
+        _cloth.verticalSticks = PhysicsConstraints(_cloth.verticalSticks, _cloth.springConstant);
 
-                    float springConstant = _cloth.springConstant;
-                    Vector2 springForce = stickDir * stretch * springConstant;
-
-                    s.P1.AccumulatedForce -= springForce;
-                    s.P2.AccumulatedForce += springForce;
-                }
-            }
-        }
-
-        for (int i = 0; i < _cloth.verticalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
-            {
-                DrawableStick s = _cloth.verticalSticks[i][j];
-                Vector2 stickVector = s.P1.Position - s.P2.Position;
-                float currentLength = stickVector.Length();
-
-                if (currentLength > 0)
-                {
-                    Vector2 stickDir = stickVector / currentLength;
-                    float stretch = currentLength - s.Length;
-
-                    float springConstant = _cloth.springConstant;
-                    Vector2 springForce = stickDir * stretch * springConstant;
-
-                    s.P1.AccumulatedForce -= springForce;
-                    s.P2.AccumulatedForce += springForce;
-                }
-            }
-        }
-
-        for (int i = 0; i < _cloth.particles.Length; i++)
-        {
-            for (int j = 0; j < _cloth.particles[i].Length; j++)
-            {
-                DrawableParticle p = _cloth.particles[i][j];
-
-                if (p.IsPinned)
-                {
-                    continue;
-                }
-
-                Vector2 totalForce = new Vector2(0, 100f) + p.AccumulatedForce;
-                Vector2 acceleration = totalForce / p.Mass;
-
-                Vector2 velocity = p.Position - p.PreviousPosition;
-                velocity *= _cloth.drag;
-
-                Vector2 previousPosition = p.Position;
-                p.Position =
-                    p.Position + velocity + acceleration * (fixedDeltaTime * fixedDeltaTime);
-                p.PreviousPosition = previousPosition;
-                p = KeepInsideScreen(p);
-                _cloth.particles[i][j] = p;
-            }
-        }
+        _cloth.particles = PhysicsParticles(_cloth.particles, fixedDeltaTime);
 
         base.Update(gameTime);
     }
