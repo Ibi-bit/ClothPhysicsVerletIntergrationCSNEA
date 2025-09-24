@@ -9,7 +9,6 @@ namespace PhysicsCSAlevlProject;
 
 public class Game1 : Game
 {
-  
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
@@ -42,7 +41,7 @@ public class Game1 : Game
             new Vector2[]
             {
                 new Vector2(220, 20),
-                new Vector2(220 + (cols - 1) * naturalLength, 20),\
+                new Vector2(220 + (cols - 1) * naturalLength, 20),
             }
         );
 
