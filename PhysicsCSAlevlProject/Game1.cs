@@ -100,29 +100,13 @@ public class Game1 : Game
         return p;
     }
 
-    protected override void Update(GameTime gameTime)
+    private DrawableStick[][] CalculateStickForces(DrawableStick[][] sticks)
     {
-        const float fixedDeltaTime = 1f / 1000f;
-
-        if (
-            GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-            || Keyboard.GetState().IsKeyDown(Keys.Escape)
-        )
-            Exit();
-
-        for (int i = 0; i < _cloth.particles.Length; i++)
+        for (int i = 0; i < sticks.Length; i++)
         {
-            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            for (int j = 0; j < sticks[i].Length; j++)
             {
-                _cloth.particles[i][j].AccumulatedForce = Vector2.Zero;
-            }
-        }
-
-        for (int i = 0; i < _cloth.horizontalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
-            {
-                DrawableStick s = _cloth.horizontalSticks[i][j];
+                DrawableStick s = sticks[i][j];
                 Vector2 stickVector = s.P1.Position - s.P2.Position;
                 float currentLength = stickVector.Length();
 
@@ -139,29 +123,11 @@ public class Game1 : Game
                 }
             }
         }
+        return sticks;
+    }
 
-        for (int i = 0; i < _cloth.verticalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
-            {
-                DrawableStick s = _cloth.verticalSticks[i][j];
-                Vector2 stickVector = s.P1.Position - s.P2.Position;
-                float currentLength = stickVector.Length();
-
-                if (currentLength > 0)
-                {
-                    Vector2 stickDir = stickVector / currentLength;
-                    float stretch = currentLength - s.Length;
-
-                    float springConstant = _cloth.springConstant;
-                    Vector2 springForce = stickDir * stretch * springConstant;
-
-                    s.P1.AccumulatedForce -= springForce;
-                    s.P2.AccumulatedForce += springForce;
-                }
-            }
-        }
-
+    private void UpdateParticles(float deltaTime)
+    {
         for (int i = 0; i < _cloth.particles.Length; i++)
         {
             for (int j = 0; j < _cloth.particles[i].Length; j++)
@@ -180,13 +146,35 @@ public class Game1 : Game
                 velocity *= _cloth.drag;
 
                 Vector2 previousPosition = p.Position;
-                p.Position =
-                    p.Position + velocity + acceleration * (fixedDeltaTime * fixedDeltaTime);
+                p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
                 p.PreviousPosition = previousPosition;
                 p = KeepInsideScreen(p);
                 _cloth.particles[i][j] = p;
             }
         }
+    }
+
+    protected override void Update(GameTime gameTime)
+    {
+        const float fixedDeltaTime = 1f / 1000f;
+
+        if (
+            GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
+            || Keyboard.GetState().IsKeyDown(Keys.Escape)
+        )
+            Exit();
+
+        for (int i = 0; i < _cloth.particles.Length; i++)
+        {
+            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            {
+                _cloth.particles[i][j].AccumulatedForce = Vector2.Zero;
+            }
+        }
+
+        _cloth.horizontalSticks = CalculateStickForces(_cloth.horizontalSticks);
+        _cloth.verticalSticks = CalculateStickForces(_cloth.verticalSticks);
+        UpdateParticles(fixedDeltaTime);
 
         base.Update(gameTime);
     }
