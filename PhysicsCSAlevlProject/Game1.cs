@@ -16,6 +16,8 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
+    bool leftPressed;
+    Vector2 intitialMousePosWhenPressed;
 
     // private List<DrawableParticle> particles = new List<DrawableParticle>();
     // private List<DrawableStick> sticks = new List<DrawableStick>();
@@ -34,9 +36,10 @@ public class Game1 : Game
     {
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
+        leftPressed = false;
 
         float naturalLength = 10f;
-        float springConstant = 1000;
+        float springConstant = 500;
         float mass = 0.1f;
 
         int cols = (int)(200 / naturalLength);
@@ -139,7 +142,7 @@ public class Game1 : Game
                     continue;
                 }
 
-                Vector2 totalForce = new Vector2(0, 100f) + p.AccumulatedForce;
+                Vector2 totalForce = new Vector2(20, 100f) + p.AccumulatedForce;
                 Vector2 acceleration = totalForce / p.Mass;
 
                 Vector2 velocity = p.Position - p.PreviousPosition;
@@ -154,15 +157,53 @@ public class Game1 : Game
         }
     }
 
+    private List<(int i, int j)> GetParticlesInRadius(Vector2 mousePosition, float radius)
+    {
+        var particlesInRadius = new List<(int i, int j)>();
+        for (int i = 0; i < _cloth.particles.Length; i++)
+        {
+            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            {
+                Vector2 pos = _cloth.particles[i][j].Position;
+                if (Vector2.DistanceSquared(pos, mousePosition) < (radius * radius))
+                {
+                    particlesInRadius.Add((i, j));
+                }
+            }
+        }
+        return particlesInRadius;
+    }
+
+    private void DragParticles(MouseState mouseState, bool leftMousePressed, bool leftMouseJustPressed)
+    {
+        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
+        float dragRadius = 20f;
+
+        if (leftMouseJustPressed)
+        {
+            var particlesInDragArea = GetParticlesInRadius(mousePos, dragRadius);
+            foreach (var (i, j) in particlesInDragArea)
+            {
+                var p = _cloth.particles[i][j];
+                if (!p.IsPinned)
+                {
+                    p.Position += mousePos - p.Position;
+                    _cloth.particles[i][j] = p;
+                }
+            }
+        }
+    }
+
     protected override void Update(GameTime gameTime)
     {
-        const float fixedDeltaTime = 1f / 1000f;
+        const float fixedDeltaTime = 1f / 500f;
 
         if (
             GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
             || Keyboard.GetState().IsKeyDown(Keys.Escape)
         )
             Exit();
+        MouseState mouseState = Mouse.GetState();
 
         for (int i = 0; i < _cloth.particles.Length; i++)
         {
@@ -175,6 +216,11 @@ public class Game1 : Game
         _cloth.horizontalSticks = CalculateStickForces(_cloth.horizontalSticks);
         _cloth.verticalSticks = CalculateStickForces(_cloth.verticalSticks);
         UpdateParticles(fixedDeltaTime);
+        DragParticles(
+            mouseState,
+            mouseState.LeftButton == ButtonState.Pressed,
+            mouseState.LeftButton == ButtonState.Pressed && !leftPressed
+        );
 
         base.Update(gameTime);
     }
