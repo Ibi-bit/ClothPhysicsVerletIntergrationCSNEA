@@ -20,6 +20,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Objects.cs" />
+    <Compile Include="RadialMenu.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />
     <Compile Include="libs\vectorguilib\gui.cs" />
   </ItemGroup>

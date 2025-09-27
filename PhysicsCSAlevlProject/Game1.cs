@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,13 +12,27 @@ public class Game1 : Game
 {
     // Physics Scale: 1 pixel = 1 centimeter
     // Screen size: 500x400 pixels = 5m x 4m (reasonable room size)
-    // Gravity: 9.8 m/s² = 980 cm/s² = 980 pixels/s²
+    // Gravity: 9.8 m/s² = 980 cm/s² = 980 pixels/s
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
     bool leftPressed;
+    bool radialMenuPressed;
     Vector2 intitialMousePosWhenPressed;
+    Vector2 intitialMousePosWhenRadialMenuPressed;
+
+    Vector2 windForce;
+    Vector2 previousMousePos;
+    float dragRadius = 20f;
+    List<Vector2> particlesInDragArea = new List<Vector2>();
+
+    private RadialMenu _radialMenu;
+    private List<Tool> _tools;
+
+    private VectorGraphics.PrimitiveBatch.Arrow windDirectionArrow;
+    private int _selectedToolIndex = 0;
+    private SpriteFont _font;
 
     // private List<DrawableParticle> particles = new List<DrawableParticle>();
     // private List<DrawableStick> sticks = new List<DrawableStick>();
@@ -37,6 +52,20 @@ public class Game1 : Game
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
         leftPressed = false;
+        radialMenuPressed = false;
+
+        windDirectionArrow = null; // Initialize as null
+
+        _tools = new List<Tool>
+        {
+            new Tool("Drag", null, null),
+            new Tool("Pin", null, null),
+            new Tool("Cut", null, null),
+            new Tool("Wind", null, null),
+            new Tool("DragOne", null, null),
+        };
+
+        _radialMenu = new RadialMenu(_tools, 80f, 32f);
 
         float naturalLength = 10f;
         float springConstant = 500;
@@ -66,6 +95,8 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        _font = Content.Load<SpriteFont>("Font");
     }
 
     private DrawableParticle KeepInsideScreen(DrawableParticle p)
@@ -109,20 +140,23 @@ public class Game1 : Game
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                DrawableStick s = sticks[i][j];
-                Vector2 stickVector = s.P1.Position - s.P2.Position;
-                float currentLength = stickVector.Length();
-
-                if (currentLength > 0)
+                if (sticks[i][j] != null)
                 {
-                    Vector2 stickDir = stickVector / currentLength;
-                    float stretch = currentLength - s.Length;
+                    DrawableStick s = sticks[i][j];
+                    Vector2 stickVector = s.P1.Position - s.P2.Position;
+                    float currentLength = stickVector.Length();
 
-                    float springConstant = _cloth.springConstant;
-                    Vector2 springForce = stickDir * stretch * springConstant;
+                    if (currentLength > 0)
+                    {
+                        Vector2 stickDir = stickVector / currentLength;
+                        float stretch = currentLength - s.Length;
 
-                    s.P1.AccumulatedForce -= springForce;
-                    s.P2.AccumulatedForce += springForce;
+                        float springConstant = _cloth.springConstant;
+                        Vector2 springForce = stickDir * stretch * springConstant;
+
+                        s.P1.AccumulatedForce -= springForce;
+                        s.P2.AccumulatedForce += springForce;
+                    }
                 }
             }
         }
@@ -142,24 +176,40 @@ public class Game1 : Game
                     continue;
                 }
 
-                Vector2 totalForce = new Vector2(20, 100f) + p.AccumulatedForce;
-                Vector2 acceleration = totalForce / p.Mass;
+                bool isBeingDragged = false;
+                if (leftPressed)
+                {
+                    foreach (Vector2 draggedParticle in particlesInDragArea)
+                    {
+                        if ((int)draggedParticle.X == i && (int)draggedParticle.Y == j)
+                        {
+                            isBeingDragged = true;
+                            break;
+                        }
+                    }
+                }
 
-                Vector2 velocity = p.Position - p.PreviousPosition;
-                velocity *= _cloth.drag;
+                if (!isBeingDragged)
+                {
+                    Vector2 totalForce = new Vector2(20, 100f) + p.AccumulatedForce + windForce;
+                    Vector2 acceleration = totalForce / p.Mass;
 
-                Vector2 previousPosition = p.Position;
-                p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
-                p.PreviousPosition = previousPosition;
-                p = KeepInsideScreen(p);
-                _cloth.particles[i][j] = p;
+                    Vector2 velocity = p.Position - p.PreviousPosition;
+                    velocity *= _cloth.drag;
+
+                    Vector2 previousPosition = p.Position;
+                    p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
+                    p.PreviousPosition = previousPosition;
+                    p = KeepInsideScreen(p);
+                    _cloth.particles[i][j] = p;
+                }
             }
         }
     }
 
-    private List<(int i, int j)> GetParticlesInRadius(Vector2 mousePosition, float radius)
+    private List<Vector2> GetParticlesInRadius(Vector2 mousePosition, float radius)
     {
-        var particlesInRadius = new List<(int i, int j)>();
+        var particlesInRadius = new List<Vector2>();
         for (int i = 0; i < _cloth.particles.Length; i++)
         {
             for (int j = 0; j < _cloth.particles[i].Length; j++)
@@ -167,30 +217,98 @@ public class Game1 : Game
                 Vector2 pos = _cloth.particles[i][j].Position;
                 if (Vector2.DistanceSquared(pos, mousePosition) < (radius * radius))
                 {
-                    particlesInRadius.Add((i, j));
+                    particlesInRadius.Add(new Vector2(i, j));
                 }
             }
         }
         return particlesInRadius;
     }
 
-    private void DragParticles(MouseState mouseState, bool leftMousePressed, bool leftMouseJustPressed)
+    private void DragAreaParticles(
+        MouseState mouseState,
+        bool isDragging,
+        List<Vector2> particlesInDragArea
+    )
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
-        float dragRadius = 20f;
 
-        if (leftMouseJustPressed)
+        if (isDragging)
         {
-            var particlesInDragArea = GetParticlesInRadius(mousePos, dragRadius);
-            foreach (var (i, j) in particlesInDragArea)
+            Vector2 frameDelta = mousePos - previousMousePos;
+            foreach (Vector2 particle in particlesInDragArea)
             {
-                var p = _cloth.particles[i][j];
+                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
                 if (!p.IsPinned)
                 {
-                    p.Position += mousePos - p.Position;
-                    _cloth.particles[i][j] = p;
+                    p.Position += frameDelta;
+                    p.PreviousPosition += frameDelta;
+                    _cloth.particles[(int)particle.X][(int)particle.Y] = p;
+                    _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.Yellow;
                 }
             }
+        }
+        else
+        {
+            foreach (Vector2 particle in particlesInDragArea)
+            {
+                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
+                if (!p.IsPinned)
+                {
+                    _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
+                    { }
+                    ;
+                }
+            }
+        }
+    }
+
+    private void DragOneParticle(MouseState mouseState, bool isDragging)
+    {
+        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        if (isDragging)
+        {
+            Vector2 frameDelta = mousePos - previousMousePos;
+
+            Particle closestParticle = null;
+            float closestDistance = float.MaxValue;
+
+            for (int i = 0; i < _cloth.particles.Length; i++)
+            {
+                for (int j = 0; j < _cloth.particles[i].Length; j++)
+                {
+                    float distance = Vector2.Distance(_cloth.particles[i][j].Position, mousePos);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestParticle = _cloth.particles[i][j];
+                    }
+                }
+            }
+        }
+       
+    }
+
+    private void SelectTool(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                // Drag tool selected
+                break;
+            case 1:
+                // Pin tool selected
+                break;
+            case 2:
+                // Cut tool selected
+                break;
+            case 3:
+                // Wind tool selected
+                break;
+            case 4:
+            // DragOne tool selected
+            default:
+                break;
         }
     }
 
@@ -204,6 +322,100 @@ public class Game1 : Game
         )
             Exit();
         MouseState mouseState = Mouse.GetState();
+        KeyboardState keyboardState = Keyboard.GetState();
+        Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        if (mouseState.RightButton == ButtonState.Pressed && !radialMenuPressed)
+        {
+            radialMenuPressed = true;
+            intitialMousePosWhenRadialMenuPressed = currentMousePos;
+        }
+        else if (mouseState.RightButton == ButtonState.Released && radialMenuPressed)
+        {
+            radialMenuPressed = false;
+        }
+
+        if (radialMenuPressed)
+        {
+            _selectedToolIndex = _radialMenu.RadialToolMenuLogic(
+                mouseState,
+                keyboardState,
+                intitialMousePosWhenRadialMenuPressed,
+                radialMenuPressed,
+                _selectedToolIndex,
+                _tools
+            );
+        }
+
+        if (!radialMenuPressed)
+        {
+            if (mouseState.LeftButton == ButtonState.Pressed && !leftPressed)
+            {
+                leftPressed = true;
+                intitialMousePosWhenPressed = currentMousePos;
+                previousMousePos = currentMousePos;
+
+                switch (_selectedToolIndex)
+                {
+                    case 0:
+                        particlesInDragArea = GetParticlesInRadius(
+                            intitialMousePosWhenPressed,
+                            dragRadius
+                        );
+                        break;
+                    case 1:
+                        PinParticle(intitialMousePosWhenPressed, dragRadius);
+                        break;
+                    case 2:
+                        CutSticksInRadius(intitialMousePosWhenPressed, dragRadius);
+                        break;
+                    case 3:
+
+                        break;
+                    case 4:
+                        DragOneParticle(mouseState, leftPressed);
+                        break;
+                }
+            }
+            else if (mouseState.LeftButton == ButtonState.Released)
+            {
+                if (_selectedToolIndex == 3 && leftPressed)
+                {
+                    ApplyWindForceFromDrag(
+                        intitialMousePosWhenPressed,
+                        currentMousePos,
+                        dragRadius
+                    );
+                }
+
+                leftPressed = false;
+                intitialMousePosWhenPressed = Vector2.Zero;
+                windDirectionArrow = null;
+            }
+        }
+
+        if (_selectedToolIndex == 3 && leftPressed)
+        {
+            Vector2 windDirection = currentMousePos - intitialMousePosWhenPressed;
+            float windDistance = windDirection.Length();
+
+            if (windDistance > 5f)
+            {
+                windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
+                    intitialMousePosWhenPressed,
+                    currentMousePos,
+                    Color.Cyan,
+                    3f
+                );
+
+                windForce = windDirection * (windDistance / 50f);
+            }
+            else
+            {
+                windDirectionArrow = null;
+                windForce = Vector2.Zero;
+            }
+        }
 
         for (int i = 0; i < _cloth.particles.Length; i++)
         {
@@ -216,11 +428,13 @@ public class Game1 : Game
         _cloth.horizontalSticks = CalculateStickForces(_cloth.horizontalSticks);
         _cloth.verticalSticks = CalculateStickForces(_cloth.verticalSticks);
         UpdateParticles(fixedDeltaTime);
-        DragParticles(
-            mouseState,
-            mouseState.LeftButton == ButtonState.Pressed,
-            mouseState.LeftButton == ButtonState.Pressed && !leftPressed
-        );
+
+        if (_selectedToolIndex == 0)
+        {
+            DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
+        }
+
+        previousMousePos = currentMousePos;
 
         base.Update(gameTime);
     }
@@ -234,7 +448,8 @@ public class Game1 : Game
         {
             for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
             {
-                _cloth.horizontalSticks[i][j].Draw(_spriteBatch, _primitiveBatch);
+                if (_cloth.horizontalSticks[i][j] != null)
+                    _cloth.horizontalSticks[i][j].Draw(_spriteBatch, _primitiveBatch);
             }
         }
 
@@ -242,7 +457,8 @@ public class Game1 : Game
         {
             for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
             {
-                _cloth.verticalSticks[i][j].Draw(_spriteBatch, _primitiveBatch);
+                if (_cloth.verticalSticks[i][j] != null)
+                    _cloth.verticalSticks[i][j].Draw(_spriteBatch, _primitiveBatch);
             }
         }
 
@@ -254,7 +470,114 @@ public class Game1 : Game
             }
         }
 
+        if (radialMenuPressed)
+        {
+            _radialMenu.index = _selectedToolIndex;
+            _radialMenu.Draw(
+                _spriteBatch,
+                intitialMousePosWhenRadialMenuPressed,
+                _font,
+                _primitiveBatch
+            );
+        }
+
+        if (_font != null)
+        {
+            string currentTool = $"Current Tool: {_tools[_selectedToolIndex].Name}";
+            _spriteBatch.DrawString(_font, currentTool, new Vector2(10, 10), Color.White);
+        }
+
+        // Draw wind direction arrow if active
+        if (windDirectionArrow != null)
+        {
+            windDirectionArrow.Draw(_spriteBatch, _primitiveBatch);
+        }
+
         _spriteBatch.End();
         base.Draw(gameTime);
+    }
+
+    private void PinParticle(Vector2 center, float radius)
+    {
+        float closestDistance = float.MaxValue;
+        int closestI = -1;
+        int closestJ = -1;
+
+        for (int i = 0; i < _cloth.particles.Length; i++)
+        {
+            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            {
+                float distance = Vector2.Distance(_cloth.particles[i][j].Position, center);
+                if (distance <= radius && distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestI = i;
+                    closestJ = j;
+                }
+            }
+        }
+
+        if (closestI >= 0 && closestJ >= 0)
+        {
+            _cloth.particles[closestI][closestJ].IsPinned = !_cloth
+                .particles[closestI][closestJ]
+                .IsPinned;
+        }
+    }
+
+    private void CutSticksInRadius(Vector2 center, float radius)
+    {
+        for (int i = 0; i < _cloth.horizontalSticks.Length; i++)
+        {
+            for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
+            {
+                if (_cloth.horizontalSticks[i][j] != null)
+                {
+                    Vector2 stickCenter =
+                        (
+                            _cloth.horizontalSticks[i][j].P1.Position
+                            + _cloth.horizontalSticks[i][j].P2.Position
+                        ) * 0.5f;
+                    float distance = Vector2.Distance(stickCenter, center);
+                    if (distance <= radius)
+                    {
+                        _cloth.horizontalSticks[i][j] = null;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < _cloth.verticalSticks.Length; i++)
+        {
+            for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
+            {
+                if (_cloth.verticalSticks[i][j] != null)
+                {
+                    Vector2 stickCenter =
+                        (
+                            _cloth.verticalSticks[i][j].P1.Position
+                            + _cloth.verticalSticks[i][j].P2.Position
+                        ) * 0.5f;
+                    float distance = Vector2.Distance(stickCenter, center);
+                    if (distance <= radius)
+                    {
+                        _cloth.verticalSticks[i][j] = null; // Cut the stick
+                    }
+                }
+            }
+        }
+    }
+
+    private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float radius)
+    {
+        Vector2 windDirection = endPos - startPos;
+        float windDistance = windDirection.Length();
+
+        if (windDistance < 5f)
+            return;
+        else
+        {
+            windForce = windDirection * (windDistance / 50f);
+        }
     }
 }
