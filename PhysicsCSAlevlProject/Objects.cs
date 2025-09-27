@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VectorGraphics;
 
-class Particle
+public class Particle
 {
     public Vector2 Position;
     public Vector2 PreviousPosition;
@@ -25,7 +25,7 @@ class Particle
     }
 }
 
-class DrawableParticle : Particle
+public class DrawableParticle : Particle
 {
     private PrimitiveBatch.Rectangle rectangle;
     public Color Color { get; set; }
@@ -44,6 +44,15 @@ class DrawableParticle : Particle
     {
         Size = new Vector2(10, 10);
         Color = color;
+        UpdateRectangle();
+    }
+
+    public DrawableParticle(Vector2 position, Vector2 previousPosition, float mass)
+        : base(position, mass, false)
+    {
+        PreviousPosition = previousPosition;
+        Size = new Vector2(10, 10);
+        Color = Color.White; // Default color
         UpdateRectangle();
     }
 
@@ -68,7 +77,7 @@ class DrawableParticle : Particle
     }
 }
 
-class Stick
+public class Stick
 {
     public Particle P1;
     public Particle P2;
@@ -82,7 +91,7 @@ class Stick
     }
 }
 
-class DrawableStick : Stick
+public class DrawableStick : Stick
 {
     private PrimitiveBatch.Line line;
     public Color Color { get; set; }
@@ -116,7 +125,7 @@ class DrawableStick : Stick
     }
 }
 
-class Cloth
+public class Cloth
 {
     public DrawableParticle[][] particles;
     public DrawableStick[][] horizontalSticks;
