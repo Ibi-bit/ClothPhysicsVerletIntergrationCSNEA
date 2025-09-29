@@ -63,12 +63,13 @@ public class Game1 : Game
             new Tool("Cut", null, null),
             new Tool("Wind", null, null),
             new Tool("DragOne", null, null),
+            new Tool("PhysicsDrag", null, null),
         };
 
         _radialMenu = new RadialMenu(_tools, 80f, 32f);
 
         float naturalLength = 10f;
-        float springConstant = 500;
+        float springConstant = 10000;
         float mass = 0.1f;
 
         int cols = (int)(200 / naturalLength);
@@ -177,7 +178,7 @@ public class Game1 : Game
                 }
 
                 bool isBeingDragged = false;
-                if (leftPressed)
+                if (leftPressed && _selectedToolIndex == 0) // Only skip physics for direct drag (tool 0)
                 {
                     foreach (Vector2 draggedParticle in particlesInDragArea)
                     {
@@ -191,7 +192,7 @@ public class Game1 : Game
 
                 if (!isBeingDragged)
                 {
-                    Vector2 totalForce = new Vector2(20, 100f) + p.AccumulatedForce + windForce;
+                    Vector2 totalForce = new Vector2(0, 980f) + p.AccumulatedForce + windForce;
                     Vector2 acceleration = totalForce / p.Mass;
 
                     Vector2 velocity = p.Position - p.PreviousPosition;
@@ -262,6 +263,56 @@ public class Game1 : Game
         }
     }
 
+    private void DragAreaParticlesWithPhysics(
+        MouseState mouseState,
+        bool isDragging,
+        List<Vector2> particlesInDragArea
+    )
+    {
+        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        if (isDragging)
+        {
+            // Apply constraint forces to gently pull particles toward mouse
+            foreach (Vector2 particle in particlesInDragArea)
+            {
+                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
+                if (!p.IsPinned)
+                {
+                    // Calculate displacement from particle to mouse
+                    Vector2 displacement = mousePos - p.Position;
+                    float distance = displacement.Length();
+
+                    if (distance > 1f) // Only apply force if there's meaningful distance
+                    {
+                        // Apply a gentle constraint force proportional to distance
+                        float constraintStrength = 200f; // Softer than spring force
+                        Vector2 normalizedDisplacement = Vector2.Normalize(displacement);
+                        Vector2 constraintForce =
+                            normalizedDisplacement * Math.Min(distance * constraintStrength, 1000f);
+
+                        // Add to accumulated force so it gets processed in physics update
+                        p.AccumulatedForce += constraintForce;
+                        _cloth.particles[(int)particle.X][(int)particle.Y] = p;
+                        _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.Orange;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Reset colors when not dragging
+            foreach (Vector2 particle in particlesInDragArea)
+            {
+                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
+                if (!p.IsPinned)
+                {
+                    _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
+                }
+            }
+        }
+    }
+
     private void DragOneParticle(MouseState mouseState, bool isDragging)
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
@@ -286,35 +337,13 @@ public class Game1 : Game
                 }
             }
         }
-       
-    }
-
-    private void SelectTool(int index)
-    {
-        switch (index)
-        {
-            case 0:
-                // Drag tool selected
-                break;
-            case 1:
-                // Pin tool selected
-                break;
-            case 2:
-                // Cut tool selected
-                break;
-            case 3:
-                // Wind tool selected
-                break;
-            case 4:
-            // DragOne tool selected
-            default:
-                break;
-        }
     }
 
     protected override void Update(GameTime gameTime)
     {
-        const float fixedDeltaTime = 1f / 500f;
+        const float fixedDeltaTime = 1f / 10000f; 
+        float frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        int physicsSteps = Math.Max(1, (int)Math.Ceiling(frameTime / fixedDeltaTime)); /
 
         if (
             GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
@@ -375,6 +404,12 @@ public class Game1 : Game
                     case 4:
                         DragOneParticle(mouseState, leftPressed);
                         break;
+                    case 5:
+                        particlesInDragArea = GetParticlesInRadius(
+                            intitialMousePosWhenPressed,
+                            dragRadius
+                        );
+                        break;
                 }
             }
             else if (mouseState.LeftButton == ButtonState.Released)
@@ -417,21 +452,32 @@ public class Game1 : Game
             }
         }
 
-        for (int i = 0; i < _cloth.particles.Length; i++)
+        for (int step = 0; step < physicsSteps; step++)
         {
-            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            for (int i = 0; i < _cloth.particles.Length; i++)
             {
-                _cloth.particles[i][j].AccumulatedForce = Vector2.Zero;
+                for (int j = 0; j < _cloth.particles[i].Length; j++)
+                {
+                    _cloth.particles[i][j].AccumulatedForce = Vector2.Zero;
+                }
             }
-        }
 
-        _cloth.horizontalSticks = CalculateStickForces(_cloth.horizontalSticks);
-        _cloth.verticalSticks = CalculateStickForces(_cloth.verticalSticks);
-        UpdateParticles(fixedDeltaTime);
+            _cloth.horizontalSticks = CalculateStickForces(_cloth.horizontalSticks);
+            _cloth.verticalSticks = CalculateStickForces(_cloth.verticalSticks);
+            UpdateParticles(fixedDeltaTime);
+        }
 
         if (_selectedToolIndex == 0)
         {
             DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
+        }
+        else if (_selectedToolIndex == 4)
+        {
+            DragOneParticle(mouseState, leftPressed);
+        }
+        else if (_selectedToolIndex == 5)
+        {
+            DragAreaParticlesWithPhysics(mouseState, leftPressed, particlesInDragArea);
         }
 
         previousMousePos = currentMousePos;

@@ -135,6 +135,7 @@ class Cloth
         float mass = 1f
     )
     {
+        this.naturalLength = naturalLength; // Assign the naturalLength field
         int rows = (int)(Size.Y / naturalLength);
         int cols = (int)(Size.X / naturalLength);
         this.springConstant = springConstant;
