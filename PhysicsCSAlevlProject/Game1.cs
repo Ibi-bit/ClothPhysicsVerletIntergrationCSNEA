@@ -273,26 +273,22 @@ public class Game1 : Game
 
         if (isDragging)
         {
-            // Apply constraint forces to gently pull particles toward mouse
             foreach (Vector2 particle in particlesInDragArea)
             {
                 var p = _cloth.particles[(int)particle.X][(int)particle.Y];
                 if (!p.IsPinned)
                 {
-                    // Calculate displacement from particle to mouse
                     Vector2 displacement = mousePos - p.Position;
                     float distance = displacement.Length();
 
-                    if (distance > 1f) // Only apply force if there's meaningful distance
+                    if (distance > 1f)
                     {
-                        // Apply a gentle constraint force proportional to distance
-                        float constraintStrength = 200f; // Softer than spring force
-                        Vector2 normalizedDisplacement = Vector2.Normalize(displacement);
-                        Vector2 constraintForce =
-                            normalizedDisplacement * Math.Min(distance * constraintStrength, 1000f);
+                        float moveSpeed = 0.1f;
+                        Vector2 positionDelta = displacement * moveSpeed;
 
-                        // Add to accumulated force so it gets processed in physics update
-                        p.AccumulatedForce += constraintForce;
+                        p.Position += positionDelta;
+                        p.PreviousPosition += positionDelta * 0.9f;
+
                         _cloth.particles[(int)particle.X][(int)particle.Y] = p;
                         _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.Orange;
                     }
@@ -301,7 +297,6 @@ public class Game1 : Game
         }
         else
         {
-            // Reset colors when not dragging
             foreach (Vector2 particle in particlesInDragArea)
             {
                 var p = _cloth.particles[(int)particle.X][(int)particle.Y];
@@ -341,9 +336,9 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
-        const float fixedDeltaTime = 1f / 10000f; 
+        const float fixedDeltaTime = 1f / 10000f;
         float frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        int physicsSteps = Math.Max(1, (int)Math.Ceiling(frameTime / fixedDeltaTime)); /
+        int physicsSteps = Math.Max(1, (int)Math.Ceiling(frameTime / fixedDeltaTime));
 
         if (
             GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
