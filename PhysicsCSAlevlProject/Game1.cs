@@ -10,10 +10,6 @@ namespace PhysicsCSAlevlProject;
 
 public class Game1 : Game
 {
-    // Physics Scale: 1 pixel = 1 centimeter
-    // Screen size: 500x400 pixels = 5m x 4m (reasonable room size)
-    // Gravity: 9.8 m/s² = 980 cm/s² = 980 pixels/s
-
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
@@ -86,7 +82,7 @@ public class Game1 : Game
             new Vector2(200, 200),
             pinnedParticles,
             naturalLength,
-            springConstant,
+            _springConstant,
             mass
         );
 
@@ -178,7 +174,10 @@ public class Game1 : Game
                 }
 
                 bool isBeingDragged = false;
-                if (leftPressed && _selectedToolIndex == 0) // Only skip physics for direct drag (tool 0)
+                if (
+                    leftPressed && _selectedToolIndex == 0
+                    || leftPressed && _selectedToolIndex == 4
+                )
                 {
                     foreach (Vector2 draggedParticle in particlesInDragArea)
                     {
@@ -397,13 +396,15 @@ public class Game1 : Game
 
                         break;
                     case 4:
-                        DragOneParticle(mouseState, leftPressed);
+                        particlesInDragArea = GetParticlesInRadius(intitialMousePosWhenPressed, 10);
                         break;
                     case 5:
                         particlesInDragArea = GetParticlesInRadius(
                             intitialMousePosWhenPressed,
                             dragRadius
                         );
+                        break;
+                    case 6:
                         break;
                 }
             }
@@ -417,10 +418,20 @@ public class Game1 : Game
                         dragRadius
                     );
                 }
+                else if (_selectedToolIndex == 6 && leftPressed)
+                {
+                    Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
+                    float cutDistance = cutDirection.Length();
+                    if (cutDistance > 5f)
+                    {
+                        CutSticksAlongLine(intitialMousePosWhenPressed, currentMousePos);
+                    }
+                }
 
                 leftPressed = false;
                 intitialMousePosWhenPressed = Vector2.Zero;
                 windDirectionArrow = null;
+                cutLine = null;
             }
         }
 
@@ -446,6 +457,24 @@ public class Game1 : Game
                 windForce = Vector2.Zero;
             }
         }
+        else if (_selectedToolIndex == 6 && leftPressed)
+        {
+            Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
+            float cutDistance = cutDirection.Length();
+            if (cutDistance > 5f)
+            {
+                cutLine = new VectorGraphics.PrimitiveBatch.Line(
+                    intitialMousePosWhenPressed,
+                    currentMousePos,
+                    Color.Red,
+                    3f
+                );
+            }
+            else
+            {
+                cutLine = null;
+            }
+        }
 
         for (int step = 0; step < physicsSteps; step++)
         {
@@ -468,7 +497,7 @@ public class Game1 : Game
         }
         else if (_selectedToolIndex == 4)
         {
-            DragOneParticle(mouseState, leftPressed);
+            DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
         }
         else if (_selectedToolIndex == 5)
         {
@@ -602,7 +631,7 @@ public class Game1 : Game
                     float distance = Vector2.Distance(stickCenter, center);
                     if (distance <= radius)
                     {
-                        _cloth.verticalSticks[i][j] = null; // Cut the stick
+                        _cloth.verticalSticks[i][j] = null;
                     }
                 }
             }
@@ -619,6 +648,68 @@ public class Game1 : Game
         else
         {
             windForce = windDirection * (windDistance / 50f);
+        }
+    }
+
+    private bool DoLinesIntersect(
+        Vector2 line1Start,
+        Vector2 line1End,
+        Vector2 line2Start,
+        Vector2 line2End
+    )
+    {
+        Vector2 r = line1End - line1Start;
+        Vector2 s = line2End - line2Start;
+        Vector2 qMinusP = line2Start - line1Start;
+
+        float rCrossS = r.X * s.Y - r.Y * s.X;
+        float qMinusPCrossR = qMinusP.X * r.Y - qMinusP.Y * r.X;
+
+        if (Math.Abs(rCrossS) < 0.0001f)
+        {
+            return false;
+        }
+
+        float t = (qMinusP.X * s.Y - qMinusP.Y * s.X) / rCrossS;
+        float u = qMinusPCrossR / rCrossS;
+
+        return (t >= 0 && t <= 1 && u >= 0 && u <= 1);
+    }
+
+    private void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
+    {
+        for (int i = 0; i < _cloth.horizontalSticks.Length; i++)
+        {
+            for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
+            {
+                if (_cloth.horizontalSticks[i][j] != null)
+                {
+                    Vector2 stickStart = _cloth.horizontalSticks[i][j].P1.Position;
+                    Vector2 stickEnd = _cloth.horizontalSticks[i][j].P2.Position;
+
+                    if (DoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
+                    {
+                        _cloth.horizontalSticks[i][j] = null;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < _cloth.verticalSticks.Length; i++)
+        {
+            for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
+            {
+                if (_cloth.verticalSticks[i][j] != null)
+                {
+                    Vector2 stickStart = _cloth.verticalSticks[i][j].P1.Position;
+                    Vector2 stickEnd = _cloth.verticalSticks[i][j].P2.Position;
+
+                    if (DoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
+                    {
+                        _cloth.verticalSticks[i][j] = null;
+                    }
+                }
+            }
         }
     }
 }
