@@ -18,6 +18,8 @@ public class Game1 : Game
     Vector2 intitialMousePosWhenPressed;
     Vector2 intitialMousePosWhenRadialMenuPressed;
 
+    float _springConstant;
+
     Vector2 windForce;
     Vector2 previousMousePos;
     float dragRadius = 20f;
@@ -27,8 +29,11 @@ public class Game1 : Game
     private List<Tool> _tools;
 
     private VectorGraphics.PrimitiveBatch.Arrow windDirectionArrow;
+    private VectorGraphics.PrimitiveBatch.Line cutLine;
     private int _selectedToolIndex = 0;
     private SpriteFont _font;
+
+    private Gui.Slider _springConstantSlider;
 
     // private List<DrawableParticle> particles = new List<DrawableParticle>();
     // private List<DrawableStick> sticks = new List<DrawableStick>();
@@ -50,7 +55,18 @@ public class Game1 : Game
         leftPressed = false;
         radialMenuPressed = false;
 
-        windDirectionArrow = null; // Initialize as null
+        windDirectionArrow = null;
+
+        _springConstantSlider = new Gui.Slider(
+            new Vector2(10, 50),
+            100f,
+            100000f,
+            10000f,
+            Color.Gray,
+            Color.LightGray,
+            Color.White
+        );
+        _springConstantSlider.Initialize();
 
         _tools = new List<Tool>
         {
@@ -60,12 +76,13 @@ public class Game1 : Game
             new Tool("Wind", null, null),
             new Tool("DragOne", null, null),
             new Tool("PhysicsDrag", null, null),
+            new Tool("LineCut", null, null),
         };
 
         _radialMenu = new RadialMenu(_tools, 80f, 32f);
 
         float naturalLength = 10f;
-        float springConstant = 10000;
+        _springConstant = 100000;
         float mass = 0.1f;
 
         int cols = (int)(200 / naturalLength);
@@ -339,6 +356,9 @@ public class Game1 : Game
         float frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         int physicsSteps = Math.Max(1, (int)Math.Ceiling(frameTime / fixedDeltaTime));
 
+        _springConstantSlider.Update(Mouse.GetState());
+        _cloth.springConstant = _springConstantSlider.Value;
+
         if (
             GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
             || Keyboard.GetState().IsKeyDown(Keys.Escape)
@@ -562,6 +582,15 @@ public class Game1 : Game
         {
             windDirectionArrow.Draw(_spriteBatch, _primitiveBatch);
         }
+
+        if (cutLine != null)
+        {
+            cutLine.Draw(_spriteBatch, _primitiveBatch);
+        }
+        _springConstantSlider.Draw(_spriteBatch, _primitiveBatch);
+        string sliderLabel = $"Spring Constant: {_springConstantSlider.Value:F1}";
+
+        _spriteBatch.DrawString(_font, sliderLabel, new Vector2(10, 70), Color.White);
 
         _spriteBatch.End();
         base.Draw(gameTime);
