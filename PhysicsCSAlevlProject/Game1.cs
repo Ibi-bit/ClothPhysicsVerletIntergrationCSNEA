@@ -23,7 +23,13 @@ public class Game1 : Game
     Vector2 windForce;
     Vector2 previousMousePos;
     float dragRadius = 20f;
+
+    Vector2 BaseForce = new Vector2(0, 980f);
     List<Vector2> particlesInDragArea = new List<Vector2>();
+
+    private float _meanForceMagnitude = 0f;
+    private float _forceStdDeviation = 0f;
+    private float _maxForceMagnitude = 0f;
 
     private RadialMenu _radialMenu;
     private List<Tool> _tools;
@@ -34,6 +40,8 @@ public class Game1 : Game
     private SpriteFont _font;
 
     private Gui.Slider _springConstantSlider;
+    private const float FixedTimeStep = 1f / 10000f;
+    private float _timeAccumulator = 0f;
 
     // private List<DrawableParticle> particles = new List<DrawableParticle>();
     // private List<DrawableStick> sticks = new List<DrawableStick>();
@@ -179,14 +187,31 @@ public class Game1 : Game
 
     private void UpdateParticles(float deltaTime)
     {
+        float forceMagnitudeSum = 0f;
+        float forceMagnitudeSquaredSum = 0f;
+        float maxForceMagnitude = 0f;
+        int totalForceCount = 0;
+
         for (int i = 0; i < _cloth.particles.Length; i++)
         {
             for (int j = 0; j < _cloth.particles[i].Length; j++)
             {
                 DrawableParticle p = _cloth.particles[i][j];
 
+                Vector2 totalForce = BaseForce + p.AccumulatedForce + windForce;
+                float forceMagnitude = totalForce.Length();
+                forceMagnitudeSum += forceMagnitude;
+                forceMagnitudeSquaredSum += forceMagnitude * forceMagnitude;
+                totalForceCount++;
+
+                if (forceMagnitude > maxForceMagnitude)
+                {
+                    maxForceMagnitude = forceMagnitude;
+                }
+
                 if (p.IsPinned)
                 {
+                    p.AccumulatedForce = Vector2.Zero;
                     continue;
                 }
 
@@ -208,7 +233,6 @@ public class Game1 : Game
 
                 if (!isBeingDragged)
                 {
-                    Vector2 totalForce = new Vector2(0, 980f) + p.AccumulatedForce + windForce;
                     Vector2 acceleration = totalForce / p.Mass;
 
                     Vector2 velocity = p.Position - p.PreviousPosition;
@@ -222,6 +246,49 @@ public class Game1 : Game
                 }
             }
         }
+
+        if (totalForceCount > 0)
+        {
+            _meanForceMagnitude = forceMagnitudeSum / totalForceCount;
+            float meanSquare = _meanForceMagnitude * _meanForceMagnitude;
+            float variance = (forceMagnitudeSquaredSum / totalForceCount) - meanSquare;
+            if (variance < 0f)
+            {
+                variance = 0f;
+            }
+
+            _forceStdDeviation = (float)Math.Sqrt(variance);
+            _maxForceMagnitude = maxForceMagnitude;
+        }
+        else
+        {
+            _meanForceMagnitude = 0f;
+            _forceStdDeviation = 0f;
+            _maxForceMagnitude = 0f;
+        }
+    }
+
+    private float CalculateStressLerp(float forceMagnitude)
+    {
+        if (_forceStdDeviation > 0.0001f)
+        {
+            float zScore = (forceMagnitude - _meanForceMagnitude) / _forceStdDeviation;
+            const float highlightThreshold = 0.5f;
+            const float highlightRange = 1.5f;
+            return MathHelper.Clamp((zScore - highlightThreshold) / highlightRange, 0f, 1f);
+        }
+
+        if (_maxForceMagnitude > 0.0001f)
+        {
+            return MathHelper.Clamp(forceMagnitude / _maxForceMagnitude, 0f, 1f);
+        }
+
+        if (_meanForceMagnitude > 0.0001f)
+        {
+            return MathHelper.Clamp(forceMagnitude / _meanForceMagnitude, 0f, 1f);
+        }
+
+        return 0f;
     }
 
     private List<Vector2> GetParticlesInRadius(Vector2 mousePosition, float radius)
@@ -352,9 +419,8 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
-        const float fixedDeltaTime = 1f / 10000f;
-        float frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        int physicsSteps = Math.Max(1, (int)Math.Ceiling(frameTime / fixedDeltaTime));
+        float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
+        _timeAccumulator += frameTime;
 
         _springConstantSlider.Update(Mouse.GetState());
         _cloth.springConstant = _springConstantSlider.Value;
@@ -496,7 +562,10 @@ public class Game1 : Game
             }
         }
 
-        for (int step = 0; step < physicsSteps; step++)
+        int stepsThisFrame = 0;
+        const int maxStepsPerFrame = 1000;
+
+        while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame)
         {
             for (int i = 0; i < _cloth.particles.Length; i++)
             {
@@ -508,7 +577,15 @@ public class Game1 : Game
 
             _cloth.horizontalSticks = CalculateStickForces(_cloth.horizontalSticks);
             _cloth.verticalSticks = CalculateStickForces(_cloth.verticalSticks);
-            UpdateParticles(fixedDeltaTime);
+            UpdateParticles(FixedTimeStep);
+
+            _timeAccumulator -= FixedTimeStep;
+            stepsThisFrame++;
+        }
+
+        if (stepsThisFrame == maxStepsPerFrame)
+        {
+            _timeAccumulator = Math.Min(_timeAccumulator, FixedTimeStep);
         }
 
         if (_selectedToolIndex == 0)
@@ -556,7 +633,22 @@ public class Game1 : Game
         {
             for (int j = 0; j < _cloth.particles[i].Length; j++)
             {
-                _cloth.particles[i][j].Draw(_spriteBatch, _primitiveBatch);
+                var particle = _cloth.particles[i][j];
+
+                if (particle.IsPinned)
+                {
+                    particle.Color = Color.LightGray;
+                    particle.Draw(_spriteBatch, _primitiveBatch);
+                    continue;
+                }
+
+                Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
+                float forceMagnitude = totalForce.Length();
+                float lerpFactor = CalculateStressLerp(forceMagnitude);
+                float easedLerp = lerpFactor * lerpFactor;
+                particle.Color = Color.Lerp(Color.White, Color.Red, easedLerp);
+                particle.Draw(_spriteBatch, _primitiveBatch);
+                _cloth.particles[i][j] = particle;
             }
         }
 
@@ -577,7 +669,6 @@ public class Game1 : Game
             _spriteBatch.DrawString(_font, currentTool, new Vector2(10, 10), Color.White);
         }
 
-        // Draw wind direction arrow if active
         if (windDirectionArrow != null)
         {
             windDirectionArrow.Draw(_spriteBatch, _primitiveBatch);
