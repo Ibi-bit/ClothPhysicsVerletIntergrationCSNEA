@@ -771,7 +771,7 @@ public class Game1 : Game
         }
     }
 
-    private bool DoLinesIntersect(
+    private bool DoTwoLinesIntersect(
         Vector2 line1Start,
         Vector2 line1End,
         Vector2 line2Start,
@@ -796,40 +796,34 @@ public class Game1 : Game
         return (t >= 0 && t <= 1 && u >= 0 && u <= 1);
     }
 
-    private void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
+    private DrawableStick[][] DoLinesIntersect(
+        DrawableStick[][] sticks,
+        Vector2 lineStart,
+        Vector2 lineEnd
+    )
     {
-        for (int i = 0; i < _cloth.horizontalSticks.Length; i++)
+        for (int i = 0; i < sticks.Length; i++)
         {
-            for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
+            for (int j = 0; j < sticks[i].Length; j++)
             {
-                if (_cloth.horizontalSticks[i][j] != null)
+                if (sticks[i][j] != null)
                 {
-                    Vector2 stickStart = _cloth.horizontalSticks[i][j].P1.Position;
-                    Vector2 stickEnd = _cloth.horizontalSticks[i][j].P2.Position;
+                    Vector2 stickStart = sticks[i][j].P1.Position;
+                    Vector2 stickEnd = sticks[i][j].P2.Position;
 
-                    if (DoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
+                    if (DoesLineIntersect(lineStart, lineEnd, stickStart, stickEnd))
                     {
                         _cloth.horizontalSticks[i][j] = null;
                     }
                 }
             }
         }
+        return sticks;
+    }
 
-        for (int i = 0; i < _cloth.verticalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
-            {
-                if (_cloth.verticalSticks[i][j] != null)
-                {
-                    Vector2 stickStart = _cloth.verticalSticks[i][j].P1.Position;
-                    Vector2 stickEnd = _cloth.verticalSticks[i][j].P2.Position;
-
-                    if (DoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
-                    {
-                        _cloth.verticalSticks[i][j] = null;
-                    }
-                }
-            }
-        }
+    private void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
+    {
+        _cloth.horizontalSticks = DoLinesIntersect(_cloth.horizontalSticks, lineStart, lineEnd);
+        _cloth.verticalSticks = DoLinesIntersect(_cloth.verticalSticks, lineStart, lineEnd);
     }
 }

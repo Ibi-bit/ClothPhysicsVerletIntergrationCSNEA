@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VectorGraphics;
@@ -9,6 +10,7 @@ class Particle
     public Vector2 PreviousPosition;
     public float Mass;
     public Vector2 AccumulatedForce;
+    public int ID;
 
     public bool IsPinned;
     public bool IsSelected;
@@ -22,6 +24,7 @@ class Particle
         IsPinned = isPinned;
         IsPinned = mass <= 0;
         IsSelected = false;
+        ID = -1;
     }
 }
 
@@ -116,7 +119,7 @@ class DrawableStick : Stick
     }
 }
 
-class Cloth
+class Cloth : Mesh
 {
     public DrawableParticle[][] particles;
     public DrawableStick[][] horizontalSticks;
@@ -159,29 +162,33 @@ class Cloth
                     new Vector2(j * naturalLength + 220, i * naturalLength + 20)
                 );
 
-                particles[i][j] = new DrawableParticle(
+                var dp = new DrawableParticle(
                     new Vector2(j * naturalLength + 220, i * naturalLength + 20),
                     isPinned ? 0 : mass,
                     isPinned,
                     Color.White
                 );
+                
+                RegisterParticle(dp);
+                particles[i][j] = dp;
 
                 if (j > 0)
                 {
-                    horizontalSticks[i][j - 1] = new DrawableStick(
-                        particles[i][j - 1],
-                        particles[i][j],
-                        Color.White
-                    );
+                    
+                    var sid = AddStick(particles[i][j - 1].ID, particles[i][j].ID, Color.White);
+                    if (sid.HasValue)
+                    {
+                        horizontalSticks[i][j - 1] = Sticks[sid.Value];
+                    }
                 }
 
                 if (i > 0)
                 {
-                    verticalSticks[i - 1][j] = new DrawableStick(
-                        particles[i - 1][j],
-                        particles[i][j],
-                        Color.White
-                    );
+                    var sid = AddStick(particles[i - 1][j].ID, particles[i][j].ID, Color.White);
+                    if (sid.HasValue)
+                    {
+                        verticalSticks[i - 1][j] = Sticks[sid.Value];
+                    }
                 }
             }
         }
@@ -196,6 +203,186 @@ class Cloth
                 particles[row][col].PreviousPosition = particles[row][col].Position;
             }
         }
+        
+    }
+    
+    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    {
+        foreach (var s in horizontalSticks)
+        {
+            foreach (var stick in s)
+            {
+                stick?.Draw(spriteBatch, primitiveBatch);
+            }
+        }
+        foreach (var s in verticalSticks)
+        {
+            foreach (var stick in s)
+            {
+                stick?.Draw(spriteBatch, primitiveBatch);
+            }
+        }
+        foreach (var row in particles)
+        {
+            foreach (var p in row)
+            {
+                p?.Draw(spriteBatch, primitiveBatch);
+            }
+        }
+    }
+}
+
+class Mesh
+{
+    private int _nextParticleId = 1;
+    private int _nextStickId = 1;
+
+    public Dictionary<int, DrawableParticle> Particles { get; } =
+        new Dictionary<int, DrawableParticle>();
+
+    public class MeshStick : DrawableStick
+    {
+        public int Id;
+        public int P1Id;
+        public int P2Id;
+
+        public MeshStick(DrawableParticle p1, DrawableParticle p2, Color color, float width = 2.0f)
+            : base(p1, p2, color, width) { }
+    }
+
+    public Dictionary<int, MeshStick> Sticks { get; } = new Dictionary<int, MeshStick>();
+
+    private readonly Dictionary<int, HashSet<int>> _particleToStickIds =
+        new Dictionary<int, HashSet<int>>();
+
+    protected int RegisterParticle(DrawableParticle particle)
+    {
+        if (particle == null)
+            return -1;
+        if (particle.ID > 0 && Particles.ContainsKey(particle.ID))
+        {
+            return particle.ID;
+        }
+        int id = _nextParticleId++;
+        particle.ID = id;
+        Particles[id] = particle;
+        _particleToStickIds[id] = new HashSet<int>();
+        return id;
+    }
+
+    public int AddParticle(
+        Vector2 position,
+        float mass,
+        bool isPinned,
+        Color color,
+        Vector2? size = null
+    )
+    {
+        var particle = new DrawableParticle(position, mass, isPinned, color);
+        if (size.HasValue)
+        {
+            particle.Size = size.Value;
+        }
+        int id = _nextParticleId++;
+        particle.ID = id;
+        Particles[id] = particle;
+        _particleToStickIds[id] = new HashSet<int>();
+        return id;
+    }
+
+    public bool RemoveParticle(int particleId)
+    {
+        if (!Particles.ContainsKey(particleId))
+            return false;
+
+        if (_particleToStickIds.TryGetValue(particleId, out var stickIds))
+        {
+            foreach (var sid in stickIds.ToList())
+            {
+                RemoveStick(sid);
+            }
+        }
+
+        _particleToStickIds.Remove(particleId);
+        return Particles.Remove(particleId);
+    }
+
+    public int? AddStick(int p1Id, int p2Id, Color color, float width = 2.0f)
+    {
+        if (p1Id == p2Id)
+            return null;
+        if (!Particles.ContainsKey(p1Id) || !Particles.ContainsKey(p2Id))
+            return null;
+
+        bool exists = Sticks.Values.Any(s =>
+            (s.P1Id == p1Id && s.P2Id == p2Id) || (s.P1Id == p2Id && s.P2Id == p1Id)
+        );
+        if (exists)
+            return null;
+
+        var s = new MeshStick(Particles[p1Id], Particles[p2Id], color, width)
+        {
+            Id = _nextStickId++,
+            P1Id = p1Id,
+            P2Id = p2Id,
+        };
+        Sticks[s.Id] = s;
+        if (!_particleToStickIds.ContainsKey(p1Id))
+            _particleToStickIds[p1Id] = new HashSet<int>();
+        if (!_particleToStickIds.ContainsKey(p2Id))
+            _particleToStickIds[p2Id] = new HashSet<int>();
+        _particleToStickIds[p1Id].Add(s.Id);
+        _particleToStickIds[p2Id].Add(s.Id);
+        return s.Id;
+    }
+
+    public bool RemoveStick(int stickId)
+    {
+        if (!Sticks.TryGetValue(stickId, out var s))
+            return false;
+
+        if (_particleToStickIds.TryGetValue(s.P1Id, out var set1))
+            set1.Remove(stickId);
+        if (_particleToStickIds.TryGetValue(s.P2Id, out var set2))
+            set2.Remove(stickId);
+        return Sticks.Remove(stickId);
+    }
+
+    public int RemoveSticksBetween(int p1Id, int p2Id)
+    {
+        var toRemove = Sticks
+            .Values.Where(s =>
+                (s.P1Id == p1Id && s.P2Id == p2Id) || (s.P1Id == p2Id && s.P2Id == p1Id)
+            )
+            .Select(s => s.Id)
+            .ToList();
+        foreach (var sid in toRemove)
+            RemoveStick(sid);
+        return toRemove.Count;
+    }
+
+    public IEnumerable<MeshStick> GetSticksForParticle(int particleId)
+    {
+        if (_particleToStickIds.TryGetValue(particleId, out var ids))
+        {
+            foreach (var sid in ids)
+            {
+                if (Sticks.TryGetValue(sid, out var s))
+                    yield return s;
+            }
+        }
+    }
+
+    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    {
+        foreach (var s in Sticks.Values)
+        {
+            s.Draw(spriteBatch, primitiveBatch);
+        }
+        foreach (var p in Particles.Values)
+        {
+            p.Draw(spriteBatch, primitiveBatch);
+        }
     }
 }
 
@@ -204,6 +391,7 @@ public class Tool
     public string Name;
     public Texture2D Icon;
     public Texture2D CursorIcon;
+
     public Tool(string name, Texture2D icon, Texture2D cursorIcon)
     {
         Name = name;
@@ -211,5 +399,3 @@ public class Tool
         CursorIcon = cursorIcon;
     }
 }
-
-        
