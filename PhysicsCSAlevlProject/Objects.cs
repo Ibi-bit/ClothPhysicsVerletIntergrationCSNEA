@@ -267,8 +267,8 @@ class Cloth : Mesh
                 float forceMagnitude = particle.TotalForceMagnitude;
                 float lerpFactor = CalculateStressLerp(forceMagnitude);
                 float easedLerp = lerpFactor * lerpFactor;
-                particle.Color = Color.Lerp(Color.White, Color.Red, easedLerp);
-                //particle.Draw(spriteBatch, primitiveBatch);
+                // particle.Color = Color.Lerp(Color.White, Color.Red, easedLerp);
+                particle.Draw(spriteBatch, primitiveBatch);
                 particles[i][j] = particle;
             }
         }

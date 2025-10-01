@@ -152,34 +152,125 @@ public class Game1 : Game
         return p;
     }
 
-    private DrawableStick[][] CalculateStickForces(DrawableStick[][] sticks)
+    private DrawableStick[][] ApplyStickForces(DrawableStick[][] sticks)
     {
         for (int i = 0; i < sticks.Length; i++)
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                if (sticks[i][j] != null)
+                var s = sticks[i][j];
+                if (s == null)
                 {
-                    DrawableStick s = sticks[i][j];
-                    Vector2 stickVector = s.P1.Position - s.P2.Position;
-                    float currentLength = stickVector.Length();
-
-                    if (currentLength > 0)
-                    {
-                        Vector2 stickDir = stickVector / currentLength;
-                        float stretch = currentLength - s.Length;
-
-                        float springConstant = _cloth.springConstant;
-                        Vector2 springForce = stickDir * stretch * springConstant;
-                        s.Color = Color.Lerp(Color.White,Color.Red,currentLength/(s.Length*8));
-
-                        s.P1.AccumulatedForce -= springForce;
-                        s.P2.AccumulatedForce += springForce;
-                    }
+                    continue;
                 }
+                float L0 = s.Length;
+                if (L0 <= 0f)
+                {
+                    continue;
+                }
+                Vector2 v = s.P1.Position - s.P2.Position;
+                float L = v.Length();
+                if (L <= 0f)
+                {
+                    continue;
+                }
+                Vector2 dir = v / L;
+                float stretch = L - L0;
+                Vector2 springForce = dir * stretch * _cloth.springConstant;
+                s.P1.AccumulatedForce -= springForce;
+                s.P2.AccumulatedForce += springForce;
             }
         }
         return sticks;
+    }
+
+    private void UpdateStickColorsRelative(DrawableStick[][] horizontal, DrawableStick[][] vertical)
+    {
+        int count = 0;
+        float sum = 0f;
+        float sumSq = 0f;
+
+        void Accumulate(DrawableStick[][] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                for (int j = 0; j < arr[i].Length; j++)
+                {
+                    var s = arr[i][j];
+                    if (s == null)
+                    {
+                        continue;
+                    }
+                    if (s.Length <= 0f)
+                    {
+                        continue;
+                    }
+                    Vector2 v = s.P1.Position - s.P2.Position;
+                    float L = v.Length();
+                    if (L <= 0f)
+                    {
+                        continue;
+                    }
+                    float e = (L - s.Length) / s.Length;
+                    sum += e;
+                    sumSq += e * e;
+                    count++;
+                }
+            }
+        }
+
+        Accumulate(horizontal);
+        Accumulate(vertical);
+
+        float mean = count > 0 ? sum / count : 0f;
+        float variance = count > 0 ? (sumSq / count) - mean * mean : 0f;
+        if (variance < 0f)
+        {
+            variance = 0f;
+        }
+        float std = (float)Math.Sqrt(variance);
+
+        void Colorize(DrawableStick[][] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                for (int j = 0; j < arr[i].Length; j++)
+                {
+                    var s = arr[i][j];
+                    if (s == null)
+                    {
+                        continue;
+                    }
+                    if (s.Length <= 0f)
+                    {
+                        continue;
+                    }
+                    Vector2 v = s.P1.Position - s.P2.Position;
+                    float L = v.Length();
+                    if (L <= 0f)
+                    {
+                        continue;
+                    }
+                    float e = (L - s.Length) / s.Length;
+
+                    float intensity = 0f;
+                    if (count > 0 && std > 1e-5f)
+                    {
+                        float z = (e - mean) / std;
+                        intensity = MathHelper.Clamp((z - 0.5f) / 1.5f, 0f, 1f);
+                    }
+                    else
+                    {
+                        intensity = MathHelper.Clamp((L / s.Length - 1f) / 0.5f, 0f, 1f);
+                    }
+                    float eased = intensity * intensity;
+                    s.Color = Color.Lerp(Color.White, Color.Red, eased);
+                }
+            }
+        }
+
+        Colorize(horizontal);
+        Colorize(vertical);
     }
 
     private void UpdateParticles(float deltaTime)
@@ -264,8 +355,6 @@ public class Game1 : Game
             _cloth.maxForceMagnitude = 0f;
         }
     }
-
-    
 
     private List<Vector2> GetParticlesInRadius(Vector2 mousePosition, float radius)
     {
@@ -392,7 +481,6 @@ public class Game1 : Game
             }
         }
     }
-    
 
     protected override void Update(GameTime gameTime)
     {
@@ -552,8 +640,8 @@ public class Game1 : Game
                 }
             }
 
-            _cloth.horizontalSticks = CalculateStickForces(_cloth.horizontalSticks);
-            _cloth.verticalSticks = CalculateStickForces(_cloth.verticalSticks);
+            _cloth.horizontalSticks = ApplyStickForces(_cloth.horizontalSticks);
+            _cloth.verticalSticks = ApplyStickForces(_cloth.verticalSticks);
             UpdateParticles(FixedTimeStep);
 
             _timeAccumulator -= FixedTimeStep;
@@ -564,6 +652,9 @@ public class Game1 : Game
         {
             _timeAccumulator = Math.Min(_timeAccumulator, FixedTimeStep);
         }
+
+        // Color sticks once per frame to reduce per-step overhead
+        UpdateStickColorsRelative(_cloth.horizontalSticks, _cloth.verticalSticks);
 
         if (_selectedToolIndex == 0)
         {
