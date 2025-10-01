@@ -1,0 +1,79 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 5 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet  restore --nodeReuse:false /p:UseSharedCompilation=false /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="/Users/sampartington/Documents/y13/PhysicsCSAlevlProject/PhysicsCSAlevlProject/bin/Release/net8.0/PhysicsCSAlevlProject-.NET 8.0-1/" /p:OutDir="/Users/sampartington/Documents/y13/PhysicsCSAlevlProject/PhysicsCSAlevlProject/bin/Release/net8.0/PhysicsCSAlevlProject-.NET 8.0-1/bin/Release/net8.0/" /p:OutputPath="/Users/sampartington/Documents/y13/PhysicsCSAlevlProject/PhysicsCSAlevlProject/bin/Release/net8.0/PhysicsCSAlevlProject-.NET 8.0-1/bin/Release/net8.0/" /p:PublishDir="/Users/sampartington/Documents/y13/PhysicsCSAlevlProject/PhysicsCSAlevlProject/bin/Release/net8.0/PhysicsCSAlevlProject-.NET 8.0-1/publish/" in /Users/sampartington/Documents/y13/PhysicsCSAlevlProject/PhysicsCSAlevlProject/bin/Release/net8.0/PhysicsCSAlevlProject-.NET 8.0-1
+// command took 0.04 sec and exited with 145
+// ***** Done, took 00:00:00 (0.13 sec)   *****
+// Found 5 benchmarks:
+//   PhysicsBenchmark.SinglePhysicsStep: .NET 8.0(Runtime=.NET 8.0)
+//   PhysicsBenchmark.ClearForces: .NET 8.0(Runtime=.NET 8.0)
+//   PhysicsBenchmark.CalculateHorizontalStickForces: .NET 8.0(Runtime=.NET 8.0)
+//   PhysicsBenchmark.CalculateVerticalStickForces: .NET 8.0(Runtime=.NET 8.0)
+//   PhysicsBenchmark.UpdateAllParticles: .NET 8.0(Runtime=.NET 8.0)
+
+// Build Error: Standard output: 
+ The command could not be loaded, possibly because:
+  * You intended to execute a .NET application:
+      The application 'restore' does not exist.
+  * You intended to execute a .NET SDK command:
+      A compatible .NET SDK was not found.
+Requested SDK version: 8.0.411
+global.json file: /Users/sampartington/Documents/y13/PhysicsCSAlevlProject/global.json
+Installed SDKs:
+Install the [8.0.411] .NET SDK or update [/Users/sampartington/Documents/y13/PhysicsCSAlevlProject/global.json] to match an installed SDK.
+Learn about SDK resolution:
+https://aka.ms/dotnet/sdk-not-found 
+ Standard error: 
+ 8.0.120 [/opt/homebrew/Cellar/dotnet@8/8.0.120/libexec/sdk]
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in /Users/sampartington/Documents/y13/PhysicsCSAlevlProject/PhysicsCSAlevlProject/bin/Release/net8.0/PhysicsCSAlevlProject-.NET 8.0-1
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 0 (0.0%) benchmark(s) to run. Estimated finish 2025-09-30 9:12 (0h 0m from now) **
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts/results/PhysicsCSAlevlProject.PhysicsBenchmark-report.csv
+  BenchmarkDotNet.Artifacts/results/PhysicsCSAlevlProject.PhysicsBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts/results/PhysicsCSAlevlProject.PhysicsBenchmark-report.html
+  BenchmarkDotNet.Artifacts/results/PhysicsCSAlevlProject.PhysicsBenchmark-measurements.csv
+RPlotExporter couldn't find Rscript in your PATH and no R_HOME environment variable is defined
+  BenchmarkDotNet.Artifacts/results/BuildPlots.R
+
+// * Detailed results *
+PhysicsBenchmark.SinglePhysicsStep: .NET 8.0(Runtime=.NET 8.0)
+Runtime = ; GC = 
+There are not any results runs
+
+// * Summary *
+
+BenchmarkDotNet v0.15.4, macOS 26.1 (25B5042k) [Darwin 25.1.0]
+Apple M1, 1 CPU, 8 logical and 8 physical cores
+.NET SDK 8.0.120 [/opt/homebrew/Cellar/dotnet@8/8.0.120/libexec/sdk]
+  [Host] : .NET 8.0.17 (8.0.17, 8.0.1725.26602), Arm64 RyuJIT armv8.0-a
+
+Job=.NET 8.0  Runtime=.NET 8.0  
+
+| Method            | Mean | Error |
+|------------------ |-----:|------:|
+| SinglePhysicsStep |   NA |    NA |
+
+Benchmarks with issues:
+  PhysicsBenchmark.SinglePhysicsStep: .NET 8.0(Runtime=.NET 8.0)
+
+// * Legends *
+  Mean  : Arithmetic mean of all measurements
+  Error : Half of 99.9% confidence interval
+  1 ns  : 1 Nanosecond (0.000000001 sec)
+
+// * Diagnostic Output - MemoryDiagnoser *
+
+
+// ***** BenchmarkRunner: End *****
+Run time: 00:00:00 (0.02 sec), executed benchmarks: 0
+
+Global total time: 00:00:00 (0.74 sec), executed benchmarks: 0
+// * Artifacts cleanup *
+Artifacts cleanup is finished
