@@ -27,10 +27,6 @@ public class Game1 : Game
     Vector2 BaseForce = new Vector2(0, 980f);
     List<Vector2> particlesInDragArea = new List<Vector2>();
 
-    private float _meanForceMagnitude = 0f;
-    private float _forceStdDeviation = 0f;
-    private float _maxForceMagnitude = 0f;
-
     private RadialMenu _radialMenu;
     private List<Tool> _tools;
 
@@ -175,6 +171,7 @@ public class Game1 : Game
 
                         float springConstant = _cloth.springConstant;
                         Vector2 springForce = stickDir * stretch * springConstant;
+                        s.Color = Color.Lerp(Color.White,Color.Red,currentLength/(s.Length*8));
 
                         s.P1.AccumulatedForce -= springForce;
                         s.P2.AccumulatedForce += springForce;
@@ -199,14 +196,14 @@ public class Game1 : Game
                 DrawableParticle p = _cloth.particles[i][j];
 
                 Vector2 totalForce = BaseForce + p.AccumulatedForce + windForce;
-                float forceMagnitude = totalForce.Length();
-                forceMagnitudeSum += forceMagnitude;
-                forceMagnitudeSquaredSum += forceMagnitude * forceMagnitude;
+                p.TotalForceMagnitude = totalForce.Length();
+                forceMagnitudeSum += p.TotalForceMagnitude;
+                forceMagnitudeSquaredSum += p.TotalForceMagnitude * p.TotalForceMagnitude;
                 totalForceCount++;
 
-                if (forceMagnitude > maxForceMagnitude)
+                if (p.TotalForceMagnitude > maxForceMagnitude)
                 {
-                    maxForceMagnitude = forceMagnitude;
+                    maxForceMagnitude = p.TotalForceMagnitude;
                 }
 
                 if (p.IsPinned)
@@ -249,47 +246,26 @@ public class Game1 : Game
 
         if (totalForceCount > 0)
         {
-            _meanForceMagnitude = forceMagnitudeSum / totalForceCount;
-            float meanSquare = _meanForceMagnitude * _meanForceMagnitude;
+            _cloth.meanForceMagnitude = forceMagnitudeSum / totalForceCount;
+            float meanSquare = _cloth.meanForceMagnitude * _cloth.meanForceMagnitude;
             float variance = (forceMagnitudeSquaredSum / totalForceCount) - meanSquare;
             if (variance < 0f)
             {
                 variance = 0f;
             }
 
-            _forceStdDeviation = (float)Math.Sqrt(variance);
-            _maxForceMagnitude = maxForceMagnitude;
+            _cloth.forceStdDeviation = (float)Math.Sqrt(variance);
+            _cloth.maxForceMagnitude = maxForceMagnitude;
         }
         else
         {
-            _meanForceMagnitude = 0f;
-            _forceStdDeviation = 0f;
-            _maxForceMagnitude = 0f;
+            _cloth.meanForceMagnitude = 0f;
+            _cloth.forceStdDeviation = 0f;
+            _cloth.maxForceMagnitude = 0f;
         }
     }
 
-    private float CalculateStressLerp(float forceMagnitude)
-    {
-        if (_forceStdDeviation > 0.0001f)
-        {
-            float zScore = (forceMagnitude - _meanForceMagnitude) / _forceStdDeviation;
-            const float highlightThreshold = 0.5f;
-            const float highlightRange = 1.5f;
-            return MathHelper.Clamp((zScore - highlightThreshold) / highlightRange, 0f, 1f);
-        }
-
-        if (_maxForceMagnitude > 0.0001f)
-        {
-            return MathHelper.Clamp(forceMagnitude / _maxForceMagnitude, 0f, 1f);
-        }
-
-        if (_meanForceMagnitude > 0.0001f)
-        {
-            return MathHelper.Clamp(forceMagnitude / _meanForceMagnitude, 0f, 1f);
-        }
-
-        return 0f;
-    }
+    
 
     private List<Vector2> GetParticlesInRadius(Vector2 mousePosition, float radius)
     {
@@ -416,6 +392,7 @@ public class Game1 : Game
             }
         }
     }
+    
 
     protected override void Update(GameTime gameTime)
     {
@@ -476,7 +453,7 @@ public class Game1 : Game
                         PinParticle(intitialMousePosWhenPressed, dragRadius);
                         break;
                     case 2:
-                        CutSticksInRadius(intitialMousePosWhenPressed, dragRadius);
+                        CutAllSticksInRadius(intitialMousePosWhenPressed, dragRadius);
                         break;
                     case 3:
 
@@ -611,46 +588,7 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin();
 
-        for (int i = 0; i < _cloth.horizontalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
-            {
-                if (_cloth.horizontalSticks[i][j] != null)
-                    _cloth.horizontalSticks[i][j].Draw(_spriteBatch, _primitiveBatch);
-            }
-        }
-
-        for (int i = 0; i < _cloth.verticalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
-            {
-                if (_cloth.verticalSticks[i][j] != null)
-                    _cloth.verticalSticks[i][j].Draw(_spriteBatch, _primitiveBatch);
-            }
-        }
-
-        for (int i = 0; i < _cloth.particles.Length; i++)
-        {
-            for (int j = 0; j < _cloth.particles[i].Length; j++)
-            {
-                var particle = _cloth.particles[i][j];
-
-                if (particle.IsPinned)
-                {
-                    particle.Color = Color.LightGray;
-                    particle.Draw(_spriteBatch, _primitiveBatch);
-                    continue;
-                }
-
-                Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
-                float forceMagnitude = totalForce.Length();
-                float lerpFactor = CalculateStressLerp(forceMagnitude);
-                float easedLerp = lerpFactor * lerpFactor;
-                particle.Color = Color.Lerp(Color.White, Color.Red, easedLerp);
-                particle.Draw(_spriteBatch, _primitiveBatch);
-                _cloth.particles[i][j] = particle;
-            }
-        }
+        _cloth.Draw(_spriteBatch, _primitiveBatch);
 
         if (radialMenuPressed)
         {
@@ -715,47 +653,30 @@ public class Game1 : Game
         }
     }
 
-    private void CutSticksInRadius(Vector2 center, float radius)
+    private void CutSticksInRadius(Vector2 center, float radius, DrawableStick[][] sticks)
     {
-        for (int i = 0; i < _cloth.horizontalSticks.Length; i++)
+        for (int i = 0; i < sticks.Length; i++)
         {
-            for (int j = 0; j < _cloth.horizontalSticks[i].Length; j++)
+            for (int j = 0; j < sticks[i].Length; j++)
             {
-                if (_cloth.horizontalSticks[i][j] != null)
+                if (sticks[i][j] != null)
                 {
                     Vector2 stickCenter =
-                        (
-                            _cloth.horizontalSticks[i][j].P1.Position
-                            + _cloth.horizontalSticks[i][j].P2.Position
-                        ) * 0.5f;
+                        (sticks[i][j].P1.Position + sticks[i][j].P2.Position) * 0.5f;
                     float distance = Vector2.Distance(stickCenter, center);
                     if (distance <= radius)
                     {
-                        _cloth.horizontalSticks[i][j] = null;
+                        sticks[i][j] = null;
                     }
                 }
             }
         }
+    }
 
-        for (int i = 0; i < _cloth.verticalSticks.Length; i++)
-        {
-            for (int j = 0; j < _cloth.verticalSticks[i].Length; j++)
-            {
-                if (_cloth.verticalSticks[i][j] != null)
-                {
-                    Vector2 stickCenter =
-                        (
-                            _cloth.verticalSticks[i][j].P1.Position
-                            + _cloth.verticalSticks[i][j].P2.Position
-                        ) * 0.5f;
-                    float distance = Vector2.Distance(stickCenter, center);
-                    if (distance <= radius)
-                    {
-                        _cloth.verticalSticks[i][j] = null;
-                    }
-                }
-            }
-        }
+    private void CutAllSticksInRadius(Vector2 center, float radius)
+    {
+        CutSticksInRadius(center, radius, _cloth.horizontalSticks);
+        CutSticksInRadius(center, radius, _cloth.verticalSticks);
     }
 
     private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float radius)
@@ -811,7 +732,7 @@ public class Game1 : Game
                     Vector2 stickStart = sticks[i][j].P1.Position;
                     Vector2 stickEnd = sticks[i][j].P2.Position;
 
-                    if (DoesLineIntersect(lineStart, lineEnd, stickStart, stickEnd))
+                    if (DoTwoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
                     {
                         _cloth.horizontalSticks[i][j] = null;
                     }

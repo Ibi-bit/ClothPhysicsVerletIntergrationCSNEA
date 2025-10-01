@@ -12,6 +12,8 @@ class Particle
     public Vector2 AccumulatedForce;
     public int ID;
 
+    public float TotalForceMagnitude;
+
     public bool IsPinned;
     public bool IsSelected;
 
@@ -21,8 +23,8 @@ class Particle
         PreviousPosition = position;
         Mass = mass;
         AccumulatedForce = Vector2.Zero;
-        IsPinned = isPinned;
-        IsPinned = mass <= 0;
+
+        IsPinned = isPinned || mass <= 0;
         IsSelected = false;
         ID = -1;
     }
@@ -168,13 +170,12 @@ class Cloth : Mesh
                     isPinned,
                     Color.White
                 );
-                
+
                 RegisterParticle(dp);
                 particles[i][j] = dp;
 
                 if (j > 0)
                 {
-                    
                     var sid = AddStick(particles[i][j - 1].ID, particles[i][j].ID, Color.White);
                     if (sid.HasValue)
                     {
@@ -203,30 +204,72 @@ class Cloth : Mesh
                 particles[row][col].PreviousPosition = particles[row][col].Position;
             }
         }
-        
     }
-    
-    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+
+    public void StickDraw(
+        SpriteBatch spriteBatch,
+        PrimitiveBatch primitiveBatch,
+        DrawableStick[][] sticks
+    )
     {
-        foreach (var s in horizontalSticks)
+        for (int i = 0; i < sticks.Length; i++)
         {
-            foreach (var stick in s)
+            for (int j = 0; j < sticks[i].Length; j++)
             {
-                stick?.Draw(spriteBatch, primitiveBatch);
+                if (sticks[i][j] != null)
+                    sticks[i][j].Draw(spriteBatch, primitiveBatch);
             }
         }
-        foreach (var s in verticalSticks)
+    }
+
+    private float CalculateStressLerp(float forceMagnitude)
+    {
+        
+        if (forceStdDeviation > 0.0001f)
         {
-            foreach (var stick in s)
-            {
-                stick?.Draw(spriteBatch, primitiveBatch);
-            }
+            float zScore = (forceMagnitude - meanForceMagnitude) / forceStdDeviation;
+            const float highlightThreshold = 0.5f;
+            const float highlightRange = 1.5f;
+            return MathHelper.Clamp((zScore - highlightThreshold) / highlightRange, 0f, 1f);
         }
-        foreach (var row in particles)
+
+        if (maxForceMagnitude > 0.0001f)
         {
-            foreach (var p in row)
+            return MathHelper.Clamp(forceMagnitude / maxForceMagnitude, 0f, 1f);
+        }
+
+        if (meanForceMagnitude > 0.0001f)
+        {
+            return MathHelper.Clamp(forceMagnitude / meanForceMagnitude, 0f, 1f);
+        }
+
+        return 0f;
+    }
+
+    public new void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    {
+        StickDraw(spriteBatch, primitiveBatch, horizontalSticks);
+        StickDraw(spriteBatch, primitiveBatch, verticalSticks);
+
+        for (int i = 0; i < particles.Length; i++)
+        {
+            for (int j = 0; j < particles[i].Length; j++)
             {
-                p?.Draw(spriteBatch, primitiveBatch);
+                var particle = particles[i][j];
+
+                if (particle.IsPinned)
+                {
+                    particle.Color = Color.LightGray;
+                    particle.Draw(spriteBatch, primitiveBatch);
+                    continue;
+                }
+
+                float forceMagnitude = particle.TotalForceMagnitude;
+                float lerpFactor = CalculateStressLerp(forceMagnitude);
+                float easedLerp = lerpFactor * lerpFactor;
+                particle.Color = Color.Lerp(Color.White, Color.Red, easedLerp);
+                //particle.Draw(spriteBatch, primitiveBatch);
+                particles[i][j] = particle;
             }
         }
     }
@@ -239,6 +282,10 @@ class Mesh
 
     public Dictionary<int, DrawableParticle> Particles { get; } =
         new Dictionary<int, DrawableParticle>();
+
+    public float meanForceMagnitude = 0f;
+    public float forceStdDeviation = 0f;
+    public float maxForceMagnitude = 0f;
 
     public class MeshStick : DrawableStick
     {
