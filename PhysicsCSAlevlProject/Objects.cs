@@ -37,7 +37,7 @@ class DrawableParticle : Particle
     public Vector2 Size { get; set; }
 
     public DrawableParticle(Vector2 position, float mass, Vector2 size, Color color)
-        : base(position, mass, false) // Default to not pinned
+        : base(position, mass, false)
     {
         Size = size;
         Color = color;
@@ -45,7 +45,7 @@ class DrawableParticle : Particle
     }
 
     public DrawableParticle(Vector2 position, float mass, Color color)
-        : base(position, mass, false) // Default to not pinned
+        : base(position, mass, false)
     {
         Size = new Vector2(10, 10);
         Color = color;
@@ -78,6 +78,7 @@ class Stick
     public Particle P1;
     public Particle P2;
     public float Length;
+    
 
     public Stick(Particle p1, Particle p2)
     {
@@ -92,6 +93,7 @@ class DrawableStick : Stick
     private PrimitiveBatch.Line line;
     public Color Color { get; set; }
     public float Width { get; set; }
+    public bool IsCut { get; set; }
 
     public DrawableStick(Particle p1, Particle p2, Color color, float width = 2.0f)
         : base(p1, p2)
@@ -117,7 +119,8 @@ class DrawableStick : Stick
     public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
         line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color, Width);
-        line.Draw(spriteBatch, primitiveBatch);
+        if (!IsCut)
+            line.Draw(spriteBatch, primitiveBatch);
     }
 }
 
@@ -128,8 +131,6 @@ class Cloth : Mesh
     public DrawableStick[][] verticalSticks;
 
     public float naturalLength;
-    public float springConstant = 1.0f;
-    public float drag = 0.99f;
     public float mass;
 
     public Cloth(
@@ -140,10 +141,11 @@ class Cloth : Mesh
         float mass = 1f
     )
     {
-        this.naturalLength = naturalLength; // Assign the naturalLength field
+        this.naturalLength = naturalLength;
         int rows = (int)(Size.Y / naturalLength);
         int cols = (int)(Size.X / naturalLength);
         this.springConstant = springConstant;
+        this.drag = 0.99f;
         this.mass = mass;
         particles = new DrawableParticle[rows][];
         horizontalSticks = new DrawableStick[rows][];
@@ -216,8 +218,8 @@ class Cloth : Mesh
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                if (sticks[i][j] != null)
-                    sticks[i][j].Draw(spriteBatch, primitiveBatch);
+                
+                sticks[i][j].Draw(spriteBatch, primitiveBatch);
             }
         }
     }
@@ -267,7 +269,6 @@ class Cloth : Mesh
                 float forceMagnitude = particle.TotalForceMagnitude;
                 float lerpFactor = CalculateStressLerp(forceMagnitude);
                 float easedLerp = lerpFactor * lerpFactor;
-                // particle.Color = Color.Lerp(Color.White, Color.Red, easedLerp);
                 particle.Draw(spriteBatch, primitiveBatch);
                 particles[i][j] = particle;
             }
@@ -286,6 +287,9 @@ class Mesh
     public float meanForceMagnitude = 0f;
     public float forceStdDeviation = 0f;
     public float maxForceMagnitude = 0f;
+
+    public float springConstant = 10000f;
+    public float drag = 0.99f;
 
     public class MeshStick : DrawableStick
     {
@@ -444,5 +448,42 @@ public class Tool
         Name = name;
         Icon = icon;
         CursorIcon = cursorIcon;
+    }
+}
+
+class BuildableMesh : Mesh
+{
+    public float mass = 0.1f;
+
+    public BuildableMesh(float springConstant = 10000f, float mass = 0.1f)
+    {
+        this.springConstant = springConstant;
+        this.mass = mass;
+    }
+
+    public int AddParticleAt(Vector2 position, bool isPinned = false)
+    {
+        return AddParticle(position, isPinned ? 0f : mass, isPinned, Color.White);
+    }
+
+    public int? AddStickBetween(int p1Id, int p2Id)
+    {
+        return AddStick(p1Id, p2Id, Color.White);
+    }
+
+    public int? FindClosestParticle(Vector2 position, float radius)
+    {
+        float minDist = radius;
+        int? closest = null;
+        foreach (var kvp in Particles)
+        {
+            float dist = Vector2.Distance(kvp.Value.Position, position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = kvp.Key;
+            }
+        }
+        return closest;
     }
 }
