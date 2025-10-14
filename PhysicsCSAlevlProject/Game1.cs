@@ -39,9 +39,22 @@ public class Game1 : Game
     private const float FixedTimeStep = 1f / 10000f;
     private float _timeAccumulator = 0f;
 
-    // private List<DrawableParticle> particles = new List<DrawableParticle>();
-    // private List<DrawableStick> sticks = new List<DrawableStick>();
-    private Cloth _cloth;
+    private Mesh _activeMesh;
+    private Cloth _clothInstance;
+    private BuildableMesh _buildableMeshInstance;
+
+    private enum MeshMode
+    {
+        Cloth,
+        Buildable,
+    }
+
+    private MeshMode _currentMode = MeshMode.Cloth;
+    private bool _tabKeyWasPressed = false;
+
+    private KeyboardState _prevKeyboardState;
+
+    private VectorGui.Gui.DropDownMenu _mainMenu;
 
     public Game1()
     {
@@ -99,7 +112,7 @@ public class Game1 : Game
             }
         );
 
-        _cloth = new Cloth(
+        _clothInstance = new Cloth(
             new Vector2(200, 200),
             pinnedParticles,
             naturalLength,
@@ -107,7 +120,46 @@ public class Game1 : Game
             mass
         );
 
+        _buildableMeshInstance = new BuildableMesh(_springConstant, mass);
+
+        _activeMesh = _clothInstance;
+        _currentMode = MeshMode.Cloth;
+
+        _mainMenu = new VectorGui.Gui.DropDownMenu(
+            new Vector2(
+                _graphics.PreferredBackBufferWidth / 2 - 110,
+                _graphics.PreferredBackBufferHeight / 2 - 80
+            ),
+            new Vector2(220, 160),
+            new Vector2(180, 40),
+            3,
+            Color.Black
+        );
+        _mainMenu.Initialize();
+        _mainMenu.IsVisible = false;
+
         base.Initialize();
+    }
+
+    private void SwitchMode()
+    {
+        if (_currentMode == MeshMode.Cloth)
+        {
+            _currentMode = MeshMode.Buildable;
+            _activeMesh = _buildableMeshInstance;
+        }
+        else
+        {
+            _currentMode = MeshMode.Cloth;
+            _activeMesh = _clothInstance;
+        }
+
+        
+        leftPressed = false;
+        radialMenuPressed = false;
+        windDirectionArrow = null;
+        cutLine = null;
+        particlesInDragArea.Clear();
     }
 
     protected override void LoadContent()
@@ -159,7 +211,7 @@ public class Game1 : Game
             for (int j = 0; j < sticks[i].Length; j++)
             {
                 var s = sticks[i][j];
-                if (s == null)
+                if (s.IsCut)
                 {
                     continue;
                 }
@@ -176,12 +228,81 @@ public class Game1 : Game
                 }
                 Vector2 dir = v / L;
                 float stretch = L - L0;
-                Vector2 springForce = dir * stretch * _cloth.springConstant;
+                Vector2 springForce = dir * stretch * _activeMesh.springConstant;
                 s.P1.AccumulatedForce -= springForce;
                 s.P2.AccumulatedForce += springForce;
             }
         }
         return sticks;
+    }
+
+    private void ApplyStickForcesDictionary(Dictionary<int, Mesh.MeshStick> sticks)
+    {
+        foreach (var stick in sticks.Values)
+        {
+            if (stick.Length <= 0f)
+                continue;
+            Vector2 v = stick.P1.Position - stick.P2.Position;
+            float L = v.Length();
+            if (L <= 0f)
+                continue;
+            Vector2 dir = v / L;
+            float stretch = L - stick.Length;
+            Vector2 springForce = dir * stretch * _activeMesh.springConstant;
+            stick.P1.AccumulatedForce -= springForce;
+            stick.P2.AccumulatedForce += springForce;
+        }
+    }
+
+    private void UpdateStickColorsDictionary(Dictionary<int, Mesh.MeshStick> sticks)
+    {
+        int count = 0;
+        float sum = 0f;
+        float sumSq = 0f;
+
+        foreach (var s in sticks.Values)
+        {
+            if (s.Length <= 0f)
+                continue;
+            Vector2 v = s.P1.Position - s.P2.Position;
+            float L = v.Length();
+            if (L <= 0f)
+                continue;
+            float e = (L - s.Length) / s.Length;
+            sum += e;
+            sumSq += e * e;
+            count++;
+        }
+
+        float mean = count > 0 ? sum / count : 0f;
+        float variance = count > 0 ? (sumSq / count) - mean * mean : 0f;
+        if (variance < 0f)
+            variance = 0f;
+        float std = (float)Math.Sqrt(variance);
+
+        foreach (var s in sticks.Values)
+        {
+            if (s.Length <= 0f)
+                continue;
+            Vector2 v = s.P1.Position - s.P2.Position;
+            float L = v.Length();
+            if (L <= 0f)
+                continue;
+            float e = (L - s.Length) / s.Length;
+
+            float intensity = 0f;
+            if (count > 0 && std > 1e-5f)
+            {
+                float z = (e - mean) / std;
+                intensity = MathHelper.Clamp((z - 0.5f) / 1.5f, 0f, 1f);
+            }
+            else
+            {
+                intensity = MathHelper.Clamp((L / s.Length - 1f) / 0.5f, 0f, 1f);
+            }
+            float eased = intensity * intensity;
+            s.Color = Color.Lerp(Color.White, Color.Red, eased);
+        }
     }
 
     private void UpdateStickColorsRelative(DrawableStick[][] horizontal, DrawableStick[][] vertical)
@@ -280,90 +401,152 @@ public class Game1 : Game
         float maxForceMagnitude = 0f;
         int totalForceCount = 0;
 
-        for (int i = 0; i < _cloth.particles.Length; i++)
+        if (_currentMode == MeshMode.Cloth)
         {
-            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            
+            for (int i = 0; i < _clothInstance.particles.Length; i++)
             {
-                DrawableParticle p = _cloth.particles[i][j];
+                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
+                {
+                    DrawableParticle p = _clothInstance.particles[i][j];
 
-                Vector2 totalForce = BaseForce + p.AccumulatedForce + windForce;
-                p.TotalForceMagnitude = totalForce.Length();
-                forceMagnitudeSum += p.TotalForceMagnitude;
-                forceMagnitudeSquaredSum += p.TotalForceMagnitude * p.TotalForceMagnitude;
+                    Vector2 totalForce = BaseForce + p.AccumulatedForce + windForce;
+                    p.TotalForceMagnitude = totalForce.Length();
+                    forceMagnitudeSum += p.TotalForceMagnitude;
+                    forceMagnitudeSquaredSum += p.TotalForceMagnitude * p.TotalForceMagnitude;
+                    totalForceCount++;
+
+                    if (p.TotalForceMagnitude > maxForceMagnitude)
+                    {
+                        maxForceMagnitude = p.TotalForceMagnitude;
+                    }
+
+                    if (p.IsPinned)
+                    {
+                        p.AccumulatedForce = Vector2.Zero;
+                        continue;
+                    }
+
+                    bool isBeingDragged = false;
+                    if (leftPressed && (_selectedToolIndex == 0 || _selectedToolIndex == 4))
+                    {
+                        foreach (Vector2 draggedParticle in particlesInDragArea)
+                        {
+                            if ((int)draggedParticle.X == i && (int)draggedParticle.Y == j)
+                            {
+                                isBeingDragged = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!isBeingDragged)
+                    {
+                        Vector2 acceleration = totalForce / p.Mass;
+                        Vector2 velocity = p.Position - p.PreviousPosition;
+                        velocity *= _clothInstance.drag;
+
+                        Vector2 previousPosition = p.Position;
+                        p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
+                        p.PreviousPosition = previousPosition;
+                        p = KeepInsideScreen(p);
+                        _clothInstance.particles[i][j] = p;
+                    }
+                }
+            }
+        }
+        else
+        {
+            
+            foreach (var particle in _activeMesh.Particles.Values)
+            {
+                Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
+                particle.TotalForceMagnitude = totalForce.Length();
+                forceMagnitudeSum += particle.TotalForceMagnitude;
+                forceMagnitudeSquaredSum +=
+                    particle.TotalForceMagnitude * particle.TotalForceMagnitude;
                 totalForceCount++;
 
-                if (p.TotalForceMagnitude > maxForceMagnitude)
+                if (particle.TotalForceMagnitude > maxForceMagnitude)
                 {
-                    maxForceMagnitude = p.TotalForceMagnitude;
+                    maxForceMagnitude = particle.TotalForceMagnitude;
                 }
 
-                if (p.IsPinned)
+                if (particle.IsPinned)
                 {
-                    p.AccumulatedForce = Vector2.Zero;
+                    particle.AccumulatedForce = Vector2.Zero;
                     continue;
                 }
 
-                bool isBeingDragged = false;
-                if (
-                    leftPressed && _selectedToolIndex == 0
-                    || leftPressed && _selectedToolIndex == 4
-                )
+                Vector2 acceleration = totalForce / particle.Mass;
+                Vector2 velocity = particle.Position - particle.PreviousPosition;
+                velocity *= _activeMesh.drag;
+
+                Vector2 previousPosition = particle.Position;
+                particle.Position =
+                    particle.Position + velocity + acceleration * (deltaTime * deltaTime);
+                particle.PreviousPosition = previousPosition;
+
+                // Keep inside screen
+                bool positionChanged = false;
+                if (particle.Position.X < 0)
                 {
-                    foreach (Vector2 draggedParticle in particlesInDragArea)
-                    {
-                        if ((int)draggedParticle.X == i && (int)draggedParticle.Y == j)
-                        {
-                            isBeingDragged = true;
-                            break;
-                        }
-                    }
+                    particle.Position.X = 0;
+                    positionChanged = true;
+                }
+                else if (particle.Position.X > _graphics.PreferredBackBufferWidth)
+                {
+                    particle.Position.X = _graphics.PreferredBackBufferWidth;
+                    positionChanged = true;
                 }
 
-                if (!isBeingDragged)
+                if (particle.Position.Y < 0)
                 {
-                    Vector2 acceleration = totalForce / p.Mass;
+                    particle.Position.Y = 0;
+                    positionChanged = true;
+                }
+                else if (particle.Position.Y > _graphics.PreferredBackBufferHeight - 10)
+                {
+                    particle.Position.Y = _graphics.PreferredBackBufferHeight - 10;
+                    positionChanged = true;
+                }
 
-                    Vector2 velocity = p.Position - p.PreviousPosition;
-                    velocity *= _cloth.drag;
-
-                    Vector2 previousPosition = p.Position;
-                    p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
-                    p.PreviousPosition = previousPosition;
-                    p = KeepInsideScreen(p);
-                    _cloth.particles[i][j] = p;
+                if (positionChanged)
+                {
+                    particle.PreviousPosition = particle.Position;
                 }
             }
         }
 
         if (totalForceCount > 0)
         {
-            _cloth.meanForceMagnitude = forceMagnitudeSum / totalForceCount;
-            float meanSquare = _cloth.meanForceMagnitude * _cloth.meanForceMagnitude;
+            _activeMesh.meanForceMagnitude = forceMagnitudeSum / totalForceCount;
+            float meanSquare = _activeMesh.meanForceMagnitude * _activeMesh.meanForceMagnitude;
             float variance = (forceMagnitudeSquaredSum / totalForceCount) - meanSquare;
             if (variance < 0f)
             {
                 variance = 0f;
             }
 
-            _cloth.forceStdDeviation = (float)Math.Sqrt(variance);
-            _cloth.maxForceMagnitude = maxForceMagnitude;
+            _activeMesh.forceStdDeviation = (float)Math.Sqrt(variance);
+            _activeMesh.maxForceMagnitude = maxForceMagnitude;
         }
         else
         {
-            _cloth.meanForceMagnitude = 0f;
-            _cloth.forceStdDeviation = 0f;
-            _cloth.maxForceMagnitude = 0f;
+            _activeMesh.meanForceMagnitude = 0f;
+            _activeMesh.forceStdDeviation = 0f;
+            _activeMesh.maxForceMagnitude = 0f;
         }
     }
 
     private List<Vector2> GetParticlesInRadius(Vector2 mousePosition, float radius)
     {
         var particlesInRadius = new List<Vector2>();
-        for (int i = 0; i < _cloth.particles.Length; i++)
+        for (int i = 0; i < _clothInstance.particles.Length; i++)
         {
-            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            for (int j = 0; j < _clothInstance.particles[i].Length; j++)
             {
-                Vector2 pos = _cloth.particles[i][j].Position;
+                Vector2 pos = _clothInstance.particles[i][j].Position;
                 if (Vector2.DistanceSquared(pos, mousePosition) < (radius * radius))
                 {
                     particlesInRadius.Add(new Vector2(i, j));
@@ -386,13 +569,13 @@ public class Game1 : Game
             Vector2 frameDelta = mousePos - previousMousePos;
             foreach (Vector2 particle in particlesInDragArea)
             {
-                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
+                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
                 if (!p.IsPinned)
                 {
                     p.Position += frameDelta;
                     p.PreviousPosition += frameDelta;
-                    _cloth.particles[(int)particle.X][(int)particle.Y] = p;
-                    _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.Yellow;
+                    _clothInstance.particles[(int)particle.X][(int)particle.Y] = p;
+                    _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.Yellow;
                 }
             }
         }
@@ -400,10 +583,10 @@ public class Game1 : Game
         {
             foreach (Vector2 particle in particlesInDragArea)
             {
-                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
+                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
                 if (!p.IsPinned)
                 {
-                    _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
+                    _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
                     { }
                     ;
                 }
@@ -423,7 +606,7 @@ public class Game1 : Game
         {
             foreach (Vector2 particle in particlesInDragArea)
             {
-                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
+                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
                 if (!p.IsPinned)
                 {
                     Vector2 displacement = mousePos - p.Position;
@@ -437,8 +620,9 @@ public class Game1 : Game
                         p.Position += positionDelta;
                         p.PreviousPosition += positionDelta * 0.9f;
 
-                        _cloth.particles[(int)particle.X][(int)particle.Y] = p;
-                        _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.Orange;
+                        _clothInstance.particles[(int)particle.X][(int)particle.Y] = p;
+                        _clothInstance.particles[(int)particle.X][(int)particle.Y].Color =
+                            Color.Orange;
                     }
                 }
             }
@@ -447,10 +631,10 @@ public class Game1 : Game
         {
             foreach (Vector2 particle in particlesInDragArea)
             {
-                var p = _cloth.particles[(int)particle.X][(int)particle.Y];
+                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
                 if (!p.IsPinned)
                 {
-                    _cloth.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
+                    _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
                 }
             }
         }
@@ -467,15 +651,18 @@ public class Game1 : Game
             Particle closestParticle = null;
             float closestDistance = float.MaxValue;
 
-            for (int i = 0; i < _cloth.particles.Length; i++)
+            for (int i = 0; i < _clothInstance.particles.Length; i++)
             {
-                for (int j = 0; j < _cloth.particles[i].Length; j++)
+                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
                 {
-                    float distance = Vector2.Distance(_cloth.particles[i][j].Position, mousePos);
+                    float distance = Vector2.Distance(
+                        _clothInstance.particles[i][j].Position,
+                        mousePos
+                    );
                     if (distance < closestDistance)
                     {
                         closestDistance = distance;
-                        closestParticle = _cloth.particles[i][j];
+                        closestParticle = _clothInstance.particles[i][j];
                     }
                 }
             }
@@ -484,20 +671,66 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
+        KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
         _timeAccumulator += frameTime;
 
-        _springConstantSlider.Update(Mouse.GetState());
-        _cloth.springConstant = _springConstantSlider.Value;
+        if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
+        {
+            _mainMenu.IsVisible = !_mainMenu.IsVisible;
+        }
 
-        if (
-            GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-            || Keyboard.GetState().IsKeyDown(Keys.Escape)
-        )
-            Exit();
+        if (_mainMenu.IsVisible)
+        {
+            int selected = _mainMenu.components.IndexOf(
+                _mainMenu.OpenComponent as VectorGui.Gui.GuiRectangle
+            );
+            if (keyboardState.IsKeyDown(Keys.Up) && !_prevKeyboardState.IsKeyDown(Keys.Up))
+            {
+                selected = (selected - 1 + _mainMenu.components.Count) % _mainMenu.components.Count;
+                _mainMenu.OpenComponent = _mainMenu.components[selected];
+            }
+            if (keyboardState.IsKeyDown(Keys.Down) && !_prevKeyboardState.IsKeyDown(Keys.Down))
+            {
+                selected = (selected + 1) % _mainMenu.components.Count;
+                _mainMenu.OpenComponent = _mainMenu.components[selected];
+            }
+            if (keyboardState.IsKeyDown(Keys.Enter) && !_prevKeyboardState.IsKeyDown(Keys.Enter))
+            {
+                switch (selected)
+                {
+                    case 0: 
+                        _mainMenu.IsVisible = false;
+                        break;
+                    case 1: 
+                        SwitchMode();
+                        _mainMenu.IsVisible = false;
+                        break;
+                    case 2: 
+                        Exit();
+                        break;
+                }
+            }
+            _prevKeyboardState = keyboardState;
+            return; 
+        }
+
+        _springConstantSlider.Update(Mouse.GetState());
+        _activeMesh.springConstant = _springConstantSlider.Value;
+
         MouseState mouseState = Mouse.GetState();
-        KeyboardState keyboardState = Keyboard.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        // Handle mode switching with Tab key
+        if (keyboardState.IsKeyDown(Keys.Tab) && !_tabKeyWasPressed)
+        {
+            _tabKeyWasPressed = true;
+            SwitchMode();
+        }
+        else if (keyboardState.IsKeyUp(Keys.Tab))
+        {
+            _tabKeyWasPressed = false;
+        }
 
         if (mouseState.RightButton == ButtonState.Pressed && !radialMenuPressed)
         {
@@ -594,7 +827,7 @@ public class Game1 : Game
             if (windDistance > 5f)
             {
                 windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
-                    intitialMousePosWhenPressed,
+                    intitialMousePosWhenRadialMenuPressed,
                     currentMousePos,
                     Color.Cyan,
                     3f
@@ -632,16 +865,32 @@ public class Game1 : Game
 
         while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame)
         {
-            for (int i = 0; i < _cloth.particles.Length; i++)
+            // Reset forces
+            if (_currentMode == MeshMode.Cloth)
             {
-                for (int j = 0; j < _cloth.particles[i].Length; j++)
+                for (int i = 0; i < _clothInstance.particles.Length; i++)
                 {
-                    _cloth.particles[i][j].AccumulatedForce = Vector2.Zero;
+                    for (int j = 0; j < _clothInstance.particles[i].Length; j++)
+                    {
+                        _clothInstance.particles[i][j].AccumulatedForce = Vector2.Zero;
+                    }
                 }
+
+                _clothInstance.horizontalSticks = ApplyStickForces(_clothInstance.horizontalSticks);
+                _clothInstance.verticalSticks = ApplyStickForces(_clothInstance.verticalSticks);
+            }
+            else
+            {
+                // Buildable mesh: reset forces for all particles
+                foreach (var particle in _activeMesh.Particles.Values)
+                {
+                    particle.AccumulatedForce = Vector2.Zero;
+                }
+
+                // Apply forces for all sticks using dictionary
+                ApplyStickForcesDictionary(_activeMesh.Sticks);
             }
 
-            _cloth.horizontalSticks = ApplyStickForces(_cloth.horizontalSticks);
-            _cloth.verticalSticks = ApplyStickForces(_cloth.verticalSticks);
             UpdateParticles(FixedTimeStep);
 
             _timeAccumulator -= FixedTimeStep;
@@ -654,7 +903,17 @@ public class Game1 : Game
         }
 
         // Color sticks once per frame to reduce per-step overhead
-        UpdateStickColorsRelative(_cloth.horizontalSticks, _cloth.verticalSticks);
+        if (_currentMode == MeshMode.Cloth)
+        {
+            UpdateStickColorsRelative(
+                _clothInstance.horizontalSticks,
+                _clothInstance.verticalSticks
+            );
+        }
+        else
+        {
+            UpdateStickColorsDictionary(_activeMesh.Sticks);
+        }
 
         if (_selectedToolIndex == 0)
         {
@@ -672,6 +931,7 @@ public class Game1 : Game
         previousMousePos = currentMousePos;
 
         base.Update(gameTime);
+        _prevKeyboardState = keyboardState;
     }
 
     protected override void Draw(GameTime gameTime)
@@ -679,7 +939,7 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin();
 
-        _cloth.Draw(_spriteBatch, _primitiveBatch);
+        _activeMesh.Draw(_spriteBatch, _primitiveBatch);
 
         if (radialMenuPressed)
         {
@@ -696,6 +956,9 @@ public class Game1 : Game
         {
             string currentTool = $"Current Tool: {_tools[_selectedToolIndex].Name}";
             _spriteBatch.DrawString(_font, currentTool, new Vector2(10, 10), Color.White);
+
+            string modeText = $"Mode: {_currentMode} (Press Tab to switch)";
+            _spriteBatch.DrawString(_font, modeText, new Vector2(10, 30), Color.Yellow);
         }
 
         if (windDirectionArrow != null)
@@ -712,6 +975,12 @@ public class Game1 : Game
 
         _spriteBatch.DrawString(_font, sliderLabel, new Vector2(10, 70), Color.White);
 
+        
+        if (_mainMenu.IsVisible)
+        {
+            _mainMenu.Draw(_spriteBatch, _primitiveBatch);
+        }
+
         _spriteBatch.End();
         base.Draw(gameTime);
     }
@@ -722,11 +991,11 @@ public class Game1 : Game
         int closestI = -1;
         int closestJ = -1;
 
-        for (int i = 0; i < _cloth.particles.Length; i++)
+        for (int i = 0; i < _clothInstance.particles.Length; i++)
         {
-            for (int j = 0; j < _cloth.particles[i].Length; j++)
+            for (int j = 0; j < _clothInstance.particles[i].Length; j++)
             {
-                float distance = Vector2.Distance(_cloth.particles[i][j].Position, center);
+                float distance = Vector2.Distance(_clothInstance.particles[i][j].Position, center);
                 if (distance <= radius && distance < closestDistance)
                 {
                     closestDistance = distance;
@@ -738,7 +1007,7 @@ public class Game1 : Game
 
         if (closestI >= 0 && closestJ >= 0)
         {
-            _cloth.particles[closestI][closestJ].IsPinned = !_cloth
+            _clothInstance.particles[closestI][closestJ].IsPinned = !_clothInstance
                 .particles[closestI][closestJ]
                 .IsPinned;
         }
@@ -766,8 +1035,8 @@ public class Game1 : Game
 
     private void CutAllSticksInRadius(Vector2 center, float radius)
     {
-        CutSticksInRadius(center, radius, _cloth.horizontalSticks);
-        CutSticksInRadius(center, radius, _cloth.verticalSticks);
+        CutSticksInRadius(center, radius, _clothInstance.horizontalSticks);
+        CutSticksInRadius(center, radius, _clothInstance.verticalSticks);
     }
 
     private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float radius)
@@ -825,8 +1094,10 @@ public class Game1 : Game
 
                     if (DoTwoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
                     {
-                        _cloth.horizontalSticks[i][j] = null;
+                        System.Diagnostics.Debug.WriteLine($"Cutting stick at [{i},{j}]");
+                        sticks[i][j].IsCut = true;
                     }
+                    
                 }
             }
         }
@@ -835,7 +1106,15 @@ public class Game1 : Game
 
     private void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
     {
-        _cloth.horizontalSticks = DoLinesIntersect(_cloth.horizontalSticks, lineStart, lineEnd);
-        _cloth.verticalSticks = DoLinesIntersect(_cloth.verticalSticks, lineStart, lineEnd);
+        _clothInstance.horizontalSticks = DoLinesIntersect(
+            _clothInstance.horizontalSticks,
+            lineStart,
+            lineEnd
+        );
+        _clothInstance.verticalSticks = DoLinesIntersect(
+            _clothInstance.verticalSticks,
+            lineStart,
+            lineEnd
+        );
     }
 }
