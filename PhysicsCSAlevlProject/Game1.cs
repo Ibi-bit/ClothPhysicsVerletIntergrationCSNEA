@@ -18,6 +18,8 @@ public class Game1 : Game
     Vector2 intitialMousePosWhenPressed;
     Vector2 intitialMousePosWhenRadialMenuPressed;
 
+    bool Paused = false;
+
     float _springConstant;
 
     Vector2 windForce;
@@ -154,7 +156,6 @@ public class Game1 : Game
             _activeMesh = _clothInstance;
         }
 
-        
         leftPressed = false;
         radialMenuPressed = false;
         windDirectionArrow = null;
@@ -403,7 +404,6 @@ public class Game1 : Game
 
         if (_currentMode == MeshMode.Cloth)
         {
-            
             for (int i = 0; i < _clothInstance.particles.Length; i++)
             {
                 for (int j = 0; j < _clothInstance.particles[i].Length; j++)
@@ -457,7 +457,6 @@ public class Game1 : Game
         }
         else
         {
-            
             foreach (var particle in _activeMesh.Particles.Values)
             {
                 Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
@@ -679,6 +678,10 @@ public class Game1 : Game
         {
             _mainMenu.IsVisible = !_mainMenu.IsVisible;
         }
+        if (keyboardState.IsKeyDown(Keys.P) && !_prevKeyboardState.IsKeyDown(Keys.P))
+        {
+            Paused = !Paused;
+        }
 
         if (_mainMenu.IsVisible)
         {
@@ -699,20 +702,20 @@ public class Game1 : Game
             {
                 switch (selected)
                 {
-                    case 0: 
+                    case 0:
                         _mainMenu.IsVisible = false;
                         break;
-                    case 1: 
+                    case 1:
                         SwitchMode();
                         _mainMenu.IsVisible = false;
                         break;
-                    case 2: 
+                    case 2:
                         Exit();
                         break;
                 }
             }
             _prevKeyboardState = keyboardState;
-            return; 
+            return;
         }
 
         _springConstantSlider.Update(Mouse.GetState());
@@ -721,7 +724,7 @@ public class Game1 : Game
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        // Handle mode switching with Tab key
+        
         if (keyboardState.IsKeyDown(Keys.Tab) && !_tabKeyWasPressed)
         {
             _tabKeyWasPressed = true;
@@ -863,9 +866,9 @@ public class Game1 : Game
         int stepsThisFrame = 0;
         const int maxStepsPerFrame = 1000;
 
-        while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame)
+        while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame && !Paused)
         {
-            // Reset forces
+            
             if (_currentMode == MeshMode.Cloth)
             {
                 for (int i = 0; i < _clothInstance.particles.Length; i++)
@@ -881,13 +884,13 @@ public class Game1 : Game
             }
             else
             {
-                // Buildable mesh: reset forces for all particles
+                
                 foreach (var particle in _activeMesh.Particles.Values)
                 {
                     particle.AccumulatedForce = Vector2.Zero;
                 }
 
-                // Apply forces for all sticks using dictionary
+                
                 ApplyStickForcesDictionary(_activeMesh.Sticks);
             }
 
@@ -902,7 +905,7 @@ public class Game1 : Game
             _timeAccumulator = Math.Min(_timeAccumulator, FixedTimeStep);
         }
 
-        // Color sticks once per frame to reduce per-step overhead
+        
         if (_currentMode == MeshMode.Cloth)
         {
             UpdateStickColorsRelative(
@@ -975,7 +978,6 @@ public class Game1 : Game
 
         _spriteBatch.DrawString(_font, sliderLabel, new Vector2(10, 70), Color.White);
 
-        
         if (_mainMenu.IsVisible)
         {
             _mainMenu.Draw(_spriteBatch, _primitiveBatch);
@@ -1097,7 +1099,6 @@ public class Game1 : Game
                         System.Diagnostics.Debug.WriteLine($"Cutting stick at [{i},{j}]");
                         sticks[i][j].IsCut = true;
                     }
-                    
                 }
             }
         }
