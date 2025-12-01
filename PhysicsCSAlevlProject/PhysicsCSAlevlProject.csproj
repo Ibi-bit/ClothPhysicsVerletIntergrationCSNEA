@@ -24,6 +24,7 @@
     <Compile Include="Objects.cs" />
     <Compile Include="RadialMenu.cs" />
     <Compile Include="PhysicsBenchmark.cs" />
+    <Compile Include="polygonbuilder.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />
     <Compile Include="libs\vectorguilib\gui.cs" />
   </ItemGroup>

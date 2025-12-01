@@ -25,7 +25,8 @@ public class Game1 : Game
     float dragRadius = 20f;
 
     Vector2 BaseForce = new Vector2(0, 980f);
-    List<Vector2> particlesInDragArea = new List<Vector2>();
+    List<Vector2> particlesInDragArea = new List<Vector2>(); // For cloth mode (stores i,j coordinates)
+    List<int> buildableMeshParticlesInDragArea = new List<int>(); // For buildable/polygon mode (stores particle IDs)
 
     private RadialMenu _radialMenu;
     private List<Tool> _tools;
@@ -42,17 +43,20 @@ public class Game1 : Game
     private Mesh _activeMesh;
     private Cloth _clothInstance;
     private BuildableMesh _buildableMeshInstance;
+    private PolygonBuilder _polygonBuilderInstance;
 
     private enum MeshMode
     {
         Cloth,
         Buildable,
+        PolygonBuilder,
     }
 
-    private MeshMode _currentMode = MeshMode.Cloth;
+    private MeshMode _currentMode = MeshMode.PolygonBuilder;
     private bool _tabKeyWasPressed = false;
 
     private KeyboardState _prevKeyboardState;
+    private MouseState _prevMouseState;
 
     private VectorGui.Gui.DropDownMenu _mainMenu;
 
@@ -121,9 +125,10 @@ public class Game1 : Game
         );
 
         _buildableMeshInstance = new BuildableMesh(_springConstant, mass);
+        _polygonBuilderInstance = new PolygonBuilder();
 
-        _activeMesh = _clothInstance;
-        _currentMode = MeshMode.Cloth;
+        _activeMesh = _buildableMeshInstance;
+        _currentMode = MeshMode.PolygonBuilder;
 
         _mainMenu = new VectorGui.Gui.DropDownMenu(
             new Vector2(
@@ -148,18 +153,23 @@ public class Game1 : Game
             _currentMode = MeshMode.Buildable;
             _activeMesh = _buildableMeshInstance;
         }
+        else if (_currentMode == MeshMode.Buildable)
+        {
+            _currentMode = MeshMode.PolygonBuilder;
+            _activeMesh = _buildableMeshInstance;
+        }
         else
         {
             _currentMode = MeshMode.Cloth;
             _activeMesh = _clothInstance;
         }
 
-        
         leftPressed = false;
         radialMenuPressed = false;
         windDirectionArrow = null;
         cutLine = null;
         particlesInDragArea.Clear();
+        buildableMeshParticlesInDragArea.Clear();
     }
 
     protected override void LoadContent()
@@ -206,31 +216,42 @@ public class Game1 : Game
 
     private DrawableStick[][] ApplyStickForces(DrawableStick[][] sticks)
     {
+        float k = _activeMesh.springConstant;
+        const float LengthEpsilonSq = 1e-8f;
+        const float StretchEpsilon = 1e-4f;
+
         for (int i = 0; i < sticks.Length; i++)
         {
-            for (int j = 0; j < sticks[i].Length; j++)
+            var row = sticks[i];
+            for (int j = 0, jl = row.Length; j < jl; j++)
             {
-                var s = sticks[i][j];
+                var s = row[j];
                 if (s.IsCut)
-                {
                     continue;
-                }
+
                 float L0 = s.Length;
                 if (L0 <= 0f)
-                {
                     continue;
-                }
-                Vector2 v = s.P1.Position - s.P2.Position;
-                float L = v.Length();
-                if (L <= 0f)
-                {
+
+                var p1 = s.P1;
+                var p2 = s.P2;
+
+                Vector2 v = p1.Position - p2.Position;
+                float lenSq = v.LengthSquared();
+                if (lenSq <= LengthEpsilonSq)
                     continue;
-                }
-                Vector2 dir = v / L;
+
+                float L = MathF.Sqrt(lenSq);
                 float stretch = L - L0;
-                Vector2 springForce = dir * stretch * _activeMesh.springConstant;
-                s.P1.AccumulatedForce -= springForce;
-                s.P2.AccumulatedForce += springForce;
+                if (MathF.Abs(stretch) <= StretchEpsilon)
+                    continue;
+
+                float invL = 1f / L;
+                float factor = (stretch * invL) * k; // = (stretch / L) * k
+                Vector2 springForce = v * factor;
+
+                p1.AccumulatedForce -= springForce;
+                p2.AccumulatedForce += springForce;
             }
         }
         return sticks;
@@ -403,7 +424,6 @@ public class Game1 : Game
 
         if (_currentMode == MeshMode.Cloth)
         {
-            
             for (int i = 0; i < _clothInstance.particles.Length; i++)
             {
                 for (int j = 0; j < _clothInstance.particles[i].Length; j++)
@@ -457,7 +477,6 @@ public class Game1 : Game
         }
         else
         {
-            
             foreach (var particle in _activeMesh.Particles.Values)
             {
                 Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
@@ -542,18 +561,43 @@ public class Game1 : Game
     private List<Vector2> GetParticlesInRadius(Vector2 mousePosition, float radius)
     {
         var particlesInRadius = new List<Vector2>();
-        for (int i = 0; i < _clothInstance.particles.Length; i++)
+        
+        if (_currentMode == MeshMode.Cloth)
         {
-            for (int j = 0; j < _clothInstance.particles[i].Length; j++)
+            // Original cloth-specific logic
+            for (int i = 0; i < _clothInstance.particles.Length; i++)
             {
-                Vector2 pos = _clothInstance.particles[i][j].Position;
-                if (Vector2.DistanceSquared(pos, mousePosition) < (radius * radius))
+                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
                 {
-                    particlesInRadius.Add(new Vector2(i, j));
+                    Vector2 pos = _clothInstance.particles[i][j].Position;
+                    if (Vector2.DistanceSquared(pos, mousePosition) < (radius * radius))
+                    {
+                        particlesInRadius.Add(new Vector2(i, j));
+                    }
                 }
             }
         }
+        
         return particlesInRadius;
+    }
+
+    private List<int> GetBuildableMeshParticlesInRadius(Vector2 mousePosition, float radius)
+    {
+        var particleIds = new List<int>();
+        
+        if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+        {
+            foreach (var kvp in _activeMesh.Particles)
+            {
+                Vector2 pos = kvp.Value.Position;
+                if (Vector2.DistanceSquared(pos, mousePosition) < (radius * radius))
+                {
+                    particleIds.Add(kvp.Key);
+                }
+            }
+        }
+        
+        return particleIds;
     }
 
     private void DragAreaParticles(
@@ -589,6 +633,84 @@ public class Game1 : Game
                     _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
                     { }
                     ;
+                }
+            }
+        }
+    }
+
+    private void DragBuildableMeshParticles(
+        MouseState mouseState,
+        bool isDragging,
+        List<int> particleIds
+    )
+    {
+        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        if (isDragging)
+        {
+            Vector2 frameDelta = mousePos - previousMousePos;
+            foreach (int particleId in particleIds)
+            {
+                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
+                {
+                    if (!particle.IsPinned)
+                    {
+                        particle.Position += frameDelta;
+                        particle.PreviousPosition += frameDelta;
+                        particle.Color = Color.Yellow;
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (int particleId in particleIds)
+            {
+                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
+                {
+                    if (!particle.IsPinned)
+                    {
+                        particle.Color = Color.White;
+                    }
+                }
+            }
+        }
+    }
+
+    private void DragBuildableMeshParticlesWithPhysics(
+        MouseState mouseState,
+        bool isDragging,
+        List<int> particleIds
+    )
+    {
+        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        if (isDragging)
+        {
+            foreach (int particleId in particleIds)
+            {
+                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
+                {
+                    if (!particle.IsPinned)
+                    {
+                        Vector2 displacement = mousePos - particle.Position;
+                        Vector2 force = displacement * 500f; // Spring force towards mouse
+                        particle.AccumulatedForce += force;
+                        particle.Color = Color.Red;
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (int particleId in particleIds)
+            {
+                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
+                {
+                    if (!particle.IsPinned)
+                    {
+                        particle.Color = Color.White;
+                    }
                 }
             }
         }
@@ -669,17 +791,8 @@ public class Game1 : Game
         }
     }
 
-    protected override void Update(GameTime gameTime)
+    private void controlMainMenu(KeyboardState keyboardState)
     {
-        KeyboardState keyboardState = Keyboard.GetState();
-        float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
-        _timeAccumulator += frameTime;
-
-        if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
-        {
-            _mainMenu.IsVisible = !_mainMenu.IsVisible;
-        }
-
         if (_mainMenu.IsVisible)
         {
             int selected = _mainMenu.components.IndexOf(
@@ -699,21 +812,34 @@ public class Game1 : Game
             {
                 switch (selected)
                 {
-                    case 0: 
+                    case 0:
                         _mainMenu.IsVisible = false;
                         break;
-                    case 1: 
+                    case 1:
                         SwitchMode();
                         _mainMenu.IsVisible = false;
                         break;
-                    case 2: 
+                    case 2:
                         Exit();
                         break;
                 }
             }
             _prevKeyboardState = keyboardState;
-            return; 
+            return;
         }
+    }
+
+    protected override void Update(GameTime gameTime)
+    {
+        KeyboardState keyboardState = Keyboard.GetState();
+        float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
+        _timeAccumulator += frameTime;
+
+        if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
+        {
+            _mainMenu.IsVisible = !_mainMenu.IsVisible;
+        }
+        controlMainMenu(keyboardState);
 
         _springConstantSlider.Update(Mouse.GetState());
         _activeMesh.springConstant = _springConstantSlider.Value;
@@ -721,7 +847,6 @@ public class Game1 : Game
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        // Handle mode switching with Tab key
         if (keyboardState.IsKeyDown(Keys.Tab) && !_tabKeyWasPressed)
         {
             _tabKeyWasPressed = true;
@@ -764,11 +889,21 @@ public class Game1 : Game
 
                 switch (_selectedToolIndex)
                 {
-                    case 0:
-                        particlesInDragArea = GetParticlesInRadius(
-                            intitialMousePosWhenPressed,
-                            dragRadius
-                        );
+                    case 0: // Drag particles
+                        if (_currentMode == MeshMode.Cloth)
+                        {
+                            particlesInDragArea = GetParticlesInRadius(
+                                intitialMousePosWhenPressed,
+                                dragRadius
+                            );
+                        }
+                        else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+                        {
+                            buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
+                                intitialMousePosWhenPressed,
+                                dragRadius
+                            );
+                        }
                         break;
                     case 1:
                         PinParticle(intitialMousePosWhenPressed, dragRadius);
@@ -779,14 +914,34 @@ public class Game1 : Game
                     case 3:
 
                         break;
-                    case 4:
-                        particlesInDragArea = GetParticlesInRadius(intitialMousePosWhenPressed, 10);
+                    case 4: // Single particle drag
+                        if (_currentMode == MeshMode.Cloth)
+                        {
+                            particlesInDragArea = GetParticlesInRadius(intitialMousePosWhenPressed, 10);
+                        }
+                        else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+                        {
+                            buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
+                                intitialMousePosWhenPressed,
+                                10
+                            );
+                        }
                         break;
-                    case 5:
-                        particlesInDragArea = GetParticlesInRadius(
-                            intitialMousePosWhenPressed,
-                            dragRadius
-                        );
+                    case 5: // Physics drag
+                        if (_currentMode == MeshMode.Cloth)
+                        {
+                            particlesInDragArea = GetParticlesInRadius(
+                                intitialMousePosWhenPressed,
+                                dragRadius
+                            );
+                        }
+                        else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+                        {
+                            buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
+                                intitialMousePosWhenPressed,
+                                dragRadius
+                            );
+                        }
                         break;
                     case 6:
                         break;
@@ -860,6 +1015,19 @@ public class Game1 : Game
             }
         }
 
+        // Handle PolygonBuilder mode
+        if (_currentMode == MeshMode.PolygonBuilder)
+        {
+            _buildableMeshInstance = _polygonBuilderInstance.Update(
+                gameTime,
+                keyboardState,
+                _prevKeyboardState,
+                mouseState,
+                _prevMouseState,
+                _buildableMeshInstance
+            );
+        }
+
         int stepsThisFrame = 0;
         const int maxStepsPerFrame = 1000;
 
@@ -881,7 +1049,6 @@ public class Game1 : Game
             }
             else
             {
-                // Buildable mesh: reset forces for all particles
                 foreach (var particle in _activeMesh.Particles.Values)
                 {
                     particle.AccumulatedForce = Vector2.Zero;
@@ -902,7 +1069,6 @@ public class Game1 : Game
             _timeAccumulator = Math.Min(_timeAccumulator, FixedTimeStep);
         }
 
-        // Color sticks once per frame to reduce per-step overhead
         if (_currentMode == MeshMode.Cloth)
         {
             UpdateStickColorsRelative(
@@ -917,21 +1083,43 @@ public class Game1 : Game
 
         if (_selectedToolIndex == 0)
         {
-            DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
+            if (_currentMode == MeshMode.Cloth)
+            {
+                DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
+            }
+            else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            {
+                DragBuildableMeshParticles(mouseState, leftPressed, buildableMeshParticlesInDragArea);
+            }
         }
         else if (_selectedToolIndex == 4)
         {
-            DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
+            if (_currentMode == MeshMode.Cloth)
+            {
+                DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
+            }
+            else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            {
+                DragBuildableMeshParticles(mouseState, leftPressed, buildableMeshParticlesInDragArea);
+            }
         }
         else if (_selectedToolIndex == 5)
         {
-            DragAreaParticlesWithPhysics(mouseState, leftPressed, particlesInDragArea);
+            if (_currentMode == MeshMode.Cloth)
+            {
+                DragAreaParticlesWithPhysics(mouseState, leftPressed, particlesInDragArea);
+            }
+            else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            {
+                DragBuildableMeshParticlesWithPhysics(mouseState, leftPressed, buildableMeshParticlesInDragArea);
+            }
         }
 
         previousMousePos = currentMousePos;
 
         base.Update(gameTime);
         _prevKeyboardState = keyboardState;
+        _prevMouseState = mouseState;
     }
 
     protected override void Draw(GameTime gameTime)
@@ -959,6 +1147,12 @@ public class Game1 : Game
 
             string modeText = $"Mode: {_currentMode} (Press Tab to switch)";
             _spriteBatch.DrawString(_font, modeText, new Vector2(10, 30), Color.Yellow);
+
+            // PolygonBuilder UI
+            if (_currentMode == MeshMode.PolygonBuilder)
+            {
+                _polygonBuilderInstance.Draw(_spriteBatch, _primitiveBatch, _font);
+            }
         }
 
         if (windDirectionArrow != null)
@@ -975,7 +1169,6 @@ public class Game1 : Game
 
         _spriteBatch.DrawString(_font, sliderLabel, new Vector2(10, 70), Color.White);
 
-        
         if (_mainMenu.IsVisible)
         {
             _mainMenu.Draw(_spriteBatch, _primitiveBatch);
@@ -1039,7 +1232,8 @@ public class Game1 : Game
         CutSticksInRadius(center, radius, _clothInstance.verticalSticks);
     }
 
-    private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float radius)
+    private void 
+    ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float radius)
     {
         Vector2 windDirection = endPos - startPos;
         float windDistance = windDirection.Length();
@@ -1097,7 +1291,6 @@ public class Game1 : Game
                         System.Diagnostics.Debug.WriteLine($"Cutting stick at [{i},{j}]");
                         sticks[i][j].IsCut = true;
                     }
-                    
                 }
             }
         }
