@@ -18,6 +18,8 @@ public class Game1 : Game
     Vector2 intitialMousePosWhenPressed;
     Vector2 intitialMousePosWhenRadialMenuPressed;
 
+    bool Paused = false;
+
     float _springConstant;
 
     Vector2 windForce;
@@ -163,6 +165,7 @@ public class Game1 : Game
             _currentMode = MeshMode.Cloth;
             _activeMesh = _clothInstance;
         }
+
 
         leftPressed = false;
         radialMenuPressed = false;
@@ -813,18 +816,22 @@ public class Game1 : Game
                 switch (selected)
                 {
                     case 0:
+                    case 0:
                         _mainMenu.IsVisible = false;
                         break;
+                    case 1:
                     case 1:
                         SwitchMode();
                         _mainMenu.IsVisible = false;
                         break;
+                    case 2:
                     case 2:
                         Exit();
                         break;
                 }
             }
             _prevKeyboardState = keyboardState;
+            return;
             return;
         }
     }
@@ -1031,9 +1038,9 @@ public class Game1 : Game
         int stepsThisFrame = 0;
         const int maxStepsPerFrame = 1000;
 
-        while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame)
+        while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame && !Paused)
         {
-            // Reset forces
+            
             if (_currentMode == MeshMode.Cloth)
             {
                 for (int i = 0; i < _clothInstance.particles.Length; i++)
@@ -1054,7 +1061,7 @@ public class Game1 : Game
                     particle.AccumulatedForce = Vector2.Zero;
                 }
 
-                // Apply forces for all sticks using dictionary
+                
                 ApplyStickForcesDictionary(_activeMesh.Sticks);
             }
 
@@ -1168,6 +1175,7 @@ public class Game1 : Game
         string sliderLabel = $"Spring Constant: {_springConstantSlider.Value:F1}";
 
         _spriteBatch.DrawString(_font, sliderLabel, new Vector2(10, 70), Color.White);
+
 
         if (_mainMenu.IsVisible)
         {
