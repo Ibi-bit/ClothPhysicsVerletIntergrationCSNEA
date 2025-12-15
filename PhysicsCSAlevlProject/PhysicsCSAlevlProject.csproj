@@ -31,4 +31,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Downloads\MonoGame.ImGuiNet-main\MonoGame.ImGuiNet-main\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj" />
+  </ItemGroup>
 </Project>
