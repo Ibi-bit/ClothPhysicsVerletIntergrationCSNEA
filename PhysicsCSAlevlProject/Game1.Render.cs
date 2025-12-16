@@ -82,9 +82,10 @@ public partial class Game1
 
         ImGui.Text("Tools:");
         if (_currentMode != MeshMode.PolygonBuilder)
-            for (int i = 0; i < _tools.Count; i++)
+        {
+            foreach (var toolName in _tools.Keys)
             {
-                bool isSelected = _selectedToolIndex == i;
+                bool isSelected = _selectedToolName == toolName;
                 if (isSelected)
                 {
                     ImGui.PushStyleColor(
@@ -93,9 +94,9 @@ public partial class Game1
                     );
                 }
 
-                if (ImGui.Button(_tools[i].Name))
+                if (ImGui.Button(toolName))
                 {
-                    _selectedToolIndex = i;
+                    _selectedToolName = toolName;
                 }
 
                 if (isSelected)
@@ -103,11 +104,37 @@ public partial class Game1
                     ImGui.PopStyleColor();
                 }
 
-                if (i < _tools.Count - 1)
-                {
-                    ImGui.SameLine();
-                }
+                ImGui.SameLine();
             }
+            ImGui.NewLine();
+        }
+
+        ImGui.Separator();
+        ImGui.Text($"Settings for {_selectedToolName} Tool:");
+        if (_selectedToolName == "Drag")
+        {
+            float radius = (float)_tools["Drag"].Properties["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            {
+                _tools["Drag"].Properties["Radius"] = radius;
+            }
+
+            bool infiniteParticles = (bool)_tools["Drag"].Properties["InfiniteParticles"];
+            if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
+            {
+                _tools["Drag"].Properties["InfiniteParticles"] = infiniteParticles;
+            }
+
+            int maxParticles = (int)_tools["Drag"].Properties["MaxParticles"];
+            string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
+
+            ImGui.BeginDisabled(infiniteParticles);
+            if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
+            {
+                _tools["Drag"].Properties["MaxParticles"] = maxParticles;
+            }
+            ImGui.EndDisabled();
+        }
 
         ImGui.Separator();
 

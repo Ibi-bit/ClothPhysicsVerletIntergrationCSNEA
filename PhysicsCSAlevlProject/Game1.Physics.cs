@@ -241,7 +241,7 @@ public partial class Game1
                     }
 
                     bool isBeingDragged = false;
-                    if (leftPressed && (_selectedToolIndex == 0 || _selectedToolIndex == 4))
+                    if (leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "DragOne"))
                     {
                         foreach (Vector2 draggedParticle in particlesInDragArea)
                         {
@@ -294,9 +294,9 @@ public partial class Game1
                 if (
                     leftPressed
                     && (
-                        _selectedToolIndex == 0
-                        || _selectedToolIndex == 4
-                        || _selectedToolIndex == 5
+                        _selectedToolName == "Drag"
+                        || _selectedToolName == "DragOne"
+                        || _selectedToolName == "PhysicsDrag"
                     )
                 )
                 {

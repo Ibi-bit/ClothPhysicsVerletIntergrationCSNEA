@@ -448,12 +448,14 @@ public class Tool
     public string Name;
     public Texture2D Icon;
     public Texture2D CursorIcon;
+    public Dictionary<string, object> Properties = new Dictionary<string, object>();
 
     public Tool(string name, Texture2D icon, Texture2D cursorIcon)
     {
         Name = name;
         Icon = icon;
         CursorIcon = cursorIcon;
+
     }
 }
 
