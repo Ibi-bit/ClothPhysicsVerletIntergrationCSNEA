@@ -19,7 +19,10 @@
     <PackageReference Include="Contentless" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game1.cs" />
+    <Compile Include="Game1.Core.cs" />
+    <Compile Include="Game1.Physics.cs" />
+    <Compile Include="Game1.Update.cs" />
+    <Compile Include="Game1.Render.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Objects.cs" />
     <Compile Include="PhysicsBenchmark.cs" />

@@ -1,5 +1,5 @@
-﻿using PhysicsCSAlevlProject;
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
+using PhysicsCSAlevlProject;
 
 namespace PhysicsCSAlevlProject
 {
