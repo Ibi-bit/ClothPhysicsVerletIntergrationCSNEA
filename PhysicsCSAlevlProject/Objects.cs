@@ -217,9 +217,7 @@ class Cloth : Mesh
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                
                 sticks[i][j].Draw(spriteBatch, primitiveBatch);
-                
             }
         }
     }
