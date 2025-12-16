@@ -142,13 +142,16 @@ public partial class Game1
                         dragRadius
                     );
                 }
-                else if (_selectedToolName == "LineCut" && leftPressed)
+                else if (
+                    _selectedToolName == "LineCut"
+                    && leftPressed
+                    && _currentMode != MeshMode.PolygonBuilder
+                )
                 {
                     Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
                     float cutDistance = cutDirection.Length();
                     if (cutDistance > 5f)
                     {
-                        
                         CutSticksAlongLine(intitialMousePosWhenPressed, currentMousePos);
                     }
                 }
