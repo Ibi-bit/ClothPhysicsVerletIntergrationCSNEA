@@ -22,16 +22,14 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Objects.cs" />
-    <Compile Include="RadialMenu.cs" />
     <Compile Include="PhysicsBenchmark.cs" />
     <Compile Include="polygonbuilder.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />
-    <Compile Include="libs\vectorguilib\gui.cs" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Downloads\MonoGame.ImGuiNet-main\MonoGame.ImGuiNet-main\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj" />
+    <ProjectReference Include="..\MonoGame.ImGuiNet-main\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj" />
   </ItemGroup>
 </Project>
