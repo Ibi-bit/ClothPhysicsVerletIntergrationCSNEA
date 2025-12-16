@@ -217,7 +217,9 @@ class Cloth : Mesh
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
+                
                 sticks[i][j].Draw(spriteBatch, primitiveBatch);
+                
             }
         }
     }
@@ -364,6 +366,35 @@ class Mesh
         return Particles.Remove(particleId);
     }
 
+    public void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
+    {
+        var sticksToCut = new List<int>();
+
+        foreach (var kvp in Sticks)
+        {
+            var stick = kvp.Value;
+            if (LinesIntersect(lineStart, lineEnd, stick.P1.Position, stick.P2.Position))
+            {
+                sticksToCut.Add(kvp.Key);
+            }
+        }
+
+        foreach (var stickId in sticksToCut)
+        {
+            RemoveStick(stickId);
+        }
+    }
+
+    private bool LinesIntersect(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+    {
+        float ccw(Vector2 A, Vector2 B, Vector2 C)
+        {
+            return (C.Y - A.Y) * (B.X - A.X) > (B.Y - A.Y) * (C.X - A.X) ? 1 : -1;
+        }
+
+        return ccw(p1, p3, p4) != ccw(p2, p3, p4) && ccw(p1, p2, p3) != ccw(p1, p2, p4);
+    }
+
     public int? AddStick(int p1Id, int p2Id, Color color, float width = 2.0f)
     {
         if (p1Id == p2Id)
@@ -455,7 +486,6 @@ public class Tool
         Name = name;
         Icon = icon;
         CursorIcon = cursorIcon;
-
     }
 }
 

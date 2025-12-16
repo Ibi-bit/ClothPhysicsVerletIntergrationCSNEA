@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -239,6 +240,27 @@ public partial class Game1
         CutSticksInRadius(center, radius, _clothInstance.verticalSticks);
     }
 
+    private void CutAllSticksInRadiusBuildable(Vector2 center, float radius)
+    {
+        var sticksToRemove = new List<int>();
+
+        foreach (var kvp in _buildableMeshInstance.Sticks)
+        {
+            var stick = kvp.Value;
+            Vector2 stickCenter = (stick.P1.Position + stick.P2.Position) * 0.5f;
+            float distance = Vector2.Distance(stickCenter, center);
+            if (distance <= radius)
+            {
+                sticksToRemove.Add(kvp.Key);
+            }
+        }
+
+        foreach (var stickId in sticksToRemove)
+        {
+            _buildableMeshInstance.RemoveStick(stickId);
+        }
+    }
+
     private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float radius)
     {
         Vector2 windDirection = endPos - startPos;
@@ -305,15 +327,22 @@ public partial class Game1
 
     private void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
     {
-        _clothInstance.horizontalSticks = DoLinesIntersect(
-            _clothInstance.horizontalSticks,
-            lineStart,
-            lineEnd
-        );
-        _clothInstance.verticalSticks = DoLinesIntersect(
-            _clothInstance.verticalSticks,
-            lineStart,
-            lineEnd
-        );
+        if (_currentMode == MeshMode.Cloth)
+        {
+            _clothInstance.horizontalSticks = DoLinesIntersect(
+                _clothInstance.horizontalSticks,
+                lineStart,
+                lineEnd
+            );
+            _clothInstance.verticalSticks = DoLinesIntersect(
+                _clothInstance.verticalSticks,
+                lineStart,
+                lineEnd
+            );
+        }
+        else
+        {
+            _buildableMeshInstance.CutSticksAlongLine(lineStart, lineEnd);
+        }
     }
 }
