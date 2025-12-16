@@ -90,8 +90,8 @@ public partial class Game1
                     case "Cut":
                         if (_currentMode == MeshMode.Cloth)
                             CutAllSticksInRadius(intitialMousePosWhenPressed, dragRadius);
-                        // else if (_currentMode == MeshMode.Buildable)
-                        //     CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, dragRadius);
+                        else if (_currentMode == MeshMode.Buildable)
+                            CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, dragRadius);
 
                         break;
                     case "Wind":
@@ -148,6 +148,7 @@ public partial class Game1
                     float cutDistance = cutDirection.Length();
                     if (cutDistance > 5f)
                     {
+                        
                         CutSticksAlongLine(intitialMousePosWhenPressed, currentMousePos);
                     }
                 }
