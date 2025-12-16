@@ -44,10 +44,7 @@ public partial class Game1
                                 dragRadius
                             );
                         }
-                        else if (
-                            _currentMode == MeshMode.Buildable
-                            || _currentMode == MeshMode.PolygonBuilder
-                        )
+                        else if (_currentMode == MeshMode.Buildable)
                         {
                             buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
                                 intitialMousePosWhenPressed,
@@ -59,7 +56,11 @@ public partial class Game1
                         PinParticle(intitialMousePosWhenPressed, dragRadius);
                         break;
                     case 2:
-                        CutAllSticksInRadius(intitialMousePosWhenPressed, dragRadius);
+                        if (_currentMode == MeshMode.Cloth)
+                            CutAllSticksInRadius(intitialMousePosWhenPressed, dragRadius);
+                        else if (_currentMode == MeshMode.Buildable)
+                            CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, dragRadius);
+                            
                         break;
                     case 3:
                         break;
