@@ -58,8 +58,8 @@ public partial class Game1
                     case 2:
                         if (_currentMode == MeshMode.Cloth)
                             CutAllSticksInRadius(intitialMousePosWhenPressed, dragRadius);
-                        else if (_currentMode == MeshMode.Buildable)
-                            CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, dragRadius);
+                        // else if (_currentMode == MeshMode.Buildable)
+                        //     CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, dragRadius);
                             
                         break;
                     case 3:
