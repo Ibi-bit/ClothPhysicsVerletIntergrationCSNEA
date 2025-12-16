@@ -40,6 +40,49 @@ public partial class Game1
     {
         _guiRenderer.BeginLayout(gameTime);
 
+        // Main menu bar
+        if (ImGui.BeginMainMenuBar())
+        {
+            if (ImGui.BeginMenu("File"))
+            {
+                if (ImGui.MenuItem("New"))
+                {
+                    
+                }
+                if (ImGui.MenuItem("Open"))
+                {
+                    
+                }
+                if (ImGui.MenuItem("Save"))
+                {
+                }
+                ImGui.Separator();
+                if (ImGui.MenuItem("Exit"))
+                {
+                    Exit();
+                }
+                ImGui.EndMenu();
+            }
+            if (ImGui.BeginMenu("View"))
+            {
+                if (ImGui.MenuItem("Reset Camera"))
+                {
+                }
+                ImGui.EndMenu();
+            }
+            if (ImGui.BeginMenu("Edit"))
+            {
+                if (ImGui.MenuItem("Undo"))
+                {
+                }
+                if (ImGui.MenuItem("Redo"))
+                {
+                }
+                ImGui.EndMenu();
+            }
+            ImGui.EndMainMenuBar();
+        }
+
         ImGui.Begin("Physics Controls");
 
         ImGui.Text($"Current Mode: {_currentMode}");
@@ -86,7 +129,17 @@ public partial class Game1
         {
             Paused = !Paused;
         }
-
+        ImGui.SameLine();
+        var red = new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f);
+        ImGui.PushStyleColor(ImGuiCol.Button, red);
+        if (
+            (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            && ImGui.Button("Reset Buildable Mesh")
+        )
+        {
+            _buildableMeshInstance.ResetMesh();
+        }
+        ImGui.PopStyleColor();
         ImGui.End();
 
         _guiRenderer.EndLayout();

@@ -78,7 +78,6 @@ class Stick
     public Particle P1;
     public Particle P2;
     public float Length;
-    
 
     public Stick(Particle p1, Particle p2)
     {
@@ -218,7 +217,6 @@ class Cloth : Mesh
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                
                 sticks[i][j].Draw(spriteBatch, primitiveBatch);
             }
         }
@@ -226,7 +224,6 @@ class Cloth : Mesh
 
     private float CalculateStressLerp(float forceMagnitude)
     {
-        
         if (forceStdDeviation > 0.0001f)
         {
             float zScore = (forceMagnitude - meanForceMagnitude) / forceStdDeviation;
@@ -339,6 +336,15 @@ class Mesh
         Particles[id] = particle;
         _particleToStickIds[id] = new HashSet<int>();
         return id;
+    }
+
+    public void ResetMesh()
+    {
+        Particles.Clear();
+        Sticks.Clear();
+        _nextParticleId = 1;
+        _nextStickId = 1;
+        _particleToStickIds.Clear();
     }
 
     public bool RemoveParticle(int particleId)
