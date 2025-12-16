@@ -31,11 +31,11 @@ public partial class Game1 : Game
 
     private List<Tool> _tools;
 
-    private VectorGraphics.PrimitiveBatch.Arrow windDirectionArrow;
-    private VectorGraphics.PrimitiveBatch.Line cutLine;
+    private PrimitiveBatch.Arrow windDirectionArrow;
+    private PrimitiveBatch.Line cutLine;
     private int _selectedToolIndex = 0;
     private SpriteFont _font;
-    private const float FixedTimeStep = 1f / 10000f;
+    private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
 
     private int _modeIndex = 2;
@@ -55,7 +55,6 @@ public partial class Game1 : Game
     }
 
     private MeshMode _currentMode = MeshMode.PolygonBuilder;
-    private bool _tabKeyWasPressed = false;
 
     private KeyboardState _prevKeyboardState;
     private MouseState _prevMouseState;
@@ -85,7 +84,7 @@ public partial class Game1 : Game
 
         windDirectionArrow = null;
 
-        _springConstant = 100000;
+        _springConstant = 100;
 
         _tools = new List<Tool>
         {

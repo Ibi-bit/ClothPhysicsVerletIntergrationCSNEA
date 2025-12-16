@@ -3,6 +3,6 @@ obj/
 *.user
 *.suo
 .vs
-.vscode/
+.vscode/ 
 .DS_Store
 global.json
