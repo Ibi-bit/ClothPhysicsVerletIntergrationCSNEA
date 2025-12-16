@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.ImGuiNet;
 using VectorGraphics;
-using VectorGui;
 
 namespace PhysicsCSAlevlProject;
 
@@ -13,10 +14,9 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
+    public static ImGuiRenderer _guiRenderer;
     bool leftPressed;
-    bool radialMenuPressed;
     Vector2 intitialMousePosWhenPressed;
-    Vector2 intitialMousePosWhenRadialMenuPressed;
 
     bool Paused = false;
 
@@ -30,15 +30,12 @@ public class Game1 : Game
     List<Vector2> particlesInDragArea = new List<Vector2>(); // For cloth mode (stores i,j coordinates)
     List<int> buildableMeshParticlesInDragArea = new List<int>(); // For buildable/polygon mode (stores particle IDs)
 
-    private RadialMenu _radialMenu;
     private List<Tool> _tools;
 
     private VectorGraphics.PrimitiveBatch.Arrow windDirectionArrow;
     private VectorGraphics.PrimitiveBatch.Line cutLine;
     private int _selectedToolIndex = 0;
     private SpriteFont _font;
-
-    private Gui.Slider _springConstantSlider;
     private const float FixedTimeStep = 1f / 10000f;
     private float _timeAccumulator = 0f;
 
@@ -60,8 +57,6 @@ public class Game1 : Game
     private KeyboardState _prevKeyboardState;
     private MouseState _prevMouseState;
 
-    private VectorGui.Gui.DropDownMenu _mainMenu;
-
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -76,20 +71,10 @@ public class Game1 : Game
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
         leftPressed = false;
-        radialMenuPressed = false;
 
         windDirectionArrow = null;
 
-        _springConstantSlider = new Gui.Slider(
-            new Vector2(10, 50),
-            100f,
-            100000f,
-            10000f,
-            Color.Gray,
-            Color.LightGray,
-            Color.White
-        );
-        _springConstantSlider.Initialize();
+        _springConstant = 100000;
 
         _tools = new List<Tool>
         {
@@ -102,10 +87,7 @@ public class Game1 : Game
             new Tool("LineCut", null, null),
         };
 
-        _radialMenu = new RadialMenu(_tools, 80f, 32f);
-
         float naturalLength = 10f;
-        _springConstant = 100000;
         float mass = 0.1f;
 
         int cols = (int)(200 / naturalLength);
@@ -132,18 +114,7 @@ public class Game1 : Game
         _activeMesh = _buildableMeshInstance;
         _currentMode = MeshMode.PolygonBuilder;
 
-        _mainMenu = new VectorGui.Gui.DropDownMenu(
-            new Vector2(
-                _graphics.PreferredBackBufferWidth / 2 - 110,
-                _graphics.PreferredBackBufferHeight / 2 - 80
-            ),
-            new Vector2(220, 160),
-            new Vector2(180, 40),
-            3,
-            Color.Black
-        );
-        _mainMenu.Initialize();
-        _mainMenu.IsVisible = false;
+        _guiRenderer = new ImGuiRenderer(this);
 
         base.Initialize();
     }
@@ -167,7 +138,6 @@ public class Game1 : Game
         }
 
         leftPressed = false;
-        radialMenuPressed = false;
         windDirectionArrow = null;
         cutLine = null;
         particlesInDragArea.Clear();
@@ -179,6 +149,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _font = Content.Load<SpriteFont>("Font");
+        _guiRenderer.RebuildFontAtlas();
     }
 
     private DrawableParticle KeepInsideScreen(DrawableParticle p)
@@ -793,65 +764,26 @@ public class Game1 : Game
         }
     }
 
-    private void controlMainMenu(KeyboardState keyboardState)
-    {
-        if (_mainMenu.IsVisible)
-        {
-            int selected = _mainMenu.components.IndexOf(
-                _mainMenu.OpenComponent as VectorGui.Gui.GuiRectangle
-            );
-            if (keyboardState.IsKeyDown(Keys.Up) && !_prevKeyboardState.IsKeyDown(Keys.Up))
-            {
-                selected = (selected - 1 + _mainMenu.components.Count) % _mainMenu.components.Count;
-                _mainMenu.OpenComponent = _mainMenu.components[selected];
-            }
-            if (keyboardState.IsKeyDown(Keys.Down) && !_prevKeyboardState.IsKeyDown(Keys.Down))
-            {
-                selected = (selected + 1) % _mainMenu.components.Count;
-                _mainMenu.OpenComponent = _mainMenu.components[selected];
-            }
-            if (keyboardState.IsKeyDown(Keys.Enter) && !_prevKeyboardState.IsKeyDown(Keys.Enter))
-            {
-                switch (selected)
-                {
-                    // case 0:
-                    case 0:
-                        _mainMenu.IsVisible = false;
-                        break;
-                    // case 1:
-                    case 1:
-                        SwitchMode();
-                        _mainMenu.IsVisible = false;
-                        break;
-                    // case 2:
-                    case 2:
-                        Exit();
-                        break;
-                }
-            }
-            _prevKeyboardState = keyboardState;
-            return;
-            return;
-        }
-    }
-
     protected override void Update(GameTime gameTime)
     {
         KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
         _timeAccumulator += frameTime;
 
+        // Escape to toggle pause
         if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
         {
-            _mainMenu.IsVisible = !_mainMenu.IsVisible;
+            Paused = !Paused;
         }
-        controlMainMenu(keyboardState);
 
-        _springConstantSlider.Update(Mouse.GetState());
-        _activeMesh.springConstant = _springConstantSlider.Value;
+        // Update spring constant from current value
+        _activeMesh.springConstant = _springConstant;
 
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        // Don't process mouse input if ImGui wants it
+        bool imguiWantsMouse = ImGui.GetIO().WantCaptureMouse;
 
         if (keyboardState.IsKeyDown(Keys.Tab) && !_tabKeyWasPressed)
         {
@@ -863,29 +795,7 @@ public class Game1 : Game
             _tabKeyWasPressed = false;
         }
 
-        if (mouseState.RightButton == ButtonState.Pressed && !radialMenuPressed)
-        {
-            radialMenuPressed = true;
-            intitialMousePosWhenRadialMenuPressed = currentMousePos;
-        }
-        else if (mouseState.RightButton == ButtonState.Released && radialMenuPressed)
-        {
-            radialMenuPressed = false;
-        }
-
-        if (radialMenuPressed)
-        {
-            _selectedToolIndex = _radialMenu.RadialToolMenuLogic(
-                mouseState,
-                keyboardState,
-                intitialMousePosWhenRadialMenuPressed,
-                radialMenuPressed,
-                _selectedToolIndex,
-                _tools
-            );
-        }
-
-        if (!radialMenuPressed)
+        if (!imguiWantsMouse)
         {
             if (mouseState.LeftButton == ButtonState.Pressed && !leftPressed)
             {
@@ -1000,7 +910,7 @@ public class Game1 : Game
             if (windDistance > 5f)
             {
                 windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
-                    intitialMousePosWhenRadialMenuPressed,
+                    intitialMousePosWhenPressed,
                     currentMousePos,
                     Color.Cyan,
                     3f
@@ -1157,30 +1067,10 @@ public class Game1 : Game
 
         _activeMesh.Draw(_spriteBatch, _primitiveBatch);
 
-        if (radialMenuPressed)
+        // PolygonBuilder UI
+        if (_currentMode == MeshMode.PolygonBuilder && _font != null)
         {
-            _radialMenu.index = _selectedToolIndex;
-            _radialMenu.Draw(
-                _spriteBatch,
-                intitialMousePosWhenRadialMenuPressed,
-                _font,
-                _primitiveBatch
-            );
-        }
-
-        if (_font != null)
-        {
-            string currentTool = $"Current Tool: {_tools[_selectedToolIndex].Name}";
-            _spriteBatch.DrawString(_font, currentTool, new Vector2(10, 10), Color.White);
-
-            string modeText = $"Mode: {_currentMode} (Press Tab to switch)";
-            _spriteBatch.DrawString(_font, modeText, new Vector2(10, 30), Color.Yellow);
-
-            // PolygonBuilder UI
-            if (_currentMode == MeshMode.PolygonBuilder)
-            {
-                _polygonBuilderInstance.Draw(_spriteBatch, _primitiveBatch, _font);
-            }
+            _polygonBuilderInstance.Draw(_spriteBatch, _primitiveBatch, _font);
         }
 
         if (windDirectionArrow != null)
@@ -1192,18 +1082,70 @@ public class Game1 : Game
         {
             cutLine.Draw(_spriteBatch, _primitiveBatch);
         }
-        _springConstantSlider.Draw(_spriteBatch, _primitiveBatch);
-        string sliderLabel = $"Spring Constant: {_springConstantSlider.Value:F1}";
-
-        _spriteBatch.DrawString(_font, sliderLabel, new Vector2(10, 70), Color.White);
-
-        if (_mainMenu.IsVisible)
-        {
-            _mainMenu.Draw(_spriteBatch, _primitiveBatch);
-        }
 
         _spriteBatch.End();
+        ImGuiDraw(gameTime);
+
         base.Draw(gameTime);
+    }
+
+    private void ImGuiDraw(GameTime gameTime)
+    {
+        _guiRenderer.BeginLayout(gameTime);
+        
+        ImGui.Begin("Physics Controls");
+        
+        // Mode display and switching
+        ImGui.Text($"Current Mode: {_currentMode}");
+        if (ImGui.Button("Switch Mode (Tab)"))
+        {
+            SwitchMode();
+        }
+        
+        ImGui.Separator();
+        
+        // Spring constant slider
+        ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 100f);
+        
+        ImGui.Separator();
+        
+        // Tool selection
+        ImGui.Text("Tools:");
+        for (int i = 0; i < _tools.Count; i++)
+        {
+            bool isSelected = _selectedToolIndex == i;
+            if (isSelected)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Button, new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f));
+            }
+            
+            if (ImGui.Button(_tools[i].Name))
+            {
+                _selectedToolIndex = i;
+            }
+            
+            if (isSelected)
+            {
+                ImGui.PopStyleColor();
+            }
+            
+            if (i < _tools.Count - 1)
+            {
+                ImGui.SameLine();
+            }
+        }
+        
+        ImGui.Separator();
+        
+        // Pause toggle
+        if (ImGui.Button(Paused ? "Resume (Esc)" : "Pause (Esc)"))
+        {
+            Paused = !Paused;
+        }
+        
+        ImGui.End();
+
+        _guiRenderer.EndLayout();
     }
 
     private void PinParticle(Vector2 center, float radius)
