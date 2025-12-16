@@ -39,6 +39,9 @@ public class Game1 : Game
     private const float FixedTimeStep = 1f / 10000f;
     private float _timeAccumulator = 0f;
 
+    private int _modeIndex = 0;
+    private string[] _modes = { "Cloth", "Buildable", "PolygonBuilder" };
+
     private Mesh _activeMesh;
     private Cloth _clothInstance;
     private BuildableMesh _buildableMeshInstance;
@@ -117,31 +120,6 @@ public class Game1 : Game
         _guiRenderer = new ImGuiRenderer(this);
 
         base.Initialize();
-    }
-
-    private void SwitchMode()
-    {
-        if (_currentMode == MeshMode.Cloth)
-        {
-            _currentMode = MeshMode.Buildable;
-            _activeMesh = _buildableMeshInstance;
-        }
-        else if (_currentMode == MeshMode.Buildable)
-        {
-            _currentMode = MeshMode.PolygonBuilder;
-            _activeMesh = _buildableMeshInstance;
-        }
-        else
-        {
-            _currentMode = MeshMode.Cloth;
-            _activeMesh = _clothInstance;
-        }
-
-        leftPressed = false;
-        windDirectionArrow = null;
-        cutLine = null;
-        particlesInDragArea.Clear();
-        buildableMeshParticlesInDragArea.Clear();
     }
 
     protected override void LoadContent()
@@ -770,30 +748,17 @@ public class Game1 : Game
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
         _timeAccumulator += frameTime;
 
-        // Escape to toggle pause
         if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
         {
             Paused = !Paused;
         }
 
-        // Update spring constant from current value
         _activeMesh.springConstant = _springConstant;
 
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        // Don't process mouse input if ImGui wants it
         bool imguiWantsMouse = ImGui.GetIO().WantCaptureMouse;
-
-        if (keyboardState.IsKeyDown(Keys.Tab) && !_tabKeyWasPressed)
-        {
-            _tabKeyWasPressed = true;
-            SwitchMode();
-        }
-        else if (keyboardState.IsKeyUp(Keys.Tab))
-        {
-            _tabKeyWasPressed = false;
-        }
 
         if (!imguiWantsMouse)
         {
@@ -833,7 +798,7 @@ public class Game1 : Game
                     case 3:
 
                         break;
-                    case 4: // Single particle drag
+                    case 4:
                         if (_currentMode == MeshMode.Cloth)
                         {
                             particlesInDragArea = GetParticlesInRadius(
@@ -943,7 +908,6 @@ public class Game1 : Game
             }
         }
 
-        // Handle PolygonBuilder mode
         if (_currentMode == MeshMode.PolygonBuilder)
         {
             _buildableMeshInstance = _polygonBuilderInstance.Update(
@@ -1089,60 +1053,83 @@ public class Game1 : Game
         base.Draw(gameTime);
     }
 
+    private void HandleModeSelection()
+    {
+        if (ImGui.Combo("Mesh Mode", ref _modeIndex, _modes, _modes.Length))
+        {
+            switch (_modeIndex)
+            {
+                case 0:
+                    _currentMode = MeshMode.Cloth;
+                    _activeMesh = _clothInstance;
+                    break;
+                case 1:
+                    _currentMode = MeshMode.Buildable;
+                    _activeMesh = _buildableMeshInstance;
+                    break;
+                case 2:
+                    _currentMode = MeshMode.PolygonBuilder;
+                    _activeMesh = _buildableMeshInstance;
+                    break;
+            }
+            leftPressed = false;
+            windDirectionArrow = null;
+            cutLine = null;
+            particlesInDragArea.Clear();
+            buildableMeshParticlesInDragArea.Clear();
+        }
+    }
+
     private void ImGuiDraw(GameTime gameTime)
     {
         _guiRenderer.BeginLayout(gameTime);
-        
+
         ImGui.Begin("Physics Controls");
-        
-        // Mode display and switching
+
         ImGui.Text($"Current Mode: {_currentMode}");
-        if (ImGui.Button("Switch Mode (Tab)"))
-        {
-            SwitchMode();
-        }
-        
+
+        HandleModeSelection();
         ImGui.Separator();
-        
-        // Spring constant slider
-        ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 100f);
-        
+
+        ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
+
         ImGui.Separator();
-        
-        // Tool selection
+
         ImGui.Text("Tools:");
         for (int i = 0; i < _tools.Count; i++)
         {
             bool isSelected = _selectedToolIndex == i;
             if (isSelected)
             {
-                ImGui.PushStyleColor(ImGuiCol.Button, new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f));
+                ImGui.PushStyleColor(
+                    ImGuiCol.Button,
+                    new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
+                );
             }
-            
+
             if (ImGui.Button(_tools[i].Name))
             {
                 _selectedToolIndex = i;
             }
-            
+
             if (isSelected)
             {
                 ImGui.PopStyleColor();
             }
-            
+
             if (i < _tools.Count - 1)
             {
                 ImGui.SameLine();
             }
         }
-        
+
         ImGui.Separator();
-        
-        // Pause toggle
+
         if (ImGui.Button(Paused ? "Resume (Esc)" : "Pause (Esc)"))
         {
             Paused = !Paused;
         }
-        
+
         ImGui.End();
 
         _guiRenderer.EndLayout();
