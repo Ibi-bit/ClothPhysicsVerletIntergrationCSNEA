@@ -45,17 +45,9 @@ public partial class Game1
         {
             if (ImGui.BeginMenu("File"))
             {
-                if (ImGui.MenuItem("New"))
-                {
-                    
-                }
-                if (ImGui.MenuItem("Open"))
-                {
-                    
-                }
-                if (ImGui.MenuItem("Save"))
-                {
-                }
+                if (ImGui.MenuItem("New")) { }
+                if (ImGui.MenuItem("Open")) { }
+                if (ImGui.MenuItem("Save")) { }
                 ImGui.Separator();
                 if (ImGui.MenuItem("Exit"))
                 {
@@ -65,19 +57,13 @@ public partial class Game1
             }
             if (ImGui.BeginMenu("View"))
             {
-                if (ImGui.MenuItem("Reset Camera"))
-                {
-                }
+                if (ImGui.MenuItem("Reset Camera")) { }
                 ImGui.EndMenu();
             }
             if (ImGui.BeginMenu("Edit"))
             {
-                if (ImGui.MenuItem("Undo"))
-                {
-                }
-                if (ImGui.MenuItem("Redo"))
-                {
-                }
+                if (ImGui.MenuItem("Undo")) { }
+                if (ImGui.MenuItem("Redo")) { }
                 ImGui.EndMenu();
             }
             ImGui.EndMainMenuBar();

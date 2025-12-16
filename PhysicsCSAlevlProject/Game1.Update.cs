@@ -12,11 +12,17 @@ public partial class Game1
     {
         KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
-        _timeAccumulator += frameTime;
-
+        
         if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
         {
             Paused = !Paused;
+            
+        }
+
+        
+        if (!Paused)
+        {
+            _timeAccumulator += frameTime;
         }
 
         _activeMesh.springConstant = _springConstant;
@@ -141,7 +147,7 @@ public partial class Game1
                     3f
                 );
 
-                windForce = windDirection * (windDistance / 50f);
+                windForce = !Paused ? windDirection * (windDistance / 50f) : Vector2.Zero;
             }
             else
             {
