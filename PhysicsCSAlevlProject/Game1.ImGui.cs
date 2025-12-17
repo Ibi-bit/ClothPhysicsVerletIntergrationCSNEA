@@ -72,7 +72,6 @@ public partial class Game1
                 _currentMode = MeshMode.Cloth;
                 _activeMesh = _clothInstance;
                 _modeIndex = 0;
-                leftPressed = false;
                 ;
             }
             if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Buildable))

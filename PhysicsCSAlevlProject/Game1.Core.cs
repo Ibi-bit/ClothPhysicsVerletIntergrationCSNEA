@@ -65,7 +65,8 @@ public partial class Game1 : Game
         _graphics.PreferredBackBufferWidth = width;
         _graphics.PreferredBackBufferHeight = height;
         _graphics.ApplyChanges();
-        _windowBounds = Window.ClientBounds;
+        var cb = Window.ClientBounds;
+        _windowBounds = new Rectangle(0, 0, cb.Width, cb.Height);
         changedBounds = _windowBounds;
     }
 
@@ -87,11 +88,13 @@ public partial class Game1 : Game
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
 
-        _windowBounds = Window.ClientBounds;
+        var cbInit = Window.ClientBounds;
+        _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
         changedBounds = _windowBounds;
         Window.ClientSizeChanged += (_, __) =>
         {
-            _windowBounds = Window.ClientBounds;
+            var cbNow = Window.ClientBounds;
+            _windowBounds = new Rectangle(0, 0, cbNow.Width, cbNow.Height);
             changedBounds = _windowBounds;
         };
 

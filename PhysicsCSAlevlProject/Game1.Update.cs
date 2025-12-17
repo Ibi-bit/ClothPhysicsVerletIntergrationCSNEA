@@ -211,7 +211,7 @@ public partial class Game1
 
         if (
             _currentMode == MeshMode.PolygonBuilder
-            && !imguiWantsMouse
+            && !ImGuiNET.ImGui.IsAnyItemHovered()
             && _windowBounds.Contains(mouseState.Position)
         )
         {
