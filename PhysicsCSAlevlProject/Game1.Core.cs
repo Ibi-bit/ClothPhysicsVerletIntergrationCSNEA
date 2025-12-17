@@ -39,6 +39,10 @@ public partial class Game1 : Game
     private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
 
+    // Positional constraint solver controls
+    private bool _useConstraintSolver = true;
+    private int _constraintIterations = 5;
+
     private int _modeIndex = 1;
     private string[] _modes = { "Cloth", "Buildable", "PolygonBuilder" };
 

@@ -239,9 +239,13 @@ public partial class Game1
                         _clothInstance.particles[i][j].AccumulatedForce = Vector2.Zero;
                     }
                 }
-
-                _clothInstance.horizontalSticks = ApplyStickForces(_clothInstance.horizontalSticks);
-                _clothInstance.verticalSticks = ApplyStickForces(_clothInstance.verticalSticks);
+                if (!_useConstraintSolver)
+                {
+                    _clothInstance.horizontalSticks = ApplyStickForces(
+                        _clothInstance.horizontalSticks
+                    );
+                    _clothInstance.verticalSticks = ApplyStickForces(_clothInstance.verticalSticks);
+                }
             }
             else
             {
@@ -249,11 +253,25 @@ public partial class Game1
                 {
                     particle.AccumulatedForce = Vector2.Zero;
                 }
-
-                ApplyStickForcesDictionary(_activeMesh.Sticks);
+                if (!_useConstraintSolver)
+                {
+                    ApplyStickForcesDictionary(_activeMesh.Sticks);
+                }
             }
 
             UpdateParticles(FixedTimeStep);
+
+            if (_useConstraintSolver)
+            {
+                if (_currentMode == MeshMode.Cloth)
+                {
+                    SatisfyClothConstraints(_constraintIterations);
+                }
+                else
+                {
+                    SatisfyBuildableConstraints(_constraintIterations);
+                }
+            }
 
             _timeAccumulator -= FixedTimeStep;
             stepsThisFrame++;

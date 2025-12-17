@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,6 +12,8 @@ public partial class Game1
     private bool _showPhysicsControlsWindow = false;
     private bool _showConfigurationWindow = false;
     private bool _showReadMeWindow = false;
+    private ImGuiLogger _Logger = new ImGuiLogger();
+    private bool _showLoggerWindow = false;
 
     private void ImGuiDraw(GameTime gameTime)
     {
@@ -28,6 +32,10 @@ public partial class Game1
         if (_showReadMeWindow)
         {
             DrawReadMeWindow();
+        }
+        if (_showLoggerWindow)
+        {
+            _Logger.DrawLogs(ref _showLoggerWindow);
         }
 
         _guiRenderer.EndLayout();
@@ -95,7 +103,12 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Quick Settings"))
         {
+            ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
+            ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
+
+            ImGui.BeginDisabled(_useConstraintSolver);
             ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
+            ImGui.EndDisabled();
 
             ImGui.EndMenu();
         }
@@ -103,7 +116,9 @@ public partial class Game1
         {
             ImGui.MenuItem("Physics Controls", null, ref _showPhysicsControlsWindow);
             ImGui.MenuItem("Configuration", null, ref _showConfigurationWindow);
+            ImGui.MenuItem("Logger", null, ref _showLoggerWindow);
             ImGui.MenuItem("ReadMe", null, ref _showReadMeWindow);
+
             ImGui.EndMenu();
         }
         if (ImGui.BeginMenu("Help"))
@@ -139,7 +154,12 @@ public partial class Game1
         ImGui.Text($"Current Mode: {_currentMode}");
         ImGui.Separator();
 
+        ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
+        ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
+
+        ImGui.BeginDisabled(_useConstraintSolver);
         ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
+        ImGui.EndDisabled();
 
         ImGui.Separator();
 
@@ -156,7 +176,6 @@ public partial class Game1
                         new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
                     );
                 }
-
                 if (ImGui.Button(toolName))
                 {
                     _selectedToolName = toolName;
@@ -278,14 +297,124 @@ public partial class Game1
         ImGui.Text("Note: The Y axis is inverted, so positive Y values point downwards.");
 
         ImGui.Separator();
-               float drag = _activeMesh.drag;
+        float drag = _activeMesh.drag;
         if (ImGui.SliderFloat("Drag (1.0 = no friction)", ref drag, 0.9f, 1.0f))
         {
             _activeMesh.drag = drag;
             _clothInstance.drag = drag;
         }
-        
-        
+
+        ImGui.End();
+    }
+}
+
+class ImGuiLogger
+{
+    public enum logTypes
+    {
+        Info,
+        Warning,
+        Error,
+    };
+
+    class messageLog
+    {
+        public string Message;
+        public int Count;
+        public logTypes Type;
+    }
+
+    Queue<messageLog> logs;
+    public bool autoScrollLogs = true;
+    Dictionary<logTypes, bool> logTypeVisibility = new Dictionary<logTypes, bool>
+    {
+        { logTypes.Info, true },
+        { logTypes.Warning, true },
+        { logTypes.Error, true },
+    };
+
+    public ImGuiLogger()
+    {
+        logs = new Queue<messageLog>();
+    }
+
+    public void AddLog(string message, logTypes type = logTypes.Info)
+    {
+        var lastLog = logs.LastOrDefault();
+        if (lastLog != null && lastLog.Message == message && lastLog.Type == type)
+        {
+            lastLog.Count++;
+        }
+        else
+        {
+            logs.Enqueue(
+                new messageLog
+                {
+                    Message = message,
+                    Count = 1,
+                    Type = type,
+                }
+            );
+        }
+    }
+
+    public void DrawLogs(ref bool OpenWindow)
+    {
+        if (!ImGui.Begin("Logs", ref OpenWindow))
+        {
+            ImGui.End();
+            return;
+        }
+        bool infoVisible = logTypeVisibility[logTypes.Info];
+        if (ImGui.Checkbox("Info", ref infoVisible))
+            logTypeVisibility[logTypes.Info] = infoVisible;
+        ImGui.SameLine();
+        bool errorVisible = logTypeVisibility[logTypes.Error];
+        if (ImGui.Checkbox("Error", ref errorVisible))
+            logTypeVisibility[logTypes.Error] = errorVisible;
+        ImGui.SameLine();
+        bool warningVisible = logTypeVisibility[logTypes.Warning];
+        if (ImGui.Checkbox("Warning", ref warningVisible))
+            logTypeVisibility[logTypes.Warning] = warningVisible;
+
+        ImGui.Separator();
+        ImGui.Checkbox("Auto Scroll Logs", ref autoScrollLogs);
+
+        ImGui.SeparatorText("Logs");
+        ImGui.BeginChild("LogScrollArea", new System.Numerics.Vector2(0, 0));
+        foreach (var log in logs)
+        {
+            string displayMessage = log.Count > 1 ? $"{log.Message} (x{log.Count})" : log.Message;
+            switch (log.Type)
+            {
+                case logTypes.Info:
+                    if (logTypeVisibility[logTypes.Info])
+                        ImGui.TextColored(
+                            new System.Numerics.Vector4(1f, 1f, 1f, 1f),
+                            displayMessage
+                        );
+                    break;
+                case logTypes.Warning:
+                    if (logTypeVisibility[logTypes.Warning])
+                        ImGui.TextColored(
+                            new System.Numerics.Vector4(1f, 1f, 0f, 1f),
+                            displayMessage
+                        );
+                    break;
+                case logTypes.Error:
+                    if (logTypeVisibility[logTypes.Error])
+                        ImGui.TextColored(
+                            new System.Numerics.Vector4(1f, 0f, 0f, 1f),
+                            displayMessage
+                        );
+                    break;
+            }
+        }
+        if (autoScrollLogs && ImGui.GetScrollY() >= ImGui.GetScrollMaxY())
+        {
+            ImGui.SetScrollHereY(1.0f);
+        }
+        ImGui.EndChild();
         ImGui.End();
     }
 }
