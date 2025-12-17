@@ -4,3 +4,6 @@
 [submodule "PhysicsCSAlevlProject/libs/vectorguilib"]
 	path = PhysicsCSAlevlProject/libs/vectorguilib
 	url = https://github.com/Ullerman/vectorguilib
+[submodule "MonoGame.ImGuiNet"]
+	path = MonoGame.ImGuiNet
+	url = https://github.com/tsMezotic/MonoGame.ImGuiNet.git
