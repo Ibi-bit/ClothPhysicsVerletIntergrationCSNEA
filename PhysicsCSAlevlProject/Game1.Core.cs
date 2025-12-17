@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -39,8 +38,7 @@ public partial class Game1 : Game
     private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
 
-    // Positional constraint solver controls
-    private bool _useConstraintSolver = true;
+    private bool _useConstraintSolver = false;
     private int _constraintIterations = 5;
 
     private int _modeIndex = 1;
@@ -153,7 +151,7 @@ public partial class Game1 : Game
         _buildableMeshInstance = new BuildableMesh(_springConstant, mass);
         _polygonBuilderInstance = new PolygonBuilder();
 
-        _activeMesh = _buildableMeshInstance;
+        _activeMesh = _clothInstance;
         _currentMode = MeshMode.Cloth;
 
         _guiRenderer = new ImGuiRenderer(this);

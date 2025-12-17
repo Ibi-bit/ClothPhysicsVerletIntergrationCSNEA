@@ -112,6 +112,36 @@ public partial class Game1
 
             ImGui.EndMenu();
         }
+        if(ImGui.BeginMenu("Tools"))
+        {
+            foreach (var toolName in _tools.Keys)
+            {
+                bool isSelected = _selectedToolName == toolName;
+                if (isSelected)
+                {
+                    ImGui.PushStyleColor(
+                        ImGuiCol.Button,
+                        new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
+                    );
+                }
+                if (ImGui.MenuItem(toolName))
+                {
+                    _selectedToolName = toolName;
+                }
+
+                if (isSelected)
+                {
+                    ImGui.PopStyleColor();
+                }
+            }
+
+            ImGui.EndMenu();    
+        }
+        if(ImGui.MenuItem(Paused ? "Resume (Esc)" : "Pause (Esc)"))
+        {
+            Paused = !Paused;
+        }
+        ImGui.SameLine();
         if (ImGui.BeginMenu("Show"))
         {
             ImGui.MenuItem("Physics Controls", null, ref _showPhysicsControlsWindow);
