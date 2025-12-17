@@ -88,10 +88,15 @@ public partial class Game1
                         PinParticle(intitialMousePosWhenPressed, dragRadius);
                         break;
                     case "Cut":
+                        var radius =
+                            _tools["Cut"].Properties["Radius"] != null
+                                ? (float)_tools["Cut"].Properties["Radius"]
+                                : 10f;
+
                         if (_currentMode == MeshMode.Cloth)
-                            CutAllSticksInRadius(intitialMousePosWhenPressed, dragRadius);
+                            CutAllSticksInRadius(intitialMousePosWhenPressed, radius);
                         else if (_currentMode == MeshMode.Buildable)
-                            CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, dragRadius);
+                            CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, radius);
 
                         break;
                     case "Wind":

@@ -327,9 +327,9 @@ public partial class Game1
                     particle.Position.X = 0;
                     positionChanged = true;
                 }
-                else if (particle.Position.X > _graphics.PreferredBackBufferWidth)
+                else if (particle.Position.X > _windowBounds.Width)
                 {
-                    particle.Position.X = _graphics.PreferredBackBufferWidth;
+                    particle.Position.X = _windowBounds.Width;
                     positionChanged = true;
                 }
 
@@ -338,9 +338,9 @@ public partial class Game1
                     particle.Position.Y = 0;
                     positionChanged = true;
                 }
-                else if (particle.Position.Y > _graphics.PreferredBackBufferHeight - 10)
+                else if (particle.Position.Y > _windowBounds.Height - 10)
                 {
-                    particle.Position.Y = _graphics.PreferredBackBufferHeight - 10;
+                    particle.Position.Y = _windowBounds.Height - 10;
                     positionChanged = true;
                 }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -45,7 +46,10 @@ public partial class Game1 : Game
     private Cloth _clothInstance;
     private BuildableMesh _buildableMeshInstance;
     private PolygonBuilder _polygonBuilderInstance;
-    private Rectangle _windowBounds;
+    private static Rectangle _windowBounds;
+    bool keepAspectRatio = true;
+
+    private Rectangle changedBounds = Rectangle.Empty;
 
     private enum MeshMode
     {
@@ -55,6 +59,15 @@ public partial class Game1 : Game
     }
 
     private MeshMode _currentMode = MeshMode.PolygonBuilder;
+
+    public void SetWindowSize(int width, int height)
+    {
+        _graphics.PreferredBackBufferWidth = width;
+        _graphics.PreferredBackBufferHeight = height;
+        _graphics.ApplyChanges();
+        _windowBounds = Window.ClientBounds;
+        changedBounds = _windowBounds;
+    }
 
     private KeyboardState _prevKeyboardState;
     private MouseState _prevMouseState;
@@ -66,6 +79,7 @@ public partial class Game1 : Game
         IsMouseVisible = true;
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;
+        Window.AllowUserResizing = false;
     }
 
     protected override void Initialize()
@@ -73,12 +87,13 @@ public partial class Game1 : Game
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
 
-        _windowBounds = new Rectangle(
-            0,
-            0,
-            _graphics.PreferredBackBufferWidth,
-            _graphics.PreferredBackBufferHeight
-        );
+        _windowBounds = Window.ClientBounds;
+        changedBounds = _windowBounds;
+        Window.ClientSizeChanged += (_, __) =>
+        {
+            _windowBounds = Window.ClientBounds;
+            changedBounds = _windowBounds;
+        };
 
         leftPressed = false;
 
@@ -104,6 +119,8 @@ public partial class Game1 : Game
         _tools["Drag"].Properties["Radius"] = 20f;
         _tools["Drag"].Properties["MaxParticles"] = (int)20;
         _tools["Drag"].Properties["InfiniteParticles"] = true;
+
+        _tools["Cut"].Properties["Radius"] = 10f;
 
         float naturalLength = 10f;
         float mass = 0.1f;
@@ -155,9 +172,9 @@ public partial class Game1 : Game
             p.Position.X = 0;
             positionChanged = true;
         }
-        else if (p.Position.X > _graphics.PreferredBackBufferWidth)
+        else if (p.Position.X > _windowBounds.Width)
         {
-            p.Position.X = _graphics.PreferredBackBufferWidth;
+            p.Position.X = _windowBounds.Width;
             positionChanged = true;
         }
 
@@ -166,9 +183,9 @@ public partial class Game1 : Game
             p.Position.Y = 0;
             positionChanged = true;
         }
-        else if (p.Position.Y > _graphics.PreferredBackBufferHeight - 10)
+        else if (p.Position.Y > _windowBounds.Height - 10)
         {
-            p.Position.Y = _graphics.PreferredBackBufferHeight - 10;
+            p.Position.Y = _windowBounds.Height - 10;
             positionChanged = true;
         }
 
