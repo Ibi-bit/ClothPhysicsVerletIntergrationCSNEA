@@ -25,10 +25,10 @@ public partial class Game1
         {
             DrawConfigurationWindow();
         }
-        if  (_showReadMeWindow)
+        if (_showReadMeWindow)
         {
             DrawReadMeWindow();
-        }   
+        }
 
         _guiRenderer.EndLayout();
     }
@@ -73,33 +73,25 @@ public partial class Game1
                 _activeMesh = _clothInstance;
                 _modeIndex = 0;
                 leftPressed = false;
-                windDirectionArrow = null;
-                cutLine = null;
-                particlesInDragArea.Clear();
-                buildableMeshParticlesInDragArea.Clear();
+                ;
             }
             if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Buildable))
             {
                 _currentMode = MeshMode.Buildable;
                 _activeMesh = _buildableMeshInstance;
                 _modeIndex = 1;
-                leftPressed = false;
-                windDirectionArrow = null;
-                cutLine = null;
-                particlesInDragArea.Clear();
-                buildableMeshParticlesInDragArea.Clear();
             }
             if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.PolygonBuilder))
             {
                 _currentMode = MeshMode.PolygonBuilder;
                 _activeMesh = _buildableMeshInstance;
                 _modeIndex = 2;
-                leftPressed = false;
-                windDirectionArrow = null;
-                cutLine = null;
-                particlesInDragArea.Clear();
-                buildableMeshParticlesInDragArea.Clear();
             }
+            leftPressed = false;
+            windDirectionArrow = null;
+            cutLine = null;
+            particlesInDragArea.Clear();
+            buildableMeshParticlesInDragArea.Clear();
             ImGui.EndMenu();
         }
         if (ImGui.BeginMenu("Show"))
@@ -127,7 +119,7 @@ public partial class Game1
         }
 
         ImGui.TextWrapped("Hello World");
-        
+
         ImGui.End();
     }
 
