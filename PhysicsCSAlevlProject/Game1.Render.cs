@@ -33,14 +33,15 @@ public partial class Game1
 
         _spriteBatch.End();
         ImGuiDraw(gameTime);
+        // HandleModeSelection();
 
         base.Draw(gameTime);
     }
 
     private void HandleModeSelection()
     {
-        if (ImGui.Combo("Mesh Mode", ref _modeIndex, _modes, _modes.Length))
-        {
+        
+        
             switch (_modeIndex)
             {
                 case 0:
@@ -61,7 +62,7 @@ public partial class Game1
             cutLine = null;
             particlesInDragArea.Clear();
             buildableMeshParticlesInDragArea.Clear();
-        }
+        
     }
 
     private void PinParticle(Vector2 center, float radius)
