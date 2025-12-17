@@ -112,32 +112,13 @@ public partial class Game1
 
             ImGui.EndMenu();
         }
-        if(ImGui.BeginMenu("Tools"))
+        if (ImGui.BeginMenu("Tools"))
         {
-            foreach (var toolName in _tools.Keys)
-            {
-                bool isSelected = _selectedToolName == toolName;
-                if (isSelected)
-                {
-                    ImGui.PushStyleColor(
-                        ImGuiCol.Button,
-                        new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
-                    );
-                }
-                if (ImGui.MenuItem(toolName))
-                {
-                    _selectedToolName = toolName;
-                }
+            DrawToolMenuItems();
 
-                if (isSelected)
-                {
-                    ImGui.PopStyleColor();
-                }
-            }
-
-            ImGui.EndMenu();    
+            ImGui.EndMenu();
         }
-        if(ImGui.MenuItem(Paused ? "Resume (Esc)" : "Pause (Esc)"))
+        if (ImGui.MenuItem(Paused ? "Resume (Esc)" : "Pause (Esc)"))
         {
             Paused = !Paused;
         }
@@ -196,57 +177,11 @@ public partial class Game1
         ImGui.Text("Tools:");
         if (_currentMode != MeshMode.PolygonBuilder)
         {
-            foreach (var toolName in _tools.Keys)
-            {
-                bool isSelected = _selectedToolName == toolName;
-                if (isSelected)
-                {
-                    ImGui.PushStyleColor(
-                        ImGuiCol.Button,
-                        new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
-                    );
-                }
-                if (ImGui.Button(toolName))
-                {
-                    _selectedToolName = toolName;
-                }
-
-                if (isSelected)
-                {
-                    ImGui.PopStyleColor();
-                }
-
-                ImGui.SameLine();
-            }
-            ImGui.NewLine();
+            DrawToolButtons();
         }
 
         ImGui.Separator();
-        ImGui.Text($"Settings for {_selectedToolName} Tool:");
-        if (_selectedToolName == "Drag")
-        {
-            float radius = (float)_tools["Drag"].Properties["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
-            {
-                _tools["Drag"].Properties["Radius"] = radius;
-            }
-
-            bool infiniteParticles = (bool)_tools["Drag"].Properties["InfiniteParticles"];
-            if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
-            {
-                _tools["Drag"].Properties["InfiniteParticles"] = infiniteParticles;
-            }
-
-            int maxParticles = (int)_tools["Drag"].Properties["MaxParticles"];
-            string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
-
-            ImGui.BeginDisabled(infiniteParticles);
-            if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
-            {
-                _tools["Drag"].Properties["MaxParticles"] = maxParticles;
-            }
-            ImGui.EndDisabled();
-        }
+        DrawSelectedToolSettings();
 
         ImGui.Separator();
 

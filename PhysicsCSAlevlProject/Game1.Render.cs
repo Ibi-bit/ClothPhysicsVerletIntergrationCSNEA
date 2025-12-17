@@ -84,9 +84,15 @@ public partial class Game1
 
         if (closestI >= 0 && closestJ >= 0)
         {
-            _clothInstance.particles[closestI][closestJ].IsPinned = !_clothInstance
-                .particles[closestI][closestJ]
-                .IsPinned;
+            var particle = _clothInstance.particles[closestI][closestJ];
+            bool shouldPin = !particle.IsPinned;
+
+            particle.IsPinned = shouldPin;
+            particle.Mass = shouldPin ? 0f : _clothInstance.mass;
+            particle.AccumulatedForce = Vector2.Zero;
+            particle.PreviousPosition = particle.Position; // avoid inheriting velocity when toggling
+
+            _clothInstance.particles[closestI][closestJ] = particle;
         }
     }
 

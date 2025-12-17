@@ -22,6 +22,7 @@
     <Compile Include="Game1.Update.cs" />
     <Compile Include="Game1.Render.cs" />
     <Compile Include="Game1.ImGui.cs" />
+    <Compile Include="Game1.Tools.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Objects.cs" />
     <Compile Include="polygonbuilder.cs" />

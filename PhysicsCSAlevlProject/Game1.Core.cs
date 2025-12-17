@@ -23,17 +23,14 @@ public partial class Game1 : Game
 
     Vector2 windForce;
     Vector2 previousMousePos;
-    float dragRadius = 20f;
 
     Vector2 BaseForce = new Vector2(0, 980f);
     List<Vector2> particlesInDragArea = new List<Vector2>();
     List<int> buildableMeshParticlesInDragArea = new List<int>();
 
-    private Dictionary<string, Tool> _tools;
-
     private PrimitiveBatch.Arrow windDirectionArrow;
     private PrimitiveBatch.Line cutLine;
-    private string _selectedToolName = "Drag";
+    
     private SpriteFont _font;
     private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
@@ -106,26 +103,7 @@ public partial class Game1 : Game
 
         _springConstant = 5000f;
 
-        _tools = new Dictionary<string, Tool>
-        {
-            { "Drag", new Tool("Drag", null, null) },
-            { "Pin", new Tool("Pin", null, null) },
-            { "Cut", new Tool("Cut", null, null) },
-            { "Wind", new Tool("Wind", null, null) },
-            { "DragOne", new Tool("DragOne", null, null) },
-            { "PhysicsDrag", new Tool("PhysicsDrag", null, null) },
-            { "LineCut", new Tool("LineCut", null, null) },
-        };
-
-        foreach (var tool in _tools.Values)
-        {
-            tool.Properties = new Dictionary<string, object>();
-        }
-        _tools["Drag"].Properties["Radius"] = 20f;
-        _tools["Drag"].Properties["MaxParticles"] = (int)20;
-        _tools["Drag"].Properties["InfiniteParticles"] = true;
-
-        _tools["Cut"].Properties["Radius"] = 10f;
+        InitializeTools();
 
         float naturalLength = 10f;
         float mass = 0.1f;
