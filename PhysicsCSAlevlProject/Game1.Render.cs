@@ -40,29 +40,26 @@ public partial class Game1
 
     private void HandleModeSelection()
     {
-        
-        
-            switch (_modeIndex)
-            {
-                case 0:
-                    _currentMode = MeshMode.Cloth;
-                    _activeMesh = _clothInstance;
-                    break;
-                case 1:
-                    _currentMode = MeshMode.Buildable;
-                    _activeMesh = _buildableMeshInstance;
-                    break;
-                case 2:
-                    _currentMode = MeshMode.PolygonBuilder;
-                    _activeMesh = _buildableMeshInstance;
-                    break;
-            }
-            leftPressed = false;
-            windDirectionArrow = null;
-            cutLine = null;
-            particlesInDragArea.Clear();
-            buildableMeshParticlesInDragArea.Clear();
-        
+        switch (_modeIndex)
+        {
+            case 0:
+                _currentMode = MeshMode.Cloth;
+                _activeMesh = _clothInstance;
+                break;
+            case 1:
+                _currentMode = MeshMode.Buildable;
+                _activeMesh = _buildableMeshInstance;
+                break;
+            case 2:
+                _currentMode = MeshMode.PolygonBuilder;
+                _activeMesh = _buildableMeshInstance;
+                break;
+        }
+        leftPressed = false;
+        windDirectionArrow = null;
+        cutLine = null;
+        particlesInDragArea.Clear();
+        buildableMeshParticlesInDragArea.Clear();
     }
 
     private void PinParticle(Vector2 center, float radius)
@@ -195,7 +192,7 @@ public partial class Game1
 
                     if (DoTwoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
                     {
-                        System.Diagnostics.Debug.WriteLine($"Cutting stick at [{i},{j}]");
+                        _Logger.AddLog($"Cutting stick at [{i},{j}]", ImGuiLogger.logTypes.Info);
                         sticks[i][j].IsCut = true;
                     }
                 }
