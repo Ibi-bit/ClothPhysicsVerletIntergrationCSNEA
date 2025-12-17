@@ -94,6 +94,12 @@ public partial class Game1
             buildableMeshParticlesInDragArea.Clear();
             ImGui.EndMenu();
         }
+        if (ImGui.BeginMenu("Quick Settings"))
+        {
+            ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
+
+            ImGui.EndMenu();
+        }
         if (ImGui.BeginMenu("Show"))
         {
             ImGui.MenuItem("Physics Controls", null, ref _showPhysicsControlsWindow);
