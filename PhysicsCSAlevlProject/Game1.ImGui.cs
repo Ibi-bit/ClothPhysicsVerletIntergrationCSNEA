@@ -60,6 +60,43 @@ public partial class Game1
             if (ImGui.MenuItem("Redo")) { }
             ImGui.EndMenu();
         }
+        if(ImGui.BeginMenu("Mode"))
+        {
+            if (ImGui.  MenuItem("Cloth", null, _currentMode == MeshMode.Cloth))
+            {
+                _currentMode = MeshMode.Cloth;
+                _activeMesh = _clothInstance;
+                _modeIndex = 0;
+                leftPressed = false;
+                windDirectionArrow = null;
+                cutLine = null;
+                particlesInDragArea.Clear();
+                buildableMeshParticlesInDragArea.Clear();
+            }
+            if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Buildable))
+            {
+                _currentMode = MeshMode.Buildable;
+                _activeMesh = _buildableMeshInstance;
+                _modeIndex = 1;
+                leftPressed = false;
+                windDirectionArrow = null;
+                cutLine = null;
+                particlesInDragArea.Clear();
+                buildableMeshParticlesInDragArea.Clear();
+            }
+            if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.PolygonBuilder))
+            {
+                _currentMode = MeshMode.PolygonBuilder;
+                _activeMesh = _buildableMeshInstance;
+                _modeIndex = 2;
+                leftPressed = false;
+                windDirectionArrow = null;
+                cutLine = null;
+                particlesInDragArea.Clear();
+                buildableMeshParticlesInDragArea.Clear();
+            }
+            ImGui.EndMenu();
+        }
         if (ImGui.BeginMenu("Show"))
         {
             ImGui.MenuItem("Physics Controls", null, ref _showPhysicsControlsWindow);
@@ -84,8 +121,6 @@ public partial class Game1
         }
 
         ImGui.Text($"Current Mode: {_currentMode}");
-
-        HandleModeSelection();
         ImGui.Separator();
 
         ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
