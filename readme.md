@@ -1,6 +1,4 @@
-Build instructions (includes submodules) — .NET 9
 
-This repo contains at least one Git submodule (e.g. MonoGame.ImGuiNet-main). 
 
 Prerequisites
 
