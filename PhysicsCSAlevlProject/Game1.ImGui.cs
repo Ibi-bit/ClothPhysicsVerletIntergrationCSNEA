@@ -7,13 +7,23 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    private bool _showPhysicsControlsWindow = false;
+    private bool _showConfigurationWindow = false;
+
     private void ImGuiDraw(GameTime gameTime)
     {
         _guiRenderer.BeginLayout(gameTime);
 
         DrawMainMenuBar();
-        DrawPhysicsControlsWindow();
-        DrawConfigurationWindow();
+        if (_showPhysicsControlsWindow)
+        {
+            DrawPhysicsControlsWindow();
+        }
+
+        if (_showConfigurationWindow)
+        {
+            DrawConfigurationWindow();
+        }
 
         _guiRenderer.EndLayout();
     }
@@ -50,13 +60,28 @@ public partial class Game1
             if (ImGui.MenuItem("Redo")) { }
             ImGui.EndMenu();
         }
+        if (ImGui.BeginMenu("Show"))
+        {
+            ImGui.MenuItem("Physics Controls", null, ref _showPhysicsControlsWindow);
+            ImGui.MenuItem("Configuration", null, ref _showConfigurationWindow);
+            ImGui.EndMenu();
+        }
+        if (ImGui.BeginMenu("Help"))
+        {
+            if (ImGui.MenuItem("About")) { }
+            ImGui.EndMenu();
+        }
 
         ImGui.EndMainMenuBar();
     }
 
     private void DrawPhysicsControlsWindow()
     {
-        ImGui.Begin("Physics Controls");
+        if (!ImGui.Begin("Physics Controls", ref _showPhysicsControlsWindow))
+        {
+            ImGui.End();
+            return;
+        }
 
         ImGui.Text($"Current Mode: {_currentMode}");
 
@@ -145,7 +170,11 @@ public partial class Game1
 
     private void DrawConfigurationWindow()
     {
-        ImGui.Begin("Configuration");
+        if (!ImGui.Begin("Configuration", ref _showConfigurationWindow))
+        {
+            ImGui.End();
+            return;
+        }
 
         ImGui.Text("Window Size:");
         if (changedBounds.Width <= 0 || changedBounds.Height <= 0)
