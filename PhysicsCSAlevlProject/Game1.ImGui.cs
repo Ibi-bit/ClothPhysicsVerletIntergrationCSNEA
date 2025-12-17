@@ -9,6 +9,7 @@ public partial class Game1
 {
     private bool _showPhysicsControlsWindow = false;
     private bool _showConfigurationWindow = false;
+    private bool _showReadMeWindow = false;
 
     private void ImGuiDraw(GameTime gameTime)
     {
@@ -24,6 +25,10 @@ public partial class Game1
         {
             DrawConfigurationWindow();
         }
+        if  (_showReadMeWindow)
+        {
+            DrawReadMeWindow();
+        }   
 
         _guiRenderer.EndLayout();
     }
@@ -60,9 +65,9 @@ public partial class Game1
             if (ImGui.MenuItem("Redo")) { }
             ImGui.EndMenu();
         }
-        if(ImGui.BeginMenu("Mode"))
+        if (ImGui.BeginMenu("Mode"))
         {
-            if (ImGui.  MenuItem("Cloth", null, _currentMode == MeshMode.Cloth))
+            if (ImGui.MenuItem("Cloth", null, _currentMode == MeshMode.Cloth))
             {
                 _currentMode = MeshMode.Cloth;
                 _activeMesh = _clothInstance;
@@ -101,15 +106,29 @@ public partial class Game1
         {
             ImGui.MenuItem("Physics Controls", null, ref _showPhysicsControlsWindow);
             ImGui.MenuItem("Configuration", null, ref _showConfigurationWindow);
+            ImGui.MenuItem("ReadMe", null, ref _showReadMeWindow);
             ImGui.EndMenu();
         }
         if (ImGui.BeginMenu("Help"))
         {
-            if (ImGui.MenuItem("About")) { }
+            if (ImGui.MenuItem("About", null, ref _showReadMeWindow)) { }
             ImGui.EndMenu();
         }
 
         ImGui.EndMainMenuBar();
+    }
+
+    private void DrawReadMeWindow()
+    {
+        if (!ImGui.Begin("ReadMe", ref _showReadMeWindow))
+        {
+            ImGui.End();
+            return;
+        }
+
+        ImGui.TextWrapped("Hello World");
+        
+        ImGui.End();
     }
 
     private void DrawPhysicsControlsWindow()
