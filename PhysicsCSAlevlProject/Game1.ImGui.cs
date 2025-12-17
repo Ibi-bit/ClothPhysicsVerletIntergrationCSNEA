@@ -258,14 +258,14 @@ public partial class Game1
 
         ImGui.SliderFloat("X", ref BaseForce.X, -1000f, 1000f);
         ImGui.SameLine();
-        if (ImGui.Button("0"))
+        if (ImGui.Button("Set X to 0"))
         {
             BaseForce.X = 0;
         }
 
         ImGui.SliderFloat("Y", ref BaseForce.Y, -1000f, 1000f);
         ImGui.SameLine();
-        if (ImGui.Button("0"))
+        if (ImGui.Button("Set Y to 0"))
         {
             BaseForce.Y = 0;
         }
@@ -278,6 +278,14 @@ public partial class Game1
         ImGui.Text("Note: The Y axis is inverted, so positive Y values point downwards.");
 
         ImGui.Separator();
+               float drag = _activeMesh.drag;
+        if (ImGui.SliderFloat("Drag (1.0 = no friction)", ref drag, 0.9f, 1.0f))
+        {
+            _activeMesh.drag = drag;
+            _clothInstance.drag = drag;
+        }
+        
+        
         ImGui.End();
     }
 }

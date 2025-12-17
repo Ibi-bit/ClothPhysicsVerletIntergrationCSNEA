@@ -144,7 +144,7 @@ class Cloth : Mesh
         int rows = (int)(Size.Y / naturalLength);
         int cols = (int)(Size.X / naturalLength);
         this.springConstant = springConstant;
-        this.drag = 0.99f;
+
         this.mass = mass;
         particles = new DrawableParticle[rows][];
         horizontalSticks = new DrawableStick[rows][];

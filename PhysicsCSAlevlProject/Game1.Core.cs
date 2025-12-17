@@ -39,7 +39,7 @@ public partial class Game1 : Game
     private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
 
-    private int _modeIndex = 2;
+    private int _modeIndex = 1;
     private string[] _modes = { "Cloth", "Buildable", "PolygonBuilder" };
 
     private Mesh _activeMesh;
@@ -58,7 +58,7 @@ public partial class Game1 : Game
         PolygonBuilder,
     }
 
-    private MeshMode _currentMode = MeshMode.PolygonBuilder;
+    private MeshMode _currentMode = MeshMode.Cloth;
 
     public void SetWindowSize(int width, int height)
     {
@@ -102,7 +102,7 @@ public partial class Game1 : Game
 
         windDirectionArrow = null;
 
-        _springConstant = 100;
+        _springConstant = 5000f;
 
         _tools = new Dictionary<string, Tool>
         {
@@ -150,7 +150,7 @@ public partial class Game1 : Game
         _polygonBuilderInstance = new PolygonBuilder();
 
         _activeMesh = _buildableMeshInstance;
-        _currentMode = MeshMode.PolygonBuilder;
+        _currentMode = MeshMode.Cloth;
 
         _guiRenderer = new ImGuiRenderer(this);
 
