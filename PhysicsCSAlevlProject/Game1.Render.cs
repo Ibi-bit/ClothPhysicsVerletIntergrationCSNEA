@@ -37,8 +37,6 @@ public partial class Game1
         base.Draw(gameTime);
     }
 
-    
-
     private void HandleModeSelection()
     {
         if (ImGui.Combo("Mesh Mode", ref _modeIndex, _modes, _modes.Length))
