@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PhysicsCSAlevlProject;
@@ -20,7 +21,6 @@ public partial class Game1
             { "Pin", new Tool("Pin", null, null) },
             { "Cut", new Tool("Cut", null, null) },
             { "Wind", new Tool("Wind", null, null) },
-            { "DragOne", new Tool("DragOne", null, null) },
             { "PhysicsDrag", new Tool("PhysicsDrag", null, null) },
             { "LineCut", new Tool("LineCut", null, null) },
         };
@@ -153,6 +153,14 @@ public partial class Game1
 
             _clothInstance.particles[closestI][closestJ] = particle;
         }
+    }
+
+    private void PinParticleBuildable(Vector2 center, float radius)
+    {
+        var particleIDs = GetBuildableMeshParticlesInRadius(center, radius);
+        foreach (var id in particleIDs)
+            if (_activeMesh.Particles.TryGetValue(id, out var particle))
+                particle.IsPinned = !particle.IsPinned;
     }
 
     private void CutSticksInRadius(Vector2 center, float radius, DrawableStick[][] sticks)
