@@ -85,7 +85,10 @@ public partial class Game1
                         }
                         break;
                     case "Pin":
-                        PinParticle(intitialMousePosWhenPressed, dragRadius);
+                        if (_currentMode == MeshMode.Cloth)
+                            PinParticle(intitialMousePosWhenPressed, dragRadius);
+                        else if (_currentMode == MeshMode.Buildable)
+                            PinParticleBuildable(intitialMousePosWhenPressed, dragRadius);
                         break;
                     case "Cut":
                         var radius =
@@ -100,22 +103,6 @@ public partial class Game1
 
                         break;
                     case "Wind":
-                        break;
-                    case "DragOne":
-                        if (_currentMode == MeshMode.Cloth)
-                        {
-                            particlesInDragArea = GetParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                10
-                            );
-                        }
-                        else if (_currentMode == MeshMode.Buildable)
-                        {
-                            buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                10
-                            );
-                        }
                         break;
                     case "PhysicsDrag":
                         if (_currentMode == MeshMode.Cloth)
@@ -309,21 +296,6 @@ public partial class Game1
                 );
             }
         }
-        else if (_selectedToolName == "DragOne")
-        {
-            if (_currentMode == MeshMode.Cloth)
-            {
-                DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
-            }
-            else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
-            {
-                DragBuildableMeshParticles(
-                    mouseState,
-                    leftPressed,
-                    buildableMeshParticlesInDragArea
-                );
-            }
-        }
         else if (_selectedToolName == "PhysicsDrag")
         {
             if (_currentMode == MeshMode.Cloth)
@@ -346,6 +318,4 @@ public partial class Game1
         _prevKeyboardState = keyboardState;
         _prevMouseState = mouseState;
     }
-
-   
 }

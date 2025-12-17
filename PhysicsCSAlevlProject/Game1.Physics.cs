@@ -241,10 +241,7 @@ public partial class Game1
                     }
 
                     bool isBeingDragged = false;
-                    if (
-                        leftPressed
-                        && (_selectedToolName == "Drag" || _selectedToolName == "DragOne")
-                    )
+                    if (leftPressed && _selectedToolName == "Drag")
                     {
                         foreach (Vector2 draggedParticle in particlesInDragArea)
                         {
@@ -296,11 +293,7 @@ public partial class Game1
                 bool isBeingDragged = false;
                 if (
                     leftPressed
-                    && (
-                        _selectedToolName == "Drag"
-                        || _selectedToolName == "DragOne"
-                        || _selectedToolName == "PhysicsDrag"
-                    )
+                    && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag")
                 )
                 {
                     if (buildableMeshParticlesInDragArea.Contains(particle.ID))
