@@ -9,6 +9,7 @@ Git (with submodule support)
 Verify:
 `dotnet --version `
 (should start with 9.)
+though 8 should also work
 
 
 
