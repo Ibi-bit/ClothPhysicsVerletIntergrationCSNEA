@@ -87,10 +87,15 @@ public partial class Game1 : Game
     {
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
+        
+        _graphics.PreferredBackBufferWidth = 800;
+        _graphics.PreferredBackBufferHeight = 640;
+        _graphics.ApplyChanges();
 
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
         changedBounds = _windowBounds;
+        _lockedAspectRatio = cbInit.Height > 0 ? cbInit.Width / (float)cbInit.Height : 1f;
         Window.ClientSizeChanged += (_, __) =>
         {
             var cbNow = Window.ClientBounds;

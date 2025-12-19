@@ -222,12 +222,15 @@ public partial class Game1
         bool ratioToggled = ImGui.Checkbox("Keep Aspect Ratio", ref keepAspectRatio);
         if (ratioToggled && keepAspectRatio)
         {
-            _lockedAspectRatio =
-                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
+            _lockedAspectRatio = changedBounds.Height > 0
+                ? changedBounds.Width / (float)changedBounds.Height
+                : 1f;
         }
-        else if (!keepAspectRatio && ratioToggled)
+        else if (keepAspectRatio && _lockedAspectRatio <= 0.0001f)
         {
-            _lockedAspectRatio = 0f;
+            _lockedAspectRatio = changedBounds.Height > 0
+                ? changedBounds.Width / (float)changedBounds.Height
+                : 1f;
         }
 
         int newWidth = changedBounds.Width;
@@ -240,14 +243,11 @@ public partial class Game1
 
         if (keepAspectRatio)
         {
-            float aspect =
-                _lockedAspectRatio > 0.001f
-                    ? _lockedAspectRatio
-                    : (
-                        changedBounds.Height > 0
-                            ? changedBounds.Width / (float)changedBounds.Height
-                            : 1f
-                    );
+            float aspect = _lockedAspectRatio > 0.0001f
+                ? _lockedAspectRatio
+                : (changedBounds.Height > 0
+                    ? changedBounds.Width / (float)changedBounds.Height
+                    : 1f);
 
             if (widthChanged && newWidth > 0)
             {
