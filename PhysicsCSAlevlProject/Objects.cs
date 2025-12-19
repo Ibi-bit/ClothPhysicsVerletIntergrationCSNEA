@@ -258,7 +258,7 @@ class Cloth : Mesh
 
                 if (particle.IsPinned)
                 {
-                    particle.Color = Color.LightGray;
+                    particle.Color = Color.BlueViolet;
                     particle.Draw(spriteBatch, primitiveBatch);
                     continue;
                 }

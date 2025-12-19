@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using VectorGraphics;
+
 
 namespace PhysicsCSAlevlProject;
 
@@ -217,19 +217,46 @@ public partial class Game1
             changedBounds = _windowBounds;
         }
 
-        ImGui.Checkbox("Keep Aspect Ratio", ref keepAspectRatio);
-        float aspectRatio =
-            changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
-
-        ImGui.InputInt("Width", ref changedBounds.Width);
-        if (keepAspectRatio)
+        bool ratioToggled = ImGui.Checkbox("Keep Aspect Ratio", ref keepAspectRatio);
+        if (ratioToggled && keepAspectRatio)
         {
-            changedBounds.Height = (int)(changedBounds.Width / aspectRatio);
+            _lockedAspectRatio =
+                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
         }
-        ImGui.InputInt("Height", ref changedBounds.Height);
+
+        int newWidth = changedBounds.Width;
+        int newHeight = changedBounds.Height;
+        bool widthChanged = ImGui.InputInt("Width", ref newWidth);
+        bool heightChanged = ImGui.InputInt("Height", ref newHeight);
+
         if (keepAspectRatio)
         {
-            changedBounds.Width = (int)(changedBounds.Height * aspectRatio);
+            float aspect =
+                _lockedAspectRatio > 0.001f
+                    ? _lockedAspectRatio
+                    : (
+                        changedBounds.Height > 0
+                            ? changedBounds.Width / (float)changedBounds.Height
+                            : 1f
+                    );
+
+            if (widthChanged && newWidth > 0)
+            {
+                changedBounds.Width = newWidth;
+                changedBounds.Height = Math.Max(1, (int)Math.Round(newWidth / aspect));
+            }
+            else if (heightChanged && newHeight > 0)
+            {
+                changedBounds.Height = newHeight;
+                changedBounds.Width = Math.Max(1, (int)Math.Round(newHeight * aspect));
+            }
+        }
+        else
+        {
+            if (widthChanged)
+                changedBounds.Width = Math.Max(1, newWidth);
+            if (heightChanged)
+                changedBounds.Height = Math.Max(1, newHeight);
         }
 
         if (ImGui.Button("Apply Size"))

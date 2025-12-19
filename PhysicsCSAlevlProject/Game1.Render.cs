@@ -14,6 +14,16 @@ public partial class Game1
         GraphicsDevice.Clear(Color.CornflowerBlue);
         _spriteBatch.Begin();
 
+        var rect = new Rectangle(
+            new Point(_windowBounds.X, _windowBounds.Y),
+            new Point(
+                (int)(_windowBounds.Width + _collisonBoundsDifference.X),
+                (int)(_windowBounds.Height + _collisonBoundsDifference.Y)
+            )
+        );
+        var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 4);
+        collisionBounds.Draw(_spriteBatch, _primitiveBatch);
+
         _activeMesh.Draw(_spriteBatch, _primitiveBatch);
 
         if (_currentMode == MeshMode.PolygonBuilder && _font != null)
@@ -30,7 +40,6 @@ public partial class Game1
         {
             cutLine.Draw(_spriteBatch, _primitiveBatch);
         }
-
         _spriteBatch.End();
         ImGuiDraw(gameTime);
         // HandleModeSelection();
