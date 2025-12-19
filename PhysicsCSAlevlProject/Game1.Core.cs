@@ -30,7 +30,7 @@ public partial class Game1 : Game
 
     private PrimitiveBatch.Arrow windDirectionArrow;
     private PrimitiveBatch.Line cutLine;
-    
+
     private SpriteFont _font;
     private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
@@ -47,6 +47,7 @@ public partial class Game1 : Game
     private PolygonBuilder _polygonBuilderInstance;
     private static Rectangle _windowBounds;
     bool keepAspectRatio = true;
+    float _lockedAspectRatio = 1f;
 
     private Rectangle changedBounds = Rectangle.Empty;
 
@@ -145,19 +146,18 @@ public partial class Game1 : Game
         _guiRenderer.RebuildFontAtlas();
     }
 
-    private DrawableParticle KeepInsideScreen(DrawableParticle p)
+    private DrawableParticle KeepInsideRect(DrawableParticle p, Rectangle rect, Vector2 difference)
     {
         bool positionChanged = false;
-        Vector2 originalPosition = p.Position;
 
         if (p.Position.X < 0)
         {
             p.Position.X = 0;
             positionChanged = true;
         }
-        else if (p.Position.X > _windowBounds.Width)
+        else if (p.Position.X > rect.Width)
         {
-            p.Position.X = _windowBounds.Width;
+            p.Position.X = rect.Width;
             positionChanged = true;
         }
 
@@ -166,9 +166,9 @@ public partial class Game1 : Game
             p.Position.Y = 0;
             positionChanged = true;
         }
-        else if (p.Position.Y > _windowBounds.Height - 10)
+        else if (p.Position.Y > rect.Height + difference.Y)
         {
-            p.Position.Y = _windowBounds.Height - 10;
+            p.Position.Y = rect.Height + difference.Y;
             positionChanged = true;
         }
 

@@ -169,14 +169,17 @@ public partial class Game1
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                if (sticks[i][j] != null)
+                if (sticks[i][j] != null && !sticks[i][j].IsCut)
                 {
                     Vector2 stickCenter =
                         (sticks[i][j].P1.Position + sticks[i][j].P2.Position) * 0.5f;
                     float distance = Vector2.Distance(stickCenter, center);
                     if (distance <= radius)
                     {
-                        sticks[i][j] = null;
+                        if(_currentMode != MeshMode.Cloth)
+                            sticks[i][j] = null;
+                        else
+                            sticks[i][j].IsCut = true;
                     }
                 }
             }
