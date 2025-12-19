@@ -176,7 +176,7 @@ public partial class Game1
                     float distance = Vector2.Distance(stickCenter, center);
                     if (distance <= radius)
                     {
-                        if(_currentMode != MeshMode.Cloth)
+                        if (_currentMode != MeshMode.Cloth)
                             sticks[i][j] = null;
                         else
                             sticks[i][j].IsCut = true;

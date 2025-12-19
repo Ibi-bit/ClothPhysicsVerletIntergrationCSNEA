@@ -4,7 +4,6 @@ using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 
-
 namespace PhysicsCSAlevlProject;
 
 public partial class Game1
@@ -104,8 +103,9 @@ public partial class Game1
         if (ImGui.BeginMenu("Quick Settings"))
         {
             ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
+            ImGui.BeginDisabled(!_useConstraintSolver);
             ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
-
+            ImGui.EndDisabled();
             ImGui.BeginDisabled(_useConstraintSolver);
             ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
             ImGui.EndDisabled();
@@ -114,8 +114,9 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Tools"))
         {
+            ImGui.BeginDisabled(_currentMode == MeshMode.PolygonBuilder);
             DrawToolMenuItems();
-
+            ImGui.EndDisabled();
             ImGui.EndMenu();
         }
         if (ImGui.MenuItem(Paused ? "Resume (Esc)" : "Pause (Esc)"))
@@ -166,8 +167,9 @@ public partial class Game1
         ImGui.Separator();
 
         ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
+        ImGui.BeginDisabled(!_useConstraintSolver);
         ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
-
+        ImGui.EndDisabled();
         ImGui.BeginDisabled(_useConstraintSolver);
         ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
         ImGui.EndDisabled();
@@ -223,11 +225,18 @@ public partial class Game1
             _lockedAspectRatio =
                 changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
         }
+        else if (!keepAspectRatio && ratioToggled)
+        {
+            _lockedAspectRatio = 0f;
+        }
 
         int newWidth = changedBounds.Width;
         int newHeight = changedBounds.Height;
         bool widthChanged = ImGui.InputInt("Width", ref newWidth);
+
+        ImGui.BeginDisabled(keepAspectRatio);
         bool heightChanged = ImGui.InputInt("Height", ref newHeight);
+        ImGui.EndDisabled();
 
         if (keepAspectRatio)
         {
