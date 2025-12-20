@@ -11,13 +11,14 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     private string _selectedToolName = "Drag";
-    private Dictionary<string, Tool> _tools;
+    private Dictionary<string, Tool> _interactTools;
+    private Dictionary<string, Tool> _buildTools;
     private float dragRadius = 20f;
     private List<int> inspectedParticles = new List<int>();
 
-    private void InitializeTools()
+    private void InitializeInteractTools()
     {
-        _tools = new Dictionary<string, Tool>
+        _interactTools = new Dictionary<string, Tool>
         {
             { "Drag", new Tool("Drag", null, null) },
             { "Pin", new Tool("Pin", null, null) },
@@ -27,36 +28,54 @@ public partial class Game1
             { "LineCut", new Tool("LineCut", null, null) },
             { "Inspect Particles", new Tool("Inspect Particles", null, null) },
         };
-
-        foreach (var tool in _tools.Values)
+        foreach (var tool in _interactTools.Values)
         {
             tool.Properties = new Dictionary<string, object>();
         }
 
-        _tools["Drag"].Properties["Radius"] = 20f;
-        _tools["Drag"].Properties["MaxParticles"] = (int)20;
-        _tools["Drag"].Properties["InfiniteParticles"] = true;
+        _interactTools["Drag"].Properties["Radius"] = 20f;
+        _interactTools["Drag"].Properties["MaxParticles"] = (int)20;
+        _interactTools["Drag"].Properties["InfiniteParticles"] = true;
 
-        _tools["Pin"].Properties["Radius"] = 20f;
+        _interactTools["Pin"].Properties["Radius"] = 20f;
 
-        _tools["Cut"].Properties["Radius"] = 10f;
+        _interactTools["Cut"].Properties["Radius"] = 10f;
 
-        _tools["Wind"].Properties["MinDistance"] = 5f;
-        _tools["Wind"].Properties["StrengthScale"] = 1.0f;
-        _tools["Wind"].Properties["ArrowThickness"] = 3f;
+        _interactTools["Wind"].Properties["MinDistance"] = 5f;
+        _interactTools["Wind"].Properties["StrengthScale"] = 1.0f;
+        _interactTools["Wind"].Properties["ArrowThickness"] = 3f;
 
-        _tools["PhysicsDrag"].Properties["Radius"] = 20f;
+        _interactTools["PhysicsDrag"].Properties["Radius"] = 20f;
 
-        _tools["LineCut"].Properties["MinDistance"] = 5f;
-        _tools["LineCut"].Properties["Thickness"] = 3f;
+        _interactTools["LineCut"].Properties["MinDistance"] = 5f;
+        _interactTools["LineCut"].Properties["Thickness"] = 3f;
 
-        _tools["Inspect Particles"].Properties["Radius"] = 10f;
-        _tools["Inspect Particles"].Properties["IsLog"] = false;
+        _interactTools["Inspect Particles"].Properties["Radius"] = 10f;
+        _interactTools["Inspect Particles"].Properties["IsLog"] = false;
+    }
+
+    private void InitializeBuildTools()
+    {
+        _buildTools = new Dictionary<string, Tool>
+        {
+            { "Add Particle", new Tool("Add Particle", null, null) },
+            { "Add Stick Between Particles", new Tool("Add Stick Between Particles", null, null) },
+            { "Add Polygon", new Tool("Add Polygon", null, null) },
+            { "Remove Stick", new Tool("Remove Stick", null, null) },
+        };
+        foreach (var tool in _buildTools.Values)
+        {
+            tool.Properties = new Dictionary<string, object>();
+        }
+        _buildTools["Add Particle"].Properties["SnapToGrid"] = true;
+        _buildTools["Add Stick Between Particles"].Properties["Radius"] = 15f;
+        _buildTools["Add Polygon"].Properties["SnapToGrid"] = true;
+        _buildTools["Remove Stick"].Properties["Radius"] = 10f;
     }
 
     private void DrawToolMenuItems()
     {
-        foreach (var toolName in _tools.Keys)
+        foreach (var toolName in _interactTools.Keys)
         {
             bool isSelected = _selectedToolName == toolName;
             if (isSelected)
@@ -81,7 +100,7 @@ public partial class Game1
 
     private void DrawToolButtons()
     {
-        foreach (var toolName in _tools.Keys)
+        foreach (var toolName in _interactTools.Keys)
         {
             bool isSelected = _selectedToolName == toolName;
             if (isSelected)
@@ -114,98 +133,98 @@ public partial class Game1
 
         if (_selectedToolName == "Drag")
         {
-            float radius = (float)_tools["Drag"].Properties["Radius"];
+            float radius = (float)_interactTools["Drag"].Properties["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _tools["Drag"].Properties["Radius"] = radius;
+                _interactTools["Drag"].Properties["Radius"] = radius;
             }
 
-            bool infiniteParticles = (bool)_tools["Drag"].Properties["InfiniteParticles"];
+            bool infiniteParticles = (bool)_interactTools["Drag"].Properties["InfiniteParticles"];
             if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
             {
-                _tools["Drag"].Properties["InfiniteParticles"] = infiniteParticles;
+                _interactTools["Drag"].Properties["InfiniteParticles"] = infiniteParticles;
             }
 
-            int maxParticles = (int)_tools["Drag"].Properties["MaxParticles"];
+            int maxParticles = (int)_interactTools["Drag"].Properties["MaxParticles"];
             string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
 
             ImGui.BeginDisabled(infiniteParticles);
             if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
             {
-                _tools["Drag"].Properties["MaxParticles"] = maxParticles;
+                _interactTools["Drag"].Properties["MaxParticles"] = maxParticles;
             }
             ImGui.EndDisabled();
         }
         else if (_selectedToolName == "Pin")
         {
-            float radius = (float)_tools["Pin"].Properties["Radius"];
+            float radius = (float)_interactTools["Pin"].Properties["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _tools["Pin"].Properties["Radius"] = radius;
+                _interactTools["Pin"].Properties["Radius"] = radius;
             }
         }
         else if (_selectedToolName == "Cut")
         {
-            float radius = (float)_tools["Cut"].Properties["Radius"];
+            float radius = (float)_interactTools["Cut"].Properties["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
             {
-                _tools["Cut"].Properties["Radius"] = radius;
+                _interactTools["Cut"].Properties["Radius"] = radius;
             }
         }
         else if (_selectedToolName == "Wind")
         {
-            float minDist = (float)_tools["Wind"].Properties["MinDistance"];
+            float minDist = (float)_interactTools["Wind"].Properties["MinDistance"];
             if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
             {
-                _tools["Wind"].Properties["MinDistance"] = minDist;
+                _interactTools["Wind"].Properties["MinDistance"] = minDist;
             }
 
-            float strength = (float)_tools["Wind"].Properties["StrengthScale"];
+            float strength = (float)_interactTools["Wind"].Properties["StrengthScale"];
             if (ImGui.SliderFloat("Strength Scale", ref strength, 0.0f, 5.0f))
             {
-                _tools["Wind"].Properties["StrengthScale"] = strength;
+                _interactTools["Wind"].Properties["StrengthScale"] = strength;
             }
 
-            float thickness = (float)_tools["Wind"].Properties["ArrowThickness"];
+            float thickness = (float)_interactTools["Wind"].Properties["ArrowThickness"];
             if (ImGui.SliderFloat("Arrow Thickness", ref thickness, 1f, 10f))
             {
-                _tools["Wind"].Properties["ArrowThickness"] = thickness;
+                _interactTools["Wind"].Properties["ArrowThickness"] = thickness;
             }
         }
         else if (_selectedToolName == "PhysicsDrag")
         {
-            float radius = (float)_tools["PhysicsDrag"].Properties["Radius"];
+            float radius = (float)_interactTools["PhysicsDrag"].Properties["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _tools["PhysicsDrag"].Properties["Radius"] = radius;
+                _interactTools["PhysicsDrag"].Properties["Radius"] = radius;
             }
         }
         else if (_selectedToolName == "LineCut")
         {
-            float minDist = (float)_tools["LineCut"].Properties["MinDistance"];
+            float minDist = (float)_interactTools["LineCut"].Properties["MinDistance"];
             if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
             {
-                _tools["LineCut"].Properties["MinDistance"] = minDist;
+                _interactTools["LineCut"].Properties["MinDistance"] = minDist;
             }
 
-            float thickness = (float)_tools["LineCut"].Properties["Thickness"];
+            float thickness = (float)_interactTools["LineCut"].Properties["Thickness"];
             if (ImGui.SliderFloat("Line Thickness", ref thickness, 1f, 10f))
             {
-                _tools["LineCut"].Properties["Thickness"] = thickness;
+                _interactTools["LineCut"].Properties["Thickness"] = thickness;
             }
         }
         else if (_selectedToolName == "Inspect Particles")
         {
-            float radius = (float)_tools["Inspect Particles"].Properties["Radius"];
+            float radius = (float)_interactTools["Inspect Particles"].Properties["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _tools["Inspect Particles"].Properties["Radius"] = radius;
+                _interactTools["Inspect Particles"].Properties["Radius"] = radius;
             }
 
-            bool isLog = (bool)_tools["Inspect Particles"].Properties["IsLog"];
+            bool isLog = (bool)_interactTools["Inspect Particles"].Properties["IsLog"];
             if (ImGui.Checkbox("Log to Console or track realtime in window", ref isLog))
             {
-                _tools["Inspect Particles"].Properties["IsLog"] = isLog;
+                _interactTools["Inspect Particles"].Properties["IsLog"] = isLog;
             }
         }
     }
@@ -307,15 +326,15 @@ public partial class Game1
         Vector2 windDirection = endPos - startPos;
         float windDistance = windDirection.Length();
 
-        float minDist = _tools["Wind"].Properties.ContainsKey("MinDistance")
-            ? (float)_tools["Wind"].Properties["MinDistance"]
+        float minDist = _interactTools["Wind"].Properties.ContainsKey("MinDistance")
+            ? (float)_interactTools["Wind"].Properties["MinDistance"]
             : 5f;
 
         if (windDistance < minDist)
             return;
 
-        float strength = _tools["Wind"].Properties.ContainsKey("StrengthScale")
-            ? (float)_tools["Wind"].Properties["StrengthScale"]
+        float strength = _interactTools["Wind"].Properties.ContainsKey("StrengthScale")
+            ? (float)_interactTools["Wind"].Properties["StrengthScale"]
             : 1.0f;
 
         windForce = windDirection * (windDistance / 50f) * strength;
@@ -431,7 +450,7 @@ public partial class Game1
     {
         var particleIds = new List<int>();
 
-        if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+        if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
         {
             foreach (var kvp in _activeMesh.Particles)
             {
@@ -494,7 +513,7 @@ public partial class Game1
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        if (isDragging && _currentMode != MeshMode.PolygonBuilder)
+        if (isDragging && _currentMode != MeshMode.Edit)
         {
             Vector2 frameDelta = mousePos - previousMousePos;
             foreach (int particleId in particleIds)
@@ -650,6 +669,7 @@ public partial class Game1
             }
         }
     }
+
     private void InspectParticlesInRadiusWindow(Vector2 center, float radius)
     {
         if (_currentMode == MeshMode.Cloth)
@@ -676,7 +696,7 @@ public partial class Game1
                 var particle = kvp.Value;
                 float distance = Vector2.Distance(particle.Position, center);
                 particle.Color = Color.White;
-                
+
                 if (distance <= radius)
                 {
                     particle.Color = Color.Cyan;
