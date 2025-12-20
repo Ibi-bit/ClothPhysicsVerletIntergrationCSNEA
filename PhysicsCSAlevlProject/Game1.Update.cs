@@ -85,10 +85,15 @@ public partial class Game1
                         }
                         break;
                     case "Pin":
-                        if (_currentMode == MeshMode.Cloth)
-                            PinParticle(intitialMousePosWhenPressed, dragRadius);
-                        else if (_currentMode == MeshMode.Buildable)
-                            PinParticleBuildable(intitialMousePosWhenPressed, dragRadius);
+                        {
+                            float pinRadius = _tools["Pin"].Properties.ContainsKey("Radius")
+                                ? (float)_tools["Pin"].Properties["Radius"]
+                                : dragRadius;
+                            if (_currentMode == MeshMode.Cloth)
+                                PinParticle(intitialMousePosWhenPressed, pinRadius);
+                            else if (_currentMode == MeshMode.Buildable)
+                                PinParticleBuildable(intitialMousePosWhenPressed, pinRadius);
+                        }
                         break;
                     case "Cut":
                         var radius =
@@ -105,22 +110,50 @@ public partial class Game1
                     case "Wind":
                         break;
                     case "PhysicsDrag":
-                        if (_currentMode == MeshMode.Cloth)
                         {
-                            particlesInDragArea = GetParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                dragRadius
-                            );
-                        }
-                        else if (_currentMode == MeshMode.Buildable)
-                        {
-                            buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                dragRadius
-                            );
+                            float physRadius = _tools["PhysicsDrag"]
+                                .Properties.ContainsKey("Radius")
+                                ? (float)_tools["PhysicsDrag"].Properties["Radius"]
+                                : dragRadius;
+                            if (_currentMode == MeshMode.Cloth)
+                            {
+                                particlesInDragArea = GetParticlesInRadius(
+                                    intitialMousePosWhenPressed,
+                                    physRadius
+                                );
+                            }
+                            else if (_currentMode == MeshMode.Buildable)
+                            {
+                                buildableMeshParticlesInDragArea =
+                                    GetBuildableMeshParticlesInRadius(
+                                        intitialMousePosWhenPressed,
+                                        physRadius
+                                    );
+                            }
                         }
                         break;
                     case "LineCut":
+                        break;
+                    case "Inspect Particles":
+                        {
+                            float inspectRadius = _tools["Inspect Particles"]
+                                .Properties.ContainsKey("Radius")
+                                ? (float)_tools["Inspect Particles"].Properties["Radius"]
+                                : 10f;
+                            if (
+                                _tools["Inspect Particles"].Properties.ContainsKey("IsLog")
+                                && (bool)_tools["Inspect Particles"].Properties["IsLog"]
+                            )
+                                InspectParticlesInRadiusLog(
+                                    intitialMousePosWhenPressed,
+                                    inspectRadius
+                                );
+                            else
+                                InspectParticlesInRadiusWindow(
+                                    intitialMousePosWhenPressed,
+                                    inspectRadius
+                                );
+                        }
                         break;
                 }
             }
@@ -160,16 +193,27 @@ public partial class Game1
             Vector2 windDirection = currentMousePos - intitialMousePosWhenPressed;
             float windDistance = windDirection.Length();
 
-            if (windDistance > 5f)
+            float minDist = _tools["Wind"].Properties.ContainsKey("MinDistance")
+                ? (float)_tools["Wind"].Properties["MinDistance"]
+                : 5f;
+            if (windDistance > minDist)
             {
+                float arrowThickness = _tools["Wind"].Properties.ContainsKey("ArrowThickness")
+                    ? (float)_tools["Wind"].Properties["ArrowThickness"]
+                    : 3f;
                 windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
                     intitialMousePosWhenPressed,
                     currentMousePos,
                     Color.Cyan,
-                    3f
+                    arrowThickness
                 );
 
-                windForce = !Paused ? windDirection * (windDistance / 50f) : Vector2.Zero;
+                float strength = _tools["Wind"].Properties.ContainsKey("StrengthScale")
+                    ? (float)_tools["Wind"].Properties["StrengthScale"]
+                    : 1.0f;
+                windForce = !Paused
+                    ? windDirection * (windDistance / 50f) * strength
+                    : Vector2.Zero;
             }
             else
             {
@@ -181,13 +225,19 @@ public partial class Game1
         {
             Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
             float cutDistance = cutDirection.Length();
-            if (cutDistance > 5f)
+            float minDist = _tools["LineCut"].Properties.ContainsKey("MinDistance")
+                ? (float)_tools["LineCut"].Properties["MinDistance"]
+                : 5f;
+            if (cutDistance > minDist)
             {
+                float thickness = _tools["LineCut"].Properties.ContainsKey("Thickness")
+                    ? (float)_tools["LineCut"].Properties["Thickness"]
+                    : 3f;
                 cutLine = new VectorGraphics.PrimitiveBatch.Line(
                     intitialMousePosWhenPressed,
                     currentMousePos,
                     Color.Red,
-                    3f
+                    thickness
                 );
             }
             else

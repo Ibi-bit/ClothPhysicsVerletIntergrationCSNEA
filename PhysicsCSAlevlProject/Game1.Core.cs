@@ -38,9 +38,6 @@ public partial class Game1 : Game
     private bool _useConstraintSolver = false;
     private int _constraintIterations = 5;
 
-    private int _modeIndex = 1;
-    private string[] _modes = { "Cloth", "Buildable", "PolygonBuilder" };
-
     private Mesh _activeMesh;
     private Cloth _clothInstance;
     private BuildableMesh _buildableMeshInstance;
@@ -87,7 +84,7 @@ public partial class Game1 : Game
     {
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
-        
+
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;
         _graphics.ApplyChanges();

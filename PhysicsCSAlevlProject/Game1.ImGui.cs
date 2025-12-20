@@ -17,7 +17,6 @@ public partial class Game1
     bool ctrlHeld = false;
     bool shiftHeld = false;
 
-    // Track CapsLock as a toggle for better macOS reliability
     bool capsActive = false;
     bool altHeld = false;
 
@@ -52,10 +51,58 @@ public partial class Game1
         {
             _Logger.DrawLogs(ref _showLoggerWindow);
         }
+        if (inspectedParticles.Count > 0)
+        {
+            DrawInspectParticleWindow();
+        }
 
         ModeSwitchingImGui();
 
         _guiRenderer.EndLayout();
+    }
+
+    private void DrawInspectParticleWindow()
+    {
+        if (!ImGui.Begin("Inspect Particle"))
+        {
+            ImGui.End();
+            return;
+        }
+        ImGui.Text("Particle Info:");
+
+        ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -30));
+        foreach (var index in inspectedParticles)
+        {
+            if (!_buildableMeshInstance.Particles.TryGetValue(index, out var p))
+            {
+                continue;
+            }
+
+            ImGui.Text($"Particle Index: {index}");
+            ImGui.Text($"Position: {p.Position}");
+            ImGui.Text($"Previous Position: {p.PreviousPosition}");
+            ImGui.Text($"Is Fixed: {p.IsPinned}");
+            if (ImGui.Button(p.IsPinned ? "Unpin Particle" : "Pin Particle"))
+            {
+                p.IsPinned = !p.IsPinned;
+            }
+
+            if (ImGui.Button("Remove Particle From Inspect"))
+            {
+                inspectedParticles.Remove(index);
+                break;
+            }
+            ImGui.Separator();
+        }
+        ImGui.EndChild();
+        ImGui.PushStyleColor(ImGuiCol.Button, new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f));
+        if (ImGui.Button("Close and Clear All"))
+        {
+            inspectedParticles.Clear();
+        }
+        ImGui.PopStyleColor();
+
+        ImGui.End();
     }
 
     private void ModeSwitchingImGui()
@@ -66,8 +113,9 @@ public partial class Game1
         if (shiftHeld && ImGui.IsKeyPressed(ImGuiKey.Tab))
         {
             int delta = backwardModifierHeld ? -1 : 1;
-            _modeIndex = (_modeIndex + delta + _modes.Length) % _modes.Length;
-            ApplyModeIndex();
+            int modeCount = System.Enum.GetValues(typeof(MeshMode)).Length;
+            int newModeIndex = ((int)_currentMode + delta + modeCount) % modeCount;
+            SetMode((MeshMode)newModeIndex);
         }
 
         if (shiftHeld)
@@ -78,11 +126,13 @@ public partial class Game1
                 ImGui.GetColorU32(ImGuiCol.Text),
                 "Mode:"
             );
-            for (int i = 0; i < _modes.Length; i++)
+            var modes = System.Enum.GetValues(typeof(MeshMode));
+            for (int i = 0; i < modes.Length; i++)
             {
-                string text = i == _modeIndex ? $"> {_modes[i]} <" : $"  {_modes[i]}";
+                var mode = (MeshMode)modes.GetValue(i);
+                string text = mode == _currentMode ? $"> {mode} <" : $"  {mode}";
                 uint color =
-                    i == _modeIndex
+                    mode == _currentMode
                         ? ImGui.GetColorU32(new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f))
                         : ImGui.GetColorU32(ImGuiCol.Text);
                 drawList.AddText(new System.Numerics.Vector2(10, 48 + i * 18), color, text);
@@ -90,20 +140,17 @@ public partial class Game1
         }
     }
 
-    private void ApplyModeIndex()
+    private void SetMode(MeshMode mode)
     {
-        switch (_modeIndex)
+        _currentMode = mode;
+
+        switch (_currentMode)
         {
-            case 0:
-                _currentMode = MeshMode.Cloth;
+            case MeshMode.Cloth:
                 _activeMesh = _clothInstance;
                 break;
-            case 1:
-                _currentMode = MeshMode.Buildable;
-                _activeMesh = _buildableMeshInstance;
-                break;
-            case 2:
-                _currentMode = MeshMode.PolygonBuilder;
+            case MeshMode.Buildable:
+            case MeshMode.PolygonBuilder:
                 _activeMesh = _buildableMeshInstance;
                 break;
         }
@@ -151,18 +198,15 @@ public partial class Game1
         {
             if (ImGui.MenuItem("Cloth", null, _currentMode == MeshMode.Cloth))
             {
-                _modeIndex = 0;
-                ApplyModeIndex();
+                SetMode(MeshMode.Cloth);
             }
             if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Buildable))
             {
-                _modeIndex = 1;
-                ApplyModeIndex();
+                SetMode(MeshMode.Buildable);
             }
             if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.PolygonBuilder))
             {
-                _modeIndex = 2;
-                ApplyModeIndex();
+                SetMode(MeshMode.PolygonBuilder);
             }
             ImGui.EndMenu();
         }

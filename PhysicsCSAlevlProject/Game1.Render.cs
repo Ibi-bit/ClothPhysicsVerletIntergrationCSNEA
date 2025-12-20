@@ -49,25 +49,7 @@ public partial class Game1
 
     private void HandleModeSelection()
     {
-        switch (_modeIndex)
-        {
-            case 0:
-                _currentMode = MeshMode.Cloth;
-                _activeMesh = _clothInstance;
-                break;
-            case 1:
-                _currentMode = MeshMode.Buildable;
-                _activeMesh = _buildableMeshInstance;
-                break;
-            case 2:
-                _currentMode = MeshMode.PolygonBuilder;
-                _activeMesh = _buildableMeshInstance;
-                break;
-        }
-        leftPressed = false;
-        windDirectionArrow = null;
-        cutLine = null;
-        particlesInDragArea.Clear();
-        buildableMeshParticlesInDragArea.Clear();
+        
+        SetMode(_currentMode);
     }
 }
