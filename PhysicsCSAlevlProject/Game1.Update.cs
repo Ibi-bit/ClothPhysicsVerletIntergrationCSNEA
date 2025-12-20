@@ -164,7 +164,8 @@ public partial class Game1
                                 : 10f;
                             var pS = GetBuildableMeshParticlesInRadius(
                                 intitialMousePosWhenPressed,
-                                removeRadius,1
+                                removeRadius,
+                                1
                             );
                             _activeMesh.RemoveParticle(pS[0]);
                         }

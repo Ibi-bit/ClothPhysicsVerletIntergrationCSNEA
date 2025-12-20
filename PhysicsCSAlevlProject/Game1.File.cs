@@ -26,9 +26,9 @@ public partial class Game1
 
         string json = System.IO.File.ReadAllText(filePath);
         Mesh mesh = JsonConvert.DeserializeObject<Mesh>(json, settings);
-        
+
         mesh.RestoreStickReferences();
-        
+
         return mesh;
     }
 
@@ -47,7 +47,9 @@ public partial class Game1
             try
             {
                 Mesh mesh = LoadMeshFromJSON(filePath);
-                string fileName = System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileName(filePath));
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(
+                    System.IO.Path.GetFileName(filePath)
+                );
                 meshes[fileName] = mesh;
             }
             catch (Exception ex)

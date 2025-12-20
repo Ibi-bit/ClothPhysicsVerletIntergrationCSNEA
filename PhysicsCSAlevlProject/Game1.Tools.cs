@@ -770,6 +770,7 @@ public partial class Game1
             }
         }
     }
+
     private void HandleAddStickBetweenParticlesClick(Vector2 clickPos)
     {
         float radius = _currentToolSet["Add Stick Between Particles"].Properties["Radius"]
