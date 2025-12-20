@@ -142,6 +142,33 @@ public partial class Game1
                             HandleAddStickBetweenParticlesClick(intitialMousePosWhenPressed);
                         }
                         break;
+                    case "Add Particle":
+                        {
+                            float particleMass = _currentToolSet["Add Particle"]
+                                .Properties.ContainsKey("Mass")
+                                ? (float)_currentToolSet["Add Particle"].Properties["Mass"]
+                                : 1f;
+                            _activeMesh.AddParticle(
+                                intitialMousePosWhenPressed,
+                                particleMass,
+                                false,
+                                Color.White
+                            );
+                        }
+                        break;
+                    case "Remove Particle":
+                        {
+                            float removeRadius = _currentToolSet["Remove Particle"]
+                                .Properties.ContainsKey("Radius")
+                                ? (float)_currentToolSet["Remove Particle"].Properties["Radius"]
+                                : 10f;
+                            var pS = GetBuildableMeshParticlesInRadius(
+                                intitialMousePosWhenPressed,
+                                removeRadius,1
+                            );
+                            _activeMesh.RemoveParticle(pS[0]);
+                        }
+                        break;
                     case "Inspect Particles":
                         {
                             float inspectRadius = _currentToolSet["Inspect Particles"]
@@ -254,19 +281,19 @@ public partial class Game1
                 cutLine = null;
             }
         }
-        else if (_selectedToolName == "Add Stick Between Particles" && leftPressed)
-        {
-            // No continuous action; handled on click press above.
-        }
         else if (_selectedToolName == "Add Polygon")
         {
-            _buildableMeshInstance = _polygonBuilderInstance.BuildPolygon(
-                keyboardState,
-                _prevKeyboardState,
-                mouseState,
-                _prevMouseState,
-                _buildableMeshInstance
-            );
+            if (_activeMesh is BuildableMesh buildableMesh)
+            {
+                _activeMesh = _polygonBuilderInstance.BuildPolygon(
+                    keyboardState,
+                    _prevKeyboardState,
+                    mouseState,
+                    _prevMouseState,
+                    buildableMesh,
+                    imguiWantsMouse
+                );
+            }
         }
         else
         {

@@ -17,6 +17,18 @@ class Particle
     public bool IsPinned;
     public bool IsSelected;
 
+    public Particle()
+    {
+        Position = Vector2.Zero;
+        PreviousPosition = Vector2.Zero;
+        Mass = 1.0f;
+        AccumulatedForce = Vector2.Zero;
+        IsPinned = false;
+        IsSelected = false;
+        ID = -1;
+        TotalForceMagnitude = 0f;
+    }
+
     public Particle(Vector2 position, float mass, bool isPinned)
     {
         Position = position;
@@ -35,6 +47,14 @@ class DrawableParticle : Particle
     private PrimitiveBatch.Rectangle rectangle;
     public Color Color { get; set; }
     public Vector2 Size { get; set; }
+
+    public DrawableParticle()
+        : base(Vector2.Zero, 1.0f, false)
+    {
+        Size = new Vector2(10, 10);
+        Color = Color.White;
+        UpdateRectangle();
+    }
 
     public DrawableParticle(Vector2 position, float mass, Vector2 size, Color color)
         : base(position, mass, false)
@@ -79,6 +99,13 @@ class Stick
     public Particle P2;
     public float Length;
 
+    public Stick()
+    {
+        P1 = null;
+        P2 = null;
+        Length = 0f;
+    }
+
     public Stick(Particle p1, Particle p2)
     {
         P1 = p1;
@@ -93,6 +120,14 @@ class DrawableStick : Stick
     public Color Color { get; set; }
     public float Width { get; set; }
     public bool IsCut { get; set; }
+
+    public DrawableStick()
+        : base()
+    {
+        Color = Color.White;
+        Width = 2.0f;
+        IsCut = false;
+    }
 
     public DrawableStick(Particle p1, Particle p2, Color color, float width = 2.0f)
         : base(p1, p2)
@@ -286,13 +321,16 @@ class Mesh
     public float maxForceMagnitude = 0f;
 
     public float springConstant = 10000f;
-    public float drag = 0.99f;
+    public float drag = 0.997f;
 
     public class MeshStick : DrawableStick
     {
         public int Id;
         public int P1Id;
         public int P2Id;
+
+        public MeshStick()
+            : base() { }
 
         public MeshStick(DrawableParticle p1, DrawableParticle p2, Color color, float width = 2.0f)
             : base(p1, p2, color, width) { }
@@ -302,6 +340,31 @@ class Mesh
 
     private readonly Dictionary<int, HashSet<int>> _particleToStickIds =
         new Dictionary<int, HashSet<int>>();
+
+    public void RestoreStickReferences()
+    {
+        foreach (var stick in Sticks.Values)
+        {
+            if (Particles.ContainsKey(stick.P1Id) && Particles.ContainsKey(stick.P2Id))
+            {
+                stick.P1 = Particles[stick.P1Id];
+                stick.P2 = Particles[stick.P2Id];
+                stick.Length = Vector2.Distance(stick.P1.Position, stick.P2.Position);
+            }
+        }
+        _particleToStickIds.Clear();
+        foreach (var particle in Particles.Values)
+        {
+            _particleToStickIds[particle.ID] = new HashSet<int>();
+        }
+        foreach (var stick in Sticks.Values)
+        {
+            if (_particleToStickIds.ContainsKey(stick.P1Id))
+                _particleToStickIds[stick.P1Id].Add(stick.Id);
+            if (_particleToStickIds.ContainsKey(stick.P2Id))
+                _particleToStickIds[stick.P2Id].Add(stick.Id);
+        }
+    }
 
     protected int RegisterParticle(DrawableParticle particle)
     {

@@ -66,7 +66,7 @@ public partial class Game1
             { "Add Particle", new Tool("Add Particle", null, null) },
             { "Add Stick Between Particles", new Tool("Add Stick Between Particles", null, null) },
             { "Add Polygon", new Tool("Add Polygon", null, null) },
-            { "Remove Stick", new Tool("Remove Stick", null, null) },
+            { "Remove Particle", new Tool("Remove Particle", null, null) },
         };
         foreach (var tool in _buildTools.Values)
         {
@@ -75,7 +75,7 @@ public partial class Game1
         _buildTools["Add Particle"].Properties["SnapToGrid"] = true;
         _buildTools["Add Stick Between Particles"].Properties["Radius"] = 15f;
         _buildTools["Add Polygon"].Properties["SnapToGrid"] = true;
-        _buildTools["Remove Stick"].Properties["Radius"] = 10f;
+        _buildTools["Remove Particle"].Properties["Radius"] = 10f;
     }
 
     private void DrawToolMenuItems()
@@ -368,7 +368,7 @@ public partial class Game1
     {
         var sticksToRemove = new List<int>();
 
-        foreach (var kvp in _buildableMeshInstance.Sticks)
+        foreach (var kvp in _activeMesh.Sticks)
         {
             var stick = kvp.Value;
             Vector2 stickCenter = (stick.P1.Position + stick.P2.Position) * 0.5f;
@@ -381,7 +381,7 @@ public partial class Game1
 
         foreach (var stickId in sticksToRemove)
         {
-            _buildableMeshInstance.RemoveStick(stickId);
+            _activeMesh.RemoveStick(stickId);
         }
     }
 
@@ -472,7 +472,7 @@ public partial class Game1
         }
         else
         {
-            _buildableMeshInstance.CutSticksAlongLine(lineStart, lineEnd);
+            _activeMesh.CutSticksAlongLine(lineStart, lineEnd);
         }
     }
 
@@ -783,31 +783,41 @@ public partial class Game1
             if (_stickToolFirstParticleId == null)
             {
                 _stickToolFirstParticleId = hitId;
-                if (_buildableMeshInstance.Particles.TryGetValue(hitId, out var p))
+                if (_activeMesh.Particles.TryGetValue(hitId, out var p))
                 {
                     p.Color = Color.Yellow;
-                    _buildableMeshInstance.Particles[hitId] = p;
+                    _activeMesh.Particles[hitId] = p;
                 }
             }
             else if (_stickToolFirstParticleId.Value != hitId)
             {
-                _buildableMeshInstance.AddStickBetween(_stickToolFirstParticleId.Value, hitId);
-                if (
-                    _buildableMeshInstance.Particles.TryGetValue(
-                        _stickToolFirstParticleId.Value,
-                        out var p1
+                if (_activeMesh is BuildableMesh buildableMesh)
+                {
+                    buildableMesh.AddStickBetween(_stickToolFirstParticleId.Value, hitId);
+                    if (
+                        buildableMesh.Particles.TryGetValue(
+                            _stickToolFirstParticleId.Value,
+                            out var p1
+                        )
                     )
-                )
-                {
-                    p1.Color = Color.White;
-                    _buildableMeshInstance.Particles[_stickToolFirstParticleId.Value] = p1;
-                }
-                if (_buildableMeshInstance.Particles.TryGetValue(hitId, out var p2))
-                {
-                    p2.Color = Color.White;
-                    _buildableMeshInstance.Particles[hitId] = p2;
+                    {
+                        p1.Color = Color.White;
+                        buildableMesh.Particles[_stickToolFirstParticleId.Value] = p1;
+                    }
+                    if (buildableMesh.Particles.TryGetValue(hitId, out var p2))
+                    {
+                        p2.Color = Color.White;
+                        buildableMesh.Particles[hitId] = p2;
+                    }
                 }
                 _stickToolFirstParticleId = null;
+            }
+            else
+            {
+                _Logger.AddLog(
+                    "Cannot create stick to the same particle. Select a different particle.",
+                    ImGuiLogger.logTypes.Warning
+                );
             }
         }
     }

@@ -19,7 +19,7 @@ class PolygonBuilder
         KeyboardState previousKeyboardState,
         MouseState mouseState,
         MouseState previousMouseState,
-        BuildableMesh mesh
+        BuildableMesh mesh,bool imguiWantsMouse
     )
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
@@ -27,6 +27,7 @@ class PolygonBuilder
         if (
             mouseState.LeftButton == ButtonState.Pressed
             && previousMouseState.LeftButton == ButtonState.Released
+            && !imguiWantsMouse
         )
         {
             if (!_isBuilding)
@@ -66,13 +67,6 @@ class PolygonBuilder
             }
         }
 
-        if (keyboardState.IsKeyDown(Keys.Escape) && !previousKeyboardState.IsKeyDown(Keys.Escape))
-        {
-            _isBuilding = false;
-            _polygonVertices.Clear();
-            _initialParticle = -1;
-            _finalParticle = -1;
-        }
 
         return mesh;
     }
