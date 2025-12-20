@@ -14,9 +14,25 @@ public partial class Game1
     private ImGuiLogger _Logger = new ImGuiLogger();
     private bool _showLoggerWindow = false;
 
+    bool ctrlHeld = false;
+    bool shiftHeld = false;
+
+    // Track CapsLock as a toggle for better macOS reliability
+    bool capsActive = false;
+    bool altHeld = false;
+
+    const float ModeSwitchDisplayDuration = 1.5f;
+
     private void ImGuiDraw(GameTime gameTime)
     {
         _guiRenderer.BeginLayout(gameTime);
+        ctrlHeld = ImGui.GetIO().KeyCtrl;
+        shiftHeld = ImGui.GetIO().KeyShift;
+        altHeld = ImGui.GetIO().KeyAlt;
+        if (ImGui.IsKeyPressed(ImGuiKey.CapsLock))
+        {
+            capsActive = !capsActive;
+        }
 
         DrawMainMenuBar();
         if (_showPhysicsControlsWindow)
@@ -37,7 +53,66 @@ public partial class Game1
             _Logger.DrawLogs(ref _showLoggerWindow);
         }
 
+        ModeSwitchingImGui();
+
         _guiRenderer.EndLayout();
+    }
+
+    private void ModeSwitchingImGui()
+    {
+        bool isMac = System.OperatingSystem.IsMacOS();
+        bool backwardModifierHeld = isMac ? altHeld : ctrlHeld;
+
+        if (shiftHeld && ImGui.IsKeyPressed(ImGuiKey.Tab))
+        {
+            int delta = backwardModifierHeld ? -1 : 1;
+            _modeIndex = (_modeIndex + delta + _modes.Length) % _modes.Length;
+            ApplyModeIndex();
+        }
+
+        if (shiftHeld)
+        {
+            var drawList = ImGui.GetForegroundDrawList();
+            drawList.AddText(
+                new System.Numerics.Vector2(10, 30),
+                ImGui.GetColorU32(ImGuiCol.Text),
+                "Mode:"
+            );
+            for (int i = 0; i < _modes.Length; i++)
+            {
+                string text = i == _modeIndex ? $"> {_modes[i]} <" : $"  {_modes[i]}";
+                uint color =
+                    i == _modeIndex
+                        ? ImGui.GetColorU32(new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f))
+                        : ImGui.GetColorU32(ImGuiCol.Text);
+                drawList.AddText(new System.Numerics.Vector2(10, 48 + i * 18), color, text);
+            }
+        }
+    }
+
+    private void ApplyModeIndex()
+    {
+        switch (_modeIndex)
+        {
+            case 0:
+                _currentMode = MeshMode.Cloth;
+                _activeMesh = _clothInstance;
+                break;
+            case 1:
+                _currentMode = MeshMode.Buildable;
+                _activeMesh = _buildableMeshInstance;
+                break;
+            case 2:
+                _currentMode = MeshMode.PolygonBuilder;
+                _activeMesh = _buildableMeshInstance;
+                break;
+        }
+
+        leftPressed = false;
+        windDirectionArrow = null;
+        cutLine = null;
+        particlesInDragArea.Clear();
+        buildableMeshParticlesInDragArea.Clear();
     }
 
     private void DrawMainMenuBar()
@@ -76,28 +151,19 @@ public partial class Game1
         {
             if (ImGui.MenuItem("Cloth", null, _currentMode == MeshMode.Cloth))
             {
-                _currentMode = MeshMode.Cloth;
-                _activeMesh = _clothInstance;
                 _modeIndex = 0;
-                ;
+                ApplyModeIndex();
             }
             if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Buildable))
             {
-                _currentMode = MeshMode.Buildable;
-                _activeMesh = _buildableMeshInstance;
                 _modeIndex = 1;
+                ApplyModeIndex();
             }
             if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.PolygonBuilder))
             {
-                _currentMode = MeshMode.PolygonBuilder;
-                _activeMesh = _buildableMeshInstance;
                 _modeIndex = 2;
+                ApplyModeIndex();
             }
-            leftPressed = false;
-            windDirectionArrow = null;
-            cutLine = null;
-            particlesInDragArea.Clear();
-            buildableMeshParticlesInDragArea.Clear();
             ImGui.EndMenu();
         }
         if (ImGui.BeginMenu("Quick Settings"))
@@ -222,15 +288,13 @@ public partial class Game1
         bool ratioToggled = ImGui.Checkbox("Keep Aspect Ratio", ref keepAspectRatio);
         if (ratioToggled && keepAspectRatio)
         {
-            _lockedAspectRatio = changedBounds.Height > 0
-                ? changedBounds.Width / (float)changedBounds.Height
-                : 1f;
+            _lockedAspectRatio =
+                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
         }
         else if (keepAspectRatio && _lockedAspectRatio <= 0.0001f)
         {
-            _lockedAspectRatio = changedBounds.Height > 0
-                ? changedBounds.Width / (float)changedBounds.Height
-                : 1f;
+            _lockedAspectRatio =
+                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
         }
 
         int newWidth = changedBounds.Width;
@@ -243,11 +307,14 @@ public partial class Game1
 
         if (keepAspectRatio)
         {
-            float aspect = _lockedAspectRatio > 0.0001f
-                ? _lockedAspectRatio
-                : (changedBounds.Height > 0
-                    ? changedBounds.Width / (float)changedBounds.Height
-                    : 1f);
+            float aspect =
+                _lockedAspectRatio > 0.0001f
+                    ? _lockedAspectRatio
+                    : (
+                        changedBounds.Height > 0
+                            ? changedBounds.Width / (float)changedBounds.Height
+                            : 1f
+                    );
 
             if (widthChanged && newWidth > 0)
             {
