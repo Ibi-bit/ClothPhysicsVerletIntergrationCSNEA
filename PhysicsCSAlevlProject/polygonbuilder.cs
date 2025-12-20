@@ -14,8 +14,7 @@ class PolygonBuilder
 
     public PolygonBuilder() { }
 
-    public BuildableMesh Update(
-        GameTime gameTime,
+    public BuildableMesh BuildPolygon(
         KeyboardState keyboardState,
         KeyboardState previousKeyboardState,
         MouseState mouseState,
@@ -85,9 +84,12 @@ class PolygonBuilder
     {
         if (_isBuilding)
         {
+            /*
             string instructions =
                 $"Building polygon ({VertexCount} vertices). Left click: add vertex, Enter: complete, Esc: cancel";
             spriteBatch.DrawString(font, instructions, new Vector2(10, 140), Color.Yellow);
+        
+            /*/
         }
     }
 }

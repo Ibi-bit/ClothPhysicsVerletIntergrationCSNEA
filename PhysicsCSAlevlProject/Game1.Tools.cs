@@ -13,6 +13,10 @@ public partial class Game1
     private string _selectedToolName = "Drag";
     private Dictionary<string, Tool> _interactTools;
     private Dictionary<string, Tool> _buildTools;
+    private Dictionary<string, Tool> _currentToolSet
+    {
+        get { return _currentMode == MeshMode.Edit ? _buildTools : _interactTools; }
+    }
     private float dragRadius = 20f;
     private List<int> inspectedParticles = new List<int>();
 
@@ -75,7 +79,8 @@ public partial class Game1
 
     private void DrawToolMenuItems()
     {
-        foreach (var toolName in _interactTools.Keys)
+        EnsureSelectedToolValid();
+        foreach (var toolName in _currentToolSet.Keys)
         {
             bool isSelected = _selectedToolName == toolName;
             if (isSelected)
@@ -100,7 +105,8 @@ public partial class Game1
 
     private void DrawToolButtons()
     {
-        foreach (var toolName in _interactTools.Keys)
+        EnsureSelectedToolValid();
+        foreach (var toolName in _currentToolSet.Keys)
         {
             bool isSelected = _selectedToolName == toolName;
             if (isSelected)
@@ -129,102 +135,159 @@ public partial class Game1
 
     private void DrawSelectedToolSettings()
     {
+        EnsureSelectedToolValid();
         ImGui.Text($"Settings for {_selectedToolName} Tool:");
 
         if (_selectedToolName == "Drag")
         {
-            float radius = (float)_interactTools["Drag"].Properties["Radius"];
+            var props = _currentToolSet["Drag"].Properties;
+            float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _interactTools["Drag"].Properties["Radius"] = radius;
+                props["Radius"] = radius;
             }
 
-            bool infiniteParticles = (bool)_interactTools["Drag"].Properties["InfiniteParticles"];
+            bool infiniteParticles = (bool)props["InfiniteParticles"];
             if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
             {
-                _interactTools["Drag"].Properties["InfiniteParticles"] = infiniteParticles;
+                props["InfiniteParticles"] = infiniteParticles;
             }
 
-            int maxParticles = (int)_interactTools["Drag"].Properties["MaxParticles"];
+            int maxParticles = (int)props["MaxParticles"];
             string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
 
             ImGui.BeginDisabled(infiniteParticles);
             if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
             {
-                _interactTools["Drag"].Properties["MaxParticles"] = maxParticles;
+                props["MaxParticles"] = maxParticles;
             }
             ImGui.EndDisabled();
         }
         else if (_selectedToolName == "Pin")
         {
-            float radius = (float)_interactTools["Pin"].Properties["Radius"];
+            var props = _currentToolSet["Pin"].Properties;
+            float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _interactTools["Pin"].Properties["Radius"] = radius;
+                props["Radius"] = radius;
             }
         }
         else if (_selectedToolName == "Cut")
         {
-            float radius = (float)_interactTools["Cut"].Properties["Radius"];
+            var props = _currentToolSet["Cut"].Properties;
+            float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
             {
-                _interactTools["Cut"].Properties["Radius"] = radius;
+                props["Radius"] = radius;
             }
         }
         else if (_selectedToolName == "Wind")
         {
-            float minDist = (float)_interactTools["Wind"].Properties["MinDistance"];
+            var props = _currentToolSet["Wind"].Properties;
+            float minDist = (float)props["MinDistance"];
             if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
             {
-                _interactTools["Wind"].Properties["MinDistance"] = minDist;
+                props["MinDistance"] = minDist;
             }
 
-            float strength = (float)_interactTools["Wind"].Properties["StrengthScale"];
+            float strength = (float)props["StrengthScale"];
             if (ImGui.SliderFloat("Strength Scale", ref strength, 0.0f, 5.0f))
             {
-                _interactTools["Wind"].Properties["StrengthScale"] = strength;
+                props["StrengthScale"] = strength;
             }
 
-            float thickness = (float)_interactTools["Wind"].Properties["ArrowThickness"];
+            float thickness = (float)props["ArrowThickness"];
             if (ImGui.SliderFloat("Arrow Thickness", ref thickness, 1f, 10f))
             {
-                _interactTools["Wind"].Properties["ArrowThickness"] = thickness;
+                props["ArrowThickness"] = thickness;
             }
         }
         else if (_selectedToolName == "PhysicsDrag")
         {
-            float radius = (float)_interactTools["PhysicsDrag"].Properties["Radius"];
+            var props = _currentToolSet["PhysicsDrag"].Properties;
+            float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _interactTools["PhysicsDrag"].Properties["Radius"] = radius;
+                props["Radius"] = radius;
             }
         }
         else if (_selectedToolName == "LineCut")
         {
-            float minDist = (float)_interactTools["LineCut"].Properties["MinDistance"];
+            var props = _currentToolSet["LineCut"].Properties;
+            float minDist = (float)props["MinDistance"];
             if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
             {
-                _interactTools["LineCut"].Properties["MinDistance"] = minDist;
+                props["MinDistance"] = minDist;
             }
 
-            float thickness = (float)_interactTools["LineCut"].Properties["Thickness"];
+            float thickness = (float)props["Thickness"];
             if (ImGui.SliderFloat("Line Thickness", ref thickness, 1f, 10f))
             {
-                _interactTools["LineCut"].Properties["Thickness"] = thickness;
+                props["Thickness"] = thickness;
             }
         }
         else if (_selectedToolName == "Inspect Particles")
         {
-            float radius = (float)_interactTools["Inspect Particles"].Properties["Radius"];
+            var props = _currentToolSet["Inspect Particles"].Properties;
+            float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _interactTools["Inspect Particles"].Properties["Radius"] = radius;
+                props["Radius"] = radius;
             }
 
-            bool isLog = (bool)_interactTools["Inspect Particles"].Properties["IsLog"];
+            bool isLog = (bool)props["IsLog"];
             if (ImGui.Checkbox("Log to Console or track realtime in window", ref isLog))
             {
-                _interactTools["Inspect Particles"].Properties["IsLog"] = isLog;
+                props["IsLog"] = isLog;
+            }
+        }
+        else if (_selectedToolName == "Add Particle")
+        {
+            var props = _currentToolSet["Add Particle"].Properties;
+            bool snapToGrid = (bool)props["SnapToGrid"];
+            if (ImGui.Checkbox("Snap To Grid", ref snapToGrid))
+            {
+                props["SnapToGrid"] = snapToGrid;
+            }
+        }
+        else if (_selectedToolName == "Add Stick Between Particles")
+        {
+            var props = _currentToolSet["Add Stick Between Particles"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+        }
+        else if (_selectedToolName == "Add Polygon")
+        {
+            var props = _currentToolSet["Add Polygon"].Properties;
+            bool snapToGrid = (bool)props["SnapToGrid"];
+            if (ImGui.Checkbox("Snap To Grid", ref snapToGrid))
+            {
+                props["SnapToGrid"] = snapToGrid;
+            }
+        }
+        else if (_selectedToolName == "Remove Stick")
+        {
+            var props = _currentToolSet["Remove Stick"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+        }
+    }
+
+    private void EnsureSelectedToolValid()
+    {
+        var set = _currentToolSet;
+        if (!set.ContainsKey(_selectedToolName))
+        {
+            var enumerator = set.Keys.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                _selectedToolName = enumerator.Current;
             }
         }
     }

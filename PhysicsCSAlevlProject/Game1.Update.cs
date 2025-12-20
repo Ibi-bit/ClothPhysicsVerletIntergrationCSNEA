@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
 
@@ -247,15 +245,9 @@ public partial class Game1
                 cutLine = null;
             }
         }
-
-        if (
-            _currentMode == MeshMode.Edit
-            && !ImGuiNET.ImGui.IsAnyItemHovered()
-            && _windowBounds.Contains(mouseState.Position)
-        )
+        else if (_selectedToolName == "Add Polygon")
         {
-            _buildableMeshInstance = _polygonBuilderInstance.Update(
-                gameTime,
+            _buildableMeshInstance = _polygonBuilderInstance.BuildPolygon(
                 keyboardState,
                 _prevKeyboardState,
                 mouseState,

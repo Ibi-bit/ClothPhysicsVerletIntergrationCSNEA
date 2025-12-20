@@ -200,11 +200,11 @@ public partial class Game1
             {
                 SetMode(MeshMode.Cloth);
             }
-            if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Interact))
+            if (ImGui.MenuItem("Interact", null, _currentMode == MeshMode.Interact))
             {
                 SetMode(MeshMode.Interact);
             }
-            if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.Edit))
+            if (ImGui.MenuItem("Edit", null, _currentMode == MeshMode.Edit))
             {
                 SetMode(MeshMode.Edit);
             }
@@ -224,9 +224,9 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Tools"))
         {
-            ImGui.BeginDisabled(_currentMode == MeshMode.Edit);
+            
             DrawToolMenuItems();
-            ImGui.EndDisabled();
+            
             ImGui.EndMenu();
         }
         if (ImGui.MenuItem(Paused ? "Resume (Esc)" : "Pause (Esc)"))
@@ -287,10 +287,10 @@ public partial class Game1
         ImGui.Separator();
 
         ImGui.Text("Tools:");
-        if (_currentMode != MeshMode.Edit)
-        {
-            DrawToolButtons();
-        }
+        
+        
+        DrawToolButtons();
+        
 
         ImGui.Separator();
         DrawSelectedToolSettings();
