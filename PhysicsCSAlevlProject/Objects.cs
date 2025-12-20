@@ -17,6 +17,18 @@ class Particle
     public bool IsPinned;
     public bool IsSelected;
 
+    public Particle()
+    {
+        Position = Vector2.Zero;
+        PreviousPosition = Vector2.Zero;
+        Mass = 1.0f;
+        AccumulatedForce = Vector2.Zero;
+        IsPinned = false;
+        IsSelected = false;
+        ID = -1;
+        TotalForceMagnitude = 0f;
+    }
+
     public Particle(Vector2 position, float mass, bool isPinned)
     {
         Position = position;
@@ -36,8 +48,16 @@ class DrawableParticle : Particle
     public Color Color { get; set; }
     public Vector2 Size { get; set; }
 
+    public DrawableParticle()
+        : base(Vector2.Zero, 1.0f, false)
+    {
+        Size = new Vector2(10, 10);
+        Color = Color.White;
+        UpdateRectangle();
+    }
+
     public DrawableParticle(Vector2 position, float mass, Vector2 size, Color color)
-        : base(position, mass, false) // Default to not pinned
+        : base(position, mass, false)
     {
         Size = size;
         Color = color;
@@ -45,7 +65,7 @@ class DrawableParticle : Particle
     }
 
     public DrawableParticle(Vector2 position, float mass, Color color)
-        : base(position, mass, false) // Default to not pinned
+        : base(position, mass, false)
     {
         Size = new Vector2(10, 10);
         Color = color;
@@ -79,6 +99,13 @@ class Stick
     public Particle P2;
     public float Length;
 
+    public Stick()
+    {
+        P1 = null;
+        P2 = null;
+        Length = 0f;
+    }
+
     public Stick(Particle p1, Particle p2)
     {
         P1 = p1;
@@ -92,6 +119,15 @@ class DrawableStick : Stick
     private PrimitiveBatch.Line line;
     public Color Color { get; set; }
     public float Width { get; set; }
+    public bool IsCut { get; set; }
+
+    public DrawableStick()
+        : base()
+    {
+        Color = Color.White;
+        Width = 2.0f;
+        IsCut = false;
+    }
 
     public DrawableStick(Particle p1, Particle p2, Color color, float width = 2.0f)
         : base(p1, p2)
@@ -117,7 +153,8 @@ class DrawableStick : Stick
     public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
         line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color, Width);
-        line.Draw(spriteBatch, primitiveBatch);
+        if (!IsCut)
+            line.Draw(spriteBatch, primitiveBatch);
     }
 }
 
@@ -128,8 +165,6 @@ class Cloth : Mesh
     public DrawableStick[][] verticalSticks;
 
     public float naturalLength;
-    public float springConstant = 1.0f;
-    public float drag = 0.99f;
     public float mass;
 
     public Cloth(
@@ -140,10 +175,11 @@ class Cloth : Mesh
         float mass = 1f
     )
     {
-        this.naturalLength = naturalLength; // Assign the naturalLength field
+        this.naturalLength = naturalLength;
         int rows = (int)(Size.Y / naturalLength);
         int cols = (int)(Size.X / naturalLength);
         this.springConstant = springConstant;
+
         this.mass = mass;
         particles = new DrawableParticle[rows][];
         horizontalSticks = new DrawableStick[rows][];
@@ -216,15 +252,13 @@ class Cloth : Mesh
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                if (sticks[i][j] != null)
-                    sticks[i][j].Draw(spriteBatch, primitiveBatch);
+                sticks[i][j].Draw(spriteBatch, primitiveBatch);
             }
         }
     }
 
     private float CalculateStressLerp(float forceMagnitude)
     {
-        
         if (forceStdDeviation > 0.0001f)
         {
             float zScore = (forceMagnitude - meanForceMagnitude) / forceStdDeviation;
@@ -259,7 +293,7 @@ class Cloth : Mesh
 
                 if (particle.IsPinned)
                 {
-                    particle.Color = Color.LightGray;
+                    particle.Color = Color.BlueViolet;
                     particle.Draw(spriteBatch, primitiveBatch);
                     continue;
                 }
@@ -267,7 +301,6 @@ class Cloth : Mesh
                 float forceMagnitude = particle.TotalForceMagnitude;
                 float lerpFactor = CalculateStressLerp(forceMagnitude);
                 float easedLerp = lerpFactor * lerpFactor;
-                // particle.Color = Color.Lerp(Color.White, Color.Red, easedLerp);
                 particle.Draw(spriteBatch, primitiveBatch);
                 particles[i][j] = particle;
             }
@@ -287,11 +320,17 @@ class Mesh
     public float forceStdDeviation = 0f;
     public float maxForceMagnitude = 0f;
 
+    public float springConstant = 10000f;
+    public float drag = 0.997f;
+
     public class MeshStick : DrawableStick
     {
         public int Id;
         public int P1Id;
         public int P2Id;
+
+        public MeshStick()
+            : base() { }
 
         public MeshStick(DrawableParticle p1, DrawableParticle p2, Color color, float width = 2.0f)
             : base(p1, p2, color, width) { }
@@ -301,6 +340,31 @@ class Mesh
 
     private readonly Dictionary<int, HashSet<int>> _particleToStickIds =
         new Dictionary<int, HashSet<int>>();
+
+    public void RestoreStickReferences()
+    {
+        foreach (var stick in Sticks.Values)
+        {
+            if (Particles.ContainsKey(stick.P1Id) && Particles.ContainsKey(stick.P2Id))
+            {
+                stick.P1 = Particles[stick.P1Id];
+                stick.P2 = Particles[stick.P2Id];
+                stick.Length = Vector2.Distance(stick.P1.Position, stick.P2.Position);
+            }
+        }
+        _particleToStickIds.Clear();
+        foreach (var particle in Particles.Values)
+        {
+            _particleToStickIds[particle.ID] = new HashSet<int>();
+        }
+        foreach (var stick in Sticks.Values)
+        {
+            if (_particleToStickIds.ContainsKey(stick.P1Id))
+                _particleToStickIds[stick.P1Id].Add(stick.Id);
+            if (_particleToStickIds.ContainsKey(stick.P2Id))
+                _particleToStickIds[stick.P2Id].Add(stick.Id);
+        }
+    }
 
     protected int RegisterParticle(DrawableParticle particle)
     {
@@ -337,6 +401,15 @@ class Mesh
         return id;
     }
 
+    public void ResetMesh()
+    {
+        Particles.Clear();
+        Sticks.Clear();
+        _nextParticleId = 1;
+        _nextStickId = 1;
+        _particleToStickIds.Clear();
+    }
+
     public bool RemoveParticle(int particleId)
     {
         if (!Particles.ContainsKey(particleId))
@@ -352,6 +425,35 @@ class Mesh
 
         _particleToStickIds.Remove(particleId);
         return Particles.Remove(particleId);
+    }
+
+    public void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
+    {
+        var sticksToCut = new List<int>();
+
+        foreach (var kvp in Sticks)
+        {
+            var stick = kvp.Value;
+            if (LinesIntersect(lineStart, lineEnd, stick.P1.Position, stick.P2.Position))
+            {
+                sticksToCut.Add(kvp.Key);
+            }
+        }
+
+        foreach (var stickId in sticksToCut)
+        {
+            RemoveStick(stickId);
+        }
+    }
+
+    private bool LinesIntersect(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+    {
+        float ccw(Vector2 A, Vector2 B, Vector2 C)
+        {
+            return (C.Y - A.Y) * (B.X - A.X) > (B.Y - A.Y) * (C.X - A.X) ? 1 : -1;
+        }
+
+        return ccw(p1, p3, p4) != ccw(p2, p3, p4) && ccw(p1, p2, p3) != ccw(p1, p2, p4);
     }
 
     public int? AddStick(int p1Id, int p2Id, Color color, float width = 2.0f)
@@ -438,11 +540,49 @@ public class Tool
     public string Name;
     public Texture2D Icon;
     public Texture2D CursorIcon;
+    public Dictionary<string, object> Properties = new Dictionary<string, object>();
 
     public Tool(string name, Texture2D icon, Texture2D cursorIcon)
     {
         Name = name;
         Icon = icon;
         CursorIcon = cursorIcon;
+    }
+}
+
+class BuildableMesh : Mesh
+{
+    public float mass = 0.1f;
+
+    public BuildableMesh(float springConstant = 10000f, float mass = 0.1f)
+    {
+        this.springConstant = springConstant;
+        this.mass = mass;
+    }
+
+    public int AddParticleAt(Vector2 position, bool isPinned = false)
+    {
+        return AddParticle(position, isPinned ? 0f : mass, isPinned, Color.White);
+    }
+
+    public int? AddStickBetween(int p1Id, int p2Id)
+    {
+        return AddStick(p1Id, p2Id, Color.White);
+    }
+
+    public int? FindClosestParticle(Vector2 position, float radius)
+    {
+        float minDist = radius;
+        int? closest = null;
+        foreach (var kvp in Particles)
+        {
+            float dist = Vector2.Distance(kvp.Value.Position, position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = kvp.Key;
+            }
+        }
+        return closest;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using PhysicsCSAlevlProject;
-using BenchmarkDotNet.Running;
 
 namespace PhysicsCSAlevlProject
 {
@@ -7,15 +6,8 @@ namespace PhysicsCSAlevlProject
     {
         static void Main(string[] args)
         {
-            if (args.Length > 0 && args[0] == "--benchmark")
-            {
-                PhysicsBenchmarkRunner.RunBenchmarks();
-            }
-            else
-            {
-                using var game = new PhysicsCSAlevlProject.Game1();
-                game.Run();
-            }
+            using var game = new PhysicsCSAlevlProject.Game1();
+            game.Run();
         }
     }
 }
