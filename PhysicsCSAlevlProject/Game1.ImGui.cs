@@ -149,8 +149,8 @@ public partial class Game1
             case MeshMode.Cloth:
                 _activeMesh = _clothInstance;
                 break;
-            case MeshMode.Buildable:
-            case MeshMode.PolygonBuilder:
+            case MeshMode.Interact:
+            case MeshMode.Edit:
                 _activeMesh = _buildableMeshInstance;
                 break;
         }
@@ -200,13 +200,13 @@ public partial class Game1
             {
                 SetMode(MeshMode.Cloth);
             }
-            if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Buildable))
+            if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Interact))
             {
-                SetMode(MeshMode.Buildable);
+                SetMode(MeshMode.Interact);
             }
-            if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.PolygonBuilder))
+            if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.Edit))
             {
-                SetMode(MeshMode.PolygonBuilder);
+                SetMode(MeshMode.Edit);
             }
             ImGui.EndMenu();
         }
@@ -224,7 +224,7 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Tools"))
         {
-            ImGui.BeginDisabled(_currentMode == MeshMode.PolygonBuilder);
+            ImGui.BeginDisabled(_currentMode == MeshMode.Edit);
             DrawToolMenuItems();
             ImGui.EndDisabled();
             ImGui.EndMenu();
@@ -287,7 +287,7 @@ public partial class Game1
         ImGui.Separator();
 
         ImGui.Text("Tools:");
-        if (_currentMode != MeshMode.PolygonBuilder)
+        if (_currentMode != MeshMode.Edit)
         {
             DrawToolButtons();
         }
@@ -305,7 +305,7 @@ public partial class Game1
         var red = new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f);
         ImGui.PushStyleColor(ImGuiCol.Button, red);
         if (
-            (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             && ImGui.Button("Reset Buildable Mesh")
         )
         {

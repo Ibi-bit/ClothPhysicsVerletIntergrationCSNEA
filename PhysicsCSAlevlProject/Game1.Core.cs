@@ -37,7 +37,6 @@ public partial class Game1 : Game
 
     private bool _useConstraintSolver = false;
     private int _constraintIterations = 5;
-
     private Mesh _activeMesh;
     private Cloth _clothInstance;
     private BuildableMesh _buildableMeshInstance;
@@ -51,8 +50,8 @@ public partial class Game1 : Game
     private enum MeshMode
     {
         Cloth,
-        Buildable,
-        PolygonBuilder,
+        Interact,
+        Edit,
     }
 
     private MeshMode _currentMode = MeshMode.Cloth;
@@ -106,7 +105,8 @@ public partial class Game1 : Game
 
         _springConstant = 5000f;
 
-        InitializeTools();
+        InitializeInteractTools();
+        InitializeBuildTools();
 
         float naturalLength = 10f;
         float mass = 0.1f;

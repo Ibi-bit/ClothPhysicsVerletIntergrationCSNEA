@@ -26,7 +26,7 @@ public partial class Game1
 
         _activeMesh.Draw(_spriteBatch, _primitiveBatch);
 
-        if (_currentMode == MeshMode.PolygonBuilder && _font != null)
+        if (_currentMode == MeshMode.Edit && _font != null)
         {
             _polygonBuilderInstance.Draw(_spriteBatch, _primitiveBatch, _font);
         }
