@@ -15,7 +15,7 @@ public partial class Game1
     private bool _showSaveWindow = false;
     private ImGuiLogger _Logger = new ImGuiLogger();
     private bool _showLoggerWindow = false;
-    private string _meshName= "MyMesh";
+    private string _meshName = "MyMesh";
     private string _StructurePath =
         "/Users/sampartington/Documents/y13/alevelproject/ClothPhysicsVerletIntergrationCSNEA/PhysicsCSAlevlProject/JSONStructures";
 
@@ -86,7 +86,7 @@ public partial class Game1
         ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -30));
         foreach (var index in inspectedParticles)
         {
-if (!_activeMesh.Particles.TryGetValue(index, out var p))
+            if (!_activeMesh.Particles.TryGetValue(index, out var p))
             {
                 continue;
             }
@@ -280,14 +280,14 @@ if (!_activeMesh.Particles.TryGetValue(index, out var p))
         }
         ImGui.Text("Available Meshes:");
         ImGui.Separator();
-        
+
         var meshes = LoadAllMeshesFromDirectory(_StructurePath);
-        
+
         if (meshes.Count == 0)
         {
             ImGui.TextDisabled("No saved meshes found.");
         }
-        
+
         foreach (var meshEntry in meshes)
         {
             if (ImGui.Button($"Load {meshEntry.Key}"))

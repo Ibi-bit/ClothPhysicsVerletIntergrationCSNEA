@@ -19,7 +19,8 @@ class PolygonBuilder
         KeyboardState previousKeyboardState,
         MouseState mouseState,
         MouseState previousMouseState,
-        BuildableMesh mesh,bool imguiWantsMouse
+        BuildableMesh mesh,
+        bool imguiWantsMouse
     )
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
@@ -66,7 +67,6 @@ class PolygonBuilder
                 _finalParticle = -1;
             }
         }
-
 
         return mesh;
     }
