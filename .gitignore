@@ -7,5 +7,4 @@ obj/
 .vscode/ 
 .DS_Store
 global.json
-PhysicsCSAlevlProject/JSONStructures/*
 
