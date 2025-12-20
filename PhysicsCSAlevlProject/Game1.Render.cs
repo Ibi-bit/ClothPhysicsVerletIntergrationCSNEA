@@ -49,7 +49,6 @@ public partial class Game1
 
     private void HandleModeSelection()
     {
-        
         SetMode(_currentMode);
     }
 }

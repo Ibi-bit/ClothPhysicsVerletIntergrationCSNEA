@@ -77,6 +77,14 @@ class PolygonBuilder
         return mesh;
     }
 
+    public void Reset()
+    {
+        _isBuilding = false;
+        _polygonVertices.Clear();
+        _initialParticle = -1;
+        _finalParticle = -1;
+    }
+
     public bool IsBuilding => _isBuilding;
     public int VertexCount => _polygonVertices.Count;
 

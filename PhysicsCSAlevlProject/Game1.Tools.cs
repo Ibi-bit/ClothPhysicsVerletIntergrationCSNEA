@@ -19,6 +19,7 @@ public partial class Game1
     }
     private float dragRadius = 20f;
     private List<int> inspectedParticles = new List<int>();
+    private int? _stickToolFirstParticleId = null;
 
     private void InitializeInteractTools()
     {
@@ -389,15 +390,15 @@ public partial class Game1
         Vector2 windDirection = endPos - startPos;
         float windDistance = windDirection.Length();
 
-        float minDist = _interactTools["Wind"].Properties.ContainsKey("MinDistance")
-            ? (float)_interactTools["Wind"].Properties["MinDistance"]
+        float minDist = _currentToolSet["Wind"].Properties.ContainsKey("MinDistance")
+            ? (float)_currentToolSet["Wind"].Properties["MinDistance"]
             : 5f;
 
         if (windDistance < minDist)
             return;
 
-        float strength = _interactTools["Wind"].Properties.ContainsKey("StrengthScale")
-            ? (float)_interactTools["Wind"].Properties["StrengthScale"]
+        float strength = _currentToolSet["Wind"].Properties.ContainsKey("StrengthScale")
+            ? (float)_currentToolSet["Wind"].Properties["StrengthScale"]
             : 1.0f;
 
         windForce = windDirection * (windDistance / 50f) * strength;
@@ -766,6 +767,47 @@ public partial class Game1
                     inspectedParticles.Add(kvp.Key);
                 }
                 _activeMesh.Particles[kvp.Key] = particle;
+            }
+        }
+    }
+    private void HandleAddStickBetweenParticlesClick(Vector2 clickPos)
+    {
+        float radius = _currentToolSet["Add Stick Between Particles"].Properties["Radius"]
+            is float r
+            ? r
+            : 10f;
+        var ids = GetBuildableMeshParticlesInRadius(clickPos, radius, 1);
+        if (ids.Count >= 1)
+        {
+            int hitId = ids[0];
+            if (_stickToolFirstParticleId == null)
+            {
+                _stickToolFirstParticleId = hitId;
+                if (_buildableMeshInstance.Particles.TryGetValue(hitId, out var p))
+                {
+                    p.Color = Color.Yellow;
+                    _buildableMeshInstance.Particles[hitId] = p;
+                }
+            }
+            else if (_stickToolFirstParticleId.Value != hitId)
+            {
+                _buildableMeshInstance.AddStickBetween(_stickToolFirstParticleId.Value, hitId);
+                if (
+                    _buildableMeshInstance.Particles.TryGetValue(
+                        _stickToolFirstParticleId.Value,
+                        out var p1
+                    )
+                )
+                {
+                    p1.Color = Color.White;
+                    _buildableMeshInstance.Particles[_stickToolFirstParticleId.Value] = p1;
+                }
+                if (_buildableMeshInstance.Particles.TryGetValue(hitId, out var p2))
+                {
+                    p2.Color = Color.White;
+                    _buildableMeshInstance.Particles[hitId] = p2;
+                }
+                _stickToolFirstParticleId = null;
             }
         }
     }
