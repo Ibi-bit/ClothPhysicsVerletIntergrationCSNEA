@@ -15,7 +15,7 @@ public partial class Game1
     private bool _showSaveWindow = false;
     private ImGuiLogger _Logger = new ImGuiLogger();
     private bool _showLoggerWindow = false;
-    private string _meshName;
+    private string _meshName= "MyMesh";
     private string _StructurePath =
         "/Users/sampartington/Documents/y13/alevelproject/ClothPhysicsVerletIntergrationCSNEA/PhysicsCSAlevlProject/JSONStructures";
 
