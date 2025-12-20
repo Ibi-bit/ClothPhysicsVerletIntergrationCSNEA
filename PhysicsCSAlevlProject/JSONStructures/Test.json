@@ -1,0 +1,745 @@
+{
+  "$type": "BuildableMesh, PhysicsCSAlevlProject",
+  "mass": 0.1,
+  "meanForceMagnitude": 980.68976,
+  "forceStdDeviation": 1230.2853,
+  "maxForceMagnitude": 4286.097,
+  "springConstant": 5000.0,
+  "drag": 0.997,
+  "Particles": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.Int32, System.Private.CoreLib],[DrawableParticle, PhysicsCSAlevlProject]], System.Private.CoreLib",
+    "1": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "342.44568, 630",
+      "PreviousPosition": "342.44568, 630",
+      "Mass": 0.1,
+      "AccumulatedForce": "-1.3970947, 614.1455",
+      "ID": 1,
+      "TotalForceMagnitude": 1594.1461,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "2": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "694.1042, 550.18677",
+      "PreviousPosition": "694.1042, 550.18677",
+      "Mass": 0.1,
+      "AccumulatedForce": "-0.26953125, -978.2224",
+      "ID": 2,
+      "TotalForceMagnitude": 1.7979059,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "3": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "636.839, 459.15228",
+      "PreviousPosition": "636.839, 459.15228",
+      "Mass": 0.1,
+      "AccumulatedForce": "2.1535645, -980.5641",
+      "ID": 3,
+      "TotalForceMagnitude": 2.2262151,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "4": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "798.53296, 533.5093",
+      "PreviousPosition": "798.533, 533.5093",
+      "Mass": 0.1,
+      "AccumulatedForce": "0.4453125, -981.0774",
+      "ID": 4,
+      "TotalForceMagnitude": 1.165795,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "5": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "697.98444, 616.8707",
+      "PreviousPosition": "697.98444, 616.8707",
+      "Mass": 0.1,
+      "AccumulatedForce": "-1.4142418, -980.3788",
+      "ID": 5,
+      "TotalForceMagnitude": 1.4640893,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "6": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "774.47186, 630",
+      "PreviousPosition": "774.47186, 630",
+      "Mass": 0.1,
+      "AccumulatedForce": "0.48205566, 3306.0972",
+      "ID": 6,
+      "TotalForceMagnitude": 4286.097,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "7": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "500.54742, 630",
+      "PreviousPosition": "500.54742, 630",
+      "Mass": 0.1,
+      "AccumulatedForce": "0, 0",
+      "ID": 7,
+      "TotalForceMagnitude": 980.0,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "8": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "294.7889, 630",
+      "PreviousPosition": "294.7889, 630",
+      "Mass": 0.1,
+      "AccumulatedForce": "0, 0",
+      "ID": 8,
+      "TotalForceMagnitude": 980.0,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "9": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "237.83229, 630",
+      "PreviousPosition": "237.83229, 630",
+      "Mass": 0.1,
+      "AccumulatedForce": "0, 0",
+      "ID": 9,
+      "TotalForceMagnitude": 980.0,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    },
+    "10": {
+      "$type": "DrawableParticle, PhysicsCSAlevlProject",
+      "Position": "347.51746, 630",
+      "PreviousPosition": "347.51746, 630",
+      "Mass": 0.1,
+      "AccumulatedForce": "0, 0",
+      "ID": 10,
+      "TotalForceMagnitude": 980.0,
+      "IsPinned": false,
+      "IsSelected": false,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Size": "5, 5"
+    }
+  },
+  "Sticks": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.Int32, System.Private.CoreLib],[Mesh+MeshStick, PhysicsCSAlevlProject]], System.Private.CoreLib",
+    "1": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 1,
+      "P1Id": 1,
+      "P2Id": 2,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "342.44568, 630",
+        "PreviousPosition": "342.44568, 630",
+        "Mass": 0.1,
+        "AccumulatedForce": "-1.3970947, 614.1455",
+        "ID": 1,
+        "TotalForceMagnitude": 1594.1461,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "694.1042, 550.18677",
+        "PreviousPosition": "694.1042, 550.18677",
+        "Mass": 0.1,
+        "AccumulatedForce": "-0.26953125, -978.2224",
+        "ID": 2,
+        "TotalForceMagnitude": 1.7979059,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 360.24612,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "2": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 2,
+      "P1Id": 2,
+      "P2Id": 3,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "694.1042, 550.18677",
+        "PreviousPosition": "694.1042, 550.18677",
+        "Mass": 0.1,
+        "AccumulatedForce": "-0.26953125, -978.2224",
+        "ID": 2,
+        "TotalForceMagnitude": 1.7979059,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "636.839, 459.15228",
+        "PreviousPosition": "636.839, 459.15228",
+        "Mass": 0.1,
+        "AccumulatedForce": "2.1535645, -980.5641",
+        "ID": 3,
+        "TotalForceMagnitude": 2.2262151,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 107.27366,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 237,
+        "G": 237,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "3": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 3,
+      "P1Id": 3,
+      "P2Id": 1,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "636.839, 459.15228",
+        "PreviousPosition": "636.839, 459.15228",
+        "Mass": 0.1,
+        "AccumulatedForce": "2.1535645, -980.5641",
+        "ID": 3,
+        "TotalForceMagnitude": 2.2262151,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "342.44568, 630",
+        "PreviousPosition": "342.44568, 630",
+        "Mass": 0.1,
+        "AccumulatedForce": "-1.3970947, 614.1455",
+        "ID": 1,
+        "TotalForceMagnitude": 1594.1461,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 340.77847,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "4": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 4,
+      "P1Id": 4,
+      "P2Id": 5,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "798.53296, 533.5093",
+        "PreviousPosition": "798.533, 533.5093",
+        "Mass": 0.1,
+        "AccumulatedForce": "0.4453125, -981.0774",
+        "ID": 4,
+        "TotalForceMagnitude": 1.165795,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "697.98444, 616.8707",
+        "PreviousPosition": "697.98444, 616.8707",
+        "Mass": 0.1,
+        "AccumulatedForce": "-1.4142418, -980.3788",
+        "ID": 5,
+        "TotalForceMagnitude": 1.4640893,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 130.49231,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "5": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 5,
+      "P1Id": 5,
+      "P2Id": 6,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "697.98444, 616.8707",
+        "PreviousPosition": "697.98444, 616.8707",
+        "Mass": 0.1,
+        "AccumulatedForce": "-1.4142418, -980.3788",
+        "ID": 5,
+        "TotalForceMagnitude": 1.4640893,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "774.47186, 630",
+        "PreviousPosition": "774.47186, 630",
+        "Mass": 0.1,
+        "AccumulatedForce": "0.48205566, 3306.0972",
+        "ID": 6,
+        "TotalForceMagnitude": 4286.097,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 77.69257,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "6": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 6,
+      "P1Id": 6,
+      "P2Id": 4,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "774.47186, 630",
+        "PreviousPosition": "774.47186, 630",
+        "Mass": 0.1,
+        "AccumulatedForce": "0.48205566, 3306.0972",
+        "ID": 6,
+        "TotalForceMagnitude": 4286.097,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "798.53296, 533.5093",
+        "PreviousPosition": "798.533, 533.5093",
+        "Mass": 0.1,
+        "AccumulatedForce": "0.4453125, -981.0774",
+        "ID": 4,
+        "TotalForceMagnitude": 1.165795,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 100.04942,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "7": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 7,
+      "P1Id": 4,
+      "P2Id": 3,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "798.53296, 533.5093",
+        "PreviousPosition": "798.533, 533.5093",
+        "Mass": 0.1,
+        "AccumulatedForce": "0.4453125, -981.0774",
+        "ID": 4,
+        "TotalForceMagnitude": 1.165795,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "636.839, 459.15228",
+        "PreviousPosition": "636.839, 459.15228",
+        "Mass": 0.1,
+        "AccumulatedForce": "2.1535645, -980.5641",
+        "ID": 3,
+        "TotalForceMagnitude": 2.2262151,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 178.5144,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "8": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 8,
+      "P1Id": 2,
+      "P2Id": 5,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "694.1042, 550.18677",
+        "PreviousPosition": "694.1042, 550.18677",
+        "Mass": 0.1,
+        "AccumulatedForce": "-0.26953125, -978.2224",
+        "ID": 2,
+        "TotalForceMagnitude": 1.7979059,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "697.98444, 616.8707",
+        "PreviousPosition": "697.98444, 616.8707",
+        "Mass": 0.1,
+        "AccumulatedForce": "-1.4142418, -980.3788",
+        "ID": 5,
+        "TotalForceMagnitude": 1.4640893,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 66.690674,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 254,
+        "G": 254,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "9": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 9,
+      "P1Id": 6,
+      "P2Id": 2,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "774.47186, 630",
+        "PreviousPosition": "774.47186, 630",
+        "Mass": 0.1,
+        "AccumulatedForce": "0.48205566, 3306.0972",
+        "ID": 6,
+        "TotalForceMagnitude": 4286.097,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "694.1042, 550.18677",
+        "PreviousPosition": "694.1042, 550.18677",
+        "Mass": 0.1,
+        "AccumulatedForce": "-0.26953125, -978.2224",
+        "ID": 2,
+        "TotalForceMagnitude": 1.7979059,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 113.35164,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 255,
+        "G": 255,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    },
+    "10": {
+      "$type": "Mesh+MeshStick, PhysicsCSAlevlProject",
+      "Id": 10,
+      "P1Id": 2,
+      "P2Id": 4,
+      "P1": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "694.1042, 550.18677",
+        "PreviousPosition": "694.1042, 550.18677",
+        "Mass": 0.1,
+        "AccumulatedForce": "-0.26953125, -978.2224",
+        "ID": 2,
+        "TotalForceMagnitude": 1.7979059,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "P2": {
+        "$type": "DrawableParticle, PhysicsCSAlevlProject",
+        "Position": "798.53296, 533.5093",
+        "PreviousPosition": "798.533, 533.5093",
+        "Mass": 0.1,
+        "AccumulatedForce": "0.4453125, -981.0774",
+        "ID": 4,
+        "TotalForceMagnitude": 1.165795,
+        "IsPinned": false,
+        "IsSelected": false,
+        "Color": {
+          "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+          "B": 255,
+          "G": 255,
+          "R": 255,
+          "A": 255
+        },
+        "Size": "5, 5"
+      },
+      "Length": 105.19722,
+      "Color": {
+        "$type": "Microsoft.Xna.Framework.Color, MonoGame.Framework",
+        "B": 60,
+        "G": 60,
+        "R": 255,
+        "A": 255
+      },
+      "Width": 2.0,
+      "IsCut": false
+    }
+  }
+}

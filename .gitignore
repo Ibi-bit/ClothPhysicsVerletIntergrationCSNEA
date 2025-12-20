@@ -2,7 +2,7 @@ bin/
 obj/
 *.user
 *.suo
-*.json
+
 .vs
 .vscode/ 
 .DS_Store
