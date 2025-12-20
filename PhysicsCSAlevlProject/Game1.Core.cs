@@ -39,7 +39,7 @@ public partial class Game1 : Game
     private int _constraintIterations = 5;
     private Mesh _activeMesh;
     private Cloth _clothInstance;
-    private BuildableMesh _buildableMeshInstance;
+    private BuildableMesh _defaultBuildableMesh;
     private PolygonBuilder _polygonBuilderInstance;
     private static Rectangle _windowBounds;
     bool keepAspectRatio = true;
@@ -129,7 +129,7 @@ public partial class Game1 : Game
             mass
         );
 
-        _buildableMeshInstance = new BuildableMesh(_springConstant, mass);
+        _defaultBuildableMesh = new BuildableMesh(_springConstant, mass);
         _polygonBuilderInstance = new PolygonBuilder();
 
         _activeMesh = _clothInstance;

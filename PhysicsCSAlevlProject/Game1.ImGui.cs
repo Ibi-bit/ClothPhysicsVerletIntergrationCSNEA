@@ -11,8 +11,13 @@ public partial class Game1
     private bool _showPhysicsControlsWindow = false;
     private bool _showConfigurationWindow = false;
     private bool _showReadMeWindow = false;
+    private bool _showStructureWindow = false;
+    private bool _showSaveWindow = false;
     private ImGuiLogger _Logger = new ImGuiLogger();
     private bool _showLoggerWindow = false;
+    private string _meshName;
+    private string _StructurePath =
+        "/Users/sampartington/Documents/y13/alevelproject/ClothPhysicsVerletIntergrationCSNEA/PhysicsCSAlevlProject/JSONStructures";
 
     bool ctrlHeld = false;
     bool shiftHeld = false;
@@ -47,6 +52,14 @@ public partial class Game1
         {
             DrawReadMeWindow();
         }
+        if (_showStructureWindow)
+        {
+            DrawStructureWindow();
+        }
+        if (_showSaveWindow)
+        {
+            DrawSaveWindow();
+        }
         if (_showLoggerWindow)
         {
             _Logger.DrawLogs(ref _showLoggerWindow);
@@ -73,7 +86,7 @@ public partial class Game1
         ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -30));
         foreach (var index in inspectedParticles)
         {
-            if (!_buildableMeshInstance.Particles.TryGetValue(index, out var p))
+if (!_activeMesh.Particles.TryGetValue(index, out var p))
             {
                 continue;
             }
@@ -148,13 +161,14 @@ public partial class Game1
         {
             case MeshMode.Cloth:
                 _activeMesh = _clothInstance;
+                EnsureSelectedToolValid();
                 break;
             case MeshMode.Interact:
-                _activeMesh = _buildableMeshInstance;
+                _activeMesh = _defaultBuildableMesh;
                 EnsureSelectedToolValid();
                 break;
             case MeshMode.Edit:
-                _activeMesh = _buildableMeshInstance;
+                _activeMesh = _defaultBuildableMesh;
                 EnsureSelectedToolValid();
                 break;
         }
@@ -177,12 +191,13 @@ public partial class Game1
         if (ImGui.BeginMenu("File"))
         {
             if (ImGui.MenuItem("New")) { }
-            if (ImGui.MenuItem("Open")) { }
-            if (ImGui.MenuItem("Save")) { }
-            ImGui.Separator();
-            if (ImGui.MenuItem("Exit"))
+            if (ImGui.MenuItem("Open"))
             {
-                Exit();
+                _showStructureWindow = true;
+            }
+            if (ImGui.MenuItem("Save"))
+            {
+                _showSaveWindow = true;
             }
             ImGui.EndMenu();
         }
@@ -256,6 +271,55 @@ public partial class Game1
         ImGui.EndMainMenuBar();
     }
 
+    private void DrawStructureWindow()
+    {
+        if (!ImGui.Begin("Structure", ref _showStructureWindow))
+        {
+            ImGui.End();
+            return;
+        }
+        ImGui.Text("Available Meshes:");
+        ImGui.Separator();
+        
+        var meshes = LoadAllMeshesFromDirectory(_StructurePath);
+        
+        if (meshes.Count == 0)
+        {
+            ImGui.TextDisabled("No saved meshes found.");
+        }
+        
+        foreach (var meshEntry in meshes)
+        {
+            if (ImGui.Button($"Load {meshEntry.Key}"))
+            {
+                _activeMesh = meshEntry.Value;
+                if (_activeMesh is BuildableMesh buildableMesh)
+                {
+                    _defaultBuildableMesh = buildableMesh;
+                }
+                SetMode(MeshMode.Interact);
+                _showStructureWindow = false;
+            }
+        }
+
+        ImGui.End();
+    }
+
+    private void DrawSaveWindow()
+    {
+        if (!ImGui.Begin("Save Mesh", ref _showSaveWindow))
+        {
+            ImGui.End();
+            return;
+        }
+        ImGui.InputText("Mesh Name", ref _meshName, 100);
+        if (ImGui.Button("Save"))
+        {
+            SaveMeshToJSON(_activeMesh, _meshName, _StructurePath);
+        }
+        ImGui.End();
+    }
+
     private void DrawReadMeWindow()
     {
         if (!ImGui.Begin("ReadMe", ref _showReadMeWindow))
@@ -311,7 +375,7 @@ public partial class Game1
             && ImGui.Button("Reset Buildable Mesh")
         )
         {
-            _buildableMeshInstance.ResetMesh();
+            _activeMesh.ResetMesh();
         }
         ImGui.PopStyleColor();
         ImGui.End();
