@@ -150,8 +150,12 @@ public partial class Game1
                 _activeMesh = _clothInstance;
                 break;
             case MeshMode.Interact:
+                _activeMesh = _buildableMeshInstance;
+                EnsureSelectedToolValid();
+                break;
             case MeshMode.Edit:
                 _activeMesh = _buildableMeshInstance;
+                EnsureSelectedToolValid();
                 break;
         }
 
@@ -160,6 +164,7 @@ public partial class Game1
         cutLine = null;
         particlesInDragArea.Clear();
         buildableMeshParticlesInDragArea.Clear();
+        _stickToolFirstParticleId = null;
     }
 
     private void DrawMainMenuBar()
@@ -224,9 +229,8 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Tools"))
         {
-            
             DrawToolMenuItems();
-            
+
             ImGui.EndMenu();
         }
         if (ImGui.MenuItem(Paused ? "Resume (Esc)" : "Pause (Esc)"))
@@ -287,10 +291,8 @@ public partial class Game1
         ImGui.Separator();
 
         ImGui.Text("Tools:");
-        
-        
+
         DrawToolButtons();
-        
 
         ImGui.Separator();
         DrawSelectedToolSettings();
