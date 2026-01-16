@@ -7,6 +7,8 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    Vector2 _collisonBoundsDifference = new Vector2(0, -10);
+
     private DrawableStick[][] ApplyStickForces(DrawableStick[][] sticks)
     {
         float k = _activeMesh.springConstant;
@@ -19,7 +21,7 @@ public partial class Game1
             for (int j = 0, jl = row.Length; j < jl; j++)
             {
                 var s = row[j];
-                if (s.IsCut)
+                if (s == null || s.IsCut)
                     continue;
 
                 float L0 = s.Length;
@@ -262,7 +264,7 @@ public partial class Game1
                         Vector2 previousPosition = p.Position;
                         p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
                         p.PreviousPosition = previousPosition;
-                        p = KeepInsideScreen(p);
+                        p = KeepInsideRect(p, _windowBounds, _collisonBoundsDifference);
                         _clothInstance.particles[i][j] = p;
                     }
                 }
@@ -372,7 +374,6 @@ public partial class Game1
 
         for (int it = 0; it < iterations; it++)
         {
-            // Horizontal sticks
             for (int i = 0; i < _clothInstance.horizontalSticks.Length; i++)
             {
                 var row = _clothInstance.horizontalSticks[i];
@@ -411,7 +412,6 @@ public partial class Game1
                 }
             }
 
-            // Vertical sticks
             for (int i = 0; i < _clothInstance.verticalSticks.Length; i++)
             {
                 var col = _clothInstance.verticalSticks[i];
@@ -450,13 +450,16 @@ public partial class Game1
                 }
             }
 
-            // Keep inside bounds after each pass for stability
             for (int i = 0; i < _clothInstance.particles.Length; i++)
             {
                 for (int j = 0; j < _clothInstance.particles[i].Length; j++)
                 {
                     var p = _clothInstance.particles[i][j];
-                    _clothInstance.particles[i][j] = KeepInsideScreen(p);
+                    _clothInstance.particles[i][j] = KeepInsideRect(
+                        p,
+                        _windowBounds,
+                        _collisonBoundsDifference
+                    );
                 }
             }
         }
@@ -501,12 +504,15 @@ public partial class Game1
                 }
             }
 
-            // Keep inside bounds
             foreach (var kvp in _activeMesh.Particles)
             {
                 var id = kvp.Key;
                 var p = kvp.Value;
-                _activeMesh.Particles[id] = KeepInsideScreen(p);
+                _activeMesh.Particles[id] = KeepInsideRect(
+                    p,
+                    _windowBounds,
+                    _collisonBoundsDifference
+                );
             }
         }
     }

@@ -1,9 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
 
@@ -12,12 +11,32 @@ public partial class Game1
     private bool _showPhysicsControlsWindow = false;
     private bool _showConfigurationWindow = false;
     private bool _showReadMeWindow = false;
+    private bool _showStructureWindow = false;
+    private bool _showSaveWindow = false;
     private ImGuiLogger _Logger = new ImGuiLogger();
     private bool _showLoggerWindow = false;
+    private string _meshName = "MyMesh";
+    private string _StructurePath =
+        "/Users/sampartington/Documents/y13/alevelproject/ClothPhysicsVerletIntergrationCSNEA/PhysicsCSAlevlProject/JSONStructures";
+
+    bool ctrlHeld = false;
+    bool shiftHeld = false;
+
+    bool capsActive = false;
+    bool altHeld = false;
+
+    const float ModeSwitchDisplayDuration = 1.5f;
 
     private void ImGuiDraw(GameTime gameTime)
     {
         _guiRenderer.BeginLayout(gameTime);
+        ctrlHeld = ImGui.GetIO().KeyCtrl;
+        shiftHeld = ImGui.GetIO().KeyShift;
+        altHeld = ImGui.GetIO().KeyAlt;
+        if (ImGui.IsKeyPressed(ImGuiKey.CapsLock))
+        {
+            capsActive = !capsActive;
+        }
 
         DrawMainMenuBar();
         if (_showPhysicsControlsWindow)
@@ -33,12 +52,133 @@ public partial class Game1
         {
             DrawReadMeWindow();
         }
+        if (_showStructureWindow)
+        {
+            DrawStructureWindow();
+        }
+        if (_showSaveWindow)
+        {
+            DrawSaveWindow();
+        }
         if (_showLoggerWindow)
         {
             _Logger.DrawLogs(ref _showLoggerWindow);
         }
+        if (inspectedParticles.Count > 0)
+        {
+            DrawInspectParticleWindow();
+        }
+
+        ModeSwitchingImGui();
 
         _guiRenderer.EndLayout();
+    }
+
+    private void DrawInspectParticleWindow()
+    {
+        if (!ImGui.Begin("Inspect Particle"))
+        {
+            ImGui.End();
+            return;
+        }
+        ImGui.Text("Particle Info:");
+
+        ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -30));
+        foreach (var index in inspectedParticles)
+        {
+            if (!_activeMesh.Particles.TryGetValue(index, out var p))
+            {
+                continue;
+            }
+
+            ImGui.Text($"Particle Index: {index}");
+            ImGui.Text($"Position: {p.Position}");
+            ImGui.Text($"Previous Position: {p.PreviousPosition}");
+            ImGui.Text($"Is Fixed: {p.IsPinned}");
+            if (ImGui.Button(p.IsPinned ? "Unpin Particle" : "Pin Particle"))
+            {
+                p.IsPinned = !p.IsPinned;
+            }
+
+            if (ImGui.Button("Remove Particle From Inspect"))
+            {
+                inspectedParticles.Remove(index);
+                break;
+            }
+            ImGui.Separator();
+        }
+        ImGui.EndChild();
+        ImGui.PushStyleColor(ImGuiCol.Button, new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f));
+        if (ImGui.Button("Close and Clear All"))
+        {
+            inspectedParticles.Clear();
+        }
+        ImGui.PopStyleColor();
+
+        ImGui.End();
+    }
+
+    private void ModeSwitchingImGui()
+    {
+        bool isMac = System.OperatingSystem.IsMacOS();
+        bool backwardModifierHeld = isMac ? altHeld : ctrlHeld;
+
+        if (shiftHeld && ImGui.IsKeyPressed(ImGuiKey.Tab))
+        {
+            int delta = backwardModifierHeld ? -1 : 1;
+            int modeCount = System.Enum.GetValues(typeof(MeshMode)).Length;
+            int newModeIndex = ((int)_currentMode + delta + modeCount) % modeCount;
+            SetMode((MeshMode)newModeIndex);
+        }
+
+        if (shiftHeld)
+        {
+            var drawList = ImGui.GetForegroundDrawList();
+            drawList.AddText(
+                new System.Numerics.Vector2(10, 30),
+                ImGui.GetColorU32(ImGuiCol.Text),
+                "Mode:"
+            );
+            var modes = System.Enum.GetValues(typeof(MeshMode));
+            for (int i = 0; i < modes.Length; i++)
+            {
+                var mode = (MeshMode)modes.GetValue(i);
+                string text = mode == _currentMode ? $"> {mode} <" : $"  {mode}";
+                uint color =
+                    mode == _currentMode
+                        ? ImGui.GetColorU32(new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f))
+                        : ImGui.GetColorU32(ImGuiCol.Text);
+                drawList.AddText(new System.Numerics.Vector2(10, 48 + i * 18), color, text);
+            }
+        }
+    }
+
+    private void SetMode(MeshMode mode)
+    {
+        _currentMode = mode;
+
+        switch (_currentMode)
+        {
+            case MeshMode.Cloth:
+                _activeMesh = _clothInstance;
+                EnsureSelectedToolValid();
+                break;
+            case MeshMode.Interact:
+                _activeMesh = _defaultBuildableMesh;
+                EnsureSelectedToolValid();
+                break;
+            case MeshMode.Edit:
+                _activeMesh = _defaultBuildableMesh;
+                EnsureSelectedToolValid();
+                break;
+        }
+
+        leftPressed = false;
+        windDirectionArrow = null;
+        cutLine = null;
+        particlesInDragArea.Clear();
+        buildableMeshParticlesInDragArea.Clear();
+        _stickToolFirstParticleId = null;
     }
 
     private void DrawMainMenuBar()
@@ -51,12 +191,13 @@ public partial class Game1
         if (ImGui.BeginMenu("File"))
         {
             if (ImGui.MenuItem("New")) { }
-            if (ImGui.MenuItem("Open")) { }
-            if (ImGui.MenuItem("Save")) { }
-            ImGui.Separator();
-            if (ImGui.MenuItem("Exit"))
+            if (ImGui.MenuItem("Open"))
             {
-                Exit();
+                _showStructureWindow = true;
+            }
+            if (ImGui.MenuItem("Save"))
+            {
+                _showSaveWindow = true;
             }
             ImGui.EndMenu();
         }
@@ -77,35 +218,24 @@ public partial class Game1
         {
             if (ImGui.MenuItem("Cloth", null, _currentMode == MeshMode.Cloth))
             {
-                _currentMode = MeshMode.Cloth;
-                _activeMesh = _clothInstance;
-                _modeIndex = 0;
-                ;
+                SetMode(MeshMode.Cloth);
             }
-            if (ImGui.MenuItem("Buildable", null, _currentMode == MeshMode.Buildable))
+            if (ImGui.MenuItem("Interact", null, _currentMode == MeshMode.Interact))
             {
-                _currentMode = MeshMode.Buildable;
-                _activeMesh = _buildableMeshInstance;
-                _modeIndex = 1;
+                SetMode(MeshMode.Interact);
             }
-            if (ImGui.MenuItem("Polygon Builder", null, _currentMode == MeshMode.PolygonBuilder))
+            if (ImGui.MenuItem("Edit", null, _currentMode == MeshMode.Edit))
             {
-                _currentMode = MeshMode.PolygonBuilder;
-                _activeMesh = _buildableMeshInstance;
-                _modeIndex = 2;
+                SetMode(MeshMode.Edit);
             }
-            leftPressed = false;
-            windDirectionArrow = null;
-            cutLine = null;
-            particlesInDragArea.Clear();
-            buildableMeshParticlesInDragArea.Clear();
             ImGui.EndMenu();
         }
         if (ImGui.BeginMenu("Quick Settings"))
         {
             ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
+            ImGui.BeginDisabled(!_useConstraintSolver);
             ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
-
+            ImGui.EndDisabled();
             ImGui.BeginDisabled(_useConstraintSolver);
             ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
             ImGui.EndDisabled();
@@ -141,6 +271,55 @@ public partial class Game1
         ImGui.EndMainMenuBar();
     }
 
+    private void DrawStructureWindow()
+    {
+        if (!ImGui.Begin("Structure", ref _showStructureWindow))
+        {
+            ImGui.End();
+            return;
+        }
+        ImGui.Text("Available Meshes:");
+        ImGui.Separator();
+
+        var meshes = LoadAllMeshesFromDirectory(_StructurePath);
+
+        if (meshes.Count == 0)
+        {
+            ImGui.TextDisabled("No saved meshes found.");
+        }
+
+        foreach (var meshEntry in meshes)
+        {
+            if (ImGui.Button($"Load {meshEntry.Key}"))
+            {
+                _activeMesh = meshEntry.Value;
+                if (_activeMesh is BuildableMesh buildableMesh)
+                {
+                    _defaultBuildableMesh = buildableMesh;
+                }
+                SetMode(MeshMode.Interact);
+                _showStructureWindow = false;
+            }
+        }
+
+        ImGui.End();
+    }
+
+    private void DrawSaveWindow()
+    {
+        if (!ImGui.Begin("Save Mesh", ref _showSaveWindow))
+        {
+            ImGui.End();
+            return;
+        }
+        ImGui.InputText("Mesh Name", ref _meshName, 100);
+        if (ImGui.Button("Save"))
+        {
+            SaveMeshToJSON(_activeMesh, _meshName, _StructurePath);
+        }
+        ImGui.End();
+    }
+
     private void DrawReadMeWindow()
     {
         if (!ImGui.Begin("ReadMe", ref _showReadMeWindow))
@@ -166,8 +345,9 @@ public partial class Game1
         ImGui.Separator();
 
         ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
+        ImGui.BeginDisabled(!_useConstraintSolver);
         ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
-
+        ImGui.EndDisabled();
         ImGui.BeginDisabled(_useConstraintSolver);
         ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
         ImGui.EndDisabled();
@@ -175,10 +355,8 @@ public partial class Game1
         ImGui.Separator();
 
         ImGui.Text("Tools:");
-        if (_currentMode != MeshMode.PolygonBuilder)
-        {
-            DrawToolButtons();
-        }
+
+        DrawToolButtons();
 
         ImGui.Separator();
         DrawSelectedToolSettings();
@@ -193,11 +371,11 @@ public partial class Game1
         var red = new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f);
         ImGui.PushStyleColor(ImGuiCol.Button, red);
         if (
-            (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             && ImGui.Button("Reset Buildable Mesh")
         )
         {
-            _buildableMeshInstance.ResetMesh();
+            _activeMesh.ResetMesh();
         }
         ImGui.PopStyleColor();
         ImGui.End();
@@ -217,19 +395,54 @@ public partial class Game1
             changedBounds = _windowBounds;
         }
 
-        ImGui.Checkbox("Keep Aspect Ratio", ref keepAspectRatio);
-        float aspectRatio =
-            changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
-
-        ImGui.InputInt("Width", ref changedBounds.Width);
-        if (keepAspectRatio)
+        bool ratioToggled = ImGui.Checkbox("Keep Aspect Ratio", ref keepAspectRatio);
+        if (ratioToggled && keepAspectRatio)
         {
-            changedBounds.Height = (int)(changedBounds.Width / aspectRatio);
+            _lockedAspectRatio =
+                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
         }
-        ImGui.InputInt("Height", ref changedBounds.Height);
+        else if (keepAspectRatio && _lockedAspectRatio <= 0.0001f)
+        {
+            _lockedAspectRatio =
+                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
+        }
+
+        int newWidth = changedBounds.Width;
+        int newHeight = changedBounds.Height;
+        bool widthChanged = ImGui.InputInt("Width", ref newWidth);
+
+        ImGui.BeginDisabled(keepAspectRatio);
+        bool heightChanged = ImGui.InputInt("Height", ref newHeight);
+        ImGui.EndDisabled();
+
         if (keepAspectRatio)
         {
-            changedBounds.Width = (int)(changedBounds.Height * aspectRatio);
+            float aspect =
+                _lockedAspectRatio > 0.0001f
+                    ? _lockedAspectRatio
+                    : (
+                        changedBounds.Height > 0
+                            ? changedBounds.Width / (float)changedBounds.Height
+                            : 1f
+                    );
+
+            if (widthChanged && newWidth > 0)
+            {
+                changedBounds.Width = newWidth;
+                changedBounds.Height = Math.Max(1, (int)Math.Round(newWidth / aspect));
+            }
+            else if (heightChanged && newHeight > 0)
+            {
+                changedBounds.Height = newHeight;
+                changedBounds.Width = Math.Max(1, (int)Math.Round(newHeight * aspect));
+            }
+        }
+        else
+        {
+            if (widthChanged)
+                changedBounds.Width = Math.Max(1, newWidth);
+            if (heightChanged)
+                changedBounds.Height = Math.Max(1, newHeight);
         }
 
         if (ImGui.Button("Apply Size"))

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ImGuiNET;
+using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
@@ -10,12 +11,19 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     private string _selectedToolName = "Drag";
-    private Dictionary<string, Tool> _tools;
-    private float dragRadius = 20f;
-
-    private void InitializeTools()
+    private Dictionary<string, Tool> _interactTools;
+    private Dictionary<string, Tool> _buildTools;
+    private Dictionary<string, Tool> _currentToolSet
     {
-        _tools = new Dictionary<string, Tool>
+        get { return _currentMode == MeshMode.Edit ? _buildTools : _interactTools; }
+    }
+    private float dragRadius = 20f;
+    private List<int> inspectedParticles = new List<int>();
+    private int? _stickToolFirstParticleId = null;
+
+    private void InitializeInteractTools()
+    {
+        _interactTools = new Dictionary<string, Tool>
         {
             { "Drag", new Tool("Drag", null, null) },
             { "Pin", new Tool("Pin", null, null) },
@@ -23,23 +31,57 @@ public partial class Game1
             { "Wind", new Tool("Wind", null, null) },
             { "PhysicsDrag", new Tool("PhysicsDrag", null, null) },
             { "LineCut", new Tool("LineCut", null, null) },
+            { "Inspect Particles", new Tool("Inspect Particles", null, null) },
         };
-
-        foreach (var tool in _tools.Values)
+        foreach (var tool in _interactTools.Values)
         {
             tool.Properties = new Dictionary<string, object>();
         }
 
-        _tools["Drag"].Properties["Radius"] = 20f;
-        _tools["Drag"].Properties["MaxParticles"] = (int)20;
-        _tools["Drag"].Properties["InfiniteParticles"] = true;
+        _interactTools["Drag"].Properties["Radius"] = 20f;
+        _interactTools["Drag"].Properties["MaxParticles"] = (int)20;
+        _interactTools["Drag"].Properties["InfiniteParticles"] = true;
 
-        _tools["Cut"].Properties["Radius"] = 10f;
+        _interactTools["Pin"].Properties["Radius"] = 20f;
+
+        _interactTools["Cut"].Properties["Radius"] = 10f;
+
+        _interactTools["Wind"].Properties["MinDistance"] = 5f;
+        _interactTools["Wind"].Properties["StrengthScale"] = 1.0f;
+        _interactTools["Wind"].Properties["ArrowThickness"] = 3f;
+
+        _interactTools["PhysicsDrag"].Properties["Radius"] = 20f;
+
+        _interactTools["LineCut"].Properties["MinDistance"] = 5f;
+        _interactTools["LineCut"].Properties["Thickness"] = 3f;
+
+        _interactTools["Inspect Particles"].Properties["Radius"] = 10f;
+        _interactTools["Inspect Particles"].Properties["IsLog"] = false;
+    }
+
+    private void InitializeBuildTools()
+    {
+        _buildTools = new Dictionary<string, Tool>
+        {
+            { "Add Particle", new Tool("Add Particle", null, null) },
+            { "Add Stick Between Particles", new Tool("Add Stick Between Particles", null, null) },
+            { "Add Polygon", new Tool("Add Polygon", null, null) },
+            { "Remove Particle", new Tool("Remove Particle", null, null) },
+        };
+        foreach (var tool in _buildTools.Values)
+        {
+            tool.Properties = new Dictionary<string, object>();
+        }
+        _buildTools["Add Particle"].Properties["SnapToGrid"] = true;
+        _buildTools["Add Stick Between Particles"].Properties["Radius"] = 15f;
+        _buildTools["Add Polygon"].Properties["SnapToGrid"] = true;
+        _buildTools["Remove Particle"].Properties["Radius"] = 10f;
     }
 
     private void DrawToolMenuItems()
     {
-        foreach (var toolName in _tools.Keys)
+        EnsureSelectedToolValid();
+        foreach (var toolName in _currentToolSet.Keys)
         {
             bool isSelected = _selectedToolName == toolName;
             if (isSelected)
@@ -64,7 +106,8 @@ public partial class Game1
 
     private void DrawToolButtons()
     {
-        foreach (var toolName in _tools.Keys)
+        EnsureSelectedToolValid();
+        foreach (var toolName in _currentToolSet.Keys)
         {
             bool isSelected = _selectedToolName == toolName;
             if (isSelected)
@@ -93,31 +136,160 @@ public partial class Game1
 
     private void DrawSelectedToolSettings()
     {
+        EnsureSelectedToolValid();
         ImGui.Text($"Settings for {_selectedToolName} Tool:");
 
         if (_selectedToolName == "Drag")
         {
-            float radius = (float)_tools["Drag"].Properties["Radius"];
+            var props = _currentToolSet["Drag"].Properties;
+            float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
-                _tools["Drag"].Properties["Radius"] = radius;
+                props["Radius"] = radius;
             }
 
-            bool infiniteParticles = (bool)_tools["Drag"].Properties["InfiniteParticles"];
+            bool infiniteParticles = (bool)props["InfiniteParticles"];
             if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
             {
-                _tools["Drag"].Properties["InfiniteParticles"] = infiniteParticles;
+                props["InfiniteParticles"] = infiniteParticles;
             }
 
-            int maxParticles = (int)_tools["Drag"].Properties["MaxParticles"];
+            int maxParticles = (int)props["MaxParticles"];
             string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
 
             ImGui.BeginDisabled(infiniteParticles);
             if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
             {
-                _tools["Drag"].Properties["MaxParticles"] = maxParticles;
+                props["MaxParticles"] = maxParticles;
             }
             ImGui.EndDisabled();
+        }
+        else if (_selectedToolName == "Pin")
+        {
+            var props = _currentToolSet["Pin"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+        }
+        else if (_selectedToolName == "Cut")
+        {
+            var props = _currentToolSet["Cut"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+        }
+        else if (_selectedToolName == "Wind")
+        {
+            var props = _currentToolSet["Wind"].Properties;
+            float minDist = (float)props["MinDistance"];
+            if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
+            {
+                props["MinDistance"] = minDist;
+            }
+
+            float strength = (float)props["StrengthScale"];
+            if (ImGui.SliderFloat("Strength Scale", ref strength, 0.0f, 5.0f))
+            {
+                props["StrengthScale"] = strength;
+            }
+
+            float thickness = (float)props["ArrowThickness"];
+            if (ImGui.SliderFloat("Arrow Thickness", ref thickness, 1f, 10f))
+            {
+                props["ArrowThickness"] = thickness;
+            }
+        }
+        else if (_selectedToolName == "PhysicsDrag")
+        {
+            var props = _currentToolSet["PhysicsDrag"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+        }
+        else if (_selectedToolName == "LineCut")
+        {
+            var props = _currentToolSet["LineCut"].Properties;
+            float minDist = (float)props["MinDistance"];
+            if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
+            {
+                props["MinDistance"] = minDist;
+            }
+
+            float thickness = (float)props["Thickness"];
+            if (ImGui.SliderFloat("Line Thickness", ref thickness, 1f, 10f))
+            {
+                props["Thickness"] = thickness;
+            }
+        }
+        else if (_selectedToolName == "Inspect Particles")
+        {
+            var props = _currentToolSet["Inspect Particles"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+
+            bool isLog = (bool)props["IsLog"];
+            if (ImGui.Checkbox("Log to Console or track realtime in window", ref isLog))
+            {
+                props["IsLog"] = isLog;
+            }
+        }
+        else if (_selectedToolName == "Add Particle")
+        {
+            var props = _currentToolSet["Add Particle"].Properties;
+            bool snapToGrid = (bool)props["SnapToGrid"];
+            if (ImGui.Checkbox("Snap To Grid", ref snapToGrid))
+            {
+                props["SnapToGrid"] = snapToGrid;
+            }
+        }
+        else if (_selectedToolName == "Add Stick Between Particles")
+        {
+            var props = _currentToolSet["Add Stick Between Particles"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+        }
+        else if (_selectedToolName == "Add Polygon")
+        {
+            var props = _currentToolSet["Add Polygon"].Properties;
+            bool snapToGrid = (bool)props["SnapToGrid"];
+            if (ImGui.Checkbox("Snap To Grid", ref snapToGrid))
+            {
+                props["SnapToGrid"] = snapToGrid;
+            }
+        }
+        else if (_selectedToolName == "Remove Stick")
+        {
+            var props = _currentToolSet["Remove Stick"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+            {
+                props["Radius"] = radius;
+            }
+        }
+    }
+
+    private void EnsureSelectedToolValid()
+    {
+        var set = _currentToolSet;
+        if (!set.ContainsKey(_selectedToolName))
+        {
+            var enumerator = set.Keys.GetEnumerator();
+            if (enumerator.MoveNext())
+            {
+                _selectedToolName = enumerator.Current;
+            }
         }
     }
 
@@ -169,14 +341,17 @@ public partial class Game1
         {
             for (int j = 0; j < sticks[i].Length; j++)
             {
-                if (sticks[i][j] != null)
+                if (sticks[i][j] != null && !sticks[i][j].IsCut)
                 {
                     Vector2 stickCenter =
                         (sticks[i][j].P1.Position + sticks[i][j].P2.Position) * 0.5f;
                     float distance = Vector2.Distance(stickCenter, center);
                     if (distance <= radius)
                     {
-                        sticks[i][j] = null;
+                        if (_currentMode != MeshMode.Cloth)
+                            sticks[i][j] = null;
+                        else
+                            sticks[i][j].IsCut = true;
                     }
                 }
             }
@@ -193,7 +368,7 @@ public partial class Game1
     {
         var sticksToRemove = new List<int>();
 
-        foreach (var kvp in _buildableMeshInstance.Sticks)
+        foreach (var kvp in _activeMesh.Sticks)
         {
             var stick = kvp.Value;
             Vector2 stickCenter = (stick.P1.Position + stick.P2.Position) * 0.5f;
@@ -206,19 +381,27 @@ public partial class Game1
 
         foreach (var stickId in sticksToRemove)
         {
-            _buildableMeshInstance.RemoveStick(stickId);
+            _activeMesh.RemoveStick(stickId);
         }
     }
 
-    private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float radius)
+    private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float _)
     {
         Vector2 windDirection = endPos - startPos;
         float windDistance = windDirection.Length();
 
-        if (windDistance < 5f)
+        float minDist = _currentToolSet["Wind"].Properties.ContainsKey("MinDistance")
+            ? (float)_currentToolSet["Wind"].Properties["MinDistance"]
+            : 5f;
+
+        if (windDistance < minDist)
             return;
 
-        windForce = windDirection * (windDistance / 50f);
+        float strength = _currentToolSet["Wind"].Properties.ContainsKey("StrengthScale")
+            ? (float)_currentToolSet["Wind"].Properties["StrengthScale"]
+            : 1.0f;
+
+        windForce = windDirection * (windDistance / 50f) * strength;
     }
 
     private bool DoTwoLinesIntersect(
@@ -289,7 +472,7 @@ public partial class Game1
         }
         else
         {
-            _buildableMeshInstance.CutSticksAlongLine(lineStart, lineEnd);
+            _activeMesh.CutSticksAlongLine(lineStart, lineEnd);
         }
     }
 
@@ -331,7 +514,7 @@ public partial class Game1
     {
         var particleIds = new List<int>();
 
-        if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+        if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
         {
             foreach (var kvp in _activeMesh.Particles)
             {
@@ -394,7 +577,7 @@ public partial class Game1
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        if (isDragging && _currentMode != MeshMode.PolygonBuilder)
+        if (isDragging && _currentMode != MeshMode.Edit)
         {
             Vector2 frameDelta = mousePos - previousMousePos;
             foreach (int particleId in particleIds)
@@ -505,6 +688,137 @@ public partial class Game1
                 {
                     _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
                 }
+            }
+        }
+    }
+
+    private void InspectParticlesInRadiusLog(Vector2 center, float radius)
+    {
+        if (_currentMode == MeshMode.Cloth)
+        {
+            for (int i = 0; i < _clothInstance.particles.Length; i++)
+            {
+                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
+                {
+                    ref var particle = ref _clothInstance.particles[i][j];
+                    float distance = Vector2.Distance(particle.Position, center);
+                    particle.Color = Color.White;
+                    if (distance <= radius)
+                    {
+                        _Logger.AddLog(
+                            $"Particle [{i},{j}] - Pos: {particle.Position}, Pinned: {particle.IsPinned}",
+                            ImGuiLogger.logTypes.Info
+                        );
+                        particle.Color = Color.Cyan;
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (var kvp in _activeMesh.Particles)
+            {
+                var particle = kvp.Value;
+                float distance = Vector2.Distance(particle.Position, center);
+                particle.Color = Color.White;
+                if (distance <= radius)
+                {
+                    _Logger.AddLog(
+                        $"Particle ID {kvp.Key} - Pos: {particle.Position}, Pinned: {particle.IsPinned}",
+                        ImGuiLogger.logTypes.Info
+                    );
+                    particle.Color = Color.Cyan;
+                }
+                _activeMesh.Particles[kvp.Key] = particle;
+            }
+        }
+    }
+
+    private void InspectParticlesInRadiusWindow(Vector2 center, float radius)
+    {
+        if (_currentMode == MeshMode.Cloth)
+        {
+            for (int i = 0; i < _clothInstance.particles.Length; i++)
+            {
+                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
+                {
+                    ref var particle = ref _clothInstance.particles[i][j];
+                    float distance = Vector2.Distance(particle.Position, center);
+                    particle.Color = Color.White;
+                    if (distance <= radius)
+                    {
+                        particle.Color = Color.Cyan;
+                    }
+                }
+            }
+        }
+        else
+        {
+            inspectedParticles.Clear();
+            foreach (var kvp in _activeMesh.Particles)
+            {
+                var particle = kvp.Value;
+                float distance = Vector2.Distance(particle.Position, center);
+                particle.Color = Color.White;
+
+                if (distance <= radius)
+                {
+                    particle.Color = Color.Cyan;
+                    inspectedParticles.Add(kvp.Key);
+                }
+                _activeMesh.Particles[kvp.Key] = particle;
+            }
+        }
+    }
+
+    private void HandleAddStickBetweenParticlesClick(Vector2 clickPos)
+    {
+        float radius = _currentToolSet["Add Stick Between Particles"].Properties["Radius"]
+            is float r
+            ? r
+            : 10f;
+        var ids = GetBuildableMeshParticlesInRadius(clickPos, radius, 1);
+        if (ids.Count >= 1)
+        {
+            int hitId = ids[0];
+            if (_stickToolFirstParticleId == null)
+            {
+                _stickToolFirstParticleId = hitId;
+                if (_activeMesh.Particles.TryGetValue(hitId, out var p))
+                {
+                    p.Color = Color.Yellow;
+                    _activeMesh.Particles[hitId] = p;
+                }
+            }
+            else if (_stickToolFirstParticleId.Value != hitId)
+            {
+                if (_activeMesh is BuildableMesh buildableMesh)
+                {
+                    buildableMesh.AddStickBetween(_stickToolFirstParticleId.Value, hitId);
+                    if (
+                        buildableMesh.Particles.TryGetValue(
+                            _stickToolFirstParticleId.Value,
+                            out var p1
+                        )
+                    )
+                    {
+                        p1.Color = Color.White;
+                        buildableMesh.Particles[_stickToolFirstParticleId.Value] = p1;
+                    }
+                    if (buildableMesh.Particles.TryGetValue(hitId, out var p2))
+                    {
+                        p2.Color = Color.White;
+                        buildableMesh.Particles[hitId] = p2;
+                    }
+                }
+                _stickToolFirstParticleId = null;
+            }
+            else
+            {
+                _Logger.AddLog(
+                    "Cannot create stick to the same particle. Select a different particle.",
+                    ImGuiLogger.logTypes.Warning
+                );
             }
         }
     }

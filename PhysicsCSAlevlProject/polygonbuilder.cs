@@ -14,28 +14,27 @@ class PolygonBuilder
 
     public PolygonBuilder() { }
 
-    public BuildableMesh Update(
-        GameTime gameTime,
+    public BuildableMesh BuildPolygon(
         KeyboardState keyboardState,
         KeyboardState previousKeyboardState,
         MouseState mouseState,
         MouseState previousMouseState,
-        BuildableMesh mesh
+        BuildableMesh mesh,
+        bool imguiWantsMouse
     )
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        
         if (
             mouseState.LeftButton == ButtonState.Pressed
             && previousMouseState.LeftButton == ButtonState.Released
+            && !imguiWantsMouse
         )
         {
             if (!_isBuilding)
             {
                 _isBuilding = true;
                 _polygonVertices.Clear();
-
 
                 int newParticleId = mesh.AddParticle(mousePos, 0.1f, false, Color.White);
                 _polygonVertices.Add(newParticleId);
@@ -44,9 +43,7 @@ class PolygonBuilder
             }
             else
             {
-
                 int newParticleId = mesh.AddParticle(mousePos, 0.1f, false, Color.White);
-
 
                 if (_finalParticle != -1)
                 {
@@ -58,15 +55,12 @@ class PolygonBuilder
             }
         }
 
-        
         if (keyboardState.IsKeyDown(Keys.Enter) && !previousKeyboardState.IsKeyDown(Keys.Enter))
         {
             if (_isBuilding && _polygonVertices.Count >= 3)
             {
-                
                 mesh.AddStickBetween(_finalParticle, _initialParticle);
 
-                
                 _isBuilding = false;
                 _polygonVertices.Clear();
                 _initialParticle = -1;
@@ -74,16 +68,15 @@ class PolygonBuilder
             }
         }
 
-        
-        if (keyboardState.IsKeyDown(Keys.Escape) && !previousKeyboardState.IsKeyDown(Keys.Escape))
-        {
-            _isBuilding = false;
-            _polygonVertices.Clear();
-            _initialParticle = -1;
-            _finalParticle = -1;
-        }
-
         return mesh;
+    }
+
+    public void Reset()
+    {
+        _isBuilding = false;
+        _polygonVertices.Clear();
+        _initialParticle = -1;
+        _finalParticle = -1;
     }
 
     public bool IsBuilding => _isBuilding;
@@ -93,9 +86,12 @@ class PolygonBuilder
     {
         if (_isBuilding)
         {
+            /*
             string instructions =
                 $"Building polygon ({VertexCount} vertices). Left click: add vertex, Enter: complete, Esc: cancel";
             spriteBatch.DrawString(font, instructions, new Vector2(10, 140), Color.Yellow);
+        
+            /*/
         }
     }
 }
