@@ -85,10 +85,11 @@ public partial class Game1 : Game
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures();
 
-        _database = new Game1Database();
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;
         _graphics.ApplyChanges();
+
+        _database = new Game1Database();
 
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
