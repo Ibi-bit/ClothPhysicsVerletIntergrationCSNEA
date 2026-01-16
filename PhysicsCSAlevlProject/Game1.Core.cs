@@ -31,31 +31,28 @@ public partial class Game1 : Game
 
     private PrimitiveBatch.Arrow windDirectionArrow;
     private PrimitiveBatch.Line cutLine;
-    
+
     private SpriteFont _font;
     private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
 
     private bool _useConstraintSolver = false;
     private int _constraintIterations = 5;
-
-    private int _modeIndex = 1;
-    private string[] _modes = { "Cloth", "Buildable", "PolygonBuilder" };
-
     private Mesh _activeMesh;
     private Cloth _clothInstance;
-    private BuildableMesh _buildableMeshInstance;
+    private BuildableMesh _defaultBuildableMesh;
     private PolygonBuilder _polygonBuilderInstance;
     private static Rectangle _windowBounds;
     bool keepAspectRatio = true;
+    float _lockedAspectRatio = 1f;
 
     private Rectangle changedBounds = Rectangle.Empty;
 
     private enum MeshMode
     {
         Cloth,
-        Buildable,
-        PolygonBuilder,
+        Interact,
+        Edit,
     }
 
     private MeshMode _currentMode = MeshMode.Cloth;
@@ -89,10 +86,14 @@ public partial class Game1 : Game
         _primitiveBatch.CreateTextures();
 
         _database = new Game1Database();
+        _graphics.PreferredBackBufferWidth = 800;
+        _graphics.PreferredBackBufferHeight = 640;
+        _graphics.ApplyChanges();
 
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
         changedBounds = _windowBounds;
+        _lockedAspectRatio = cbInit.Height > 0 ? cbInit.Width / (float)cbInit.Height : 1f;
         Window.ClientSizeChanged += (_, __) =>
         {
             var cbNow = Window.ClientBounds;
@@ -106,7 +107,8 @@ public partial class Game1 : Game
 
         _springConstant = 5000f;
 
-        InitializeTools();
+        InitializeInteractTools();
+        InitializeBuildTools();
 
         float naturalLength = 10f;
         float mass = 0.1f;
@@ -129,7 +131,7 @@ public partial class Game1 : Game
             mass
         );
 
-        _buildableMeshInstance = new BuildableMesh(_springConstant, mass);
+        _defaultBuildableMesh = new BuildableMesh(_springConstant, mass);
         _polygonBuilderInstance = new PolygonBuilder();
 
         _activeMesh = _clothInstance;
@@ -148,19 +150,18 @@ public partial class Game1 : Game
         _guiRenderer.RebuildFontAtlas();
     }
 
-    private DrawableParticle KeepInsideScreen(DrawableParticle p)
+    private DrawableParticle KeepInsideRect(DrawableParticle p, Rectangle rect, Vector2 difference)
     {
         bool positionChanged = false;
-        Vector2 originalPosition = p.Position;
 
         if (p.Position.X < 0)
         {
             p.Position.X = 0;
             positionChanged = true;
         }
-        else if (p.Position.X > _windowBounds.Width)
+        else if (p.Position.X > rect.Width)
         {
-            p.Position.X = _windowBounds.Width;
+            p.Position.X = rect.Width;
             positionChanged = true;
         }
 
@@ -169,9 +170,9 @@ public partial class Game1 : Game
             p.Position.Y = 0;
             positionChanged = true;
         }
-        else if (p.Position.Y > _windowBounds.Height - 10)
+        else if (p.Position.Y > rect.Height + difference.Y)
         {
-            p.Position.Y = _windowBounds.Height - 10;
+            p.Position.Y = rect.Height + difference.Y;
             positionChanged = true;
         }
 

@@ -2,7 +2,10 @@ bin/
 obj/
 *.user
 *.suo
+*.json
 .vs
 .vscode/ 
 .DS_Store
 global.json
+PhysicsCSAlevlProject/JSONStructures/*
+

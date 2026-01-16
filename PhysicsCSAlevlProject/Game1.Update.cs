@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
 
@@ -43,84 +41,155 @@ public partial class Game1
                     case "Drag":
                         if (_currentMode == MeshMode.Cloth)
                         {
+                            var props = _currentToolSet["Drag"].Properties;
                             bool infiniteParticles =
-                                _tools["Drag"].Properties.ContainsKey("InfiniteParticles")
-                                && (bool)_tools["Drag"].Properties["InfiniteParticles"];
+                                props.ContainsKey("InfiniteParticles")
+                                && (bool)props["InfiniteParticles"];
                             int maxParticles = infiniteParticles
                                 ? -1
                                 : (
-                                    _tools["Drag"].Properties.ContainsKey("MaxParticles")
-                                        ? (int)_tools["Drag"].Properties["MaxParticles"]
+                                    props.ContainsKey("MaxParticles")
+                                        ? (int)props["MaxParticles"]
                                         : -1
                                 );
 
                             particlesInDragArea = GetParticlesInRadius(
                                 intitialMousePosWhenPressed,
-                                _tools["Drag"].Properties.ContainsKey("Radius")
-                                    ? (float)_tools["Drag"].Properties["Radius"]
-                                    : dragRadius,
+                                props.ContainsKey("Radius") ? (float)props["Radius"] : dragRadius,
                                 maxParticles
                             );
                         }
-                        else if (_currentMode == MeshMode.Buildable)
+                        else if (_currentMode == MeshMode.Interact)
                         {
+                            var props = _currentToolSet["Drag"].Properties;
                             bool infiniteParticles =
-                                _tools["Drag"].Properties.ContainsKey("InfiniteParticles")
-                                && (bool)_tools["Drag"].Properties["InfiniteParticles"];
+                                props.ContainsKey("InfiniteParticles")
+                                && (bool)props["InfiniteParticles"];
                             int maxParticles = infiniteParticles
                                 ? -1
                                 : (
-                                    _tools["Drag"].Properties.ContainsKey("MaxParticles")
-                                        ? (int)(float)_tools["Drag"].Properties["MaxParticles"]
+                                    props.ContainsKey("MaxParticles")
+                                        ? (int)props["MaxParticles"]
                                         : -1
                                 );
 
                             buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
                                 intitialMousePosWhenPressed,
-                                _tools["Drag"].Properties.ContainsKey("Radius")
-                                    ? (float)_tools["Drag"].Properties["Radius"]
-                                    : dragRadius,
+                                props.ContainsKey("Radius") ? (float)props["Radius"] : dragRadius,
                                 maxParticles
                             );
                         }
                         break;
                     case "Pin":
-                        if (_currentMode == MeshMode.Cloth)
-                            PinParticle(intitialMousePosWhenPressed, dragRadius);
-                        else if (_currentMode == MeshMode.Buildable)
-                            PinParticleBuildable(intitialMousePosWhenPressed, dragRadius);
+                        {
+                            float pinRadius = _currentToolSet["Pin"]
+                                .Properties.ContainsKey("Radius")
+                                ? (float)_currentToolSet["Pin"].Properties["Radius"]
+                                : dragRadius;
+                            if (_currentMode == MeshMode.Cloth)
+                                PinParticle(intitialMousePosWhenPressed, pinRadius);
+                            else if (_currentMode == MeshMode.Interact)
+                                PinParticleBuildable(intitialMousePosWhenPressed, pinRadius);
+                        }
                         break;
                     case "Cut":
                         var radius =
-                            _tools["Cut"].Properties["Radius"] != null
-                                ? (float)_tools["Cut"].Properties["Radius"]
+                            _currentToolSet["Cut"].Properties["Radius"] != null
+                                ? (float)_currentToolSet["Cut"].Properties["Radius"]
                                 : 10f;
 
                         if (_currentMode == MeshMode.Cloth)
                             CutAllSticksInRadius(intitialMousePosWhenPressed, radius);
-                        else if (_currentMode == MeshMode.Buildable)
+                        else if (_currentMode == MeshMode.Interact)
                             CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, radius);
 
                         break;
                     case "Wind":
                         break;
                     case "PhysicsDrag":
-                        if (_currentMode == MeshMode.Cloth)
                         {
-                            particlesInDragArea = GetParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                dragRadius
-                            );
-                        }
-                        else if (_currentMode == MeshMode.Buildable)
-                        {
-                            buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                dragRadius
-                            );
+                            float physRadius = _currentToolSet["PhysicsDrag"]
+                                .Properties.ContainsKey("Radius")
+                                ? (float)_currentToolSet["PhysicsDrag"].Properties["Radius"]
+                                : dragRadius;
+                            if (_currentMode == MeshMode.Cloth)
+                            {
+                                particlesInDragArea = GetParticlesInRadius(
+                                    intitialMousePosWhenPressed,
+                                    physRadius
+                                );
+                            }
+                            else if (_currentMode == MeshMode.Interact)
+                            {
+                                buildableMeshParticlesInDragArea =
+                                    GetBuildableMeshParticlesInRadius(
+                                        intitialMousePosWhenPressed,
+                                        physRadius
+                                    );
+                            }
                         }
                         break;
                     case "LineCut":
+                        break;
+                    case "Add Stick Between Particles":
+                        {
+                            float stickRadius = _currentToolSet[
+                                "Add Stick Between Particles"
+                            ].Properties["Radius"]
+                                is float r
+                                ? r
+                                : 10f;
+                            HandleAddStickBetweenParticlesClick(intitialMousePosWhenPressed);
+                        }
+                        break;
+                    case "Add Particle":
+                        {
+                            float particleMass = _currentToolSet["Add Particle"]
+                                .Properties.ContainsKey("Mass")
+                                ? (float)_currentToolSet["Add Particle"].Properties["Mass"]
+                                : 1f;
+                            _activeMesh.AddParticle(
+                                intitialMousePosWhenPressed,
+                                particleMass,
+                                false,
+                                Color.White
+                            );
+                        }
+                        break;
+                    case "Remove Particle":
+                        {
+                            float removeRadius = _currentToolSet["Remove Particle"]
+                                .Properties.ContainsKey("Radius")
+                                ? (float)_currentToolSet["Remove Particle"].Properties["Radius"]
+                                : 10f;
+                            var pS = GetBuildableMeshParticlesInRadius(
+                                intitialMousePosWhenPressed,
+                                removeRadius,
+                                1
+                            );
+                            _activeMesh.RemoveParticle(pS[0]);
+                        }
+                        break;
+                    case "Inspect Particles":
+                        {
+                            float inspectRadius = _currentToolSet["Inspect Particles"]
+                                .Properties.ContainsKey("Radius")
+                                ? (float)_currentToolSet["Inspect Particles"].Properties["Radius"]
+                                : 10f;
+                            if (
+                                _currentToolSet["Inspect Particles"].Properties.ContainsKey("IsLog")
+                                && (bool)_currentToolSet["Inspect Particles"].Properties["IsLog"]
+                            )
+                                InspectParticlesInRadiusLog(
+                                    intitialMousePosWhenPressed,
+                                    inspectRadius
+                                );
+                            else
+                                InspectParticlesInRadiusWindow(
+                                    intitialMousePosWhenPressed,
+                                    inspectRadius
+                                );
+                        }
                         break;
                 }
             }
@@ -137,7 +206,7 @@ public partial class Game1
                 else if (
                     _selectedToolName == "LineCut"
                     && leftPressed
-                    && _currentMode != MeshMode.PolygonBuilder
+                    && _currentMode != MeshMode.Edit
                 )
                 {
                     Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
@@ -160,16 +229,28 @@ public partial class Game1
             Vector2 windDirection = currentMousePos - intitialMousePosWhenPressed;
             float windDistance = windDirection.Length();
 
-            if (windDistance > 5f)
+            float minDist = _currentToolSet["Wind"].Properties.ContainsKey("MinDistance")
+                ? (float)_currentToolSet["Wind"].Properties["MinDistance"]
+                : 5f;
+            if (windDistance > minDist)
             {
+                float arrowThickness = _currentToolSet["Wind"]
+                    .Properties.ContainsKey("ArrowThickness")
+                    ? (float)_currentToolSet["Wind"].Properties["ArrowThickness"]
+                    : 3f;
                 windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
                     intitialMousePosWhenPressed,
                     currentMousePos,
                     Color.Cyan,
-                    3f
+                    arrowThickness
                 );
 
-                windForce = !Paused ? windDirection * (windDistance / 50f) : Vector2.Zero;
+                float strength = _currentToolSet["Wind"].Properties.ContainsKey("StrengthScale")
+                    ? (float)_currentToolSet["Wind"].Properties["StrengthScale"]
+                    : 1.0f;
+                windForce = !Paused
+                    ? windDirection * (windDistance / 50f) * strength
+                    : Vector2.Zero;
             }
             else
             {
@@ -181,13 +262,19 @@ public partial class Game1
         {
             Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
             float cutDistance = cutDirection.Length();
-            if (cutDistance > 5f)
+            float minDist = _currentToolSet["LineCut"].Properties.ContainsKey("MinDistance")
+                ? (float)_currentToolSet["LineCut"].Properties["MinDistance"]
+                : 5f;
+            if (cutDistance > minDist)
             {
+                float thickness = _currentToolSet["LineCut"].Properties.ContainsKey("Thickness")
+                    ? (float)_currentToolSet["LineCut"].Properties["Thickness"]
+                    : 3f;
                 cutLine = new VectorGraphics.PrimitiveBatch.Line(
                     intitialMousePosWhenPressed,
                     currentMousePos,
                     Color.Red,
-                    3f
+                    thickness
                 );
             }
             else
@@ -195,21 +282,23 @@ public partial class Game1
                 cutLine = null;
             }
         }
-
-        if (
-            _currentMode == MeshMode.PolygonBuilder
-            && !ImGuiNET.ImGui.IsAnyItemHovered()
-            && _windowBounds.Contains(mouseState.Position)
-        )
+        else if (_selectedToolName == "Add Polygon")
         {
-            _buildableMeshInstance = _polygonBuilderInstance.Update(
-                gameTime,
-                keyboardState,
-                _prevKeyboardState,
-                mouseState,
-                _prevMouseState,
-                _buildableMeshInstance
-            );
+            if (_activeMesh is BuildableMesh buildableMesh)
+            {
+                _activeMesh = _polygonBuilderInstance.BuildPolygon(
+                    keyboardState,
+                    _prevKeyboardState,
+                    mouseState,
+                    _prevMouseState,
+                    buildableMesh,
+                    imguiWantsMouse
+                );
+            }
+        }
+        else
+        {
+            _polygonBuilderInstance.Reset();
         }
 
         int stepsThisFrame = 0;
@@ -287,7 +376,7 @@ public partial class Game1
             {
                 DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
             }
-            else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
                 DragBuildableMeshParticles(
                     mouseState,
@@ -302,7 +391,7 @@ public partial class Game1
             {
                 DragAreaParticlesWithPhysics(mouseState, leftPressed, particlesInDragArea);
             }
-            else if (_currentMode == MeshMode.Buildable || _currentMode == MeshMode.PolygonBuilder)
+            else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
                 DragBuildableMeshParticlesWithPhysics(
                     mouseState,
