@@ -1,9 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Npgsql;
 
-class Game1Database
+namespace PhysicsCSAlevlProject;
+
+public class Game1Database
 {
     private string connectionString =
-        "Host=localhost;Username=postgres;Password=password;Database=Game1";
+        "Host=localhost;Username=postgres;Password=password;Database=stick_simulation";
+
+    public bool TestConnection()
+    {
+        try
+        {
+            using var conn = new NpgsqlConnection(connectionString);
+            conn.Open();
+            Debug.WriteLine("Database connection successful!");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Database connection failed: {ex.Message}");
+            return false;
+        }
+    }
 
     public List<int> GetStudents()
     {
@@ -11,8 +32,7 @@ class Game1Database
         using var conn = new NpgsqlConnection(connectionString);
         conn.Open();
 
-        using var cmd = new NpgsqlCommand("SELECT content FROM Users WHERE role = 'student'", conn);
-        cmd.Parameters.AddWithValue("id", studentId);
+        using var cmd = new NpgsqlCommand("SELECT id FROM Users WHERE role_id = 2", conn);
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
@@ -20,13 +40,14 @@ class Game1Database
         }
         return studentIds;
     }
+
     public List<int> GetTeachers()
     {
         var teacherIds = new List<int>();
         using var conn = new NpgsqlConnection(connectionString);
         conn.Open();
 
-        using var cmd = new NpgsqlCommand("SELECT content FROM Users WHERE role = 'teacher'", conn);
+        using var cmd = new NpgsqlCommand("SELECT id FROM Users WHERE role_id = 1", conn);
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
@@ -34,17 +55,24 @@ class Game1Database
         }
         return teacherIds;
     }
-    public void GetStudentData(int studentId)
+
+    public Dictionary<string, string> GetStudentData(int studentId )
     {
+        var data = new Dictionary<string, string>();
         using var conn = new NpgsqlConnection(connectionString);
         conn.Open();
 
-        using var cmd = new NpgsqlCommand("SELECT content FROM Structures WHERE student_id = @id", conn);
+        using var cmd = new NpgsqlCommand(
+            "SELECT content FROM Structures WHERE student_id = @id",
+            conn
+        );
         cmd.Parameters.AddWithValue("id", studentId);
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            Console.WriteLine(reader.GetString(0));
+            data.Add("content", reader.GetString(0));
+            
         }
-    }   
+        return data;
+    }
 }

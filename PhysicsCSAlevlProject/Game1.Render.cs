@@ -21,7 +21,7 @@ public partial class Game1
                 (int)(_windowBounds.Height + _collisonBoundsDifference.Y)
             )
         );
-        var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 4);
+        var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false);
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
 
         _activeMesh.Draw(_spriteBatch, _primitiveBatch);
