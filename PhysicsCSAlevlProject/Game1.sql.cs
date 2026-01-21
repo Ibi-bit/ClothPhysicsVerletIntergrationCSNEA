@@ -56,7 +56,7 @@ public class Game1Database
         return teacherIds;
     }
 
-    public Dictionary<string, string> GetStudentData(int studentId )
+    public Dictionary<string, string> GetStudentData(int studentId)
     {
         var data = new Dictionary<string, string>();
         using var conn = new NpgsqlConnection(connectionString);
@@ -71,7 +71,6 @@ public class Game1Database
         while (reader.Read())
         {
             data.Add("content", reader.GetString(0));
-            
         }
         return data;
     }
