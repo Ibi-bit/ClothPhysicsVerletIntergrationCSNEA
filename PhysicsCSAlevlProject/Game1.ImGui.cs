@@ -481,6 +481,18 @@ public partial class Game1
             _activeMesh.drag = drag;
             _clothInstance.drag = drag;
         }
+        if (ImGui.Button("SQLTEST"))
+        {
+            var studentData = _database.GetStudentData(3); 
+            if (studentData.Count == 0)
+            {
+                _Logger.AddLog("No data found for student", ImGuiLogger.logTypes.Warning);
+            }
+            foreach (var kvp in studentData)
+            {
+                _Logger.AddLog($"Student {kvp.Key}: {kvp.Value}", ImGuiLogger.logTypes.Info);
+            }
+        }
 
         ImGui.End();
     }
