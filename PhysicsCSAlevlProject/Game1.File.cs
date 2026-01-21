@@ -14,9 +14,10 @@ public partial class Game1
             TypeNameHandling = TypeNameHandling.All,
             Formatting = Formatting.Indented,
         };
+        var fileWriteableMesh = new FileWriteableMesh(mesh);
         System.IO.Directory.CreateDirectory(filePath);
         filePath = System.IO.Path.Combine(filePath, Name + ".json");
-        string json = JsonConvert.SerializeObject(mesh, settings);
+        string json = JsonConvert.SerializeObject(fileWriteableMesh, settings);
         System.IO.File.WriteAllText(filePath, json);
     }
 
@@ -25,8 +26,9 @@ public partial class Game1
         var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
         string json = System.IO.File.ReadAllText(filePath);
-        Mesh mesh = JsonConvert.DeserializeObject<Mesh>(json, settings);
+        FileWriteableMesh fileWriteableMesh = JsonConvert.DeserializeObject<FileWriteableMesh>(json, settings);
 
+        Mesh mesh = fileWriteableMesh.ToMesh();
         mesh.RestoreStickReferences();
 
         return mesh;
