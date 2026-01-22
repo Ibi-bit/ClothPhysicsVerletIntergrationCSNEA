@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
@@ -17,7 +18,7 @@ public partial class Game1
     private bool _showLoggerWindow = false;
     private string _meshName = "MyMesh";
     private string _StructurePath =
-        "/Users/sampartington/Documents/y13/alevelproject/ClothPhysicsVerletIntergrationCSNEA/PhysicsCSAlevlProject/JSONStructures";
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "JSONStructures");
 
     bool ctrlHeld = false;
     bool shiftHeld = false;

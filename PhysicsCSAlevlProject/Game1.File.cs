@@ -26,7 +26,10 @@ public partial class Game1
         var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
         string json = System.IO.File.ReadAllText(filePath);
-        FileWriteableMesh fileWriteableMesh = JsonConvert.DeserializeObject<FileWriteableMesh>(json, settings);
+        FileWriteableMesh fileWriteableMesh = JsonConvert.DeserializeObject<FileWriteableMesh>(
+            json,
+            settings
+        );
 
         Mesh mesh = fileWriteableMesh.ToMesh();
         mesh.RestoreStickReferences();
