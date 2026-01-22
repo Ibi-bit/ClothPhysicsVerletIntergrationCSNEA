@@ -12,30 +12,28 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.2.1105" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.2.1105" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.2.1105" />
     <PackageReference Include="Contentless" Version="4.2.0" />
-    <PackageReference Include="Cloo" Version="0.9.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game1.cs" />
+    <Compile Include="Game1.Core.cs" />
+    <Compile Include="Game1.Physics.cs" />
+    <Compile Include="Game1.Update.cs" />
+    <Compile Include="Game1.Render.cs" />
+    <Compile Include="Game1.ImGui.cs" />
+    <Compile Include="Game1.Tools.cs" />
+    <Compile Include="Game1.File.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Objects.cs" />
-    <Compile Include="RadialMenu.cs" />
-    <Compile Include="OpenCLStructures.cs" />
+    <Compile Include="polygonbuilder.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />
-    <Compile Include="libs\vectorguilib\gui.cs" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="kernels\*.cl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\MonoGame.ImGuiNet\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj" />
   </ItemGroup>
-  <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
-    <Message Text="Restoring dotnet tools" Importance="High" />
-    <Exec Command="dotnet tool restore" />
-  </Target>
 </Project>

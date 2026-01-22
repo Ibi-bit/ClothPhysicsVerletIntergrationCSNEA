@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MGCB_FILE="ColorWars/Content/Content.mgcb"
+MGCB_FILE="Content/Content.mgcb"
 
 if [ ! -f "$MGCB_FILE" ]; then
   echo "❌ Could not find $MGCB_FILE"
