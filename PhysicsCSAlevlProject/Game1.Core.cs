@@ -14,6 +14,7 @@ public partial class Game1 : Game
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
     public static ImGuiRenderer _guiRenderer;
+    public Game1Database _database;
     bool leftPressed;
     Vector2 intitialMousePosWhenPressed;
 
@@ -87,6 +88,8 @@ public partial class Game1 : Game
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;
         _graphics.ApplyChanges();
+
+        _database = new Game1Database();
 
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
