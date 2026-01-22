@@ -553,6 +553,9 @@ class FileWriteableMesh
     public List<particleData> Particles = new List<particleData>();
     public List<stickData> Sticks = new List<stickData>();
 
+    // Parameterless constructor for JSON deserialization
+    public FileWriteableMesh() { }
+
     public FileWriteableMesh(Mesh mesh)
     {
         var particleIdMap = new Dictionary<int, int>();
@@ -580,14 +583,21 @@ class FileWriteableMesh
     public Mesh ToMesh()
     {
         var mesh = new Mesh();
-        foreach (var pData in Particles)
+        
+        if (Particles != null)
         {
-            mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
+            foreach (var pData in Particles)
+            {
+                mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
+            }
         }
 
-        foreach (var sData in Sticks)
+        if (Sticks != null)
         {
-            mesh.AddStick(sData.P1Id, sData.P2Id, Color.White);
+            foreach (var sData in Sticks)
+            {
+                mesh.AddStick(sData.P1Id, sData.P2Id, Color.White);
+            }
         }
 
         return mesh;
