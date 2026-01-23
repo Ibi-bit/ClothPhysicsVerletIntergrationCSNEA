@@ -580,10 +580,11 @@ class FileWriteableMesh
             );
         }
     }
+
     public Mesh ToMesh()
     {
         var mesh = new Mesh();
-        
+
         if (Particles != null)
         {
             foreach (var pData in Particles)
@@ -627,6 +628,58 @@ class BuildableMesh : Mesh
     {
         this.springConstant = springConstant;
         this.mass = mass;
+    }
+
+    /// <summary>
+    ///  Create a Grid Mesh
+    /// </summary>
+    public BuildableMesh(
+        int width,
+        int height,
+        Vector2 Start,
+        float Length,
+        float springConstant = 10000f,
+        float mass = 0.1f
+    )
+    {
+        this.springConstant = springConstant;
+        this.mass = mass;
+        CreateGridMesh(width, height, Start, Length);
+    }
+
+    public void CreateGridMesh(int width, int height, Vector2 Start, float DistanceBetweenParticles)
+    {
+        int[,] particleIds = new int[width, height];
+        
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector2 position =
+                    Start + new Vector2(x * DistanceBetweenParticles, y * DistanceBetweenParticles);
+                particleIds[x, y] = AddParticleAt(position);
+            }
+        }
+        
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int p1Id = particleIds[x, y];
+                
+                if (x < width - 1)
+                {
+                    int p2Id = particleIds[x + 1, y];
+                    AddStickBetween(p1Id, p2Id);
+                }
+                
+                if (y < height - 1)
+                {
+                    int p2Id = particleIds[x, y + 1];
+                    AddStickBetween(p1Id, p2Id);
+                }
+            }
+        }
     }
 
     public int AddParticleAt(Vector2 position, bool isPinned = false)

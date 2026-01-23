@@ -200,6 +200,14 @@ public partial class Game1
             {
                 _showSaveWindow = true;
             }
+            if (ImGui.MenuItem("Set Buildable Mesh To grid"))
+            {
+                _activeMesh = new BuildableMesh(10, 10, new Vector2(100, 100), 20f);
+            }
+            if (ImGui.MenuItem("Exit"))
+            {
+                Exit();
+            }
             ImGui.EndMenu();
         }
 
