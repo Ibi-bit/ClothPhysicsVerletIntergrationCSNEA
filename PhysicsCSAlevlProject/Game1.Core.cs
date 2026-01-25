@@ -32,7 +32,7 @@ public partial class Game1 : Game
     private PrimitiveBatch.Arrow windDirectionArrow;
     private PrimitiveBatch.Line cutLine;
 
-    private SpriteFont _font;
+    // private SpriteFont _font;
     private const float FixedTimeStep = 1f / 1000f;
     private float _timeAccumulator = 0f;
 
@@ -147,7 +147,7 @@ public partial class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _font = Content.Load<SpriteFont>("Font");
+        // _font = Content.Load<SpriteFont>("Font");
         _guiRenderer.RebuildFontAtlas();
     }
 

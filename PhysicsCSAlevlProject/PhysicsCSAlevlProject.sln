@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsCSAlevlProject", "Ph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monogame.ImGuiNet", "..\MonoGame.ImGuiNet\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj", "{FDCCDC4C-790D-E2B1-6754-D378926745BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallGraphTool", "CallGraphTool\CallGraphTool.csproj", "{1FA0C991-006E-4819-BDF5-E4A5F678DABF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{FDCCDC4C-790D-E2B1-6754-D378926745BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDCCDC4C-790D-E2B1-6754-D378926745BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDCCDC4C-790D-E2B1-6754-D378926745BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FA0C991-006E-4819-BDF5-E4A5F678DABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FA0C991-006E-4819-BDF5-E4A5F678DABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FA0C991-006E-4819-BDF5-E4A5F678DABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FA0C991-006E-4819-BDF5-E4A5F678DABF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

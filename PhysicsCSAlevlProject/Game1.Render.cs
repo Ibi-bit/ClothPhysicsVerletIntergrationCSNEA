@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
@@ -25,7 +21,7 @@ public partial class Game1
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
 
         _activeMesh.Draw(_spriteBatch, _primitiveBatch);
-
+        /*
         if (_currentMode == MeshMode.Edit && _font != null)
         {
             _polygonBuilderInstance.Draw(_spriteBatch, _primitiveBatch, _font);
@@ -40,6 +36,7 @@ public partial class Game1
         {
             cutLine.Draw(_spriteBatch, _primitiveBatch);
         }
+        */
         _spriteBatch.End();
         ImGuiDraw(gameTime);
         // HandleModeSelection();
@@ -47,8 +44,5 @@ public partial class Game1
         base.Draw(gameTime);
     }
 
-    private void HandleModeSelection()
-    {
-        SetMode(_currentMode);
-    }
+    
 }

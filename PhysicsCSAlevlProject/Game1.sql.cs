@@ -7,9 +7,8 @@ namespace PhysicsCSAlevlProject;
 
 public class Game1Database
 {
-    private string connectionString =
-        "Host=localhost;Username=postgres;Password=password;Database=stick_simulation";
-
+    private readonly string connectionString =
+        "Host=localhost;Port=5432;Database=stick_simulation;Username=dev;Password=dev123";
     public bool TestConnection()
     {
         try

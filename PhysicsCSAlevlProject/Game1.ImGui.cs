@@ -17,8 +17,13 @@ public partial class Game1
     private ImGuiLogger _Logger = new ImGuiLogger();
     private bool _showLoggerWindow = false;
     private string _meshName = "MyMesh";
-    private string _StructurePath =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "JSONStructures");
+    private string _StructurePath = Path.Combine(
+        AppDomain.CurrentDomain.BaseDirectory,
+        "..",
+        "..",
+        "..",
+        "JSONStructures"
+    );
 
     bool ctrlHeld = false;
     bool shiftHeld = false;
@@ -492,7 +497,7 @@ public partial class Game1
         }
         if (ImGui.Button("SQLTEST"))
         {
-            var studentData = _database.GetStudentData(3); 
+            var studentData = _database.GetStudentData(3);
             if (studentData.Count == 0)
             {
                 _Logger.AddLog("No data found for student", ImGuiLogger.logTypes.Warning);
@@ -525,6 +530,9 @@ class ImGuiLogger
 
     Queue<messageLog> logs;
     public bool autoScrollLogs = true;
+    public bool wrapText = true;
+
+    // public bool clearLogs = false;
     Dictionary<logTypes, bool> logTypeVisibility = new Dictionary<logTypes, bool>
     {
         { logTypes.Info, true },
@@ -579,37 +587,28 @@ class ImGuiLogger
         ImGui.Separator();
         ImGui.Checkbox("Auto Scroll Logs", ref autoScrollLogs);
 
+        ImGui.Checkbox("Wrap Text", ref wrapText);
+
         ImGui.SeparatorText("Logs");
         ImGui.BeginChild("LogScrollArea", new System.Numerics.Vector2(0, 0));
+        if (wrapText)
+            ImGui.PushTextWrapPos(0.0f);
         foreach (var log in logs)
         {
             string displayMessage = log.Count > 1 ? $"{log.Message} (x{log.Count})" : log.Message;
-            switch (log.Type)
+            var color = log.Type switch
             {
-                case logTypes.Info:
-                    if (logTypeVisibility[logTypes.Info])
-                        ImGui.TextColored(
-                            new System.Numerics.Vector4(1f, 1f, 1f, 1f),
-                            displayMessage
-                        );
-                    break;
-                case logTypes.Warning:
-                    if (logTypeVisibility[logTypes.Warning])
-                        ImGui.TextColored(
-                            new System.Numerics.Vector4(1f, 1f, 0f, 1f),
-                            displayMessage
-                        );
-                    break;
-                case logTypes.Error:
-                    if (logTypeVisibility[logTypes.Error])
-                        ImGui.TextColored(
-                            new System.Numerics.Vector4(1f, 0f, 0f, 1f),
-                            displayMessage
-                        );
-                    break;
-            }
+                logTypes.Info => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
+                logTypes.Warning => new System.Numerics.Vector4(1f, 1f, 0f, 1f),
+                logTypes.Error => new System.Numerics.Vector4(1f, 0f, 0f, 1f),
+                _ => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
+            };
+            if (logTypeVisibility[log.Type])
+                ImGui.TextColored(color, displayMessage);
         }
-        if (autoScrollLogs && ImGui.GetScrollY() >= ImGui.GetScrollMaxY())
+        if (wrapText)
+            ImGui.PopTextWrapPos();
+        if (autoScrollLogs)
         {
             ImGui.SetScrollHereY(1.0f);
         }
