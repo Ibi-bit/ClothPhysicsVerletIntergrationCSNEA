@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -18,18 +17,6 @@ class Particle
     public bool IsPinned;
     public bool IsSelected;
 
-    public Particle()
-    {
-        Position = Vector2.Zero;
-        PreviousPosition = Vector2.Zero;
-        Mass = 1.0f;
-        AccumulatedForce = Vector2.Zero;
-        IsPinned = false;
-        IsSelected = false;
-        ID = -1;
-        TotalForceMagnitude = 0f;
-    }
-
     public Particle(Vector2 position, float mass, bool isPinned)
     {
         Position = position;
@@ -48,14 +35,6 @@ class DrawableParticle : Particle
     private PrimitiveBatch.Rectangle rectangle;
     public Color Color { get; set; }
     public Vector2 Size { get; set; }
-
-    public DrawableParticle()
-        : base(Vector2.Zero, 1.0f, false)
-    {
-        Size = new Vector2(10, 10);
-        Color = Color.White;
-        UpdateRectangle();
-    }
 
     public DrawableParticle(Vector2 position, float mass, Vector2 size, Color color)
         : base(position, mass, false)
@@ -89,12 +68,6 @@ class DrawableParticle : Particle
     public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
         Vector2 middle = Position - Size / 2;
-        if (IsPinned)
-        {
-            rectangle = new PrimitiveBatch.Rectangle(middle, Size, Color.BlueViolet);
-            rectangle.Draw(spriteBatch, primitiveBatch);
-            return;
-        }
         rectangle = new PrimitiveBatch.Rectangle(middle, Size, Color);
         rectangle.Draw(spriteBatch, primitiveBatch);
     }
@@ -105,13 +78,6 @@ class Stick
     public Particle P1;
     public Particle P2;
     public float Length;
-
-    public Stick()
-    {
-        P1 = null;
-        P2 = null;
-        Length = 0f;
-    }
 
     public Stick(Particle p1, Particle p2)
     {
@@ -127,14 +93,6 @@ class DrawableStick : Stick
     public Color Color { get; set; }
     public float Width { get; set; }
     public bool IsCut { get; set; }
-
-    public DrawableStick()
-        : base()
-    {
-        Color = Color.White;
-        Width = 2.0f;
-        IsCut = false;
-    }
 
     public DrawableStick(Particle p1, Particle p2, Color color, float width = 2.0f)
         : base(p1, p2)
@@ -186,7 +144,7 @@ class Cloth : Mesh
         int rows = (int)(Size.Y / naturalLength);
         int cols = (int)(Size.X / naturalLength);
         this.springConstant = springConstant;
-
+        this.drag = 0.99f;
         this.mass = mass;
         particles = new DrawableParticle[rows][];
         horizontalSticks = new DrawableStick[rows][];
@@ -300,7 +258,7 @@ class Cloth : Mesh
 
                 if (particle.IsPinned)
                 {
-                    particle.Color = Color.BlueViolet;
+                    particle.Color = Color.LightGray;
                     particle.Draw(spriteBatch, primitiveBatch);
                     continue;
                 }
@@ -328,17 +286,13 @@ class Mesh
     public float maxForceMagnitude = 0f;
 
     public float springConstant = 10000f;
-    public float drag = 0.997f;
-    public float mass = 1f;
+    public float drag = 0.99f;
 
     public class MeshStick : DrawableStick
     {
         public int Id;
         public int P1Id;
         public int P2Id;
-
-        public MeshStick()
-            : base() { }
 
         public MeshStick(DrawableParticle p1, DrawableParticle p2, Color color, float width = 2.0f)
             : base(p1, p2, color, width) { }
@@ -348,31 +302,6 @@ class Mesh
 
     private readonly Dictionary<int, HashSet<int>> _particleToStickIds =
         new Dictionary<int, HashSet<int>>();
-
-    public void RestoreStickReferences()
-    {
-        foreach (var stick in Sticks.Values)
-        {
-            if (Particles.ContainsKey(stick.P1Id) && Particles.ContainsKey(stick.P2Id))
-            {
-                stick.P1 = Particles[stick.P1Id];
-                stick.P2 = Particles[stick.P2Id];
-                stick.Length = Vector2.Distance(stick.P1.Position, stick.P2.Position);
-            }
-        }
-        _particleToStickIds.Clear();
-        foreach (var particle in Particles.Values)
-        {
-            _particleToStickIds[particle.ID] = new HashSet<int>();
-        }
-        foreach (var stick in Sticks.Values)
-        {
-            if (_particleToStickIds.ContainsKey(stick.P1Id))
-                _particleToStickIds[stick.P1Id].Add(stick.Id);
-            if (_particleToStickIds.ContainsKey(stick.P2Id))
-                _particleToStickIds[stick.P2Id].Add(stick.Id);
-        }
-    }
 
     protected int RegisterParticle(DrawableParticle particle)
     {
@@ -541,6 +470,32 @@ class Mesh
             p.Draw(spriteBatch, primitiveBatch);
         }
     }
+}
+
+public class Tool
+{
+    public string Name;
+    public Texture2D Icon;
+    public Texture2D CursorIcon;
+    public Dictionary<string, object> Properties = new Dictionary<string, object>();
+
+    public Tool(string name, Texture2D icon, Texture2D cursorIcon)
+    {
+        Name = name;
+        Icon = icon;
+        CursorIcon = cursorIcon;
+    }
+}
+
+class BuildableMesh : Mesh
+{
+    public float mass = 0.1f;
+
+    public BuildableMesh(float springConstant = 10000f, float mass = 0.1f)
+    {
+        this.springConstant = springConstant;
+        this.mass = mass;
+    }
 
     public int AddParticleAt(Vector2 position, bool isPinned = false)
     {
@@ -566,134 +521,5 @@ class Mesh
             }
         }
         return closest;
-    }
-
-    public void CreateGridMesh(Vector2 Start, Vector2 End, float DistanceBetweenParticles)
-    {
-        if (DistanceBetweenParticles <= 0)
-            return;
-
-        int width = (int)Math.Max(1, Math.Abs(End.X - Start.X) / DistanceBetweenParticles) + 1;
-        int height = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / DistanceBetweenParticles) + 1;
-        (Start, End) = (Vector2.Min(Start, End), Vector2.Max(Start, End));
-        width = Math.Min(width, 1000);
-        height = Math.Min(height, 1000);
-
-        int[,] particleIds = new int[width, height];
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Vector2 position =
-                    Start + new Vector2(x * DistanceBetweenParticles, y * DistanceBetweenParticles);
-                particleIds[x, y] = AddParticleAt(position);
-            }
-        }
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                int p1Id = particleIds[x, y];
-
-                if (x < width - 1)
-                {
-                    int p2Id = particleIds[x + 1, y];
-                    AddStickBetween(p1Id, p2Id);
-                }
-
-                if (y < height - 1)
-                {
-                    int p2Id = particleIds[x, y + 1];
-                    AddStickBetween(p1Id, p2Id);
-                }
-            }
-        }
-    }
-}
-
-class FileWriteableMesh
-{
-    public class particleData
-    {
-        public Vector2 Position;
-        public float Mass;
-        public bool IsPinned;
-    }
-
-    public class stickData
-    {
-        public int P1Id;
-        public int P2Id;
-    }
-
-    public List<particleData> Particles = new List<particleData>();
-    public List<stickData> Sticks = new List<stickData>();
-
-    // Parameterless constructor for JSON deserialization
-    public FileWriteableMesh() { }
-
-    public FileWriteableMesh(Mesh mesh)
-    {
-        var particleIdMap = new Dictionary<int, int>();
-        foreach (var kvp in mesh.Particles)
-        {
-            var p = kvp.Value;
-            particleIdMap[kvp.Key] = Particles.Count;
-            Particles.Add(
-                new particleData
-                {
-                    Position = p.Position,
-                    Mass = p.Mass,
-                    IsPinned = p.IsPinned,
-                }
-            );
-        }
-        foreach (var kvp in mesh.Sticks)
-        {
-            var s = kvp.Value;
-            Sticks.Add(
-                new stickData { P1Id = particleIdMap[s.P1Id], P2Id = particleIdMap[s.P2Id] }
-            );
-        }
-    }
-
-    public Mesh ToMesh()
-    {
-        var mesh = new Mesh();
-
-        if (Particles != null)
-        {
-            foreach (var pData in Particles)
-            {
-                mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
-            }
-        }
-
-        if (Sticks != null)
-        {
-            foreach (var sData in Sticks)
-            {
-                mesh.AddStick(sData.P1Id, sData.P2Id, Color.White);
-            }
-        }
-
-        return mesh;
-    }
-}
-
-public class Tool
-{
-    public string Name;
-    public Texture2D Icon;
-    public Texture2D CursorIcon;
-    public Dictionary<string, object> Properties = new Dictionary<string, object>();
-
-    public Tool(string name, Texture2D icon, Texture2D cursorIcon)
-    {
-        Name = name;
-        Icon = icon;
-        CursorIcon = cursorIcon;
     }
 }
