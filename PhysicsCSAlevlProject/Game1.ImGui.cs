@@ -9,15 +9,16 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
-    private bool _showPhysicsControlsWindow = false;
-    private bool _showConfigurationWindow = false;
-    private bool _showReadMeWindow = false;
-    private bool _showStructureWindow = false;
-    private bool _showSaveWindow = false;
-    private ImGuiLogger _Logger = new ImGuiLogger();
-    private bool _showLoggerWindow = false;
+    private bool _showPhysicsControlsWindow;
+    private bool _showConfigurationWindow;
+    private bool _showReadMeWindow;
+    private bool _showStructureWindow;
+    private bool _showSaveWindow;
+    private bool _showSignInWindow;
+    private ImGuiLogger _logger = new ImGuiLogger();
+    private bool _showLoggerWindow;
     private string _meshName = "MyMesh";
-    private string _StructurePath = Path.Combine(
+    private string _structurePath = Path.Combine(
         AppDomain.CurrentDomain.BaseDirectory,
         "..",
         "..",
@@ -25,23 +26,23 @@ public partial class Game1
         "JSONStructures"
     );
 
-    bool ctrlHeld = false;
-    bool shiftHeld = false;
+    private bool _ctrlHeld;
+    private bool _shiftHeld;
+    private bool _capsActive;
+    private bool _altHeld;
 
-    bool capsActive = false;
-    bool altHeld = false;
-
-    const float ModeSwitchDisplayDuration = 1.5f;
+    private int _signedInUserId = -1;
 
     private void ImGuiDraw(GameTime gameTime)
     {
         _guiRenderer.BeginLayout(gameTime);
-        ctrlHeld = ImGui.GetIO().KeyCtrl;
-        shiftHeld = ImGui.GetIO().KeyShift;
-        altHeld = ImGui.GetIO().KeyAlt;
+        _ctrlHeld = ImGui.GetIO().KeyCtrl;
+        _shiftHeld = ImGui.GetIO().KeyShift;
+        _altHeld = ImGui.GetIO().KeyAlt;
+
         if (ImGui.IsKeyPressed(ImGuiKey.CapsLock))
         {
-            capsActive = !capsActive;
+            _capsActive = !_capsActive;
         }
 
         DrawMainMenuBar();
@@ -68,7 +69,11 @@ public partial class Game1
         }
         if (_showLoggerWindow)
         {
-            _Logger.DrawLogs(ref _showLoggerWindow);
+            _logger.DrawLogs(ref _showLoggerWindow);
+        }
+        if (_showSignInWindow)
+        {
+            DrawSignInWindow();
         }
         if (inspectedParticles.Count > 0)
         {
@@ -88,6 +93,25 @@ public partial class Game1
             return;
         }
         ImGui.Text("Particle Info:");
+        if (ImGui.Button("Clear All Inspected Particles"))
+        {
+            inspectedParticles.Clear();
+        }
+        if (ImGui.Button("Delete All Inspected Particles With Sticks"))
+        {
+            foreach (var index in inspectedParticles)
+            {
+                _activeMesh.RemoveParticle(index);
+            }
+            inspectedParticles.Clear();
+            ImGui.End();
+            return;
+        }
+        if (ImGui.Button("Close Window"))
+        {
+            ImGui.End();
+            return;
+        }
 
         ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -30));
         foreach (var index in inspectedParticles)
@@ -124,20 +148,54 @@ public partial class Game1
         ImGui.End();
     }
 
+    private void DrawSignInWindow()
+    {
+        if (!ImGui.Begin("Sign In", ref _showSignInWindow))
+        {
+            ImGui.End();
+            return;
+        }
+
+        if (_signedInUserId == -1)
+        {
+            ImGui.Text("Enter User ID to Sign In:");
+            string userIdInput = "";
+            ImGui.InputText("User ID", ref userIdInput, 20);
+            if (ImGui.Button("Sign In"))
+            {
+                if (int.TryParse(userIdInput, out int userId))
+                {
+                    _signedInUserId = userId;
+                    _showSignInWindow = false;
+                }
+            }
+        }
+        else
+        {
+            ImGui.Text($"Signed in as User ID: {_signedInUserId}");
+            if (ImGui.Button("Sign Out"))
+            {
+                _signedInUserId = -1;
+            }
+        }
+
+        ImGui.End();
+    }
+
     private void ModeSwitchingImGui()
     {
-        bool isMac = System.OperatingSystem.IsMacOS();
-        bool backwardModifierHeld = isMac ? altHeld : ctrlHeld;
+        bool isMac = OperatingSystem.IsMacOS();
+        bool backwardModifierHeld = isMac ? _altHeld : _ctrlHeld;
 
-        if (shiftHeld && ImGui.IsKeyPressed(ImGuiKey.Tab))
+        if (_shiftHeld && ImGui.IsKeyPressed(ImGuiKey.Tab))
         {
             int delta = backwardModifierHeld ? -1 : 1;
-            int modeCount = System.Enum.GetValues(typeof(MeshMode)).Length;
+            int modeCount = Enum.GetValues(typeof(MeshMode)).Length;
             int newModeIndex = ((int)_currentMode + delta + modeCount) % modeCount;
             SetMode((MeshMode)newModeIndex);
         }
 
-        if (shiftHeld)
+        if (_shiftHeld)
         {
             var drawList = ImGui.GetForegroundDrawList();
             drawList.AddText(
@@ -145,7 +203,7 @@ public partial class Game1
                 ImGui.GetColorU32(ImGuiCol.Text),
                 "Mode:"
             );
-            var modes = System.Enum.GetValues(typeof(MeshMode));
+            var modes = Enum.GetValues(typeof(MeshMode));
             for (int i = 0; i < modes.Length; i++)
             {
                 var mode = (MeshMode)modes.GetValue(i);
@@ -205,10 +263,11 @@ public partial class Game1
             {
                 _showSaveWindow = true;
             }
-            if (ImGui.MenuItem("Set Buildable Mesh To grid"))
+            if (ImGui.MenuItem("Sign In/Sign Out"))
             {
-                _activeMesh = new BuildableMesh(10, 10, new Vector2(100, 100), 20f);
+                _showSignInWindow = true;
             }
+
             if (ImGui.MenuItem("Exit"))
             {
                 Exit();
@@ -295,7 +354,7 @@ public partial class Game1
         ImGui.Text("Available Meshes:");
         ImGui.Separator();
 
-        var meshes = LoadAllMeshesFromDirectory(_StructurePath);
+        var meshes = LoadAllMeshesFromDirectory(_structurePath);
 
         if (meshes.Count == 0)
         {
@@ -307,10 +366,7 @@ public partial class Game1
             if (ImGui.Button($"Load {meshEntry.Key}"))
             {
                 _activeMesh = meshEntry.Value;
-                if (_activeMesh is BuildableMesh buildableMesh)
-                {
-                    _defaultBuildableMesh = buildableMesh;
-                }
+                _defaultBuildableMesh = _activeMesh;
                 SetMode(MeshMode.Interact);
                 _showStructureWindow = false;
             }
@@ -329,7 +385,7 @@ public partial class Game1
         ImGui.InputText("Mesh Name", ref _meshName, 100);
         if (ImGui.Button("Save"))
         {
-            SaveMeshToJSON(_activeMesh, _meshName, _StructurePath);
+            SaveMeshToJSON(_activeMesh, _meshName, _structurePath);
         }
         ImGui.End();
     }
@@ -495,18 +551,6 @@ public partial class Game1
             _activeMesh.drag = drag;
             _clothInstance.drag = drag;
         }
-        if (ImGui.Button("SQLTEST"))
-        {
-            var studentData = _database.GetStudentData(3);
-            if (studentData.Count == 0)
-            {
-                _Logger.AddLog("No data found for student", ImGuiLogger.logTypes.Warning);
-            }
-            foreach (var kvp in studentData)
-            {
-                _Logger.AddLog($"Student {kvp.Key}: {kvp.Value}", ImGuiLogger.logTypes.Info);
-            }
-        }
 
         ImGui.End();
     }
@@ -514,48 +558,48 @@ public partial class Game1
 
 class ImGuiLogger
 {
-    public enum logTypes
+    public enum LogTypes
     {
         Info,
         Warning,
         Error,
     };
 
-    class messageLog
+    class MessageLog
     {
         public string Message;
         public int Count;
-        public logTypes Type;
+        public LogTypes Type;
     }
 
-    Queue<messageLog> logs;
+    Queue<MessageLog> _logs;
     public bool autoScrollLogs = true;
     public bool wrapText = true;
 
     // public bool clearLogs = false;
-    Dictionary<logTypes, bool> logTypeVisibility = new Dictionary<logTypes, bool>
+    Dictionary<LogTypes, bool> _logTypeVisibility = new Dictionary<LogTypes, bool>
     {
-        { logTypes.Info, true },
-        { logTypes.Warning, true },
-        { logTypes.Error, true },
+        { LogTypes.Info, true },
+        { LogTypes.Warning, true },
+        { LogTypes.Error, true },
     };
 
     public ImGuiLogger()
     {
-        logs = new Queue<messageLog>();
+        _logs = new Queue<MessageLog>();
     }
 
-    public void AddLog(string message, logTypes type = logTypes.Info)
+    public void AddLog(string message, LogTypes type = LogTypes.Info)
     {
-        var lastLog = logs.LastOrDefault();
+        var lastLog = _logs.LastOrDefault();
         if (lastLog != null && lastLog.Message == message && lastLog.Type == type)
         {
             lastLog.Count++;
         }
         else
         {
-            logs.Enqueue(
-                new messageLog
+            _logs.Enqueue(
+                new MessageLog
                 {
                     Message = message,
                     Count = 1,
@@ -565,24 +609,24 @@ class ImGuiLogger
         }
     }
 
-    public void DrawLogs(ref bool OpenWindow)
+    public void DrawLogs(ref bool openWindow)
     {
-        if (!ImGui.Begin("Logs", ref OpenWindow))
+        if (!ImGui.Begin("Logs", ref openWindow))
         {
             ImGui.End();
             return;
         }
-        bool infoVisible = logTypeVisibility[logTypes.Info];
+        bool infoVisible = _logTypeVisibility[LogTypes.Info];
         if (ImGui.Checkbox("Info", ref infoVisible))
-            logTypeVisibility[logTypes.Info] = infoVisible;
+            _logTypeVisibility[LogTypes.Info] = infoVisible;
         ImGui.SameLine();
-        bool errorVisible = logTypeVisibility[logTypes.Error];
+        bool errorVisible = _logTypeVisibility[LogTypes.Error];
         if (ImGui.Checkbox("Error", ref errorVisible))
-            logTypeVisibility[logTypes.Error] = errorVisible;
+            _logTypeVisibility[LogTypes.Error] = errorVisible;
         ImGui.SameLine();
-        bool warningVisible = logTypeVisibility[logTypes.Warning];
+        bool warningVisible = _logTypeVisibility[LogTypes.Warning];
         if (ImGui.Checkbox("Warning", ref warningVisible))
-            logTypeVisibility[logTypes.Warning] = warningVisible;
+            _logTypeVisibility[LogTypes.Warning] = warningVisible;
 
         ImGui.Separator();
         ImGui.Checkbox("Auto Scroll Logs", ref autoScrollLogs);
@@ -593,17 +637,17 @@ class ImGuiLogger
         ImGui.BeginChild("LogScrollArea", new System.Numerics.Vector2(0, 0));
         if (wrapText)
             ImGui.PushTextWrapPos(0.0f);
-        foreach (var log in logs)
+        foreach (var log in _logs)
         {
             string displayMessage = log.Count > 1 ? $"{log.Message} (x{log.Count})" : log.Message;
             var color = log.Type switch
             {
-                logTypes.Info => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
-                logTypes.Warning => new System.Numerics.Vector4(1f, 1f, 0f, 1f),
-                logTypes.Error => new System.Numerics.Vector4(1f, 0f, 0f, 1f),
+                LogTypes.Info => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
+                LogTypes.Warning => new System.Numerics.Vector4(1f, 1f, 0f, 1f),
+                LogTypes.Error => new System.Numerics.Vector4(1f, 0f, 0f, 1f),
                 _ => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
             };
-            if (logTypeVisibility[log.Type])
+            if (_logTypeVisibility[log.Type])
                 ImGui.TextColored(color, displayMessage);
         }
         if (wrapText)

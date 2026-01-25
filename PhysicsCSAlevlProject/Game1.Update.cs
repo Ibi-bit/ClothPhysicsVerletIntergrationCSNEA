@@ -6,6 +6,8 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    private VectorGraphics.PrimitiveBatch.Rectangle _selectRectangle;
+
     protected override void Update(GameTime gameTime)
     {
         KeyboardState keyboardState = Keyboard.GetState();
@@ -88,7 +90,7 @@ public partial class Game1
                                 : dragRadius;
                             if (_currentMode == MeshMode.Cloth)
                                 PinParticle(intitialMousePosWhenPressed, pinRadius);
-                            else if (_currentMode == MeshMode.Interact)
+                            else
                                 PinParticleBuildable(intitialMousePosWhenPressed, pinRadius);
                         }
                         break;
@@ -100,7 +102,7 @@ public partial class Game1
 
                         if (_currentMode == MeshMode.Cloth)
                             CutAllSticksInRadius(intitialMousePosWhenPressed, radius);
-                        else if (_currentMode == MeshMode.Interact)
+                        else
                             CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, radius);
 
                         break;
@@ -184,7 +186,10 @@ public partial class Game1
                                     intitialMousePosWhenPressed,
                                     inspectRadius
                                 );
-                            else
+                            else if (
+                                !_currentToolSet["Inspect Particles"]
+                                    .Properties.ContainsKey("SelectRectangle")
+                            )
                                 InspectParticlesInRadiusWindow(
                                     intitialMousePosWhenPressed,
                                     inspectRadius
@@ -216,11 +221,35 @@ public partial class Game1
                         CutSticksAlongLine(intitialMousePosWhenPressed, currentMousePos);
                     }
                 }
+                else if (
+                    _selectedToolName == "Inspect Particles"
+                    && leftPressed
+                    && _currentMode != MeshMode.Edit
+                    && _currentToolSet["Inspect Particles"]
+                        .Properties.ContainsKey("RectangleSelect")
+                    && (bool)_currentToolSet["Inspect Particles"].Properties["RectangleSelect"]
+                )
+                {
+                    InspectParticlesInRectangle(
+                        intitialMousePosWhenPressed,
+                        currentMousePos,
+                        _currentToolSet["Inspect Particles"].Properties.ContainsKey("IsLog")
+                            && (bool)_currentToolSet["Inspect Particles"].Properties["IsLog"],
+                        _currentToolSet["Inspect Particles"]
+                            .Properties.ContainsKey("Clear When Use")
+                            && (bool)
+                                _currentToolSet["Inspect Particles"].Properties[
+                                    "Clear When Use"
+                                ]
+                    );
+                }
 
                 leftPressed = false;
                 intitialMousePosWhenPressed = Vector2.Zero;
                 windDirectionArrow = null;
                 cutLine = null;
+                _selectRectangle = null;
+                windForce = Vector2.Zero;
             }
         }
 
@@ -284,16 +313,54 @@ public partial class Game1
         }
         else if (_selectedToolName == "Add Polygon")
         {
-            if (_activeMesh is BuildableMesh buildableMesh)
+            _activeMesh = _polygonBuilderInstance.BuildPolygon(
+                keyboardState,
+                _prevKeyboardState,
+                mouseState,
+                _prevMouseState,
+                _activeMesh,
+                imguiWantsMouse
+            );
+        }
+        else if (_selectedToolName == "Create Grid Mesh")
+        {
+            var props = _currentToolSet["Create Grid Mesh"].Properties;
+            float distance = (float)props["DistanceBetweenParticles"];
+            if (keyboardState.IsKeyDown(Keys.C) && !_prevKeyboardState.IsKeyDown(Keys.C))
             {
-                _activeMesh = _polygonBuilderInstance.BuildPolygon(
-                    keyboardState,
-                    _prevKeyboardState,
-                    mouseState,
-                    _prevMouseState,
-                    buildableMesh,
-                    imguiWantsMouse
+                _activeMesh.CreateGridMesh(intitialMousePosWhenPressed, currentMousePos, distance);
+            }
+
+            if (leftPressed)
+                _selectRectangle = new VectorGraphics.PrimitiveBatch.Rectangle(
+                    GetRectangleFromPoints(intitialMousePosWhenPressed, currentMousePos),
+                    new Color(Color.DarkGreen, 0.05f),
+                    true,
+                    2,
+                    Color.Yellow
                 );
+            else
+            {
+                _selectRectangle = null;
+            }
+        }
+        else if (_selectedToolName == "Inspect Particles")
+        {
+            var props = _currentToolSet["Inspect Particles"].Properties;
+            float inspectRadius = props.ContainsKey("Radius") ? (float)props["Radius"] : 10f;
+            if (props.ContainsKey("RectangleSelect") && leftPressed)
+            {
+                _selectRectangle = new VectorGraphics.PrimitiveBatch.Rectangle(
+                    GetRectangleFromPoints(intitialMousePosWhenPressed, currentMousePos),
+                    new Color(Color.Green, 0.05f),
+                    true,
+                    2,
+                    Color.Green
+                );
+            }
+            else
+            {
+                _selectRectangle = null;
             }
         }
         else

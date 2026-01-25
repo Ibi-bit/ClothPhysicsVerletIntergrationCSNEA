@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace PhysicsCSAlevlProject;
@@ -59,9 +58,9 @@ public partial class Game1
             }
             catch (Exception ex)
             {
-                _Logger.AddLog(
+                _logger.AddLog(
                     $"Failed to load mesh from {filePath}: {ex.Message}",
-                    ImGuiLogger.logTypes.Error
+                    ImGuiLogger.LogTypes.Error
                 );
             }
         }

@@ -26,6 +26,7 @@ public partial class Game1
         {
             _polygonBuilderInstance.Draw(_spriteBatch, _primitiveBatch, _font);
         }
+        */
 
         if (windDirectionArrow != null)
         {
@@ -36,13 +37,14 @@ public partial class Game1
         {
             cutLine.Draw(_spriteBatch, _primitiveBatch);
         }
-        */
+        if (_selectRectangle != null)
+        {
+            _selectRectangle.Draw(_spriteBatch, _primitiveBatch);
+        }
         _spriteBatch.End();
         ImGuiDraw(gameTime);
         // HandleModeSelection();
 
         base.Draw(gameTime);
     }
-
-    
 }

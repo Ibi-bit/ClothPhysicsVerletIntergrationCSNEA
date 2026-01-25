@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -88,6 +89,12 @@ class DrawableParticle : Particle
     public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
         Vector2 middle = Position - Size / 2;
+        if (IsPinned)
+        {
+            rectangle = new PrimitiveBatch.Rectangle(middle, Size, Color.BlueViolet);
+            rectangle.Draw(spriteBatch, primitiveBatch);
+            return;
+        }
         rectangle = new PrimitiveBatch.Rectangle(middle, Size, Color);
         rectangle.Draw(spriteBatch, primitiveBatch);
     }
@@ -322,6 +329,7 @@ class Mesh
 
     public float springConstant = 10000f;
     public float drag = 0.997f;
+    public float mass = 1f;
 
     public class MeshStick : DrawableStick
     {
@@ -533,6 +541,76 @@ class Mesh
             p.Draw(spriteBatch, primitiveBatch);
         }
     }
+
+    public int AddParticleAt(Vector2 position, bool isPinned = false)
+    {
+        return AddParticle(position, isPinned ? 0f : mass, isPinned, Color.White);
+    }
+
+    public int? AddStickBetween(int p1Id, int p2Id)
+    {
+        return AddStick(p1Id, p2Id, Color.White);
+    }
+
+    public int? FindClosestParticle(Vector2 position, float radius)
+    {
+        float minDist = radius;
+        int? closest = null;
+        foreach (var kvp in Particles)
+        {
+            float dist = Vector2.Distance(kvp.Value.Position, position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = kvp.Key;
+            }
+        }
+        return closest;
+    }
+
+    public void CreateGridMesh(Vector2 Start, Vector2 End, float DistanceBetweenParticles)
+    {
+        if (DistanceBetweenParticles <= 0)
+            return;
+
+        int width = (int)Math.Max(1, Math.Abs(End.X - Start.X) / DistanceBetweenParticles) + 1;
+        int height = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / DistanceBetweenParticles) + 1;
+        (Start, End) = (Vector2.Min(Start, End), Vector2.Max(Start, End));
+        width = Math.Min(width, 1000);
+        height = Math.Min(height, 1000);
+
+        int[,] particleIds = new int[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector2 position =
+                    Start + new Vector2(x * DistanceBetweenParticles, y * DistanceBetweenParticles);
+                particleIds[x, y] = AddParticleAt(position);
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int p1Id = particleIds[x, y];
+
+                if (x < width - 1)
+                {
+                    int p2Id = particleIds[x + 1, y];
+                    AddStickBetween(p1Id, p2Id);
+                }
+
+                if (y < height - 1)
+                {
+                    int p2Id = particleIds[x, y + 1];
+                    AddStickBetween(p1Id, p2Id);
+                }
+            }
+        }
+    }
 }
 
 class FileWriteableMesh
@@ -617,94 +695,5 @@ public class Tool
         Name = name;
         Icon = icon;
         CursorIcon = cursorIcon;
-    }
-}
-
-class BuildableMesh : Mesh
-{
-    public float mass = 0.1f;
-
-    public BuildableMesh(float springConstant = 10000f, float mass = 0.1f)
-    {
-        this.springConstant = springConstant;
-        this.mass = mass;
-    }
-
-    /// <summary>
-    ///  Create a Grid Mesh
-    /// </summary>
-    public BuildableMesh(
-        int width,
-        int height,
-        Vector2 Start,
-        float Length,
-        float springConstant = 10000f,
-        float mass = 0.1f
-    )
-    {
-        this.springConstant = springConstant;
-        this.mass = mass;
-        CreateGridMesh(width, height, Start, Length);
-    }
-
-    public void CreateGridMesh(int width, int height, Vector2 Start, float DistanceBetweenParticles)
-    {
-        int[,] particleIds = new int[width, height];
-        
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Vector2 position =
-                    Start + new Vector2(x * DistanceBetweenParticles, y * DistanceBetweenParticles);
-                particleIds[x, y] = AddParticleAt(position);
-            }
-        }
-        
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                int p1Id = particleIds[x, y];
-                
-                if (x < width - 1)
-                {
-                    int p2Id = particleIds[x + 1, y];
-                    AddStickBetween(p1Id, p2Id);
-                }
-                
-                if (y < height - 1)
-                {
-                    int p2Id = particleIds[x, y + 1];
-                    AddStickBetween(p1Id, p2Id);
-                }
-            }
-        }
-    }
-
-    public int AddParticleAt(Vector2 position, bool isPinned = false)
-    {
-        return AddParticle(position, isPinned ? 0f : mass, isPinned, Color.White);
-    }
-
-    public int? AddStickBetween(int p1Id, int p2Id)
-    {
-        return AddStick(p1Id, p2Id, Color.White);
-    }
-
-    public int? FindClosestParticle(Vector2 position, float radius)
-    {
-        float minDist = radius;
-        int? closest = null;
-        foreach (var kvp in Particles)
-        {
-            float dist = Vector2.Distance(kvp.Value.Position, position);
-            if (dist < minDist)
-            {
-                minDist = dist;
-                closest = kvp.Key;
-            }
-        }
-        return closest;
     }
 }

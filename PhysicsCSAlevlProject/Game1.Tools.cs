@@ -57,6 +57,8 @@ public partial class Game1
 
         _interactTools["Inspect Particles"].Properties["Radius"] = 10f;
         _interactTools["Inspect Particles"].Properties["IsLog"] = false;
+        _interactTools["Inspect Particles"].Properties["Clear When Use"] = false;
+        _interactTools["Inspect Particles"].Properties["RectangleSelect"] = true;
     }
 
     private void InitializeBuildTools()
@@ -67,6 +69,9 @@ public partial class Game1
             { "Add Stick Between Particles", new Tool("Add Stick Between Particles", null, null) },
             { "Add Polygon", new Tool("Add Polygon", null, null) },
             { "Remove Particle", new Tool("Remove Particle", null, null) },
+            { "LineCut", new Tool("LineCut", null, null) },
+            { "Pin", new Tool("Pin", null, null) },
+            { "Create Grid Mesh", new Tool("Create Grid Mesh", null, null) },
         };
         foreach (var tool in _buildTools.Values)
         {
@@ -76,6 +81,10 @@ public partial class Game1
         _buildTools["Add Stick Between Particles"].Properties["Radius"] = 15f;
         _buildTools["Add Polygon"].Properties["SnapToGrid"] = true;
         _buildTools["Remove Particle"].Properties["Radius"] = 10f;
+        _interactTools["LineCut"].Properties["MinDistance"] = 5f;
+        _interactTools["LineCut"].Properties["Thickness"] = 3f;
+        _buildTools["Pin"].Properties["Radius"] = 20f;
+        _buildTools["Create Grid Mesh"].Properties["DistanceBetweenParticles"] = 10f;
     }
 
     private void DrawToolMenuItems()
@@ -241,6 +250,16 @@ public partial class Game1
             {
                 props["IsLog"] = isLog;
             }
+            bool clearWhenUse = (bool)props["Clear When Use"];
+            if (ImGui.Checkbox("Clear When Use", ref clearWhenUse))
+            {
+                props["Clear When Use"] = clearWhenUse;
+            }
+            bool rectangleSelect = (bool)props["RectangleSelect"];
+            if (ImGui.Checkbox("Select with Rectangle", ref rectangleSelect))
+            {
+                props["RectangleSelect"] = rectangleSelect;
+            }
         }
         else if (_selectedToolName == "Add Particle")
         {
@@ -276,6 +295,15 @@ public partial class Game1
             if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
             {
                 props["Radius"] = radius;
+            }
+        }
+        else if (_selectedToolName == "Create Grid Mesh")
+        {
+            var props = _currentToolSet["Create Grid Mesh"].Properties;
+            float distance = (float)props["DistanceBetweenParticles"];
+            if (ImGui.SliderFloat("Distance Between Particles", ref distance, 5f, 100f))
+            {
+                props["DistanceBetweenParticles"] = distance;
             }
         }
     }
@@ -324,6 +352,11 @@ public partial class Game1
             particle.PreviousPosition = particle.Position;
 
             _clothInstance.particles[closestI][closestJ] = particle;
+
+            string action = shouldPin ? "pinned" : "unpinned";
+            _logger.AddLog(
+                $"Cloth particle [{closestI},{closestJ}] {action} at {particle.Position}"
+            );
         }
     }
 
@@ -332,7 +365,11 @@ public partial class Game1
         var particleIDs = GetBuildableMeshParticlesInRadius(center, radius);
         foreach (var id in particleIDs)
             if (_activeMesh.Particles.TryGetValue(id, out var particle))
+            {
                 particle.IsPinned = !particle.IsPinned;
+                string action = particle.IsPinned ? "pinned" : "unpinned";
+                _logger.AddLog($"Mesh particle {id} {action} at {particle.Position}");
+            }
     }
 
     private void CutSticksInRadius(Vector2 center, float radius, DrawableStick[][] sticks)
@@ -352,6 +389,7 @@ public partial class Game1
                             sticks[i][j] = null;
                         else
                             sticks[i][j].IsCut = true;
+                        _logger.AddLog($"Cut stick [{i},{j}] at {stickCenter}");
                     }
                 }
             }
@@ -376,6 +414,7 @@ public partial class Game1
             if (distance <= radius)
             {
                 sticksToRemove.Add(kvp.Key);
+                _logger.AddLog($"Cut stick {kvp.Key} at {stickCenter}");
             }
         }
 
@@ -446,7 +485,7 @@ public partial class Game1
 
                     if (DoTwoLinesIntersect(lineStart, lineEnd, stickStart, stickEnd))
                     {
-                        _Logger.AddLog($"Cutting stick at [{i},{j}]", ImGuiLogger.logTypes.Info);
+                        _logger.AddLog($"Cutting stick at [{i},{j}]");
                         sticks[i][j].IsCut = true;
                     }
                 }
@@ -705,9 +744,8 @@ public partial class Game1
                     particle.Color = Color.White;
                     if (distance <= radius)
                     {
-                        _Logger.AddLog(
-                            $"Particle [{i},{j}] - Pos: {particle.Position}, Pinned: {particle.IsPinned}",
-                            ImGuiLogger.logTypes.Info
+                        _logger.AddLog(
+                            $"Particle [{i},{j}] - Pos: {particle.Position}, Pinned: {particle.IsPinned}"
                         );
                         particle.Color = Color.Cyan;
                     }
@@ -723,9 +761,8 @@ public partial class Game1
                 particle.Color = Color.White;
                 if (distance <= radius)
                 {
-                    _Logger.AddLog(
-                        $"Particle ID {kvp.Key} - Pos: {particle.Position}, Pinned: {particle.IsPinned}",
-                        ImGuiLogger.logTypes.Info
+                    _logger.AddLog(
+                        $"Particle ID {kvp.Key} - Pos: {particle.Position}, Pinned: {particle.IsPinned}"
                     );
                     particle.Color = Color.Cyan;
                 }
@@ -754,7 +791,8 @@ public partial class Game1
         }
         else
         {
-            inspectedParticles.Clear();
+            if ((bool)_interactTools["Inspect Particles"].Properties["Clear When Use"])
+                inspectedParticles.Clear();
             foreach (var kvp in _activeMesh.Particles)
             {
                 var particle = kvp.Value;
@@ -769,6 +807,66 @@ public partial class Game1
                 _activeMesh.Particles[kvp.Key] = particle;
             }
         }
+    }
+
+    private void InspectParticlesInRectangle(
+        Vector2 rectStart,
+        Vector2 rectEnd,
+        bool isLog,
+        bool clearWhenUse
+    )
+    {
+        if (clearWhenUse)
+            inspectedParticles.Clear();
+
+        var particles = GetParticlesInRectangle(rectStart, rectEnd);
+        foreach (var id in particles)
+        {
+            if (!_activeMesh.Particles.TryGetValue(id, out var particle))
+                continue;
+
+            particle.Color = Color.Cyan;
+            _activeMesh.Particles[id] = particle;
+
+            if (!inspectedParticles.Contains(id))
+                inspectedParticles.Add(id);
+
+            if (isLog)
+            {
+                _logger.AddLog($"Particle ID {id} at {particle.Position}");
+            }
+        }
+    }
+
+    private List<int> GetParticlesInRectangle(Vector2 rectStart, Vector2 rectEnd)
+    {
+        var result = new List<int>();
+        Rectangle rect = GetRectangleFromPoints(rectStart, rectEnd);
+        if (_currentMode == MeshMode.Cloth)
+        {
+            for (int i = 0; i < _clothInstance.particles.Length; i++)
+            {
+                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
+                {
+                    var particle = _clothInstance.particles[i][j];
+                    if (rect.Contains(particle.Position.ToPoint()))
+                    {
+                        result.Add(particle.ID);
+                    }
+                }
+            }
+            return result;
+        }
+
+        foreach (var kvp in _activeMesh.Particles)
+        {
+            var particle = kvp.Value;
+            if (rect.Contains(particle.Position.ToPoint()))
+            {
+                result.Add(kvp.Key);
+            }
+        }
+        return result;
     }
 
     private void HandleAddStickBetweenParticlesClick(Vector2 clickPos)
@@ -792,34 +890,38 @@ public partial class Game1
             }
             else if (_stickToolFirstParticleId.Value != hitId)
             {
-                if (_activeMesh is BuildableMesh buildableMesh)
+                _activeMesh.AddStickBetween(_stickToolFirstParticleId.Value, hitId);
+                _logger.AddLog(
+                    $"Added stick between particles {_stickToolFirstParticleId.Value} and {hitId}",
+                    ImGuiLogger.LogTypes.Info
+                );
+                if (_activeMesh.Particles.TryGetValue(_stickToolFirstParticleId.Value, out var p1))
                 {
-                    buildableMesh.AddStickBetween(_stickToolFirstParticleId.Value, hitId);
-                    if (
-                        buildableMesh.Particles.TryGetValue(
-                            _stickToolFirstParticleId.Value,
-                            out var p1
-                        )
-                    )
-                    {
-                        p1.Color = Color.White;
-                        buildableMesh.Particles[_stickToolFirstParticleId.Value] = p1;
-                    }
-                    if (buildableMesh.Particles.TryGetValue(hitId, out var p2))
-                    {
-                        p2.Color = Color.White;
-                        buildableMesh.Particles[hitId] = p2;
-                    }
+                    p1.Color = Color.White;
+                    _activeMesh.Particles[_stickToolFirstParticleId.Value] = p1;
+                }
+                if (_activeMesh.Particles.TryGetValue(hitId, out var p2))
+                {
+                    p2.Color = Color.White;
+                    _activeMesh.Particles[hitId] = p2;
                 }
                 _stickToolFirstParticleId = null;
             }
             else
             {
-                _Logger.AddLog(
-                    "Cannot create stick to the same particle. Select a different particle.",
-                    ImGuiLogger.logTypes.Warning
+                _logger.AddLog(
+                    "Cannot create stick to the same particle. Select a different particle."
                 );
             }
         }
+    }
+
+    private Rectangle GetRectangleFromPoints(Vector2 point1, Vector2 point2)
+    {
+        int x = (int)Math.Min(point1.X, point2.X);
+        int y = (int)Math.Min(point1.Y, point2.Y);
+        int width = (int)Math.Abs(point1.X - point2.X);
+        int height = (int)Math.Abs(point1.Y - point2.Y);
+        return new Rectangle(x, y, width, height);
     }
 }

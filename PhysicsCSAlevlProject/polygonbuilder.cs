@@ -14,12 +14,12 @@ class PolygonBuilder
 
     public PolygonBuilder() { }
 
-    public BuildableMesh BuildPolygon(
+    public Mesh BuildPolygon(
         KeyboardState keyboardState,
         KeyboardState previousKeyboardState,
         MouseState mouseState,
         MouseState previousMouseState,
-        BuildableMesh mesh,
+        Mesh mesh,
         bool imguiWantsMouse
     )
     {
