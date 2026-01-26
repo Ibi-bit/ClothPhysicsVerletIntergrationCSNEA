@@ -288,6 +288,7 @@ class Mesh
 
     public float springConstant = 10000f;
     public float drag = 0.99f;
+    public float mass = 1f;
 
     public class MeshStick : DrawableStick
     {
@@ -303,6 +304,30 @@ class Mesh
 
     private readonly Dictionary<int, HashSet<int>> _particleToStickIds =
         new Dictionary<int, HashSet<int>>();
+    public void RestoreStickReferences()
+    {
+        foreach (var stick in Sticks.Values)
+        {
+            if (Particles.ContainsKey(stick.P1Id) && Particles.ContainsKey(stick.P2Id))
+            {
+                stick.P1 = Particles[stick.P1Id];
+                stick.P2 = Particles[stick.P2Id];
+                stick.Length = Vector2.Distance(stick.P1.Position, stick.P2.Position);
+            }
+        }
+        _particleToStickIds.Clear();
+        foreach (var particle in Particles.Values)
+        {
+            _particleToStickIds[particle.ID] = new HashSet<int>();
+        }
+        foreach (var stick in Sticks.Values)
+        {
+            if (_particleToStickIds.ContainsKey(stick.P1Id))
+                _particleToStickIds[stick.P1Id].Add(stick.Id);
+            if (_particleToStickIds.ContainsKey(stick.P2Id))
+                _particleToStickIds[stick.P2Id].Add(stick.Id);
+        }
+    }
 
     protected int RegisterParticle(DrawableParticle particle)
     {
