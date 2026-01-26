@@ -279,7 +279,7 @@ class Mesh
     private int _nextParticleId = 1;
     private int _nextStickId = 1;
 
-    public Dictionary<int, DrawableParticle> Particles { get; } =
+    public Dictionary<int, DrawableParticle> Particles { get; } =          
         new Dictionary<int, DrawableParticle>();
 
     public float meanForceMagnitude = 0f;
@@ -304,6 +304,7 @@ class Mesh
 
     private readonly Dictionary<int, HashSet<int>> _particleToStickIds =
         new Dictionary<int, HashSet<int>>();
+
     public void RestoreStickReferences()
     {
         foreach (var stick in Sticks.Values)
