@@ -228,11 +228,11 @@ public partial class Game1
                 EnsureSelectedToolValid();
                 break;
             case MeshMode.Interact:
-                _activeMesh = _defaultBuildableMesh;
+                _activeMesh = _defaultMesh;
                 EnsureSelectedToolValid();
                 break;
             case MeshMode.Edit:
-                _activeMesh = _defaultBuildableMesh;
+                _activeMesh = _defaultMesh;
                 EnsureSelectedToolValid();
                 break;
         }
@@ -241,7 +241,7 @@ public partial class Game1
         windDirectionArrow = null;
         cutLine = null;
         particlesInDragArea.Clear();
-        buildableMeshParticlesInDragArea.Clear();
+        meshParticlesInDragArea.Clear();
         _stickToolFirstParticleId = null;
     }
 
@@ -366,7 +366,7 @@ public partial class Game1
             if (ImGui.Button($"Load {meshEntry.Key}"))
             {
                 _activeMesh = meshEntry.Value;
-                _defaultBuildableMesh = _activeMesh;
+                _defaultMesh = _activeMesh;
                 SetMode(MeshMode.Interact);
                 _showStructureWindow = false;
             }

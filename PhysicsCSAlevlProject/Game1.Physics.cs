@@ -298,7 +298,7 @@ public partial class Game1
                     && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag")
                 )
                 {
-                    if (buildableMeshParticlesInDragArea.Contains(particle.ID))
+                    if (meshParticlesInDragArea.Contains(particle.ID))
                     {
                         isBeingDragged = true;
                     }

@@ -27,7 +27,7 @@ public partial class Game1 : Game
 
     Vector2 BaseForce = new Vector2(0, 980f);
     List<Vector2> particlesInDragArea = new List<Vector2>();
-    List<int> buildableMeshParticlesInDragArea = new List<int>();
+    List<int> meshParticlesInDragArea = new List<int>();
 
     private PrimitiveBatch.Arrow windDirectionArrow;
     private PrimitiveBatch.Line cutLine;
@@ -40,7 +40,7 @@ public partial class Game1 : Game
     private int _constraintIterations = 5;
     private Mesh _activeMesh;
     private Cloth _clothInstance;
-    private Mesh _defaultBuildableMesh;
+    private Mesh _defaultMesh;
     private PolygonBuilder _polygonBuilderInstance;
     private static Rectangle _windowBounds;
     bool keepAspectRatio = true;
@@ -132,9 +132,9 @@ public partial class Game1 : Game
             mass
         );
 
-        _defaultBuildableMesh = new Mesh();
-        _defaultBuildableMesh.springConstant = _springConstant;
-        _defaultBuildableMesh.mass = mass;
+        _defaultMesh = new Mesh();
+        _defaultMesh.springConstant = _springConstant;
+        _defaultMesh.mass = mass;
         _polygonBuilderInstance = new PolygonBuilder();
 
         _activeMesh = _clothInstance;

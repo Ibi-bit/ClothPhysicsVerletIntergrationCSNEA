@@ -362,7 +362,7 @@ public partial class Game1
 
     private void PinParticleBuildable(Vector2 center, float radius)
     {
-        var particleIDs = GetBuildableMeshParticlesInRadius(center, radius);
+        var particleIDs = GetMeshParticlesInRadius(center, radius);
         foreach (var id in particleIDs)
             if (_activeMesh.Particles.TryGetValue(id, out var particle))
             {
@@ -545,7 +545,7 @@ public partial class Game1
         return particlesInRadius;
     }
 
-    private List<int> GetBuildableMeshParticlesInRadius(
+    private List<int> GetMeshParticlesInRadius(
         Vector2 mousePosition,
         float radius,
         int maxParticles = -1
@@ -608,7 +608,7 @@ public partial class Game1
         }
     }
 
-    private void DragBuildableMeshParticles(
+    private void DragMeshParticles(
         MouseState mouseState,
         bool isDragging,
         List<int> particleIds
@@ -647,7 +647,7 @@ public partial class Game1
         }
     }
 
-    private void DragBuildableMeshParticlesWithPhysics(
+    private void DragMeshParticlesWithPhysics(
         MouseState mouseState,
         bool isDragging,
         List<int> particleIds
@@ -875,7 +875,7 @@ public partial class Game1
             is float r
             ? r
             : 10f;
-        var ids = GetBuildableMeshParticlesInRadius(clickPos, radius, 1);
+        var ids = GetMeshParticlesInRadius(clickPos, radius, 1);
         if (ids.Count >= 1)
         {
             int hitId = ids[0];

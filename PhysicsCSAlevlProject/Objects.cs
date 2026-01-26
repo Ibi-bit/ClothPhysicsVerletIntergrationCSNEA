@@ -470,32 +470,6 @@ class Mesh
             p.Draw(spriteBatch, primitiveBatch);
         }
     }
-}
-
-public class Tool
-{
-    public string Name;
-    public Texture2D Icon;
-    public Texture2D CursorIcon;
-    public Dictionary<string, object> Properties = new Dictionary<string, object>();
-
-    public Tool(string name, Texture2D icon, Texture2D cursorIcon)
-    {
-        Name = name;
-        Icon = icon;
-        CursorIcon = cursorIcon;
-    }
-}
-
-class BuildableMesh : Mesh
-{
-    public float mass = 0.1f;
-
-    public BuildableMesh(float springConstant = 10000f, float mass = 0.1f)
-    {
-        this.springConstant = springConstant;
-        this.mass = mass;
-    }
 
     public int AddParticleAt(Vector2 position, bool isPinned = false)
     {
@@ -521,5 +495,64 @@ class BuildableMesh : Mesh
             }
         }
         return closest;
+    }
+
+    public void CreateGridMesh(Vector2 Start, Vector2 End, float DistanceBetweenParticles)
+    {
+        if (DistanceBetweenParticles <= 0)
+            return;
+
+        int width = (int)Math.Max(1, Math.Abs(End.X - Start.X) / DistanceBetweenParticles) + 1;
+        int height = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / DistanceBetweenParticles) + 1;
+        (Start, End) = (Vector2.Min(Start, End), Vector2.Max(Start, End));
+        width = Math.Min(width, 1000);
+        height = Math.Min(height, 1000);
+
+        int[,] particleIds = new int[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector2 position =
+                    Start + new Vector2(x * DistanceBetweenParticles, y * DistanceBetweenParticles);
+                particleIds[x, y] = AddParticleAt(position);
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int p1Id = particleIds[x, y];
+
+                if (x < width - 1)
+                {
+                    int p2Id = particleIds[x + 1, y];
+                    AddStickBetween(p1Id, p2Id);
+                }
+
+                if (y < height - 1)
+                {
+                    int p2Id = particleIds[x, y + 1];
+                    AddStickBetween(p1Id, p2Id);
+                }
+            }
+        }
+    }
+}
+
+public class Tool
+{
+    public string Name;
+    public Texture2D Icon;
+    public Texture2D CursorIcon;
+    public Dictionary<string, object> Properties = new Dictionary<string, object>();
+
+    public Tool(string name, Texture2D icon, Texture2D cursorIcon)
+    {
+        Name = name;
+        Icon = icon;
+        CursorIcon = cursorIcon;
     }
 }

@@ -75,7 +75,7 @@ public partial class Game1
                                         : -1
                                 );
 
-                            buildableMeshParticlesInDragArea = GetBuildableMeshParticlesInRadius(
+                            meshParticlesInDragArea = GetMeshParticlesInRadius(
                                 intitialMousePosWhenPressed,
                                 props.ContainsKey("Radius") ? (float)props["Radius"] : dragRadius,
                                 maxParticles
@@ -123,8 +123,8 @@ public partial class Game1
                             }
                             else if (_currentMode == MeshMode.Interact)
                             {
-                                buildableMeshParticlesInDragArea =
-                                    GetBuildableMeshParticlesInRadius(
+                                meshParticlesInDragArea =
+                                    GetMeshParticlesInRadius(
                                         intitialMousePosWhenPressed,
                                         physRadius
                                     );
@@ -164,7 +164,7 @@ public partial class Game1
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Remove Particle"].Properties["Radius"]
                                 : 10f;
-                            var pS = GetBuildableMeshParticlesInRadius(
+                            var pS = GetMeshParticlesInRadius(
                                 intitialMousePosWhenPressed,
                                 removeRadius,
                                 1
@@ -445,10 +445,10 @@ public partial class Game1
             }
             else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
-                DragBuildableMeshParticles(
+                DragMeshParticles(
                     mouseState,
                     leftPressed,
-                    buildableMeshParticlesInDragArea
+                    meshParticlesInDragArea
                 );
             }
         }
@@ -460,10 +460,10 @@ public partial class Game1
             }
             else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
-                DragBuildableMeshParticlesWithPhysics(
+                DragMeshParticlesWithPhysics(
                     mouseState,
                     leftPressed,
-                    buildableMeshParticlesInDragArea
+                    meshParticlesInDragArea
                 );
             }
         }
