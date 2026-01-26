@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -539,6 +540,73 @@ class Mesh
                 }
             }
         }
+    }
+}
+
+class FileWriteableMesh
+{
+    public class particleData
+    {
+        public Vector2 Position;
+        public float Mass;
+        public bool IsPinned;
+    }
+
+    public class stickData
+    {
+        public int P1Id;
+        public int P2Id;
+    }
+
+    public List<particleData> Particles = new List<particleData>();
+    public List<stickData> Sticks = new List<stickData>();
+
+    public FileWriteableMesh(Mesh mesh)
+    {
+        var particleIdMap = new Dictionary<int, int>();
+        foreach (var kvp in mesh.Particles)
+        {
+            var p = kvp.Value;
+            particleIdMap[kvp.Key] = Particles.Count;
+            Particles.Add(
+                new particleData
+                {
+                    Position = p.Position,
+                    Mass = p.Mass,
+                    IsPinned = p.IsPinned,
+                }
+            );
+        }
+        foreach (var kvp in mesh.Sticks)
+        {
+            var s = kvp.Value;
+            Sticks.Add(
+                new stickData { P1Id = particleIdMap[s.P1Id], P2Id = particleIdMap[s.P2Id] }
+            );
+        }
+    }
+
+    public Mesh ToMesh()
+    {
+        var mesh = new Mesh();
+
+        if (Particles != null)
+        {
+            foreach (var pData in Particles)
+            {
+                mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
+            }
+        }
+
+        if (Sticks != null)
+        {
+            foreach (var sData in Sticks)
+            {
+                mesh.AddStick(sData.P1Id, sData.P2Id, Color.White);
+            }
+        }
+
+        return mesh;
     }
 }
 
