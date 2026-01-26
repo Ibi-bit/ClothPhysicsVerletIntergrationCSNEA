@@ -18,6 +18,18 @@ class Particle
     public bool IsPinned;
     public bool IsSelected;
 
+    public Particle()
+    {
+        Position = Vector2.Zero;
+        PreviousPosition = Vector2.Zero;
+        Mass = 1.0f;
+        AccumulatedForce = Vector2.Zero;
+        IsPinned = false;
+        IsSelected = false;
+        ID = -1;
+        TotalForceMagnitude = 0f;
+    }
+
     public Particle(Vector2 position, float mass, bool isPinned)
     {
         Position = position;
@@ -36,6 +48,14 @@ class DrawableParticle : Particle
     private PrimitiveBatch.Rectangle rectangle;
     public Color Color { get; set; }
     public Vector2 Size { get; set; }
+
+    public DrawableParticle()
+        : base(Vector2.Zero, 1.0f, false)
+    {
+        Size = new Vector2(10, 10);
+        Color = Color.White;
+        UpdateRectangle();
+    }
 
     public DrawableParticle(Vector2 position, float mass, Vector2 size, Color color)
         : base(position, mass, false)
@@ -69,6 +89,12 @@ class DrawableParticle : Particle
     public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
         Vector2 middle = Position - Size / 2;
+        if (IsPinned)
+        {
+            rectangle = new PrimitiveBatch.Rectangle(middle, Size, Color.BlueViolet);
+            rectangle.Draw(spriteBatch, primitiveBatch);
+            return;
+        }
         rectangle = new PrimitiveBatch.Rectangle(middle, Size, Color);
         rectangle.Draw(spriteBatch, primitiveBatch);
     }
@@ -79,6 +105,13 @@ class Stick
     public Particle P1;
     public Particle P2;
     public float Length;
+
+    public Stick()
+    {
+        P1 = null;
+        P2 = null;
+        Length = 0f;
+    }
 
     public Stick(Particle p1, Particle p2)
     {
@@ -94,6 +127,14 @@ class DrawableStick : Stick
     public Color Color { get; set; }
     public float Width { get; set; }
     public bool IsCut { get; set; }
+
+    public DrawableStick()
+        : base()
+    {
+        Color = Color.White;
+        Width = 2.0f;
+        IsCut = false;
+    }
 
     public DrawableStick(Particle p1, Particle p2, Color color, float width = 2.0f)
         : base(p1, p2)
@@ -145,7 +186,7 @@ class Cloth : Mesh
         int rows = (int)(Size.Y / naturalLength);
         int cols = (int)(Size.X / naturalLength);
         this.springConstant = springConstant;
-        this.drag = 0.99f;
+
         this.mass = mass;
         particles = new DrawableParticle[rows][];
         horizontalSticks = new DrawableStick[rows][];
@@ -259,7 +300,7 @@ class Cloth : Mesh
 
                 if (particle.IsPinned)
                 {
-                    particle.Color = Color.LightGray;
+                    particle.Color = Color.BlueViolet;
                     particle.Draw(spriteBatch, primitiveBatch);
                     continue;
                 }
@@ -279,7 +320,7 @@ class Mesh
     private int _nextParticleId = 1;
     private int _nextStickId = 1;
 
-    public Dictionary<int, DrawableParticle> Particles { get; } =          
+    public Dictionary<int, DrawableParticle> Particles { get; } =
         new Dictionary<int, DrawableParticle>();
 
     public float meanForceMagnitude = 0f;
@@ -287,7 +328,7 @@ class Mesh
     public float maxForceMagnitude = 0f;
 
     public float springConstant = 10000f;
-    public float drag = 0.99f;
+    public float drag = 0.997f;
     public float mass = 1f;
 
     public class MeshStick : DrawableStick
@@ -295,6 +336,9 @@ class Mesh
         public int Id;
         public int P1Id;
         public int P2Id;
+
+        public MeshStick()
+            : base() { }
 
         public MeshStick(DrawableParticle p1, DrawableParticle p2, Color color, float width = 2.0f)
             : base(p1, p2, color, width) { }
@@ -567,6 +611,21 @@ class Mesh
             }
         }
     }
+    public void CreateClothMesh(Vector2 Start, Vector2 End, float naturalLength)
+    {
+        CreateGridMesh(Start, End, naturalLength);
+        int idWidth = (int)Math.Max(1, Math.Abs(End.X - Start.X) / naturalLength) + 1;
+        int idHeight = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / naturalLength) + 1;
+        for (int x = 0; x < idWidth; x++)
+        {
+            int topParticleId = x + 1;
+            if (Particles.ContainsKey(topParticleId))
+            {
+                Particles[topParticleId].IsPinned = true;
+                Particles[topParticleId].Mass = 0f;
+            }
+        }
+    }
 }
 
 class FileWriteableMesh
@@ -586,6 +645,9 @@ class FileWriteableMesh
 
     public List<particleData> Particles = new List<particleData>();
     public List<stickData> Sticks = new List<stickData>();
+
+    // Parameterless constructor for JSON deserialization
+    public FileWriteableMesh() { }
 
     public FileWriteableMesh(Mesh mesh)
     {

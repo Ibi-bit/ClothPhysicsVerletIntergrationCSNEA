@@ -26,6 +26,8 @@ public partial class Game1
         "JSONStructures"
     );
 
+    private Dictionary<string, Func<Mesh>> _quickMeshes = new Dictionary<string, Func<Mesh>>();
+
     private bool _ctrlHeld;
     private bool _shiftHeld;
     private bool _capsActive;
@@ -300,6 +302,22 @@ public partial class Game1
             if (ImGui.MenuItem("Edit", null, _currentMode == MeshMode.Edit))
             {
                 SetMode(MeshMode.Edit);
+            }
+            ImGui.EndMenu();
+        }
+
+        if (ImGui.BeginMenu("Quick Structures"))
+        {
+            foreach (var meshEntry in _quickMeshes)
+            {
+                if (ImGui.MenuItem(meshEntry.Key))
+                {
+                    var mesh = meshEntry.Value();
+                    _activeMesh = mesh;
+                    _defaultMesh = mesh;
+                    _clothInstance = mesh as Cloth ?? _clothInstance;
+                    SetMode(_clothInstance != null ? MeshMode.Cloth : MeshMode.Interact);
+                }
             }
             ImGui.EndMenu();
         }

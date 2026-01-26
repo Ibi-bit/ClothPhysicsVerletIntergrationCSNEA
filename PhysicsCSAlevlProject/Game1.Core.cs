@@ -48,6 +48,30 @@ public partial class Game1 : Game
 
     private Rectangle changedBounds = Rectangle.Empty;
 
+    private Cloth BuildClothTemplate(
+        Vector2 size,
+        float naturalLength,
+        float mass,
+        float springConstant,
+        Vector2 offset
+    )
+    {
+        int cols = (int)(size.X / naturalLength);
+        var pinnedParticles = new List<Vector2>
+        {
+            new Vector2(offset.X, offset.Y),
+            new Vector2(offset.X + Math.Max(0, (cols - 1) * naturalLength), offset.Y),
+        };
+
+        var cloth = new Cloth(size, pinnedParticles, naturalLength, springConstant, mass)
+        {
+            drag = 0.997f,
+            mass = mass,
+        };
+
+        return cloth;
+    }
+
     private enum MeshMode
     {
         Cloth,
@@ -91,6 +115,21 @@ public partial class Game1 : Game
 
         _database = new Game1Database();
 
+        _quickMeshes = new Dictionary<string, Func<Mesh>>
+        {
+            {
+                "Cloth 20x20 (light)",
+                () => BuildClothTemplate(new Vector2(200, 200), 10f, 0.1f, 5000f, new Vector2(220, 20))
+            },
+            {
+                "Cloth 30x20 (light)",
+                () => BuildClothTemplate(new Vector2(300, 200), 10f, 0.1f, 5000f, new Vector2(220, 20))
+            },
+            {
+                "Cloth 20x20 (stiff)",
+                () => BuildClothTemplate(new Vector2(200, 200), 10f, 0.2f, 8000f, new Vector2(220, 20))
+            },
+        };
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
         changedBounds = _windowBounds;
@@ -111,30 +150,15 @@ public partial class Game1 : Game
         InitializeInteractTools();
         InitializeBuildTools();
 
-        float naturalLength = 10f;
-        float mass = 0.1f;
+        _clothInstance = _quickMeshes["Cloth 20x20 (light)"]() as Cloth;
+        _springConstant = _clothInstance?.springConstant ?? _springConstant;
 
-        int cols = (int)(200 / naturalLength);
-
-        var pinnedParticles = new List<Vector2>(
-            new Vector2[]
-            {
-                new Vector2(220, 20),
-                new Vector2(220 + (cols - 1) * naturalLength, 20),
-            }
-        );
-
-        _clothInstance = new Cloth(
-            new Vector2(200, 200),
-            pinnedParticles,
-            naturalLength,
-            _springConstant,
-            mass
-        );
-
-        _defaultMesh = new Mesh();
-        _defaultMesh.springConstant = _springConstant;
-        _defaultMesh.mass = mass;
+        _defaultMesh = new Mesh
+        {
+            springConstant = _springConstant,
+            mass = _clothInstance?.mass ?? 0.1f,
+            drag = _clothInstance?.drag ?? 0.997f,
+        };
         _polygonBuilderInstance = new PolygonBuilder();
 
         _activeMesh = _clothInstance;
