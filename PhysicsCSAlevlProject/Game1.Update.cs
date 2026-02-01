@@ -123,11 +123,10 @@ public partial class Game1
                             }
                             else if (_currentMode == MeshMode.Interact)
                             {
-                                meshParticlesInDragArea =
-                                    GetMeshParticlesInRadius(
-                                        intitialMousePosWhenPressed,
-                                        physRadius
-                                    );
+                                meshParticlesInDragArea = GetMeshParticlesInRadius(
+                                    intitialMousePosWhenPressed,
+                                    physRadius
+                                );
                             }
                         }
                         break;
@@ -238,9 +237,7 @@ public partial class Game1
                         _currentToolSet["Inspect Particles"]
                             .Properties.ContainsKey("Clear When Use")
                             && (bool)
-                                _currentToolSet["Inspect Particles"].Properties[
-                                    "Clear When Use"
-                                ]
+                                _currentToolSet["Inspect Particles"].Properties["Clear When Use"]
                     );
                 }
 
@@ -445,11 +442,7 @@ public partial class Game1
             }
             else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
-                DragMeshParticles(
-                    mouseState,
-                    leftPressed,
-                    meshParticlesInDragArea
-                );
+                DragMeshParticles(mouseState, leftPressed, meshParticlesInDragArea);
             }
         }
         else if (_selectedToolName == "PhysicsDrag")
@@ -460,11 +453,7 @@ public partial class Game1
             }
             else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
-                DragMeshParticlesWithPhysics(
-                    mouseState,
-                    leftPressed,
-                    meshParticlesInDragArea
-                );
+                DragMeshParticlesWithPhysics(mouseState, leftPressed, meshParticlesInDragArea);
             }
         }
 
