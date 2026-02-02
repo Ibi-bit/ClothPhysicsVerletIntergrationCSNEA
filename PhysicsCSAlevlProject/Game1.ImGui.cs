@@ -26,8 +26,11 @@ public partial class Game1
         "..",
         "JSONStructures"
     );
+    private string _quickStructureName = "QuickStructure";
 
-    private Dictionary<string, Func<Mesh>> _quickMeshes = new Dictionary<string, Func<Mesh>>();
+    private Dictionary<string, Mesh> _quickMeshes = new Dictionary<string, Mesh>();
+
+    private Dictionary<string, Func<Mesh>> _template = new Dictionary<string, Func<Mesh>>();
 
     private bool _ctrlHeld;
     private bool _shiftHeld;
@@ -255,7 +258,6 @@ public partial class Game1
 
         switch (_currentMode)
         {
-
             case MeshMode.Interact:
                 _activeMesh = _defaultMesh;
                 EnsureSelectedToolValid();
@@ -321,7 +323,6 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Mode"))
         {
-
             if (ImGui.MenuItem("Interact", null, _currentMode == MeshMode.Interact))
             {
                 SetMode(MeshMode.Interact);
@@ -333,9 +334,9 @@ public partial class Game1
             ImGui.EndMenu();
         }
 
-        if (ImGui.BeginMenu("Quick Structures"))
+        if (ImGui.BeginMenu("Templates"))
         {
-            foreach (var meshEntry in _quickMeshes)
+            foreach (var meshEntry in _template)
             {
                 if (ImGui.MenuItem(meshEntry.Key))
                 {
@@ -347,14 +348,73 @@ public partial class Game1
             }
             ImGui.EndMenu();
         }
+        if (ImGui.BeginMenu("Quick Structures"))
+        {
+            if (ImGui.Button("Refresh List"))
+            {
+                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+            }
+
+            if (ImGui.Button("Save Current Mesh"))
+            {
+                SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
+                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+            }
+            ImGui.SameLine();
+            _quickStructureName = ImGui.InputText("Structure Name", ref _quickStructureName, 100)
+                ? _quickStructureName
+                : _quickStructureName;
+            ImGui.BeginDisabled(_quickMeshes.Count == 0);
+            foreach (var meshEntry in _quickMeshes)
+            {
+                if (ImGui.MenuItem(meshEntry.Key))
+                {
+                    var mesh = meshEntry.Value;
+                    _activeMesh = mesh;
+                    _defaultMesh = mesh;
+                    _clothInstance = mesh as Cloth ?? _clothInstance;
+                    _quickStructureName = meshEntry.Key;
+                    SetMode( MeshMode.Interact);
+                }
+            }
+            ImGui.EndDisabled();
+            ImGui.EndMenu();
+        }
+        if (ImGui.BeginMenu("Quick Structures"))
+        {
+            if (ImGui.Button("Refresh List"))
+            {
+                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+            }
+
+            if (ImGui.Button("Save Current Mesh"))
+            {
+                SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
+                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+            }
+            ImGui.SameLine();
+            _quickStructureName = ImGui.InputText("Structure Name", ref _quickStructureName, 100)
+                ? _quickStructureName
+                : _quickStructureName;
+            ImGui.BeginDisabled(_quickMeshes.Count == 0);
+            foreach (var meshEntry in _quickMeshes)
+            {
+                if (ImGui.MenuItem(meshEntry.Key))
+                {
+                    var mesh = meshEntry.Value;
+                    _activeMesh = mesh;
+                    _defaultMesh = mesh;
+                    _clothInstance = mesh as Cloth ?? _clothInstance;
+                    _quickStructureName = meshEntry.Key;
+                    SetMode(MeshMode.Interact);
+                }
+            }
+            ImGui.EndDisabled();
+            ImGui.EndMenu();
+        }
         if (ImGui.BeginMenu("Quick Settings"))
         {
-            ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
-            ImGui.BeginDisabled(!_useConstraintSolver);
-            ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
-            ImGui.EndDisabled();
-            ImGui.BeginDisabled(_useConstraintSolver);
-            ImGui.SliderFloat("Spring Constant", ref _springConstant, -10E3f, 10E3f);
+            ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
             ImGui.EndDisabled();
 
             ImGui.EndMenu();

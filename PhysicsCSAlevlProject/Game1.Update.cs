@@ -97,6 +97,10 @@ public partial class Game1
                                     intitialMousePosWhenPressed,
                                     physRadius
                                 );
+                                meshParticlesInDragArea = GetMeshParticlesInRadius(
+                                    intitialMousePosWhenPressed,
+                                    physRadius
+                                );
                             }
                         }
                         break;

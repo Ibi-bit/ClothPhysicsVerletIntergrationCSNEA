@@ -115,21 +115,45 @@ public partial class Game1 : Game
 
         _database = new Game1Database();
 
-        _quickMeshes = new Dictionary<string, Func<Mesh>>
+        _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+
+        _template = new Dictionary<string, Func<Mesh>>
         {
             {
                 "Cloth 20x20 (light)",
-                () => BuildClothTemplate(new Vector2(200, 200), 10f, 0.1f, 5000f, new Vector2(220, 20))
+                () =>
+                    BuildClothTemplate(
+                        new Vector2(200, 200),
+                        10f,
+                        0.1f,
+                        5000f,
+                        new Vector2(220, 20)
+                    )
             },
             {
                 "Cloth 30x20 (light)",
-                () => BuildClothTemplate(new Vector2(300, 200), 10f, 0.1f, 5000f, new Vector2(220, 20))
+                () =>
+                    BuildClothTemplate(
+                        new Vector2(300, 200),
+                        10f,
+                        0.1f,
+                        5000f,
+                        new Vector2(220, 20)
+                    )
             },
             {
                 "Cloth 20x20 (stiff)",
-                () => BuildClothTemplate(new Vector2(200, 200), 10f, 0.2f, 8000f, new Vector2(220, 20))
+                () =>
+                    BuildClothTemplate(
+                        new Vector2(200, 200),
+                        10f,
+                        0.2f,
+                        8000f,
+                        new Vector2(220, 20)
+                    )
             },
         };
+        
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
         changedBounds = _windowBounds;
@@ -150,7 +174,7 @@ public partial class Game1 : Game
         InitializeInteractTools();
         InitializeBuildTools();
 
-        _clothInstance = _quickMeshes["Cloth 20x20 (light)"]() as Cloth;
+        _clothInstance = _template["Cloth 20x20 (light)"]() as Cloth;
         _springConstant = _clothInstance?.springConstant ?? _springConstant;
 
         _defaultMesh = new Mesh
