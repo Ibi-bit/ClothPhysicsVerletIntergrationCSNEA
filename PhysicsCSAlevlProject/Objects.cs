@@ -42,7 +42,27 @@ class Particle
         ID = -1;
     }
 }
+public abstract class Collider
+{
+    
+    public abstract bool ContainsPoint(Vector2 point);
+}
+public class CircleCollider : Collider
+{
+    public Vector2 Center;
+    public float Radius;
 
+    public CircleCollider(Vector2 center, float radius)
+    {
+        Center = center;
+        Radius = radius;
+    }
+
+    public override bool ContainsPoint(Vector2 point)
+    {
+        return Vector2.DistanceSquared(point, Center) <= Radius * Radius;
+    }
+}
 class DrawableParticle : Particle
 {
     private PrimitiveBatch.Rectangle rectangle;

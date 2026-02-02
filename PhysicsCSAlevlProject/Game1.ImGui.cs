@@ -28,6 +28,8 @@ public partial class Game1
     );
     private string _quickStructureName = "QuickStructure";
 
+    private CircleCollider _cursorCollider = new CircleCollider(Vector2.Zero, 5f);
+
     private Dictionary<string, Mesh> _quickMeshes = new Dictionary<string, Mesh>();
 
     private Dictionary<string, Func<Mesh>> _template = new Dictionary<string, Func<Mesh>>();

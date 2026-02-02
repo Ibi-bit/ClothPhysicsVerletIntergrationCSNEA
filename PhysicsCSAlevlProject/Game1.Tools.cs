@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using ImGuiNET;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
@@ -32,6 +31,8 @@ public partial class Game1
             { "PhysicsDrag", new Tool("PhysicsDrag", null, null) },
             { "LineCut", new Tool("LineCut", null, null) },
             { "Inspect Particles", new Tool("Inspect Particles", null, null) },
+            {"Cursor Collider", new Tool("Cursor Collider", null, null)},
+
         };
         foreach (var tool in _interactTools.Values)
         {
@@ -59,6 +60,8 @@ public partial class Game1
         _interactTools["Inspect Particles"].Properties["IsLog"] = false;
         _interactTools["Inspect Particles"].Properties["Clear When Use"] = false;
         _interactTools["Inspect Particles"].Properties["RectangleSelect"] = true;
+
+        _interactTools["Cursor Collider"].Properties["Radius"] = 5f;
     }
 
     private void InitializeBuildTools()

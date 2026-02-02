@@ -20,6 +20,17 @@ public partial class Game1
         var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 2);
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
 
+        var cursorCollider = new PrimitiveBatch.Circle(
+            _cursorCollider.Center,
+            _cursorCollider.Radius,
+            Color.Red,
+            false
+        );
+        if (_selectedToolName == "Cursor Collider")
+        {
+            cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+        }
+
         _activeMesh.Draw(_spriteBatch, _primitiveBatch);
         /*
         if (_currentMode == MeshMode.Edit && _font != null)

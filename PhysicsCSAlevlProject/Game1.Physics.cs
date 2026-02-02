@@ -235,6 +235,10 @@ public partial class Game1
                 particle.AccumulatedForce = Vector2.Zero;
                 continue;
             }
+            if(_selectedToolName == "Cursor Collider")
+            {
+                _cursorCollider.ContainsPoint(particle.Position );
+            }
 
             bool isBeingDragged = false;
             if (leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag"))
@@ -284,7 +288,9 @@ public partial class Game1
             {
                 particle.PreviousPosition = particle.Position;
             }
+
         }
+
 
         if (totalForceCount > 0)
         {
