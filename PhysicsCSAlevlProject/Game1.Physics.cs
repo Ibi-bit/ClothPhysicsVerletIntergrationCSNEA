@@ -217,6 +217,8 @@ public partial class Game1
         float maxForceMagnitude = 0f;
         int totalForceCount = 0;
 
+        
+
         foreach (var particle in _activeMesh.Particles.Values)
         {
             Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
@@ -237,7 +239,7 @@ public partial class Game1
             }
             if(_selectedToolName == "Cursor Collider")
             {
-                _cursorCollider.ContainsPoint(particle.Position );
+                _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
             }
 
             bool isBeingDragged = false;

@@ -24,7 +24,7 @@ public partial class Game1
             _cursorCollider.Center,
             _cursorCollider.Radius,
             Color.Red,
-            false
+            true
         );
         if (_selectedToolName == "Cursor Collider")
         {

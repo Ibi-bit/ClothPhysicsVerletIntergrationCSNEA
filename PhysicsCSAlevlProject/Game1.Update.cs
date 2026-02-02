@@ -12,6 +12,10 @@ public partial class Game1
     {
         KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
+        
+        _cursorCollider.Radius = _currentToolSet.ContainsKey("Cursor Collider")
+            ? (float)_currentToolSet["Cursor Collider"].Properties["Radius"]
+            : 20f;
 
         if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
         {
@@ -352,6 +356,7 @@ public partial class Game1
             {
                 ApplyStickForcesDictionary(_activeMesh.Sticks);
             }
+            _cursorCollider.Center = Vector2.Lerp(_cursorCollider.Center, currentMousePos, 1/(stepsThisFrame+1f));
             UpdateParticles(FixedTimeStep);
 
             if (_useConstraintSolver)

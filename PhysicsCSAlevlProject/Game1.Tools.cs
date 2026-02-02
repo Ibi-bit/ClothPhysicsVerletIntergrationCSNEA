@@ -12,10 +12,7 @@ public partial class Game1
     private string _selectedToolName = "Drag";
     private Dictionary<string, Tool> _interactTools;
     private Dictionary<string, Tool> _buildTools;
-    private Dictionary<string, Tool> _currentToolSet
-    {
-        get { return _currentMode == MeshMode.Edit ? _buildTools : _interactTools; }
-    }
+    private Dictionary<string, Tool> _currentToolSet => _currentMode == MeshMode.Edit ? _buildTools : _interactTools;
     private float dragRadius = 20f;
     private List<int> inspectedParticles = new List<int>();
     private int? _stickToolFirstParticleId = null;
@@ -308,6 +305,13 @@ public partial class Game1
             {
                 props["DistanceBetweenParticles"] = distance;
             }
+        }
+        else if (string.Equals(_selectedToolName, "Cursor Collider", StringComparison.Ordinal))
+        {
+            var props = _currentToolSet["Cursor Collider"].Properties;
+            float radius = (float)props["Radius"];
+            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f)) props["Radius"] = radius;
+            
         }
     }
 

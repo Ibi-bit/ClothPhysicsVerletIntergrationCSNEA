@@ -45,22 +45,30 @@ class Particle
 public abstract class Collider
 {
     
-    public abstract bool ContainsPoint(Vector2 point);
+    public abstract bool ContainsPoint(Vector2 point,out Vector2 closestPoint);
 }
-public class CircleCollider : Collider
+public class CircleCollider(Vector2 center, float radius) : Collider
 {
-    public Vector2 Center;
-    public float Radius;
+    public Vector2 Center = center;
+    public float Radius = radius;
 
-    public CircleCollider(Vector2 center, float radius)
+    public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
     {
-        Center = center;
-        Radius = radius;
-    }
+        Vector2 direction = point - Center;
+        float distance = direction.LengthSquared();
 
-    public override bool ContainsPoint(Vector2 point)
-    {
-        return Vector2.DistanceSquared(point, Center) <= Radius * Radius;
+        if (distance <= Radius * Radius)
+            
+        {
+            closestPoint = Center + Vector2.Normalize(direction) * Radius;
+            return true;
+        }
+        
+        
+        closestPoint = point;
+        return false;
+        
+        
     }
 }
 class DrawableParticle : Particle
