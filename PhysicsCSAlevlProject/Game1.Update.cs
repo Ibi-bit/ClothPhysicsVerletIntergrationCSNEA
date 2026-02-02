@@ -41,27 +41,8 @@ public partial class Game1
                 switch (_selectedToolName)
                 {
                     case "Drag":
-                        if (_currentMode == MeshMode.Cloth)
-                        {
-                            var props = _currentToolSet["Drag"].Properties;
-                            bool infiniteParticles =
-                                props.ContainsKey("InfiniteParticles")
-                                && (bool)props["InfiniteParticles"];
-                            int maxParticles = infiniteParticles
-                                ? -1
-                                : (
-                                    props.ContainsKey("MaxParticles")
-                                        ? (int)props["MaxParticles"]
-                                        : -1
-                                );
 
-                            particlesInDragArea = GetParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                props.ContainsKey("Radius") ? (float)props["Radius"] : dragRadius,
-                                maxParticles
-                            );
-                        }
-                        else if (_currentMode == MeshMode.Interact)
+                        if (_currentMode == MeshMode.Interact)
                         {
                             var props = _currentToolSet["Drag"].Properties;
                             bool infiniteParticles =
@@ -88,10 +69,8 @@ public partial class Game1
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Pin"].Properties["Radius"]
                                 : dragRadius;
-                            if (_currentMode == MeshMode.Cloth)
-                                PinParticle(intitialMousePosWhenPressed, pinRadius);
-                            else
-                                PinParticleBuildable(intitialMousePosWhenPressed, pinRadius);
+
+                            PinParticleBuildable(intitialMousePosWhenPressed, pinRadius);
                         }
                         break;
                     case "Cut":
@@ -100,10 +79,7 @@ public partial class Game1
                                 ? (float)_currentToolSet["Cut"].Properties["Radius"]
                                 : 10f;
 
-                        if (_currentMode == MeshMode.Cloth)
-                            CutAllSticksInRadius(intitialMousePosWhenPressed, radius);
-                        else
-                            CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, radius);
+                        CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, radius);
 
                         break;
                     case "Wind":
@@ -114,20 +90,13 @@ public partial class Game1
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["PhysicsDrag"].Properties["Radius"]
                                 : dragRadius;
-                            if (_currentMode == MeshMode.Cloth)
+
+                            if (_currentMode == MeshMode.Interact)
                             {
-                                particlesInDragArea = GetParticlesInRadius(
+                                meshParticlesInDragArea = GetMeshParticlesInRadius(
                                     intitialMousePosWhenPressed,
                                     physRadius
                                 );
-                            }
-                            else if (_currentMode == MeshMode.Interact)
-                            {
-                                meshParticlesInDragArea =
-                                    GetMeshParticlesInRadius(
-                                        intitialMousePosWhenPressed,
-                                        physRadius
-                                    );
                             }
                         }
                         break;
@@ -238,9 +207,7 @@ public partial class Game1
                         _currentToolSet["Inspect Particles"]
                             .Properties.ContainsKey("Clear When Use")
                             && (bool)
-                                _currentToolSet["Inspect Particles"].Properties[
-                                    "Clear When Use"
-                                ]
+                                _currentToolSet["Inspect Particles"].Properties["Clear When Use"]
                     );
                 }
 
@@ -373,47 +340,19 @@ public partial class Game1
 
         while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame && !Paused)
         {
-            if (_currentMode == MeshMode.Cloth)
+            foreach (var particle in _activeMesh.Particles.Values)
             {
-                for (int i = 0; i < _clothInstance.particles.Length; i++)
-                {
-                    for (int j = 0; j < _clothInstance.particles[i].Length; j++)
-                    {
-                        _clothInstance.particles[i][j].AccumulatedForce = Vector2.Zero;
-                    }
-                }
-                if (!_useConstraintSolver)
-                {
-                    _clothInstance.horizontalSticks = ApplyStickForces(
-                        _clothInstance.horizontalSticks
-                    );
-                    _clothInstance.verticalSticks = ApplyStickForces(_clothInstance.verticalSticks);
-                }
+                particle.AccumulatedForce = Vector2.Zero;
             }
-            else
+            if (!_useConstraintSolver)
             {
-                foreach (var particle in _activeMesh.Particles.Values)
-                {
-                    particle.AccumulatedForce = Vector2.Zero;
-                }
-                if (!_useConstraintSolver)
-                {
-                    ApplyStickForcesDictionary(_activeMesh.Sticks);
-                }
+                ApplyStickForcesDictionary(_activeMesh.Sticks);
             }
-
             UpdateParticles(FixedTimeStep);
 
             if (_useConstraintSolver)
             {
-                if (_currentMode == MeshMode.Cloth)
-                {
-                    SatisfyClothConstraints(_constraintIterations);
-                }
-                else
-                {
-                    SatisfyBuildableConstraints(_constraintIterations);
-                }
+                SatisfyBuildableConstraints(_constraintIterations);
             }
 
             _timeAccumulator -= FixedTimeStep;
@@ -425,46 +364,22 @@ public partial class Game1
             _timeAccumulator = Math.Min(_timeAccumulator, FixedTimeStep);
         }
 
-        if (_currentMode == MeshMode.Cloth)
-        {
-            UpdateStickColorsRelative(
-                _clothInstance.horizontalSticks,
-                _clothInstance.verticalSticks
-            );
-        }
-        else
-        {
-            UpdateStickColorsDictionary(_activeMesh.Sticks);
-        }
+        UpdateStickColorsDictionary(_activeMesh.Sticks);
 
         if (_selectedToolName == "Drag")
         {
-            if (_currentMode == MeshMode.Cloth)
+            if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
-                DragAreaParticles(mouseState, leftPressed, particlesInDragArea);
-            }
-            else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
-            {
-                DragMeshParticles(
-                    mouseState,
-                    leftPressed,
-                    meshParticlesInDragArea
-                );
+                DragMeshParticles(mouseState, leftPressed, meshParticlesInDragArea);
             }
         }
         else if (_selectedToolName == "PhysicsDrag")
         {
-            if (_currentMode == MeshMode.Cloth)
+            DragAreaParticlesWithPhysics(mouseState, leftPressed, particlesInDragArea);
+
+            if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
-                DragAreaParticlesWithPhysics(mouseState, leftPressed, particlesInDragArea);
-            }
-            else if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
-            {
-                DragMeshParticlesWithPhysics(
-                    mouseState,
-                    leftPressed,
-                    meshParticlesInDragArea
-                );
+                DragMeshParticlesWithPhysics(mouseState, leftPressed, meshParticlesInDragArea);
             }
         }
 

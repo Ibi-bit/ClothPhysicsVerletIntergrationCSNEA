@@ -1,5 +1,4 @@
 using System;
-
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using VectorGraphics;
@@ -218,132 +217,72 @@ public partial class Game1
         float maxForceMagnitude = 0f;
         int totalForceCount = 0;
 
-        if (_currentMode == MeshMode.Cloth)
+        foreach (var particle in _activeMesh.Particles.Values)
         {
-            for (int i = 0; i < _clothInstance.particles.Length; i++)
+            Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
+            particle.TotalForceMagnitude = totalForce.Length();
+            forceMagnitudeSum += particle.TotalForceMagnitude;
+            forceMagnitudeSquaredSum += particle.TotalForceMagnitude * particle.TotalForceMagnitude;
+            totalForceCount++;
+
+            if (particle.TotalForceMagnitude > maxForceMagnitude)
             {
-                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
+                maxForceMagnitude = particle.TotalForceMagnitude;
+            }
+
+            if (particle.IsPinned)
+            {
+                particle.AccumulatedForce = Vector2.Zero;
+                continue;
+            }
+
+            bool isBeingDragged = false;
+            if (leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag"))
+            {
+                if (meshParticlesInDragArea.Contains(particle.ID))
                 {
-                    DrawableParticle p = _clothInstance.particles[i][j];
-
-                    Vector2 totalForce = BaseForce + p.AccumulatedForce + windForce;
-                    p.TotalForceMagnitude = totalForce.Length();
-                    forceMagnitudeSum += p.TotalForceMagnitude;
-                    forceMagnitudeSquaredSum += p.TotalForceMagnitude * p.TotalForceMagnitude;
-                    totalForceCount++;
-
-                    if (p.TotalForceMagnitude > maxForceMagnitude)
-                    {
-                        maxForceMagnitude = p.TotalForceMagnitude;
-                    }
-
-                    if (p.IsPinned)
-                    {
-                        p.AccumulatedForce = Vector2.Zero;
-                        continue;
-                    }
-
-                    bool isBeingDragged = false;
-                    if (leftPressed && _selectedToolName == "Drag")
-                    {
-                        foreach (Vector2 draggedParticle in particlesInDragArea)
-                        {
-                            if ((int)draggedParticle.X == i && (int)draggedParticle.Y == j)
-                            {
-                                isBeingDragged = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!isBeingDragged)
-                    {
-                        Vector2 acceleration = totalForce / p.Mass;
-                        Vector2 velocity = p.Position - p.PreviousPosition;
-                        velocity *= _clothInstance.drag;
-
-                        Vector2 previousPosition = p.Position;
-                        p.Position = p.Position + velocity + acceleration * (deltaTime * deltaTime);
-                        p.PreviousPosition = previousPosition;
-                        p = KeepInsideRect(p, _windowBounds, _collisonBoundsDifference);
-                        _clothInstance.particles[i][j] = p;
-                    }
+                    isBeingDragged = true;
                 }
             }
-        }
-        else
-        {
-            foreach (var particle in _activeMesh.Particles.Values)
+
+            if (!isBeingDragged)
             {
-                Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
-                particle.TotalForceMagnitude = totalForce.Length();
-                forceMagnitudeSum += particle.TotalForceMagnitude;
-                forceMagnitudeSquaredSum +=
-                    particle.TotalForceMagnitude * particle.TotalForceMagnitude;
-                totalForceCount++;
+                Vector2 acceleration = totalForce / particle.Mass;
+                Vector2 velocity = particle.Position - particle.PreviousPosition;
+                velocity *= _activeMesh.drag;
 
-                if (particle.TotalForceMagnitude > maxForceMagnitude)
-                {
-                    maxForceMagnitude = particle.TotalForceMagnitude;
-                }
+                Vector2 previousPosition = particle.Position;
+                particle.Position =
+                    particle.Position + velocity + acceleration * (deltaTime * deltaTime);
+                particle.PreviousPosition = previousPosition;
+            }
 
-                if (particle.IsPinned)
-                {
-                    particle.AccumulatedForce = Vector2.Zero;
-                    continue;
-                }
+            bool positionChanged = false;
+            if (particle.Position.X < 0)
+            {
+                particle.Position.X = 0;
+                positionChanged = true;
+            }
+            else if (particle.Position.X > _windowBounds.Width)
+            {
+                particle.Position.X = _windowBounds.Width;
+                positionChanged = true;
+            }
 
-                bool isBeingDragged = false;
-                if (
-                    leftPressed
-                    && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag")
-                )
-                {
-                    if (meshParticlesInDragArea.Contains(particle.ID))
-                    {
-                        isBeingDragged = true;
-                    }
-                }
+            if (particle.Position.Y < 0)
+            {
+                particle.Position.Y = 0;
+                positionChanged = true;
+            }
+            else if (particle.Position.Y > _windowBounds.Height - 10)
+            {
+                particle.Position.Y = _windowBounds.Height - 10;
+                positionChanged = true;
+            }
 
-                if (!isBeingDragged)
-                {
-                    Vector2 acceleration = totalForce / particle.Mass;
-                    Vector2 velocity = particle.Position - particle.PreviousPosition;
-                    velocity *= _activeMesh.drag;
-
-                    Vector2 previousPosition = particle.Position;
-                    particle.Position =
-                        particle.Position + velocity + acceleration * (deltaTime * deltaTime);
-                    particle.PreviousPosition = previousPosition;
-                }
-
-                bool positionChanged = false;
-                if (particle.Position.X < 0)
-                {
-                    particle.Position.X = 0;
-                    positionChanged = true;
-                }
-                else if (particle.Position.X > _windowBounds.Width)
-                {
-                    particle.Position.X = _windowBounds.Width;
-                    positionChanged = true;
-                }
-
-                if (particle.Position.Y < 0)
-                {
-                    particle.Position.Y = 0;
-                    positionChanged = true;
-                }
-                else if (particle.Position.Y > _windowBounds.Height - 10)
-                {
-                    particle.Position.Y = _windowBounds.Height - 10;
-                    positionChanged = true;
-                }
-
-                if (positionChanged)
-                {
-                    particle.PreviousPosition = particle.Position;
-                }
+            if (positionChanged)
+            {
+                particle.PreviousPosition = particle.Position;
             }
         }
 

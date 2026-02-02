@@ -385,10 +385,7 @@ public partial class Game1
                     float distance = Vector2.Distance(stickCenter, center);
                     if (distance <= radius)
                     {
-                        if (_currentMode != MeshMode.Cloth)
-                            sticks[i][j] = null;
-                        else
-                            sticks[i][j].IsCut = true;
+                        sticks[i][j].IsCut = true;
                         _logger.AddLog($"Cut stick [{i},{j}] at {stickCenter}");
                     }
                 }
@@ -496,23 +493,7 @@ public partial class Game1
 
     private void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
     {
-        if (_currentMode == MeshMode.Cloth)
-        {
-            _clothInstance.horizontalSticks = DoLinesIntersect(
-                _clothInstance.horizontalSticks,
-                lineStart,
-                lineEnd
-            );
-            _clothInstance.verticalSticks = DoLinesIntersect(
-                _clothInstance.verticalSticks,
-                lineStart,
-                lineEnd
-            );
-        }
-        else
-        {
-            _activeMesh.CutSticksAlongLine(lineStart, lineEnd);
-        }
+        _activeMesh.CutSticksAlongLine(lineStart, lineEnd);
     }
 
     private List<Vector2> GetParticlesInRadius(
@@ -522,25 +503,6 @@ public partial class Game1
     )
     {
         var particlesInRadius = new List<Vector2>();
-
-        if (_currentMode == MeshMode.Cloth)
-        {
-            for (int i = 0; i < _clothInstance.particles.Length; i++)
-            {
-                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
-                {
-                    Vector2 pos = _clothInstance.particles[i][j].Position;
-                    if (Vector2.DistanceSquared(pos, mousePosition) < (radius * radius))
-                    {
-                        particlesInRadius.Add(new Vector2(i, j));
-                    }
-                    if (maxParticles > 0 && particlesInRadius.Count >= maxParticles)
-                    {
-                        return particlesInRadius;
-                    }
-                }
-            }
-        }
 
         return particlesInRadius;
     }
@@ -608,11 +570,7 @@ public partial class Game1
         }
     }
 
-    private void DragMeshParticles(
-        MouseState mouseState,
-        bool isDragging,
-        List<int> particleIds
-    )
+    private void DragMeshParticles(MouseState mouseState, bool isDragging, List<int> particleIds)
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
 
@@ -733,79 +691,38 @@ public partial class Game1
 
     private void InspectParticlesInRadiusLog(Vector2 center, float radius)
     {
-        if (_currentMode == MeshMode.Cloth)
+        foreach (var kvp in _activeMesh.Particles)
         {
-            for (int i = 0; i < _clothInstance.particles.Length; i++)
+            var particle = kvp.Value;
+            float distance = Vector2.Distance(particle.Position, center);
+            particle.Color = Color.White;
+            if (distance <= radius)
             {
-                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
-                {
-                    ref var particle = ref _clothInstance.particles[i][j];
-                    float distance = Vector2.Distance(particle.Position, center);
-                    particle.Color = Color.White;
-                    if (distance <= radius)
-                    {
-                        _logger.AddLog(
-                            $"Particle [{i},{j}] - Pos: {particle.Position}, Pinned: {particle.IsPinned}"
-                        );
-                        particle.Color = Color.Cyan;
-                    }
-                }
+                _logger.AddLog(
+                    $"Particle ID {kvp.Key} - Pos: {particle.Position}, Pinned: {particle.IsPinned}"
+                );
+                particle.Color = Color.Cyan;
             }
-        }
-        else
-        {
-            foreach (var kvp in _activeMesh.Particles)
-            {
-                var particle = kvp.Value;
-                float distance = Vector2.Distance(particle.Position, center);
-                particle.Color = Color.White;
-                if (distance <= radius)
-                {
-                    _logger.AddLog(
-                        $"Particle ID {kvp.Key} - Pos: {particle.Position}, Pinned: {particle.IsPinned}"
-                    );
-                    particle.Color = Color.Cyan;
-                }
-                _activeMesh.Particles[kvp.Key] = particle;
-            }
+            _activeMesh.Particles[kvp.Key] = particle;
         }
     }
 
     private void InspectParticlesInRadiusWindow(Vector2 center, float radius)
     {
-        if (_currentMode == MeshMode.Cloth)
+        if ((bool)_interactTools["Inspect Particles"].Properties["Clear When Use"])
+            inspectedParticles.Clear();
+        foreach (var kvp in _activeMesh.Particles)
         {
-            for (int i = 0; i < _clothInstance.particles.Length; i++)
-            {
-                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
-                {
-                    ref var particle = ref _clothInstance.particles[i][j];
-                    float distance = Vector2.Distance(particle.Position, center);
-                    particle.Color = Color.White;
-                    if (distance <= radius)
-                    {
-                        particle.Color = Color.Cyan;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if ((bool)_interactTools["Inspect Particles"].Properties["Clear When Use"])
-                inspectedParticles.Clear();
-            foreach (var kvp in _activeMesh.Particles)
-            {
-                var particle = kvp.Value;
-                float distance = Vector2.Distance(particle.Position, center);
-                particle.Color = Color.White;
+            var particle = kvp.Value;
+            float distance = Vector2.Distance(particle.Position, center);
+            particle.Color = Color.White;
 
-                if (distance <= radius)
-                {
-                    particle.Color = Color.Cyan;
-                    inspectedParticles.Add(kvp.Key);
-                }
-                _activeMesh.Particles[kvp.Key] = particle;
+            if (distance <= radius)
+            {
+                particle.Color = Color.Cyan;
+                inspectedParticles.Add(kvp.Key);
             }
+            _activeMesh.Particles[kvp.Key] = particle;
         }
     }
 
@@ -842,22 +759,7 @@ public partial class Game1
     {
         var result = new List<int>();
         Rectangle rect = GetRectangleFromPoints(rectStart, rectEnd);
-        if (_currentMode == MeshMode.Cloth)
-        {
-            for (int i = 0; i < _clothInstance.particles.Length; i++)
-            {
-                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
-                {
-                    var particle = _clothInstance.particles[i][j];
-                    if (rect.Contains(particle.Position.ToPoint()))
-                    {
-                        result.Add(particle.ID);
-                    }
-                }
-            }
-            return result;
-        }
-
+       
         foreach (var kvp in _activeMesh.Particles)
         {
             var particle = kvp.Value;

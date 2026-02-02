@@ -74,12 +74,12 @@ public partial class Game1 : Game
 
     private enum MeshMode
     {
-        Cloth,
+        // Cloth,
         Interact,
         Edit,
     }
 
-    private MeshMode _currentMode = MeshMode.Cloth;
+    private MeshMode _currentMode = MeshMode.Interact;
 
     public void SetWindowSize(int width, int height)
     {
@@ -161,8 +161,8 @@ public partial class Game1 : Game
         };
         _polygonBuilderInstance = new PolygonBuilder();
 
-        _activeMesh = _clothInstance;
-        _currentMode = MeshMode.Cloth;
+        _activeMesh = _defaultMesh;
+        _currentMode = MeshMode.Interact;
 
         _guiRenderer = new ImGuiRenderer(this);
 

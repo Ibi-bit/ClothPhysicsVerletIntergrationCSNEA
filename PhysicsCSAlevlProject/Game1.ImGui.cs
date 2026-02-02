@@ -17,6 +17,7 @@ public partial class Game1
     private bool _showSignInWindow;
     private ImGuiLogger _logger = new ImGuiLogger();
     private bool _showLoggerWindow;
+    private bool _showConfirmNewMeshPopup = false;
     private string _meshName = "MyMesh";
     private string _structurePath = Path.Combine(
         AppDomain.CurrentDomain.BaseDirectory,
@@ -81,10 +82,39 @@ public partial class Game1
         {
             DrawInspectParticleWindow();
         }
+        DrawPopUps();
 
         ModeSwitchingImGui();
 
         _guiRenderer.EndLayout();
+    }
+
+    private void DrawPopUps()
+    {
+        if (_showConfirmNewMeshPopup)
+        {
+            ImGui.OpenPopup("ConfirmNewMeshPopup");
+            _showConfirmNewMeshPopup = false;
+        }
+
+        if (ImGui.BeginPopupModal("ConfirmNewMeshPopup"))
+        {
+            ImGui.Text("Are you sure you want to create a new mesh? Unsaved changes will be lost.");
+            if (ImGui.Button("Yes"))
+            {
+                _activeMesh = new Mesh();
+                _defaultMesh = _activeMesh;
+                _clothInstance = null;
+                SetMode(MeshMode.Interact);
+                ImGui.CloseCurrentPopup();
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("No"))
+            {
+                ImGui.CloseCurrentPopup();
+            }
+            ImGui.EndPopup();
+        }
     }
 
     private void DrawInspectParticleWindow()
@@ -225,10 +255,7 @@ public partial class Game1
 
         switch (_currentMode)
         {
-            case MeshMode.Cloth:
-                _activeMesh = _clothInstance;
-                EnsureSelectedToolValid();
-                break;
+
             case MeshMode.Interact:
                 _activeMesh = _defaultMesh;
                 EnsureSelectedToolValid();
@@ -256,7 +283,10 @@ public partial class Game1
 
         if (ImGui.BeginMenu("File"))
         {
-            if (ImGui.MenuItem("New")) { }
+            if (ImGui.MenuItem("New"))
+            {
+                _showConfirmNewMeshPopup = true;
+            }
             if (ImGui.MenuItem("Open"))
             {
                 _showStructureWindow = true;
@@ -291,10 +321,7 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Mode"))
         {
-            if (ImGui.MenuItem("Cloth", null, _currentMode == MeshMode.Cloth))
-            {
-                SetMode(MeshMode.Cloth);
-            }
+
             if (ImGui.MenuItem("Interact", null, _currentMode == MeshMode.Interact))
             {
                 SetMode(MeshMode.Interact);
@@ -315,8 +342,7 @@ public partial class Game1
                     var mesh = meshEntry.Value();
                     _activeMesh = mesh;
                     _defaultMesh = mesh;
-                    _clothInstance = mesh as Cloth ?? _clothInstance;
-                    SetMode(_clothInstance != null ? MeshMode.Cloth : MeshMode.Interact);
+                    SetMode(MeshMode.Interact);
                 }
             }
             ImGui.EndMenu();
@@ -328,7 +354,7 @@ public partial class Game1
             ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
             ImGui.EndDisabled();
             ImGui.BeginDisabled(_useConstraintSolver);
-            ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
+            ImGui.SliderFloat("Spring Constant", ref _springConstant, -10E3f, 10E3f);
             ImGui.EndDisabled();
 
             ImGui.EndMenu();
