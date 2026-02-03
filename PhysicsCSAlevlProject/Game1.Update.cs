@@ -303,7 +303,7 @@ public partial class Game1
             float distance = (float)props["DistanceBetweenParticles"];
             if (keyboardState.IsKeyDown(Keys.C) && !_prevKeyboardState.IsKeyDown(Keys.C))
             {
-                _activeMesh.CreateGridMesh(intitialMousePosWhenPressed, currentMousePos, distance);
+                _activeMesh = Mesh.CreateGridMesh(intitialMousePosWhenPressed, currentMousePos, distance, _activeMesh);
             }
 
             if (leftPressed)
@@ -384,7 +384,7 @@ public partial class Game1
         }
         else if (_selectedToolName == "PhysicsDrag")
         {
-            DragAreaParticlesWithPhysics(mouseState, leftPressed, particlesInDragArea);
+            
 
             if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {

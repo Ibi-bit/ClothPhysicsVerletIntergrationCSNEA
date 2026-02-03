@@ -39,7 +39,6 @@ public partial class Game1 : Game
     private bool _useConstraintSolver = false;
     private int _constraintIterations = 5;
     private Mesh _activeMesh;
-    private Cloth _clothInstance;
     private Mesh _defaultMesh;
     private PolygonBuilder _polygonBuilderInstance;
     private static Rectangle _windowBounds;
@@ -47,30 +46,6 @@ public partial class Game1 : Game
     float _lockedAspectRatio = 1f;
 
     private Rectangle changedBounds = Rectangle.Empty;
-
-    private Cloth BuildClothTemplate(
-        Vector2 size,
-        float naturalLength,
-        float mass,
-        float springConstant,
-        Vector2 offset
-    )
-    {
-        int cols = (int)(size.X / naturalLength);
-        var pinnedParticles = new List<Vector2>
-        {
-            new Vector2(offset.X, offset.Y),
-            new Vector2(offset.X + Math.Max(0, (cols - 1) * naturalLength), offset.Y),
-        };
-
-        var cloth = new Cloth(size, pinnedParticles, naturalLength, springConstant, mass)
-        {
-            drag = 0.997f,
-            mass = mass,
-        };
-
-        return cloth;
-    }
 
     private enum MeshMode
     {
@@ -121,39 +96,18 @@ public partial class Game1 : Game
         {
             {
                 "Cloth 20x20 (light)",
-                () =>
-                    BuildClothTemplate(
-                        new Vector2(200, 200),
-                        10f,
-                        0.1f,
-                        5000f,
-                        new Vector2(220, 20)
-                    )
+                () => Mesh.CreateClothMesh(new Vector2(200, 200), new Vector2(220, 20), 10f)
             },
             {
                 "Cloth 30x20 (light)",
-                () =>
-                    BuildClothTemplate(
-                        new Vector2(300, 200),
-                        10f,
-                        0.1f,
-                        5000f,
-                        new Vector2(220, 20)
-                    )
+                () => Mesh.CreateClothMesh(new Vector2(300, 200), new Vector2(220, 20), 10f)
             },
             {
                 "Cloth 20x20 (stiff)",
-                () =>
-                    BuildClothTemplate(
-                        new Vector2(200, 200),
-                        10f,
-                        0.2f,
-                        8000f,
-                        new Vector2(220, 20)
-                    )
+                () => Mesh.CreateClothMesh(new Vector2(200, 200), new Vector2(220, 20), 10f)
             },
         };
-        
+
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
         changedBounds = _windowBounds;
@@ -174,14 +128,13 @@ public partial class Game1 : Game
         InitializeInteractTools();
         InitializeBuildTools();
 
-        _clothInstance = _template["Cloth 20x20 (light)"]() as Cloth;
-        _springConstant = _clothInstance?.springConstant ?? _springConstant;
+        _springConstant = 5000f;
 
         _defaultMesh = new Mesh
         {
             springConstant = _springConstant,
-            mass = _clothInstance?.mass ?? 0.1f,
-            drag = _clothInstance?.drag ?? 0.997f,
+            mass = 0.1f,
+            drag = 0.997f,
         };
         _polygonBuilderInstance = new PolygonBuilder();
 

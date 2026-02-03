@@ -253,7 +253,7 @@ public partial class Game1
 
             if (!isBeingDragged)
             {
-                Vector2 acceleration = totalForce / particle.Mass;
+                Vector2 acceleration = totalForce / _activeMesh.mass;
                 Vector2 velocity = particle.Position - particle.PreviousPosition;
                 velocity *= _activeMesh.drag;
 
@@ -315,103 +315,7 @@ public partial class Game1
         }
     }
 
-    private void SatisfyClothConstraints(int iterations)
-    {
-        if (_clothInstance == null)
-            return;
-
-        for (int it = 0; it < iterations; it++)
-        {
-            for (int i = 0; i < _clothInstance.horizontalSticks.Length; i++)
-            {
-                var row = _clothInstance.horizontalSticks[i];
-                for (int j = 0; j < row.Length; j++)
-                {
-                    var s = row[j];
-                    if (s == null || s.IsCut)
-                        continue;
-
-                    var p1 = (DrawableParticle)s.P1;
-                    var p2 = (DrawableParticle)s.P2;
-
-                    Vector2 delta = p2.Position - p1.Position;
-                    float len = delta.Length();
-                    if (len <= 1e-6f)
-                        continue;
-                    float diff = (len - s.Length) / len;
-                    Vector2 correction = delta * 0.5f * diff;
-
-                    bool p1Pinned = p1.IsPinned;
-                    bool p2Pinned = p2.IsPinned;
-
-                    if (!p1Pinned && !p2Pinned)
-                    {
-                        p1.Position += correction;
-                        p2.Position -= correction;
-                    }
-                    else if (!p1Pinned && p2Pinned)
-                    {
-                        p1.Position += correction * 2f;
-                    }
-                    else if (p1Pinned && !p2Pinned)
-                    {
-                        p2.Position -= correction * 2f;
-                    }
-                }
-            }
-
-            for (int i = 0; i < _clothInstance.verticalSticks.Length; i++)
-            {
-                var col = _clothInstance.verticalSticks[i];
-                for (int j = 0; j < col.Length; j++)
-                {
-                    var s = col[j];
-                    if (s == null || s.IsCut)
-                        continue;
-
-                    var p1 = (DrawableParticle)s.P1;
-                    var p2 = (DrawableParticle)s.P2;
-
-                    Vector2 delta = p2.Position - p1.Position;
-                    float len = delta.Length();
-                    if (len <= 1e-6f)
-                        continue;
-                    float diff = (len - s.Length) / len;
-                    Vector2 correction = delta * 0.5f * diff;
-
-                    bool p1Pinned = p1.IsPinned;
-                    bool p2Pinned = p2.IsPinned;
-
-                    if (!p1Pinned && !p2Pinned)
-                    {
-                        p1.Position += correction;
-                        p2.Position -= correction;
-                    }
-                    else if (!p1Pinned && p2Pinned)
-                    {
-                        p1.Position += correction * 2f;
-                    }
-                    else if (p1Pinned && !p2Pinned)
-                    {
-                        p2.Position -= correction * 2f;
-                    }
-                }
-            }
-
-            for (int i = 0; i < _clothInstance.particles.Length; i++)
-            {
-                for (int j = 0; j < _clothInstance.particles[i].Length; j++)
-                {
-                    var p = _clothInstance.particles[i][j];
-                    _clothInstance.particles[i][j] = KeepInsideRect(
-                        p,
-                        _windowBounds,
-                        _collisonBoundsDifference
-                    );
-                }
-            }
-        }
-    }
+   
 
     private void SatisfyBuildableConstraints(int iterations)
     {
