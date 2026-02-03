@@ -42,11 +42,12 @@ class Particle
         ID = -1;
     }
 }
+
 public abstract class Collider
 {
-    
-    public abstract bool ContainsPoint(Vector2 point,out Vector2 closestPoint);
+    public abstract bool ContainsPoint(Vector2 point, out Vector2 closestPoint);
 }
+
 public class CircleCollider(Vector2 center, float radius) : Collider
 {
     public Vector2 Center = center;
@@ -58,19 +59,16 @@ public class CircleCollider(Vector2 center, float radius) : Collider
         float distance = direction.LengthSquared();
 
         if (distance <= Radius * Radius)
-            
         {
             closestPoint = Center + Vector2.Normalize(direction) * Radius;
             return true;
         }
-        
-        
+
         closestPoint = point;
         return false;
-        
-        
     }
 }
+
 class DrawableParticle : Particle
 {
     private PrimitiveBatch.Rectangle rectangle;
@@ -190,156 +188,6 @@ class DrawableStick : Stick
         line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color, Width);
         if (!IsCut)
             line.Draw(spriteBatch, primitiveBatch);
-    }
-}
-
-class Cloth : Mesh
-{
-    public DrawableParticle[][] particles;
-    public DrawableStick[][] horizontalSticks;
-    public DrawableStick[][] verticalSticks;
-
-    public float naturalLength;
-    public float mass;
-
-    public Cloth(
-        Vector2 Size,
-        List<Vector2> pinnedParticles,
-        float naturalLength = 10f,
-        float springConstant = 1.0f,
-        float mass = 1f
-    )
-    {
-        this.naturalLength = naturalLength;
-        int rows = (int)(Size.Y / naturalLength);
-        int cols = (int)(Size.X / naturalLength);
-        this.springConstant = springConstant;
-
-        this.mass = mass;
-        particles = new DrawableParticle[rows][];
-        horizontalSticks = new DrawableStick[rows][];
-        verticalSticks = new DrawableStick[rows - 1][];
-
-        for (int i = 0; i < rows; i++)
-        {
-            particles[i] = new DrawableParticle[cols];
-            horizontalSticks[i] = new DrawableStick[cols - 1];
-            if (i < rows - 1)
-            {
-                verticalSticks[i] = new DrawableStick[cols];
-            }
-
-            for (int j = 0; j < cols; j++)
-            {
-                bool isPinned = pinnedParticles.Contains(
-                    new Vector2(j * naturalLength + 220, i * naturalLength + 20)
-                );
-
-                var dp = new DrawableParticle(
-                    new Vector2(j * naturalLength + 220, i * naturalLength + 20),
-                    isPinned ? 0 : mass,
-                    isPinned,
-                    Color.White
-                );
-
-                RegisterParticle(dp);
-                particles[i][j] = dp;
-
-                if (j > 0)
-                {
-                    var sid = AddStick(particles[i][j - 1].ID, particles[i][j].ID, Color.White);
-                    if (sid.HasValue)
-                    {
-                        horizontalSticks[i][j - 1] = Sticks[sid.Value];
-                    }
-                }
-
-                if (i > 0)
-                {
-                    var sid = AddStick(particles[i - 1][j].ID, particles[i][j].ID, Color.White);
-                    if (sid.HasValue)
-                    {
-                        verticalSticks[i - 1][j] = Sticks[sid.Value];
-                    }
-                }
-            }
-        }
-        foreach (Vector2 p in pinnedParticles)
-        {
-            int row = (int)((p.Y - 20) / naturalLength);
-            int col = (int)((p.X - 220) / naturalLength);
-            if (row >= 0 && row < rows && col >= 0 && col < cols)
-            {
-                particles[row][col].IsPinned = true;
-                particles[row][col].Mass = 0;
-                particles[row][col].PreviousPosition = particles[row][col].Position;
-            }
-        }
-    }
-
-    public void StickDraw(
-        SpriteBatch spriteBatch,
-        PrimitiveBatch primitiveBatch,
-        DrawableStick[][] sticks
-    )
-    {
-        for (int i = 0; i < sticks.Length; i++)
-        {
-            for (int j = 0; j < sticks[i].Length; j++)
-            {
-                sticks[i][j].Draw(spriteBatch, primitiveBatch);
-            }
-        }
-    }
-
-    private float CalculateStressLerp(float forceMagnitude)
-    {
-        if (forceStdDeviation > 0.0001f)
-        {
-            float zScore = (forceMagnitude - meanForceMagnitude) / forceStdDeviation;
-            const float highlightThreshold = 0.5f;
-            const float highlightRange = 1.5f;
-            return MathHelper.Clamp((zScore - highlightThreshold) / highlightRange, 0f, 1f);
-        }
-
-        if (maxForceMagnitude > 0.0001f)
-        {
-            return MathHelper.Clamp(forceMagnitude / maxForceMagnitude, 0f, 1f);
-        }
-
-        if (meanForceMagnitude > 0.0001f)
-        {
-            return MathHelper.Clamp(forceMagnitude / meanForceMagnitude, 0f, 1f);
-        }
-
-        return 0f;
-    }
-
-    public new void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
-    {
-        StickDraw(spriteBatch, primitiveBatch, horizontalSticks);
-        StickDraw(spriteBatch, primitiveBatch, verticalSticks);
-
-        for (int i = 0; i < particles.Length; i++)
-        {
-            for (int j = 0; j < particles[i].Length; j++)
-            {
-                var particle = particles[i][j];
-
-                if (particle.IsPinned)
-                {
-                    particle.Color = Color.BlueViolet;
-                    particle.Draw(spriteBatch, primitiveBatch);
-                    continue;
-                }
-
-                float forceMagnitude = particle.TotalForceMagnitude;
-                float lerpFactor = CalculateStressLerp(forceMagnitude);
-                float easedLerp = lerpFactor * lerpFactor;
-                particle.Draw(spriteBatch, primitiveBatch);
-                particles[i][j] = particle;
-            }
-        }
     }
 }
 
@@ -596,10 +444,15 @@ class Mesh
         return closest;
     }
 
-    public void CreateGridMesh(Vector2 Start, Vector2 End, float DistanceBetweenParticles)
+    public static Mesh CreateGridMesh(
+        Vector2 Start,
+        Vector2 End,
+        float DistanceBetweenParticles,
+        Mesh mesh
+    )
     {
         if (DistanceBetweenParticles <= 0)
-            return;
+            return mesh ?? new Mesh();
 
         int width = (int)Math.Max(1, Math.Abs(End.X - Start.X) / DistanceBetweenParticles) + 1;
         int height = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / DistanceBetweenParticles) + 1;
@@ -615,7 +468,7 @@ class Mesh
             {
                 Vector2 position =
                     Start + new Vector2(x * DistanceBetweenParticles, y * DistanceBetweenParticles);
-                particleIds[x, y] = AddParticleAt(position);
+                particleIds[x, y] = mesh.AddParticleAt(position);
             }
         }
 
@@ -628,31 +481,47 @@ class Mesh
                 if (x < width - 1)
                 {
                     int p2Id = particleIds[x + 1, y];
-                    AddStickBetween(p1Id, p2Id);
+                    mesh.AddStickBetween(p1Id, p2Id);
                 }
 
                 if (y < height - 1)
                 {
                     int p2Id = particleIds[x, y + 1];
-                    AddStickBetween(p1Id, p2Id);
+                    mesh.AddStickBetween(p1Id, p2Id);
                 }
             }
         }
+        return mesh;
     }
-    public void CreateClothMesh(Vector2 Start, Vector2 End, float naturalLength)
+
+    public static Mesh CreateClothMesh(
+        Vector2 Start,
+        Vector2 End,
+        float naturalLength,
+        Mesh mesh = null,
+        float springConstant = 10000f,
+        float drag = 0.997f,
+        float mass = 1f
+    )
     {
-        CreateGridMesh(Start, End, naturalLength);
+        mesh = mesh ?? new Mesh();
+        mesh.springConstant = springConstant;
+        mesh.drag = drag;
+        mesh.mass = mass;
+
+        CreateGridMesh(Start, End, naturalLength, mesh);
         int idWidth = (int)Math.Max(1, Math.Abs(End.X - Start.X) / naturalLength) + 1;
         int idHeight = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / naturalLength) + 1;
         for (int x = 0; x < idWidth; x++)
         {
             int topParticleId = x + 1;
-            if (Particles.ContainsKey(topParticleId))
+            if (mesh.Particles.ContainsKey(topParticleId))
             {
-                Particles[topParticleId].IsPinned = true;
-                Particles[topParticleId].Mass = 0f;
+                mesh.Particles[topParticleId].IsPinned = true;
+                mesh.Particles[topParticleId].Mass = 0f;
             }
         }
+        return mesh;
     }
 }
 

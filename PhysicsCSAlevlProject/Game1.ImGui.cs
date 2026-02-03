@@ -109,7 +109,6 @@ public partial class Game1
             {
                 _activeMesh = new Mesh();
                 _defaultMesh = _activeMesh;
-                _clothInstance = null;
                 SetMode(MeshMode.Interact);
                 ImGui.CloseCurrentPopup();
             }
@@ -374,7 +373,6 @@ public partial class Game1
                     var mesh = meshEntry.Value;
                     _activeMesh = mesh;
                     _defaultMesh = mesh;
-                    _clothInstance = mesh as Cloth ?? _clothInstance;
                     _quickStructureName = meshEntry.Key;
                     SetMode( MeshMode.Interact);
                 }
@@ -406,7 +404,6 @@ public partial class Game1
                     var mesh = meshEntry.Value;
                     _activeMesh = mesh;
                     _defaultMesh = mesh;
-                    _clothInstance = mesh as Cloth ?? _clothInstance;
                     _quickStructureName = meshEntry.Key;
                     SetMode(MeshMode.Interact);
                 }
@@ -417,7 +414,6 @@ public partial class Game1
         if (ImGui.BeginMenu("Quick Settings"))
         {
             ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
-            ImGui.EndDisabled();
 
             ImGui.EndMenu();
         }
@@ -519,8 +515,12 @@ public partial class Game1
 
         ImGui.Text($"Current Mode: {_currentMode}");
         ImGui.Separator();
+<<<<<<< HEAD
 
 
+=======
+        ImGui.SliderFloat("Global Particle Mass", ref _activeMesh.mass, -100f, 100f);
+>>>>>>> refs/remotes/origin/main
         ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
         ImGui.EndDisabled();
         ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
@@ -652,7 +652,6 @@ public partial class Game1
         if (ImGui.SliderFloat("Drag (1.0 = no friction)", ref drag, 0.9f, 1.0f))
         {
             _activeMesh.drag = drag;
-            _clothInstance.drag = drag;
         }
 
         ImGui.End();

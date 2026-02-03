@@ -328,44 +328,7 @@ public partial class Game1
         }
     }
 
-    private void PinParticle(Vector2 center, float radius)
-    {
-        float closestDistance = float.MaxValue;
-        int closestI = -1;
-        int closestJ = -1;
-
-        for (int i = 0; i < _clothInstance.particles.Length; i++)
-        {
-            for (int j = 0; j < _clothInstance.particles[i].Length; j++)
-            {
-                float distance = Vector2.Distance(_clothInstance.particles[i][j].Position, center);
-                if (distance <= radius && distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestI = i;
-                    closestJ = j;
-                }
-            }
-        }
-
-        if (closestI >= 0 && closestJ >= 0)
-        {
-            var particle = _clothInstance.particles[closestI][closestJ];
-            bool shouldPin = !particle.IsPinned;
-
-            particle.IsPinned = shouldPin;
-            particle.Mass = shouldPin ? 0f : _clothInstance.mass;
-            particle.AccumulatedForce = Vector2.Zero;
-            particle.PreviousPosition = particle.Position;
-
-            _clothInstance.particles[closestI][closestJ] = particle;
-
-            string action = shouldPin ? "pinned" : "unpinned";
-            _logger.AddLog(
-                $"Cloth particle [{closestI},{closestJ}] {action} at {particle.Position}"
-            );
-        }
-    }
+   
 
     private void PinParticleBuildable(Vector2 center, float radius)
     {
@@ -400,12 +363,7 @@ public partial class Game1
         }
     }
 
-    private void CutAllSticksInRadius(Vector2 center, float radius)
-    {
-        CutSticksInRadius(center, radius, _clothInstance.horizontalSticks);
-        CutSticksInRadius(center, radius, _clothInstance.verticalSticks);
-    }
-
+   
     private void CutAllSticksInRadiusBuildable(Vector2 center, float radius)
     {
         var sticksToRemove = new List<int>();
@@ -541,41 +499,7 @@ public partial class Game1
         return particleIds;
     }
 
-    private void DragAreaParticles(
-        MouseState mouseState,
-        bool isDragging,
-        List<Vector2> particlesInDragArea
-    )
-    {
-        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
-
-        if (isDragging)
-        {
-            Vector2 frameDelta = mousePos - previousMousePos;
-            foreach (Vector2 particle in particlesInDragArea)
-            {
-                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
-                if (!p.IsPinned)
-                {
-                    p.Position += frameDelta;
-                    p.PreviousPosition += frameDelta;
-                    _clothInstance.particles[(int)particle.X][(int)particle.Y] = p;
-                    _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.Yellow;
-                }
-            }
-        }
-        else
-        {
-            foreach (Vector2 particle in particlesInDragArea)
-            {
-                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
-                if (!p.IsPinned)
-                {
-                    _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
-                }
-            }
-        }
-    }
+    
 
     private void DragMeshParticles(MouseState mouseState, bool isDragging, List<int> particleIds)
     {
@@ -650,51 +574,8 @@ public partial class Game1
         }
     }
 
-    private void DragAreaParticlesWithPhysics(
-        MouseState mouseState,
-        bool isDragging,
-        List<Vector2> particlesInDragArea
-    )
-    {
-        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        if (isDragging)
-        {
-            foreach (Vector2 particle in particlesInDragArea)
-            {
-                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
-                if (!p.IsPinned)
-                {
-                    Vector2 displacement = mousePos - p.Position;
-                    float distance = displacement.Length();
-
-                    if (distance > 1f)
-                    {
-                        float moveSpeed = 0.1f;
-                        Vector2 positionDelta = displacement * moveSpeed;
-
-                        p.Position += positionDelta;
-                        p.PreviousPosition += positionDelta * 0.9f;
-
-                        _clothInstance.particles[(int)particle.X][(int)particle.Y] = p;
-                        _clothInstance.particles[(int)particle.X][(int)particle.Y].Color =
-                            Color.Orange;
-                    }
-                }
-            }
-        }
-        else
-        {
-            foreach (Vector2 particle in particlesInDragArea)
-            {
-                var p = _clothInstance.particles[(int)particle.X][(int)particle.Y];
-                if (!p.IsPinned)
-                {
-                    _clothInstance.particles[(int)particle.X][(int)particle.Y].Color = Color.White;
-                }
-            }
-        }
-    }
+    
 
     private void InspectParticlesInRadiusLog(Vector2 center, float radius)
     {
