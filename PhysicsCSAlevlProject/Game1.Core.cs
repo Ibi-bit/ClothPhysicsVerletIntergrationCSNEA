@@ -33,11 +33,12 @@ public partial class Game1 : Game
     private PrimitiveBatch.Line cutLine;
 
     // private SpriteFont _font;
-    private const float FixedTimeStep = 1f / 1000f;
+    private const float FixedTimeStep = 1f / 60f;
     private float _timeAccumulator = 0f;
 
     private bool _useConstraintSolver = false;
     private int _constraintIterations = 5;
+    private int _subSteps = 10;
     private Mesh _activeMesh;
     private Cloth _clothInstance;
     private Mesh _defaultMesh;
@@ -107,7 +108,7 @@ public partial class Game1 : Game
     protected override void Initialize()
     {
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
-        _primitiveBatch.CreateTextures();
+        _primitiveBatch.CreateTextures(20f);
 
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;

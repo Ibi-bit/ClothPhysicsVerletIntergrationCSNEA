@@ -210,7 +210,7 @@ public partial class Game1
         Colorize(vertical);
     }
 
-    private void UpdateParticles(float deltaTime)
+    private void UpdateParticles(float deltaTime,float previousDeltaTime)
     {
         float forceMagnitudeSum = 0f;
         float forceMagnitudeSquaredSum = 0f;
@@ -260,6 +260,18 @@ public partial class Game1
                 Vector2 previousPosition = particle.Position;
                 particle.Position =
                     particle.Position + velocity + acceleration * (deltaTime * deltaTime);
+                particle.PreviousPosition = previousPosition;
+                // time corrected Verlet integration
+                
+                // Vector2 previousPosition = particle.Position;
+                
+                // float dtRatio = previousDeltaTime > 0.0001f ?deltaTime / previousDeltaTime : 1f;
+                // particle.Position = particle.Position + 
+                //                     velocity * dtRatio + acceleration * (deltaTime * deltaTime);
+                
+                particle.Position = new Vector2(
+                    float.IsNaN(particle.Position.X) ? previousPosition.X : particle.Position.X,
+                    float.IsNaN(particle.Position.Y) ? previousPosition.Y : particle.Position.Y);
                 particle.PreviousPosition = previousPosition;
             }
 

@@ -520,13 +520,10 @@ public partial class Game1
         ImGui.Text($"Current Mode: {_currentMode}");
         ImGui.Separator();
 
-        ImGui.Checkbox("Use Constraint Solver", ref _useConstraintSolver);
-        ImGui.BeginDisabled(!_useConstraintSolver);
-        ImGui.SliderInt("Constraint Iterations", ref _constraintIterations, 1, 20);
-        ImGui.EndDisabled();
-        ImGui.BeginDisabled(_useConstraintSolver);
+
         ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
         ImGui.EndDisabled();
+        ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
 
         ImGui.Separator();
 

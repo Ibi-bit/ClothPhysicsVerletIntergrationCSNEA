@@ -7,6 +7,7 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     private VectorGraphics.PrimitiveBatch.Rectangle _selectRectangle;
+    private float previousDeltaTime = 0f;
 
     protected override void Update(GameTime gameTime)
     {
@@ -344,24 +345,30 @@ public partial class Game1
         }
 
         int stepsThisFrame = 0;
-        const int maxStepsPerFrame = 1000;
+        const int maxStepsPerFrame = 10000;
+        int subSteps = Math.Max(1, _subSteps);
 
         while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame && !Paused)
         {
-            foreach (var particle in _activeMesh.Particles.Values)
-            {
-                particle.AccumulatedForce = Vector2.Zero;
-            }
-            if (!_useConstraintSolver)
-            {
-                ApplyStickForcesDictionary(_activeMesh.Sticks);
-            }
-            _cursorCollider.Center = Vector2.Lerp(_cursorCollider.Center, currentMousePos, 1/(stepsThisFrame+1f));
-            UpdateParticles(FixedTimeStep);
+            float subDt = FixedTimeStep / subSteps;
 
-            if (_useConstraintSolver)
+            for (int subStepIndex = 0; subStepIndex < subSteps; subStepIndex++)
             {
-                SatisfyBuildableConstraints(_constraintIterations);
+                foreach (var particle in _activeMesh.Particles.Values)
+                {
+                    particle.AccumulatedForce = Vector2.Zero;
+                }
+                if (!_useConstraintSolver)
+                {
+                    ApplyStickForcesDictionary(_activeMesh.Sticks);
+                }
+                _cursorCollider.Center = Vector2.Lerp(
+                    previousMousePos,
+                    currentMousePos,
+                    1f / (stepsThisFrame + 1f)
+                );
+                UpdateParticles(subDt, previousDeltaTime);
+                previousDeltaTime = subDt;
             }
 
             _timeAccumulator -= FixedTimeStep;
