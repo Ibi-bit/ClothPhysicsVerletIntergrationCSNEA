@@ -5,6 +5,15 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    private bool _drawParticles;
+    private bool _drawConstraints;
+
+    private void InitializeRender()
+    {
+        _drawParticles = true;
+        _drawConstraints = true;
+    }
+
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -20,33 +29,40 @@ public partial class Game1
         var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 2);
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
 
-        var cursorCollider = new PrimitiveBatch.Circle(
-            _cursorCollider.Center,
-            _cursorCollider.Radius,
-            Color.Red,
-            true
-        );
         if (_selectedToolName == "Cursor Collider")
         {
-            cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+            if (_cursorCollider is CircleCollider circle)
+            {
+                var cursorCollider = new PrimitiveBatch.Circle(
+                    circle.Position,
+                    circle.Radius,
+                    Color.Red,
+                    true
+                );
+                cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+            }
+            else if (_cursorCollider is RectangleCollider rectangle)
+            {
+                var cursorCollider = new PrimitiveBatch.Rectangle(
+                    rectangle.Rectangle,
+                    Color.Red,
+                    true
+                );
+                cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+            }
+            
         }
 
-        _activeMesh.Draw(_spriteBatch, _primitiveBatch);
-        /*
-        if (_currentMode == MeshMode.Edit && _font != null)
-        {
-            _polygonBuilderInstance.Draw(_spriteBatch, _primitiveBatch, _font);
-        }
-        */
+        _activeMesh.Draw(_spriteBatch, _primitiveBatch,_drawParticles, _drawConstraints);
 
-        if (windDirectionArrow != null)
+        if (_windDirectionArrow != null)
         {
-            windDirectionArrow.Draw(_spriteBatch, _primitiveBatch);
+            _windDirectionArrow.Draw(_spriteBatch, _primitiveBatch);
         }
 
-        if (cutLine != null)
+        if (_cutLine != null)
         {
-            cutLine.Draw(_spriteBatch, _primitiveBatch);
+            _cutLine.Draw(_spriteBatch, _primitiveBatch);
         }
         if (_selectRectangle != null)
         {

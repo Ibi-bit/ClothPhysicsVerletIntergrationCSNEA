@@ -15,38 +15,21 @@ public partial class Game1 : Game
     private PrimitiveBatch _primitiveBatch;
     public static ImGuiRenderer _guiRenderer;
     public Game1Database _database;
-    bool leftPressed;
-    Vector2 intitialMousePosWhenPressed;
 
-    bool Paused = false;
+    private bool _leftPressed;
+    private Vector2 _initialMousePosWhenPressed;
+    private KeyboardState _prevKeyboardState;
+    private MouseState _prevMouseState;
+    private Vector2 _previousMousePos;
 
-    float _springConstant;
+    private bool _paused;
+    private static Rectangle _windowBounds;
+    private Rectangle _changedBounds;
+    private bool _keepAspectRatio;
+    private float _lockedAspectRatio;
 
-    Vector2 windForce;
-    Vector2 previousMousePos;
-
-    Vector2 BaseForce = new Vector2(0, 980f);
-    List<Vector2> particlesInDragArea = new List<Vector2>();
-    List<int> meshParticlesInDragArea = new List<int>();
-
-    private PrimitiveBatch.Arrow windDirectionArrow;
-    private PrimitiveBatch.Line cutLine;
-
-    // private SpriteFont _font;
-    private const float FixedTimeStep = 1f / 60f;
-    private float _timeAccumulator = 0f;
-
-    private bool _useConstraintSolver = false;
-    private int _constraintIterations = 5;
-    private int _subSteps = 10;
     private Mesh _activeMesh;
     private Mesh _defaultMesh;
-    private PolygonBuilder _polygonBuilderInstance;
-    private static Rectangle _windowBounds;
-    bool keepAspectRatio = true;
-    float _lockedAspectRatio = 1f;
-
-    private Rectangle changedBounds = Rectangle.Empty;
 
     private enum MeshMode
     {
@@ -64,11 +47,8 @@ public partial class Game1 : Game
         _graphics.ApplyChanges();
         var cb = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cb.Width, cb.Height);
-        changedBounds = _windowBounds;
+        _changedBounds = _windowBounds;
     }
-
-    private KeyboardState _prevKeyboardState;
-    private MouseState _prevMouseState;
 
     public Game1()
     {
@@ -91,56 +71,35 @@ public partial class Game1 : Game
 
         _database = new Game1Database();
 
-        _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
-
-        _template = new Dictionary<string, Func<Mesh>>
-        {
-            {
-                "Cloth 20x20 (light)",
-                () => Mesh.CreateClothMesh(new Vector2(200, 200), new Vector2(220, 20), 10f)
-            },
-            {
-                "Cloth 30x20 (light)",
-                () => Mesh.CreateClothMesh(new Vector2(300, 200), new Vector2(220, 20), 10f)
-            },
-            {
-                "Cloth 20x20 (stiff)",
-                () => Mesh.CreateClothMesh(new Vector2(200, 200), new Vector2(220, 20), 10f)
-            },
-        };
-
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
-        changedBounds = _windowBounds;
+        _changedBounds = _windowBounds;
+        _keepAspectRatio = true;
         _lockedAspectRatio = cbInit.Height > 0 ? cbInit.Width / (float)cbInit.Height : 1f;
         Window.ClientSizeChanged += (_, __) =>
         {
             var cbNow = Window.ClientBounds;
             _windowBounds = new Rectangle(0, 0, cbNow.Width, cbNow.Height);
-            changedBounds = _windowBounds;
+            _changedBounds = _windowBounds;
         };
 
-        leftPressed = false;
-
-        windDirectionArrow = null;
-
-        _springConstant = 5000f;
-
-        InitializeInteractTools();
-        InitializeBuildTools();
-
-        _springConstant = 5000f;
+        _leftPressed = false;
+        _paused = false;
 
         _defaultMesh = new Mesh
         {
-            springConstant = _springConstant,
+            springConstant = 5000f,
             mass = 0.1f,
             drag = 0.997f,
         };
-        _polygonBuilderInstance = new PolygonBuilder();
-
         _activeMesh = _defaultMesh;
         _currentMode = MeshMode.Interact;
+
+        InitializeImGui();
+        InitializePhysics();
+        InitializeRender();
+        InitializeTools();
+        InitializeUpdate();
 
         _guiRenderer = new ImGuiRenderer(this);
 

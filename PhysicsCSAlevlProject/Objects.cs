@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using VectorGraphics;
-
+namespace PhysicsCSAlevlProject;
 class Particle
 {
     public Vector2 Position;
@@ -45,22 +46,28 @@ class Particle
 
 public abstract class Collider
 {
+    public Vector2 Position;
     public abstract bool ContainsPoint(Vector2 point, out Vector2 closestPoint);
 }
 
-public class CircleCollider(Vector2 center, float radius) : Collider
+public class CircleCollider : Collider
 {
-    public Vector2 Center = center;
-    public float Radius = radius;
+    public float Radius;
+
+    public CircleCollider(Vector2 center, float radius)
+    {
+        Position = center;
+        Radius = radius;
+    }
 
     public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
     {
-        Vector2 direction = point - Center;
+        Vector2 direction = point - Position;
         float distance = direction.LengthSquared();
 
         if (distance <= Radius * Radius)
         {
-            closestPoint = Center + Vector2.Normalize(direction) * Radius;
+            closestPoint = Position + Vector2.Normalize(direction) * Radius;
             return true;
         }
 
@@ -68,6 +75,46 @@ public class CircleCollider(Vector2 center, float radius) : Collider
         return false;
     }
 }
+public class RectangleCollider(Rectangle rectangle) : Collider
+{
+    public Rectangle Rectangle = rectangle;
+
+    public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
+    {
+        if(Rectangle.Contains(point))
+        {
+            float leftDist = point.X - Rectangle.Left;
+            float rightDist = Rectangle.Right - point.X;
+            float topDist = point.Y - Rectangle.Top;
+            float bottomDist = Rectangle.Bottom - point.Y;
+
+            float minDist = leftDist;
+            closestPoint = new Vector2(Rectangle.Left, point.Y);
+
+            if (rightDist < minDist)
+            {
+                minDist = rightDist;
+                closestPoint = new Vector2(Rectangle.Right, point.Y);
+            }
+            if (topDist < minDist)
+            {
+                minDist = topDist;
+                closestPoint = new Vector2(point.X, Rectangle.Top);
+            }
+            if (bottomDist < minDist)
+            {
+                closestPoint = new Vector2(point.X, Rectangle.Bottom);
+            }
+
+            return true;
+        }
+        closestPoint = point;
+
+        return false;
+    }
+}
+
+
 
 class DrawableParticle : Particle
 {
@@ -207,6 +254,14 @@ class Mesh
     public float drag = 0.997f;
     public float mass = 1f;
 
+    private int _polygonInitialParticle = -1;
+    private int _polygonFinalParticle = -1;
+    private List<int> _polygonVertices = new List<int>();
+    private bool _isPolygonBuilding = false;
+
+    public bool IsPolygonBuilding => _isPolygonBuilding;
+    public int PolygonVertexCount => _polygonVertices.Count;
+
     public class MeshStick : DrawableStick
     {
         public int Id;
@@ -292,6 +347,65 @@ class Mesh
         _nextParticleId = 1;
         _nextStickId = 1;
         _particleToStickIds.Clear();
+        ResetPolygonBuilder();
+    }
+
+    public void BuildPolygon(
+        KeyboardState keyboardState,
+        KeyboardState previousKeyboardState,
+        MouseState mouseState,
+        MouseState previousMouseState,
+        bool imguiWantsMouse
+    )
+    {
+        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
+
+        if (
+            mouseState.LeftButton == ButtonState.Pressed
+            && previousMouseState.LeftButton == ButtonState.Released
+            && !imguiWantsMouse
+        )
+        {
+            if (!_isPolygonBuilding)
+            {
+                _isPolygonBuilding = true;
+                _polygonVertices.Clear();
+
+                int newParticleId = AddParticle(mousePos, 0.1f, false, Color.White);
+                _polygonVertices.Add(newParticleId);
+                _polygonInitialParticle = newParticleId;
+                _polygonFinalParticle = newParticleId;
+            }
+            else
+            {
+                int newParticleId = AddParticle(mousePos, 0.1f, false, Color.White);
+
+                if (_polygonFinalParticle != -1)
+                {
+                    AddStickBetween(_polygonFinalParticle, newParticleId);
+                }
+
+                _polygonVertices.Add(newParticleId);
+                _polygonFinalParticle = newParticleId;
+            }
+        }
+
+        if (keyboardState.IsKeyDown(Keys.Enter) && !previousKeyboardState.IsKeyDown(Keys.Enter))
+        {
+            if (_isPolygonBuilding && _polygonVertices.Count >= 3)
+            {
+                AddStickBetween(_polygonFinalParticle, _polygonInitialParticle);
+                ResetPolygonBuilder();
+            }
+        }
+    }
+
+    public void ResetPolygonBuilder()
+    {
+        _isPolygonBuilding = false;
+        _polygonVertices.Clear();
+        _polygonInitialParticle = -1;
+        _polygonFinalParticle = -1;
     }
 
     public bool RemoveParticle(int particleId)
@@ -340,7 +454,7 @@ class Mesh
         return ccw(p1, p3, p4) != ccw(p2, p3, p4) && ccw(p1, p2, p3) != ccw(p1, p2, p4);
     }
 
-    public int? AddStick(int p1Id, int p2Id, Color color, float width = 2.0f)
+    public int? AddStick(int p1Id, int p2Id, Color color, float width = 2.0f,float naturalLength = -1f)
     {
         if (p1Id == p2Id)
             return null;
@@ -359,6 +473,11 @@ class Mesh
             P1Id = p1Id,
             P2Id = p2Id,
         };
+        if (naturalLength > 0f)
+        {
+            s.Length = naturalLength;
+            
+        }
         Sticks[s.Id] = s;
         if (!_particleToStickIds.ContainsKey(p1Id))
             _particleToStickIds[p1Id] = new HashSet<int>();
@@ -367,6 +486,28 @@ class Mesh
         _particleToStickIds[p1Id].Add(s.Id);
         _particleToStickIds[p2Id].Add(s.Id);
         return s.Id;
+    }
+    public void AddSticksAccrossLength(Vector2 Start, Vector2 End, int numberOfSticks,float naturalLengthRatio = 1f)
+    {
+        if (numberOfSticks < 1)
+            return;
+
+        Vector2 direction = End - Start;
+        float segmentLength = direction.Length() / numberOfSticks;
+        direction.Normalize();
+
+        List<int> particleIds = new List<int>();
+        for (int i = 0; i <= numberOfSticks; i++)
+        {
+            Vector2 position = Start + direction * segmentLength * i;
+            int particleId = AddParticleAt(position);
+            particleIds.Add(particleId);
+        }
+
+        for (int i = 0; i < particleIds.Count - 1; i++)
+        {
+            AddStickBetween(particleIds[i], particleIds[i + 1], segmentLength / naturalLengthRatio);
+        }
     }
 
     public bool RemoveStick(int stickId)
@@ -406,15 +547,24 @@ class Mesh
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch, bool drawParticles, bool drawConstraints)
     {
-        foreach (var s in Sticks.Values)
+        if (drawConstraints)
         {
-            s.Draw(spriteBatch, primitiveBatch);
+
+
+            foreach (var s in Sticks.Values)
+            {
+                s.Draw(spriteBatch, primitiveBatch);
+            }
         }
-        foreach (var p in Particles.Values)
+
+        if (drawParticles)
         {
-            p.Draw(spriteBatch, primitiveBatch);
+            foreach (var p in Particles.Values)
+            {
+                p.Draw(spriteBatch, primitiveBatch);
+            }
         }
     }
 
@@ -423,9 +573,9 @@ class Mesh
         return AddParticle(position, isPinned ? 0f : mass, isPinned, Color.White);
     }
 
-    public int? AddStickBetween(int p1Id, int p2Id)
+    public int? AddStickBetween(int p1Id, int p2Id,float naturalLength = -1f)
     {
-        return AddStick(p1Id, p2Id, Color.White);
+        return AddStick(p1Id, p2Id, Color.White,2,naturalLength);
     }
 
     public int? FindClosestParticle(Vector2 position, float radius)
@@ -508,18 +658,24 @@ class Mesh
         mesh.springConstant = springConstant;
         mesh.drag = drag;
         mesh.mass = mass;
+        int offsetid = mesh._nextParticleId;
 
         CreateGridMesh(Start, End, naturalLength, mesh);
         int idWidth = (int)Math.Max(1, Math.Abs(End.X - Start.X) / naturalLength) + 1;
         int idHeight = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / naturalLength) + 1;
-        for (int x = 0; x < idWidth; x++)
+            int topLeftParticleId = offsetid;
+            int topRightParticleId = offsetid + (idWidth - 1) * idHeight;
+
+        if (mesh.Particles.ContainsKey(topLeftParticleId))
         {
-            int topParticleId = x + 1;
-            if (mesh.Particles.ContainsKey(topParticleId))
-            {
-                mesh.Particles[topParticleId].IsPinned = true;
-                mesh.Particles[topParticleId].Mass = 0f;
-            }
+            mesh.Particles[topLeftParticleId].IsPinned = true;
+            mesh.Particles[topLeftParticleId].Mass = 0f;
+        }
+
+        if (mesh.Particles.ContainsKey(topRightParticleId))
+        {
+            mesh.Particles[topRightParticleId].IsPinned = true;
+            mesh.Particles[topRightParticleId].Mass = 0f;
         }
         return mesh;
     }

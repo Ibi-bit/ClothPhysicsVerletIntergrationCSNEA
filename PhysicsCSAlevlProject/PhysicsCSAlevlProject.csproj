@@ -29,7 +29,6 @@
     <Compile Include="Game1.File.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Objects.cs" />
-    <Compile Include="polygonbuilder.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />
   </ItemGroup>
   <ItemGroup>

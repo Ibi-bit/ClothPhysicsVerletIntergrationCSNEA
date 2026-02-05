@@ -1,21 +1,33 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+
 using Microsoft.Xna.Framework.Input;
 
 namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
-    private string _selectedToolName = "Drag";
+    private string _selectedToolName;
     private Dictionary<string, Tool> _interactTools;
     private Dictionary<string, Tool> _buildTools;
     private Dictionary<string, Tool> _currentToolSet => _currentMode == MeshMode.Edit ? _buildTools : _interactTools;
-    private float dragRadius = 20f;
-    private List<int> inspectedParticles = new List<int>();
-    private int? _stickToolFirstParticleId = null;
+    private float _dragRadius;
+    private List<int> _inspectedParticles;
+    private int? _stickToolFirstParticleId;
+
+    private void InitializeTools()
+    {
+        _selectedToolName = "Drag";
+        _dragRadius = 20f;
+        _inspectedParticles = new List<int>();
+        _stickToolFirstParticleId = null;
+
+        InitializeInteractTools();
+        InitializeBuildTools();
+    }
 
     private void InitializeInteractTools()
     {
@@ -37,7 +49,7 @@ public partial class Game1
         }
 
         _interactTools["Drag"].Properties["Radius"] = 20f;
-        _interactTools["Drag"].Properties["MaxParticles"] = (int)20;
+        _interactTools["Drag"].Properties["MaxParticles"] = 20;
         _interactTools["Drag"].Properties["InfiniteParticles"] = true;
 
         _interactTools["Pin"].Properties["Radius"] = 20f;
@@ -58,7 +70,8 @@ public partial class Game1
         _interactTools["Inspect Particles"].Properties["Clear When Use"] = false;
         _interactTools["Inspect Particles"].Properties["RectangleSelect"] = true;
 
-        _interactTools["Cursor Collider"].Properties["Radius"] = 5f;
+        _interactTools["Cursor Collider"].Properties["Radius"] = 50f;
+        _interactTools["Cursor Collider"].Properties["Shape"] = "Circle";
     }
 
     private void InitializeBuildTools()
@@ -67,11 +80,12 @@ public partial class Game1
         {
             { "Add Particle", new Tool("Add Particle", null, null) },
             { "Add Stick Between Particles", new Tool("Add Stick Between Particles", null, null) },
-            { "Add Polygon", new Tool("Add Polygon", null, null) },
             { "Remove Particle", new Tool("Remove Particle", null, null) },
             { "LineCut", new Tool("LineCut", null, null) },
             { "Pin", new Tool("Pin", null, null) },
             { "Create Grid Mesh", new Tool("Create Grid Mesh", null, null) },
+            { "Line Tool", new Tool("Line Tool", null, null) },
+            { "Add Polygon", new Tool("Add Polygon", null, null) },
         };
         foreach (var tool in _buildTools.Values)
         {
@@ -79,12 +93,13 @@ public partial class Game1
         }
         _buildTools["Add Particle"].Properties["SnapToGrid"] = true;
         _buildTools["Add Stick Between Particles"].Properties["Radius"] = 15f;
-        _buildTools["Add Polygon"].Properties["SnapToGrid"] = true;
         _buildTools["Remove Particle"].Properties["Radius"] = 10f;
         _interactTools["LineCut"].Properties["MinDistance"] = 5f;
         _interactTools["LineCut"].Properties["Thickness"] = 3f;
         _buildTools["Pin"].Properties["Radius"] = 20f;
         _buildTools["Create Grid Mesh"].Properties["DistanceBetweenParticles"] = 10f;
+        _buildTools["Line Tool"].Properties["Constraints in Line"] = 100;
+        _buildTools["Line Tool"].Properties["Natural Length Ratio"] = 1.0f;
     }
 
     private void DrawToolMenuItems()
@@ -116,29 +131,29 @@ public partial class Game1
     private void DrawToolButtons()
     {
         EnsureSelectedToolValid();
-        foreach (var toolName in _currentToolSet.Keys)
-        {
-            bool isSelected = _selectedToolName == toolName;
-            if (isSelected)
-            {
-                ImGui.PushStyleColor(
-                    ImGuiCol.Button,
-                    new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
-                );
-            }
+        // foreach (var toolName in _currentToolSet.Keys)
+        // {
+        //     bool isSelected = _selectedToolName == toolName;
+        //     if (isSelected)
+        //     {
+        //         ImGui.PushStyleColor(
+        //             ImGuiCol.Button,
+        //             new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
+        //         );
+        //     }
 
-            if (ImGui.Button(toolName))
-            {
-                _selectedToolName = toolName;
-            }
+        //     if (ImGui.Button(toolName))
+        //     {
+        //         _selectedToolName = toolName;
+        //     }
 
-            if (isSelected)
-            {
-                ImGui.PopStyleColor();
-            }
+        //     if (isSelected)
+        //     {
+        //         ImGui.PopStyleColor();
+        //     }
 
-            ImGui.SameLine();
-        }
+        //     ImGui.SameLine();
+        // }
 
         ImGui.NewLine();
     }
@@ -279,15 +294,6 @@ public partial class Game1
                 props["Radius"] = radius;
             }
         }
-        else if (_selectedToolName == "Add Polygon")
-        {
-            var props = _currentToolSet["Add Polygon"].Properties;
-            bool snapToGrid = (bool)props["SnapToGrid"];
-            if (ImGui.Checkbox("Snap To Grid", ref snapToGrid))
-            {
-                props["SnapToGrid"] = snapToGrid;
-            }
-        }
         else if (_selectedToolName == "Remove Stick")
         {
             var props = _currentToolSet["Remove Stick"].Properties;
@@ -311,7 +317,28 @@ public partial class Game1
             var props = _currentToolSet["Cursor Collider"].Properties;
             float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f)) props["Radius"] = radius;
-            
+
+            string[] shapes = _cursorColliderStore.Keys.ToArray();
+            int shapeIndex = Array.IndexOf(shapes, (string)props["Shape"]);
+            if (shapeIndex < 0) shapeIndex = 0;
+            if (ImGui.Combo("Shape", ref shapeIndex, shapes, shapes.Length))
+            {
+                props["Shape"] = shapes[shapeIndex];
+            }
+        }
+        else if(string.Equals(_selectedToolName, "Line Tool", StringComparison.Ordinal))
+        {
+            var props = _currentToolSet["Line Tool"].Properties;
+            int constraintsInLine = (int)props["Constraints in Line"];
+            if (ImGui.SliderInt("Constraints in Line", ref constraintsInLine, 1, 500))
+            {
+                props["Constraints in Line"] = constraintsInLine;
+            }
+            float naturalLengthRatio = (float)props["Natural Length Ratio"];
+            if (ImGui.InputFloat("Natural Length Ratio", ref naturalLengthRatio, 0.1f, 3.0f))
+            {
+                props["Natural Length Ratio"] = naturalLengthRatio;
+            }
         }
     }
 
@@ -402,7 +429,7 @@ public partial class Game1
             ? (float)_currentToolSet["Wind"].Properties["StrengthScale"]
             : 1.0f;
 
-        windForce = windDirection * (windDistance / 50f) * strength;
+        _windForce = windDirection * (windDistance / 50f) * strength;
     }
 
     private bool DoTwoLinesIntersect(
@@ -507,7 +534,7 @@ public partial class Game1
 
         if (isDragging && _currentMode != MeshMode.Edit)
         {
-            Vector2 frameDelta = mousePos - previousMousePos;
+            Vector2 frameDelta = mousePos - _previousMousePos;
             foreach (int particleId in particleIds)
             {
                 if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
@@ -598,7 +625,7 @@ public partial class Game1
     private void InspectParticlesInRadiusWindow(Vector2 center, float radius)
     {
         if ((bool)_interactTools["Inspect Particles"].Properties["Clear When Use"])
-            inspectedParticles.Clear();
+            _inspectedParticles.Clear();
         foreach (var kvp in _activeMesh.Particles)
         {
             var particle = kvp.Value;
@@ -608,7 +635,7 @@ public partial class Game1
             if (distance <= radius)
             {
                 particle.Color = Color.Cyan;
-                inspectedParticles.Add(kvp.Key);
+                _inspectedParticles.Add(kvp.Key);
             }
             _activeMesh.Particles[kvp.Key] = particle;
         }
@@ -622,7 +649,7 @@ public partial class Game1
     )
     {
         if (clearWhenUse)
-            inspectedParticles.Clear();
+            _inspectedParticles.Clear();
 
         var particles = GetParticlesInRectangle(rectStart, rectEnd);
         foreach (var id in particles)
@@ -633,8 +660,8 @@ public partial class Game1
             particle.Color = Color.Cyan;
             _activeMesh.Particles[id] = particle;
 
-            if (!inspectedParticles.Contains(id))
-                inspectedParticles.Add(id);
+            if (!_inspectedParticles.Contains(id))
+                _inspectedParticles.Add(id);
 
             if (isLog)
             {

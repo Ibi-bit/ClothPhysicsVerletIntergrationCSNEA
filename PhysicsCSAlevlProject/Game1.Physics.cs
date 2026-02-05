@@ -7,7 +7,24 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
-    Vector2 _collisonBoundsDifference = new Vector2(0, -10);
+    private const float FixedTimeStep = 1f / 60f;
+
+    private Vector2 _collisonBoundsDifference;
+    private Vector2 BaseForce;
+    private float _timeAccumulator;
+    private bool _useConstraintSolver;
+    private int _subSteps;
+    private int _stepsToStep;
+
+    private void InitializePhysics()
+    {
+        _collisonBoundsDifference = new Vector2(0, -10);
+        BaseForce = new Vector2(0, 980f);
+        _timeAccumulator = 0f;
+        _useConstraintSolver = false;
+        
+        _subSteps = 50;
+    }
 
     private DrawableStick[][] ApplyStickForces(DrawableStick[][] sticks)
     {
@@ -52,8 +69,11 @@ public partial class Game1
         return sticks;
     }
 
-    private void ApplyStickForcesDictionary(Dictionary<int, Mesh.MeshStick> sticks)
+    private void ApplyStickForcesDictionary(Dictionary<int, Mesh.MeshStick> sticks, float timeRatio = 1f)
     {
+
+        float scaledK = _activeMesh.springConstant * timeRatio;
+        
         foreach (var stick in sticks.Values)
         {
             if (stick.Length <= 0f)
@@ -64,7 +84,7 @@ public partial class Game1
                 continue;
             Vector2 dir = v / L;
             float stretch = L - stick.Length;
-            Vector2 springForce = dir * stretch * _activeMesh.springConstant;
+            Vector2 springForce = dir * stretch * scaledK;
             stick.P1.AccumulatedForce -= springForce;
             stick.P2.AccumulatedForce += springForce;
         }
@@ -210,7 +230,7 @@ public partial class Game1
         Colorize(vertical);
     }
 
-    private void UpdateParticles(float deltaTime,float previousDeltaTime)
+    private void UpdateParticles(float deltaTime)
     {
         float forceMagnitudeSum = 0f;
         float forceMagnitudeSquaredSum = 0f;
@@ -221,7 +241,9 @@ public partial class Game1
 
         foreach (var particle in _activeMesh.Particles.Values)
         {
-            Vector2 totalForce = BaseForce + particle.AccumulatedForce + windForce;
+            Vector2 totalForce = BaseForce + particle.AccumulatedForce + _windForce;
+            Vector2 previousPosition = particle.Position;
+
             particle.TotalForceMagnitude = totalForce.Length();
             forceMagnitudeSum += particle.TotalForceMagnitude;
             forceMagnitudeSquaredSum += particle.TotalForceMagnitude * particle.TotalForceMagnitude;
@@ -237,15 +259,12 @@ public partial class Game1
                 particle.AccumulatedForce = Vector2.Zero;
                 continue;
             }
-            if(_selectedToolName == "Cursor Collider")
-            {
-                _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
-            }
+            
 
             bool isBeingDragged = false;
-            if (leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag"))
+            if (_leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag"))
             {
-                if (meshParticlesInDragArea.Contains(particle.ID))
+                if (_meshParticlesInDragArea.Contains(particle.ID))
                 {
                     isBeingDragged = true;
                 }
@@ -253,55 +272,67 @@ public partial class Game1
 
             if (!isBeingDragged)
             {
-                Vector2 acceleration = totalForce / _activeMesh.mass;
+                Vector2 acceleration = BaseForce;
+                if (_activeMesh.mass > 0f)
+                {
+                    acceleration += (particle.AccumulatedForce + _windForce) / _activeMesh.mass;
+                }
                 Vector2 velocity = particle.Position - particle.PreviousPosition;
-                velocity *= _activeMesh.drag;
+                float dragPerSubstep = MathF.Pow(_activeMesh.drag, deltaTime / FixedTimeStep);
+                velocity *= dragPerSubstep;
 
-                Vector2 previousPosition = particle.Position;
                 particle.Position =
                     particle.Position + velocity + acceleration * (deltaTime * deltaTime);
-                particle.PreviousPosition = previousPosition;
                 // time corrected Verlet integration
                 
                 // Vector2 previousPosition = particle.Position;
                 
-                // float dtRatio = previousDeltaTime > 0.0001f ?deltaTime / previousDeltaTime : 1f;
+                // float dtRatio = _previousDeltaTime > 0.0001f ?deltaTime / _previousDeltaTime : 1f;
                 // particle.Position = particle.Position + 
                 //                     velocity * dtRatio + acceleration * (deltaTime * deltaTime);
                 
                 particle.Position = new Vector2(
                     float.IsNaN(particle.Position.X) ? previousPosition.X : particle.Position.X,
                     float.IsNaN(particle.Position.Y) ? previousPosition.Y : particle.Position.Y);
-                particle.PreviousPosition = previousPosition;
+            }
+            Vector2 beforeCorrection = particle.Position;
+            if(_selectedToolName == "Cursor Collider")
+            {
+                
+                
+                _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
             }
 
-            bool positionChanged = false;
             if (particle.Position.X < 0)
             {
                 particle.Position.X = 0;
-                positionChanged = true;
             }
             else if (particle.Position.X > _windowBounds.Width)
             {
                 particle.Position.X = _windowBounds.Width;
-                positionChanged = true;
             }
 
             if (particle.Position.Y < 0)
             {
                 particle.Position.Y = 0;
-                positionChanged = true;
             }
             else if (particle.Position.Y > _windowBounds.Height - 10)
             {
                 particle.Position.Y = _windowBounds.Height - 10;
-                positionChanged = true;
             }
 
-            if (positionChanged)
+            
+            if (particle.Position != beforeCorrection)
             {
                 particle.PreviousPosition = particle.Position;
             }
+            else
+            {
+                particle.PreviousPosition = previousPosition;
+            }
+            
+
+            
 
         }
 

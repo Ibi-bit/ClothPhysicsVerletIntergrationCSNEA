@@ -15,31 +15,73 @@ public partial class Game1
     private bool _showStructureWindow;
     private bool _showSaveWindow;
     private bool _showSignInWindow;
-    private ImGuiLogger _logger = new ImGuiLogger();
     private bool _showLoggerWindow;
-    private bool _showConfirmNewMeshPopup = false;
-    private string _meshName = "MyMesh";
-    private string _structurePath = Path.Combine(
-        AppDomain.CurrentDomain.BaseDirectory,
-        "..",
-        "..",
-        "..",
-        "JSONStructures"
-    );
-    private string _quickStructureName = "QuickStructure";
+    private bool _showConfirmNewMeshPopup;
 
-    private CircleCollider _cursorCollider = new CircleCollider(Vector2.Zero, 5f);
+    private ImGuiLogger _logger;
+    private string _meshName;
+    private string _structurePath;
+    private string _quickStructureName;
+    private Collider _cursorCollider;
+    private Dictionary<string, Collider> _cursorColliderStore;
+    private Dictionary<string, Mesh> _quickMeshes;
+    private Dictionary<string, Func<Mesh>> _template;
 
-    private Dictionary<string, Mesh> _quickMeshes = new Dictionary<string, Mesh>();
-
-    private Dictionary<string, Func<Mesh>> _template = new Dictionary<string, Func<Mesh>>();
+    private int _buttonSteps;
 
     private bool _ctrlHeld;
     private bool _shiftHeld;
     private bool _capsActive;
     private bool _altHeld;
 
-    private int _signedInUserId = -1;
+    private int _signedInUserId;
+
+    private void InitializeImGui()
+    {
+        _showPhysicsControlsWindow = false;
+        _showConfigurationWindow = false;
+        _showReadMeWindow = false;
+        _showStructureWindow = false;
+        _showSaveWindow = false;
+        _showSignInWindow = false;
+        _showLoggerWindow = false;
+        _showConfirmNewMeshPopup = false;
+
+        _buttonSteps = 10;
+
+        _logger = new ImGuiLogger();
+        _meshName = "MyMesh";
+        _structurePath = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "..",
+            "..",
+            "..",
+            "JSONStructures"
+        );
+        _quickStructureName = "QuickStructure";
+        
+        _cursorColliderStore = new Dictionary<string, Collider>
+        {
+            { "Rectangle", new RectangleCollider(new Rectangle(0, 0, 10, 10)) },
+            { "Circle", new CircleCollider(Vector2.Zero, 5f) },
+            
+        };
+        _cursorCollider = _cursorColliderStore["Rectangle"];
+        _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+        _template = new Dictionary<string, Func<Mesh>>
+        {
+            {
+                "Cloth 20x20",
+                () => Mesh.CreateClothMesh(new Vector2(220, 20), new Vector2(420, 320), 10f, null, _activeMesh.springConstant, _activeMesh.drag, _activeMesh.mass)
+            },
+            {
+                "Cloth 30x20",
+                () => Mesh.CreateClothMesh(new Vector2(220, 20), new Vector2(520, 220), 10f, null, _activeMesh.springConstant, _activeMesh.drag, _activeMesh.mass)
+            },
+        };
+
+        _signedInUserId = -1;
+    }
 
     private void ImGuiDraw(GameTime gameTime)
     {
@@ -83,7 +125,7 @@ public partial class Game1
         {
             DrawSignInWindow();
         }
-        if (inspectedParticles.Count > 0)
+        if (_inspectedParticles.Count > 0)
         {
             DrawInspectParticleWindow();
         }
@@ -131,15 +173,15 @@ public partial class Game1
         ImGui.Text("Particle Info:");
         if (ImGui.Button("Clear All Inspected Particles"))
         {
-            inspectedParticles.Clear();
+            _inspectedParticles.Clear();
         }
         if (ImGui.Button("Delete All Inspected Particles With Sticks"))
         {
-            foreach (var index in inspectedParticles)
+            foreach (var index in _inspectedParticles)
             {
                 _activeMesh.RemoveParticle(index);
             }
-            inspectedParticles.Clear();
+            _inspectedParticles.Clear();
             ImGui.End();
             return;
         }
@@ -150,7 +192,7 @@ public partial class Game1
         }
 
         ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -30));
-        foreach (var index in inspectedParticles)
+        foreach (var index in _inspectedParticles)
         {
             if (!_activeMesh.Particles.TryGetValue(index, out var p))
             {
@@ -168,7 +210,7 @@ public partial class Game1
 
             if (ImGui.Button("Remove Particle From Inspect"))
             {
-                inspectedParticles.Remove(index);
+                _inspectedParticles.Remove(index);
                 break;
             }
             ImGui.Separator();
@@ -177,7 +219,7 @@ public partial class Game1
         ImGui.PushStyleColor(ImGuiCol.Button, new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f));
         if (ImGui.Button("Close and Clear All"))
         {
-            inspectedParticles.Clear();
+            _inspectedParticles.Clear();
         }
         ImGui.PopStyleColor();
 
@@ -269,11 +311,11 @@ public partial class Game1
                 break;
         }
 
-        leftPressed = false;
-        windDirectionArrow = null;
-        cutLine = null;
-        particlesInDragArea.Clear();
-        meshParticlesInDragArea.Clear();
+        _leftPressed = false;
+        _windDirectionArrow = null;
+        _cutLine = null;
+        _particlesInDragArea.Clear();
+        _meshParticlesInDragArea.Clear();
         _stickToolFirstParticleId = null;
     }
 
@@ -310,9 +352,31 @@ public partial class Game1
             ImGui.EndMenu();
         }
 
-        if (ImGui.BeginMenu("View"))
+        if (ImGui.BeginMenu("Time"))
         {
-            if (ImGui.MenuItem("Reset Camera")) { }
+            if (ImGui.Button(_paused ? "Resume (Esc)" : "Pause (Esc)"))
+            {
+                _paused = !_paused;
+            }
+            ImGui.SameLine();
+            ImGui.PushStyleColor(ImGuiCol.Button, new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f));
+            if (ImGui.Button("Reset Simulation (R)"))
+            {
+                _activeMesh.ResetMesh();
+            }
+            ImGui.PopStyleColor();
+            ImGui.BeginDisabled(!_paused);
+
+            if(ImGui.Button("Step Forward (T)"))
+            {
+                _stepsToStep += _buttonSteps;
+            }
+            ImGui.SameLine();
+            ImGui.InputInt("Steps to Step", ref _buttonSteps, 1, 100);
+
+            
+
+            ImGui.EndDisabled();
             ImGui.EndMenu();
         }
 
@@ -413,8 +477,7 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Quick Settings"))
         {
-            ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
-
+            ImGui.InputFloat("Spring Constant", ref _activeMesh.springConstant);
             ImGui.EndMenu();
         }
         if (ImGui.BeginMenu("Tools"))
@@ -423,9 +486,9 @@ public partial class Game1
 
             ImGui.EndMenu();
         }
-        if (ImGui.MenuItem(Paused ? "Resume (Esc)" : "Pause (Esc)"))
+        if (ImGui.MenuItem(_paused ? "Resume (Esc)" : "Pause (Esc)"))
         {
-            Paused = !Paused;
+            _paused = !_paused;
         }
         ImGui.SameLine();
         if (ImGui.BeginMenu("Show"))
@@ -515,16 +578,12 @@ public partial class Game1
 
         ImGui.Text($"Current Mode: {_currentMode}");
         ImGui.Separator();
-<<<<<<< HEAD
 
 
-=======
-        ImGui.SliderFloat("Global Particle Mass", ref _activeMesh.mass, -100f, 100f);
->>>>>>> refs/remotes/origin/main
-        ImGui.SliderFloat("Spring Constant", ref _springConstant, 0.1f, 10E3f);
-        ImGui.EndDisabled();
+        ImGui.InputFloat("Global Mass", ref _activeMesh.mass);
+        ImGui.InputFloat("Global Spring Constant", ref _activeMesh.springConstant);
         ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
-
+        
         ImGui.Separator();
 
         ImGui.Text("Tools:");
@@ -536,9 +595,9 @@ public partial class Game1
 
         ImGui.Separator();
 
-        if (ImGui.Button(Paused ? "Resume (Esc)" : "Pause (Esc)"))
+        if (ImGui.Button(_paused ? "Resume (Esc)" : "Pause (Esc)"))
         {
-            Paused = !Paused;
+            _paused = !_paused;
         }
         ImGui.SameLine();
         var red = new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f);
@@ -563,65 +622,67 @@ public partial class Game1
         }
 
         ImGui.Text("Window Size:");
-        if (changedBounds.Width <= 0 || changedBounds.Height <= 0)
+        if (_changedBounds.Width <= 0 || _changedBounds.Height <= 0)
         {
-            changedBounds = _windowBounds;
+            _changedBounds = _windowBounds;
         }
 
-        bool ratioToggled = ImGui.Checkbox("Keep Aspect Ratio", ref keepAspectRatio);
-        if (ratioToggled && keepAspectRatio)
+        bool ratioToggled = ImGui.Checkbox("Keep Aspect Ratio", ref _keepAspectRatio);
+        if (ratioToggled && _keepAspectRatio)
         {
             _lockedAspectRatio =
-                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
+                _changedBounds.Height > 0 ? _changedBounds.Width / (float)_changedBounds.Height : 1f;
         }
-        else if (keepAspectRatio && _lockedAspectRatio <= 0.0001f)
+        else if (_keepAspectRatio && _lockedAspectRatio <= 0.0001f)
         {
             _lockedAspectRatio =
-                changedBounds.Height > 0 ? changedBounds.Width / (float)changedBounds.Height : 1f;
+                _changedBounds.Height > 0 ? _changedBounds.Width / (float)_changedBounds.Height : 1f;
         }
 
-        int newWidth = changedBounds.Width;
-        int newHeight = changedBounds.Height;
+        int newWidth = _changedBounds.Width;
+        int newHeight = _changedBounds.Height;
         bool widthChanged = ImGui.InputInt("Width", ref newWidth);
 
-        ImGui.BeginDisabled(keepAspectRatio);
+        ImGui.BeginDisabled(_keepAspectRatio);
         bool heightChanged = ImGui.InputInt("Height", ref newHeight);
         ImGui.EndDisabled();
 
-        if (keepAspectRatio)
+        if (_keepAspectRatio)
         {
             float aspect =
                 _lockedAspectRatio > 0.0001f
                     ? _lockedAspectRatio
                     : (
-                        changedBounds.Height > 0
-                            ? changedBounds.Width / (float)changedBounds.Height
+                        _changedBounds.Height > 0
+                            ? _changedBounds.Width / (float)_changedBounds.Height
                             : 1f
                     );
 
             if (widthChanged && newWidth > 0)
             {
-                changedBounds.Width = newWidth;
-                changedBounds.Height = Math.Max(1, (int)Math.Round(newWidth / aspect));
+                _changedBounds.Width = newWidth;
+                _changedBounds.Height = Math.Max(1, (int)Math.Round(newWidth / aspect));
             }
             else if (heightChanged && newHeight > 0)
             {
-                changedBounds.Height = newHeight;
-                changedBounds.Width = Math.Max(1, (int)Math.Round(newHeight * aspect));
+                _changedBounds.Height = newHeight;
+                _changedBounds.Width = Math.Max(1, (int)Math.Round(newHeight * aspect));
             }
         }
         else
         {
             if (widthChanged)
-                changedBounds.Width = Math.Max(1, newWidth);
+                _changedBounds.Width = Math.Max(1, newWidth);
             if (heightChanged)
-                changedBounds.Height = Math.Max(1, newHeight);
+                _changedBounds.Height = Math.Max(1, newHeight);
         }
 
         if (ImGui.Button("Apply Size"))
         {
-            SetWindowSize(changedBounds.Width, changedBounds.Height);
+            SetWindowSize(_changedBounds.Width, _changedBounds.Height);
         }
+        ImGui.Checkbox("Draw Particles", ref _drawParticles);
+        ImGui.Checkbox("Draw Constraints", ref _drawConstraints);
 
         ImGui.Separator();
         ImGui.Text("Base Force:");

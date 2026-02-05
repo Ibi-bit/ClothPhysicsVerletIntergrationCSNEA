@@ -1,34 +1,63 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
     private VectorGraphics.PrimitiveBatch.Rectangle _selectRectangle;
-    private float previousDeltaTime = 0f;
+    private float _previousDeltaTime;
+    private Vector2 _windForce;
+    private VectorGraphics.PrimitiveBatch.Arrow _windDirectionArrow;
+    private VectorGraphics.PrimitiveBatch.Line _cutLine;
+    private List<Vector2> _particlesInDragArea;
+    private List<int> _meshParticlesInDragArea;
+
+    private void InitializeUpdate()
+    {
+        _selectRectangle = null;
+        _previousDeltaTime = 0f;
+        _windForce = Vector2.Zero;
+        _windDirectionArrow = null;
+        _cutLine = null;
+        _particlesInDragArea = new List<Vector2>();
+        _meshParticlesInDragArea = new List<int>();
+    }
 
     protected override void Update(GameTime gameTime)
     {
         KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
         
-        _cursorCollider.Radius = _currentToolSet.ContainsKey("Cursor Collider")
-            ? (float)_currentToolSet["Cursor Collider"].Properties["Radius"]
-            : 20f;
+        if (_currentToolSet.ContainsKey("Cursor Collider"))
+        {
+            var props = _currentToolSet["Cursor Collider"].Properties;
+            float radius = props.ContainsKey("Radius") ? (float)props["Radius"] : 20f;
+            string shape = props.ContainsKey("Shape") ? (string)props["Shape"] : "Circle";
+            if (_cursorColliderStore.TryGetValue(shape, out var collider))
+            {
+                _cursorCollider = collider;
+            }
+            UpdateCursorColliderSize(radius);
+        }
 
         if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
         {
-            Paused = !Paused;
+            _paused = !_paused;
         }
 
-        if (!Paused)
+        // Step one physics frame when paused (press Space)
+        if (_paused && keyboardState.IsKeyDown(Keys.Space) && !_prevKeyboardState.IsKeyDown(Keys.Space))
+        {
+            _stepsToStep = 1;
+        }
+
+        if (!_paused)
         {
             _timeAccumulator += frameTime;
         }
-
-        _activeMesh.springConstant = _springConstant;
 
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
@@ -37,11 +66,11 @@ public partial class Game1
 
         if (!imguiWantsMouse)
         {
-            if (mouseState.LeftButton == ButtonState.Pressed && !leftPressed)
+            if (mouseState.LeftButton == ButtonState.Pressed && !_leftPressed)
             {
-                leftPressed = true;
-                intitialMousePosWhenPressed = currentMousePos;
-                previousMousePos = currentMousePos;
+                _leftPressed = true;
+                _initialMousePosWhenPressed = currentMousePos;
+                _previousMousePos = currentMousePos;
 
                 switch (_selectedToolName)
                 {
@@ -61,9 +90,9 @@ public partial class Game1
                                         : -1
                                 );
 
-                            meshParticlesInDragArea = GetMeshParticlesInRadius(
-                                intitialMousePosWhenPressed,
-                                props.ContainsKey("Radius") ? (float)props["Radius"] : dragRadius,
+                            _meshParticlesInDragArea = GetMeshParticlesInRadius(
+                                _initialMousePosWhenPressed,
+                                props.ContainsKey("Radius") ? (float)props["Radius"] : _dragRadius,
                                 maxParticles
                             );
                         }
@@ -73,9 +102,9 @@ public partial class Game1
                             float pinRadius = _currentToolSet["Pin"]
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Pin"].Properties["Radius"]
-                                : dragRadius;
+                                : _dragRadius;
 
-                            PinParticleBuildable(intitialMousePosWhenPressed, pinRadius);
+                            PinParticleBuildable(_initialMousePosWhenPressed, pinRadius);
                         }
                         break;
                     case "Cut":
@@ -84,7 +113,7 @@ public partial class Game1
                                 ? (float)_currentToolSet["Cut"].Properties["Radius"]
                                 : 10f;
 
-                        CutAllSticksInRadiusBuildable(intitialMousePosWhenPressed, radius);
+                        CutAllSticksInRadiusBuildable(_initialMousePosWhenPressed, radius);
 
                         break;
                     case "Wind":
@@ -94,16 +123,16 @@ public partial class Game1
                             float physRadius = _currentToolSet["PhysicsDrag"]
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["PhysicsDrag"].Properties["Radius"]
-                                : dragRadius;
+                                : _dragRadius;
 
                             if (_currentMode == MeshMode.Interact)
                             {
-                                meshParticlesInDragArea = GetMeshParticlesInRadius(
-                                    intitialMousePosWhenPressed,
+                                _meshParticlesInDragArea = GetMeshParticlesInRadius(
+                                    _initialMousePosWhenPressed,
                                     physRadius
                                 );
-                                meshParticlesInDragArea = GetMeshParticlesInRadius(
-                                    intitialMousePosWhenPressed,
+                                _meshParticlesInDragArea = GetMeshParticlesInRadius(
+                                    _initialMousePosWhenPressed,
                                     physRadius
                                 );
                             }
@@ -119,7 +148,7 @@ public partial class Game1
                                 is float r
                                 ? r
                                 : 10f;
-                            HandleAddStickBetweenParticlesClick(intitialMousePosWhenPressed);
+                            HandleAddStickBetweenParticlesClick(_initialMousePosWhenPressed);
                         }
                         break;
                     case "Add Particle":
@@ -129,7 +158,7 @@ public partial class Game1
                                 ? (float)_currentToolSet["Add Particle"].Properties["Mass"]
                                 : 1f;
                             _activeMesh.AddParticle(
-                                intitialMousePosWhenPressed,
+                                _initialMousePosWhenPressed,
                                 particleMass,
                                 false,
                                 Color.White
@@ -143,7 +172,7 @@ public partial class Game1
                                 ? (float)_currentToolSet["Remove Particle"].Properties["Radius"]
                                 : 10f;
                             var pS = GetMeshParticlesInRadius(
-                                intitialMousePosWhenPressed,
+                                _initialMousePosWhenPressed,
                                 removeRadius,
                                 1
                             );
@@ -161,7 +190,7 @@ public partial class Game1
                                 && (bool)_currentToolSet["Inspect Particles"].Properties["IsLog"]
                             )
                                 InspectParticlesInRadiusLog(
-                                    intitialMousePosWhenPressed,
+                                    _initialMousePosWhenPressed,
                                     inspectRadius
                                 );
                             else if (
@@ -169,7 +198,7 @@ public partial class Game1
                                     .Properties.ContainsKey("SelectRectangle")
                             )
                                 InspectParticlesInRadiusWindow(
-                                    intitialMousePosWhenPressed,
+                                    _initialMousePosWhenPressed,
                                     inspectRadius
                                 );
                         }
@@ -178,30 +207,30 @@ public partial class Game1
             }
             else if (mouseState.LeftButton == ButtonState.Released)
             {
-                if (_selectedToolName == "Wind" && leftPressed)
+                if (_selectedToolName == "Wind" && _leftPressed)
                 {
                     ApplyWindForceFromDrag(
-                        intitialMousePosWhenPressed,
+                        _initialMousePosWhenPressed,
                         currentMousePos,
-                        dragRadius
+                        _dragRadius
                     );
                 }
                 else if (
                     _selectedToolName == "LineCut"
-                    && leftPressed
+                    && _leftPressed
                     && _currentMode != MeshMode.Edit
                 )
                 {
-                    Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
+                    Vector2 cutDirection = currentMousePos - _initialMousePosWhenPressed;
                     float cutDistance = cutDirection.Length();
                     if (cutDistance > 5f)
                     {
-                        CutSticksAlongLine(intitialMousePosWhenPressed, currentMousePos);
+                        CutSticksAlongLine(_initialMousePosWhenPressed, currentMousePos);
                     }
                 }
                 else if (
                     _selectedToolName == "Inspect Particles"
-                    && leftPressed
+                    && _leftPressed
                     && _currentMode != MeshMode.Edit
                     && _currentToolSet["Inspect Particles"]
                         .Properties.ContainsKey("RectangleSelect")
@@ -209,7 +238,7 @@ public partial class Game1
                 )
                 {
                     InspectParticlesInRectangle(
-                        intitialMousePosWhenPressed,
+                        _initialMousePosWhenPressed,
                         currentMousePos,
                         _currentToolSet["Inspect Particles"].Properties.ContainsKey("IsLog")
                             && (bool)_currentToolSet["Inspect Particles"].Properties["IsLog"],
@@ -219,19 +248,33 @@ public partial class Game1
                                 _currentToolSet["Inspect Particles"].Properties["Clear When Use"]
                     );
                 }
+                else if (_selectedToolName == "Line Tool" && _leftPressed)
+                {
+                    var props = _currentToolSet["Line Tool"].Properties;
+                    int constraintsInLine = (int)props["Constraints in Line"];
+                    float naturalLengthRatio = (float)props["Natural Length Ratio"];
+                        
 
-                leftPressed = false;
-                intitialMousePosWhenPressed = Vector2.Zero;
-                windDirectionArrow = null;
-                cutLine = null;
+                    _activeMesh.AddSticksAccrossLength(
+                        _initialMousePosWhenPressed,
+                        currentMousePos,
+                        constraintsInLine,
+                        naturalLengthRatio
+                    );
+                }
+
+                _leftPressed = false;
+                _initialMousePosWhenPressed = Vector2.Zero;
+                _windDirectionArrow = null;
+                _cutLine = null;
                 _selectRectangle = null;
-                windForce = Vector2.Zero;
+                _windForce = Vector2.Zero;
             }
         }
 
-        if (_selectedToolName == "Wind" && leftPressed)
+        if (_selectedToolName == "Wind" && _leftPressed)
         {
-            Vector2 windDirection = currentMousePos - intitialMousePosWhenPressed;
+            Vector2 windDirection = currentMousePos - _initialMousePosWhenPressed;
             float windDistance = windDirection.Length();
 
             float minDist = _currentToolSet["Wind"].Properties.ContainsKey("MinDistance")
@@ -243,8 +286,8 @@ public partial class Game1
                     .Properties.ContainsKey("ArrowThickness")
                     ? (float)_currentToolSet["Wind"].Properties["ArrowThickness"]
                     : 3f;
-                windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
-                    intitialMousePosWhenPressed,
+                _windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
+                    _initialMousePosWhenPressed,
                     currentMousePos,
                     Color.Cyan,
                     arrowThickness
@@ -253,19 +296,19 @@ public partial class Game1
                 float strength = _currentToolSet["Wind"].Properties.ContainsKey("StrengthScale")
                     ? (float)_currentToolSet["Wind"].Properties["StrengthScale"]
                     : 1.0f;
-                windForce = !Paused
+                _windForce = !_paused
                     ? windDirection * (windDistance / 50f) * strength
                     : Vector2.Zero;
             }
             else
             {
-                windDirectionArrow = null;
-                windForce = Vector2.Zero;
+                _windDirectionArrow = null;
+                _windForce = Vector2.Zero;
             }
         }
-        else if (_selectedToolName == "LineCut" && leftPressed)
+        else if (_selectedToolName == "LineCut" && _leftPressed)
         {
-            Vector2 cutDirection = currentMousePos - intitialMousePosWhenPressed;
+            Vector2 cutDirection = currentMousePos - _initialMousePosWhenPressed;
             float cutDistance = cutDirection.Length();
             float minDist = _currentToolSet["LineCut"].Properties.ContainsKey("MinDistance")
                 ? (float)_currentToolSet["LineCut"].Properties["MinDistance"]
@@ -275,8 +318,8 @@ public partial class Game1
                 float thickness = _currentToolSet["LineCut"].Properties.ContainsKey("Thickness")
                     ? (float)_currentToolSet["LineCut"].Properties["Thickness"]
                     : 3f;
-                cutLine = new VectorGraphics.PrimitiveBatch.Line(
-                    intitialMousePosWhenPressed,
+                _cutLine = new VectorGraphics.PrimitiveBatch.Line(
+                    _initialMousePosWhenPressed,
                     currentMousePos,
                     Color.Red,
                     thickness
@@ -284,19 +327,8 @@ public partial class Game1
             }
             else
             {
-                cutLine = null;
+                _cutLine = null;
             }
-        }
-        else if (_selectedToolName == "Add Polygon")
-        {
-            _activeMesh = _polygonBuilderInstance.BuildPolygon(
-                keyboardState,
-                _prevKeyboardState,
-                mouseState,
-                _prevMouseState,
-                _activeMesh,
-                imguiWantsMouse
-            );
         }
         else if (_selectedToolName == "Create Grid Mesh")
         {
@@ -304,12 +336,12 @@ public partial class Game1
             float distance = (float)props["DistanceBetweenParticles"];
             if (keyboardState.IsKeyDown(Keys.C) && !_prevKeyboardState.IsKeyDown(Keys.C))
             {
-                _activeMesh = Mesh.CreateGridMesh(intitialMousePosWhenPressed, currentMousePos, distance, _activeMesh);
+                _activeMesh = Mesh.CreateGridMesh(_initialMousePosWhenPressed, currentMousePos, distance, _activeMesh);
             }
 
-            if (leftPressed)
+            if (_leftPressed)
                 _selectRectangle = new VectorGraphics.PrimitiveBatch.Rectangle(
-                    GetRectangleFromPoints(intitialMousePosWhenPressed, currentMousePos),
+                    GetRectangleFromPoints(_initialMousePosWhenPressed, currentMousePos),
                     new Color(Color.DarkGreen, 0.05f),
                     true,
                     2,
@@ -324,10 +356,10 @@ public partial class Game1
         {
             var props = _currentToolSet["Inspect Particles"].Properties;
             float inspectRadius = props.ContainsKey("Radius") ? (float)props["Radius"] : 10f;
-            if (props.ContainsKey("RectangleSelect") && leftPressed)
+            if (props.ContainsKey("RectangleSelect") && _leftPressed)
             {
                 _selectRectangle = new VectorGraphics.PrimitiveBatch.Rectangle(
-                    GetRectangleFromPoints(intitialMousePosWhenPressed, currentMousePos),
+                    GetRectangleFromPoints(_initialMousePosWhenPressed, currentMousePos),
                     new Color(Color.Green, 0.05f),
                     true,
                     2,
@@ -339,16 +371,27 @@ public partial class Game1
                 _selectRectangle = null;
             }
         }
-        else
+        else if (_selectedToolName == "Add Polygon")
         {
-            _polygonBuilderInstance.Reset();
+            _activeMesh.BuildPolygon(
+                keyboardState,
+                _prevKeyboardState,
+                mouseState,
+                _prevMouseState,
+                imguiWantsMouse
+            );
         }
-
         int stepsThisFrame = 0;
         const int maxStepsPerFrame = 10000;
         int subSteps = Math.Max(1, _subSteps);
+        Vector2 mouseDelta = currentMousePos - _previousMousePos;
+        int plannedStepsThisFrame = _paused 
+            ? _stepsToStep 
+            : Math.Min((int)(_timeAccumulator / FixedTimeStep), maxStepsPerFrame);
+        int totalIterations = Math.Max(1, plannedStepsThisFrame * subSteps);
+        Vector2 deltaPerIteration = mouseDelta / totalIterations;
 
-        while (_timeAccumulator >= FixedTimeStep && stepsThisFrame < maxStepsPerFrame && !Paused)
+        while ((_timeAccumulator >= FixedTimeStep || _stepsToStep > 0) && stepsThisFrame < maxStepsPerFrame)
         {
             float subDt = FixedTimeStep / subSteps;
 
@@ -360,18 +403,37 @@ public partial class Game1
                 }
                 if (!_useConstraintSolver)
                 {
-                    ApplyStickForcesDictionary(_activeMesh.Sticks);
+                    float timeRatio = FixedTimeStep / subDt;
+                    ApplyStickForcesDictionary(_activeMesh.Sticks, timeRatio);
                 }
-                _cursorCollider.Center = Vector2.Lerp(
-                    previousMousePos,
-                    currentMousePos,
-                    1f / (stepsThisFrame + 1f)
-                );
-                UpdateParticles(subDt, previousDeltaTime);
-                previousDeltaTime = subDt;
+                float iterationLerpFactor = 1f / (stepsThisFrame + 1f);
+                
+                Vector2 cursorCenter = GetCursorColliderCenter();
+                cursorCenter = Vector2.Lerp(cursorCenter, currentMousePos, iterationLerpFactor);
+                SetCursorColliderCenter(cursorCenter);
+                
+                if (_leftPressed && _selectedToolName == "Drag" && _currentMode == MeshMode.Interact)
+                {
+                    foreach (int particleId in _meshParticlesInDragArea)
+                    {
+                        if (_activeMesh.Particles.TryGetValue(particleId, out var particle) && !particle.IsPinned)
+                        {
+                            particle.PreviousPosition = particle.Position;
+                            particle.Position += deltaPerIteration;
+                        }
+                    }
+                }
+                
+                UpdateParticles(subDt);
+                _previousDeltaTime = subDt;
             }
 
-            _timeAccumulator -= FixedTimeStep;
+            // Consume time or manual step
+            if (_stepsToStep > 0)
+                _stepsToStep--;
+            else
+                _timeAccumulator -= FixedTimeStep;
+            
             stepsThisFrame++;
         }
 
@@ -384,9 +446,12 @@ public partial class Game1
 
         if (_selectedToolName == "Drag")
         {
-            if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
+            foreach (int particleId in _meshParticlesInDragArea)
             {
-                DragMeshParticles(mouseState, leftPressed, meshParticlesInDragArea);
+                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
+                {
+                    particle.Color = _leftPressed ? Color.Yellow : Color.White;
+                }
             }
         }
         else if (_selectedToolName == "PhysicsDrag")
@@ -395,14 +460,84 @@ public partial class Game1
 
             if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
-                DragMeshParticlesWithPhysics(mouseState, leftPressed, meshParticlesInDragArea);
+                DragMeshParticlesWithPhysics(mouseState, _leftPressed, _meshParticlesInDragArea);
             }
         }
 
-        previousMousePos = currentMousePos;
+        _previousMousePos = currentMousePos;
 
         base.Update(gameTime);
         _prevKeyboardState = keyboardState;
         _prevMouseState = mouseState;
+    }
+
+    private void UpdateStep()
+    {
+        
+    }
+
+    private Vector2 GetCursorColliderCenter()
+    {
+        if (_cursorCollider is CircleCollider circle)
+        {
+            return circle.Position;
+        }
+
+        if (_cursorCollider is RectangleCollider rectangle)
+        {
+            return new Vector2(rectangle.Rectangle.Center.X, rectangle.Rectangle.Center.Y);
+        }
+
+        
+
+        return Vector2.Zero;
+    }
+
+    private void SetCursorColliderCenter(Vector2 center)
+    {
+        if (_cursorCollider is CircleCollider circle)
+        {
+            circle.Position = center;
+            return;
+        }
+
+        if (_cursorCollider is RectangleCollider rectangle)
+        {
+            float halfSize = rectangle.Rectangle.Width / 2f;
+            rectangle.Rectangle = new Rectangle(
+                (int)(center.X - halfSize),
+                (int)(center.Y - halfSize),
+                rectangle.Rectangle.Width,
+                rectangle.Rectangle.Height
+            );
+            return;
+        }
+
+       
+    }
+
+    private void UpdateCursorColliderSize(float radius)
+    {
+        int size = Math.Max(1, (int)MathF.Round(radius * 2f));
+
+        if (_cursorCollider is CircleCollider circle)
+        {
+            circle.Radius = radius;
+            return;
+        }
+
+        if (_cursorCollider is RectangleCollider rectangle)
+        {
+            Vector2 center = new Vector2(rectangle.Rectangle.Center.X, rectangle.Rectangle.Center.Y);
+            rectangle.Rectangle = new Rectangle(
+                (int)(center.X - size / 2f),
+                (int)(center.Y - size / 2f),
+                size,
+                size
+            );
+            
+        }
+
+        
     }
 }
