@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using VectorGraphics;
 
@@ -22,8 +25,16 @@ public partial class Game1
         BaseForce = new Vector2(0, 980f);
         _timeAccumulator = 0f;
         _useConstraintSolver = false;
-        
+
         _subSteps = 50;
+    }
+
+    public struct LocalStats
+    {
+        public float Sum;
+        public float SumSq;
+        public float Max;
+        public int Count;
     }
 
     private DrawableStick[][] ApplyStickForces(DrawableStick[][] sticks)
@@ -69,25 +80,48 @@ public partial class Game1
         return sticks;
     }
 
-    private void ApplyStickForcesDictionary(Dictionary<int, Mesh.MeshStick> sticks, float timeRatio = 1f)
+    private void ApplyStickForcesDictionary(
+        Dictionary<int, Mesh.MeshStick> sticks,
+        float timeRatio = 1f
+    )
     {
-
         float scaledK = _activeMesh.springConstant * timeRatio;
-        
-        foreach (var stick in sticks.Values)
-        {
-            if (stick.Length <= 0f)
-                continue;
-            Vector2 v = stick.P1.Position - stick.P2.Position;
-            float L = v.Length();
-            if (L <= 0f)
-                continue;
-            Vector2 dir = v / L;
-            float stretch = L - stick.Length;
-            Vector2 springForce = dir * stretch * scaledK;
-            stick.P1.AccumulatedForce -= springForce;
-            stick.P2.AccumulatedForce += springForce;
-        }
+
+        Parallel.ForEach(
+            sticks.Values,
+            () => new Dictionary<int, Vector2>(),
+            (stick, loopState, localForces) =>
+            {
+                if (stick.Length <= 0f)
+                    return localForces;
+                Vector2 v = stick.P1.Position - stick.P2.Position;
+                float L = v.Length();
+                if (L <= 0f)
+                    return localForces;
+                Vector2 dir = v / L;
+                float stretch = L - stick.Length;
+                Vector2 springForce = dir * stretch * scaledK;
+
+                stick.P1.AccumulatedForce -= springForce;
+                stick.P2.AccumulatedForce += springForce;
+                return localForces;
+            },
+            (localForces) =>
+            {
+                lock (_activeMesh)
+                {
+                    foreach (var kvp in localForces)
+                    {
+                        int particleId = kvp.Key;
+                        Vector2 force = kvp.Value;
+                        if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
+                        {
+                            particle.AccumulatedForce += force;
+                        }
+                    }
+                }
+            }
+        );
     }
 
     private void UpdateStickColorsDictionary(Dictionary<int, Mesh.MeshStick> sticks)
@@ -237,105 +271,127 @@ public partial class Game1
         float maxForceMagnitude = 0f;
         int totalForceCount = 0;
 
-        
-
-        foreach (var particle in _activeMesh.Particles.Values)
-        {
-            Vector2 totalForce = BaseForce + particle.AccumulatedForce + _windForce;
-            Vector2 previousPosition = particle.Position;
-
-            particle.TotalForceMagnitude = totalForce.Length();
-            forceMagnitudeSum += particle.TotalForceMagnitude;
-            forceMagnitudeSquaredSum += particle.TotalForceMagnitude * particle.TotalForceMagnitude;
-            totalForceCount++;
-
-            if (particle.TotalForceMagnitude > maxForceMagnitude)
+        Parallel.ForEach(
+            _activeMesh.Particles.Values,
+            () => new LocalStats(),
+            (particle, loopState, local) =>
             {
-                maxForceMagnitude = particle.TotalForceMagnitude;
-            }
+                Vector2 totalForce = BaseForce + particle.AccumulatedForce + _windForce;
+                Vector2 previousPosition = particle.Position;
 
-            if (particle.IsPinned)
-            {
-                particle.AccumulatedForce = Vector2.Zero;
-                continue;
-            }
-            
+                particle.TotalForceMagnitude = totalForce.Length();
+                local.Sum += particle.TotalForceMagnitude;
+                local.SumSq += particle.TotalForceMagnitude * particle.TotalForceMagnitude;
+                local.Count++;
 
-            bool isBeingDragged = false;
-            if (_leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag"))
-            {
-                if (_meshParticlesInDragArea.Contains(particle.ID))
+                if (particle.TotalForceMagnitude > local.Max)
                 {
-                    isBeingDragged = true;
+                    local.Max = particle.TotalForceMagnitude;
+                }
+
+                if (particle.IsPinned)
+                {
+                    particle.AccumulatedForce = Vector2.Zero;
+                    return local;
+                }
+
+                bool isBeingDragged = false;
+                if (
+                    _leftPressed
+                    && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag")
+                )
+                {
+                    if (_meshParticlesInDragArea.Contains(particle.ID))
+                    {
+                        isBeingDragged = true;
+                    }
+                }
+
+                if (!isBeingDragged)
+                {
+                    Vector2 acceleration = BaseForce;
+                    if (_activeMesh.mass > 0f)
+                    {
+                        acceleration += (particle.AccumulatedForce + _windForce) / _activeMesh.mass;
+                    }
+
+                    Vector2 velocity = particle.Position - particle.PreviousPosition;
+
+                    float dragCoeff = 1f - (1f - _activeMesh.drag) * (deltaTime / FixedTimeStep);
+                    dragCoeff = MathHelper.Clamp(dragCoeff, 0f, 1f);
+                    velocity *= dragCoeff;
+
+                    particle.Position =
+                        particle.Position + velocity + acceleration * (deltaTime * deltaTime);
+                    // time corrected Verlet integration
+
+                    // Vector2 previousPosition = particle.Position;
+
+                    // float dtRatio = _previousDeltaTime > 0.0001f ?deltaTime / _previousDeltaTime : 1f;
+                    // particle.Position = particle.Position +
+                    //                     velocity * dtRatio + acceleration * (deltaTime * deltaTime);
+
+                    particle.Position = new Vector2(
+                        float.IsNaN(particle.Position.X) ? previousPosition.X : particle.Position.X,
+                        float.IsNaN(particle.Position.Y) ? previousPosition.Y : particle.Position.Y
+                    );
+                }
+
+                Vector2 beforeCorrection = particle.Position;
+                if (_selectedToolName == "Cursor Collider")
+                {
+                    _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
+                }
+
+                if (particle.Position.X < 0)
+                {
+                    particle.Position.X = 0;
+                }
+                else if (particle.Position.X > _windowBounds.Width)
+                {
+                    particle.Position.X = _windowBounds.Width;
+                }
+
+                if (particle.Position.Y < 0)
+                {
+                    particle.Position.Y = 0;
+                }
+                else if (particle.Position.Y > _windowBounds.Height - 10)
+                {
+                    particle.Position.Y = _windowBounds.Height - 10;
+                }
+
+                // Preserve velocity when corrected (e.g., boundary collision)
+                // Instead of zeroing velocity, adjust previousPosition to maintain velocity direction
+                Vector2 velocityBeforeCorrection = beforeCorrection - previousPosition;
+                Vector2 positionDelta = particle.Position - beforeCorrection;
+
+                if (positionDelta != Vector2.Zero)
+                {
+                    // Reflect velocity component that caused the collision
+                    // Keep the velocity but dampen it slightly on collision
+                    const float collisionDamping = 0.5f;
+                    particle.PreviousPosition =
+                        particle.Position - velocityBeforeCorrection * collisionDamping;
+                }
+                else
+                {
+                    particle.PreviousPosition = previousPosition;
+                }
+
+                return local;
+            },
+            local =>
+            {
+                lock (_activeMesh)
+                {
+                    forceMagnitudeSum += local.Sum;
+                    forceMagnitudeSquaredSum += local.SumSq;
+                    maxForceMagnitude = Math.Max(maxForceMagnitude, local.Max);
+                    totalForceCount += local.Count;
                 }
             }
-
-            if (!isBeingDragged)
-            {
-                Vector2 acceleration = BaseForce;
-                if (_activeMesh.mass > 0f)
-                {
-                    acceleration += (particle.AccumulatedForce + _windForce) / _activeMesh.mass;
-                }
-                Vector2 velocity = particle.Position - particle.PreviousPosition;
-                float dragPerSubstep = MathF.Pow(_activeMesh.drag, deltaTime / FixedTimeStep);
-                velocity *= dragPerSubstep;
-
-                particle.Position =
-                    particle.Position + velocity + acceleration * (deltaTime * deltaTime);
-                // time corrected Verlet integration
-                
-                // Vector2 previousPosition = particle.Position;
-                
-                // float dtRatio = _previousDeltaTime > 0.0001f ?deltaTime / _previousDeltaTime : 1f;
-                // particle.Position = particle.Position + 
-                //                     velocity * dtRatio + acceleration * (deltaTime * deltaTime);
-                
-                particle.Position = new Vector2(
-                    float.IsNaN(particle.Position.X) ? previousPosition.X : particle.Position.X,
-                    float.IsNaN(particle.Position.Y) ? previousPosition.Y : particle.Position.Y);
-            }
-            Vector2 beforeCorrection = particle.Position;
-            if(_selectedToolName == "Cursor Collider")
-            {
-                
-                
-                _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
-            }
-
-            if (particle.Position.X < 0)
-            {
-                particle.Position.X = 0;
-            }
-            else if (particle.Position.X > _windowBounds.Width)
-            {
-                particle.Position.X = _windowBounds.Width;
-            }
-
-            if (particle.Position.Y < 0)
-            {
-                particle.Position.Y = 0;
-            }
-            else if (particle.Position.Y > _windowBounds.Height - 10)
-            {
-                particle.Position.Y = _windowBounds.Height - 10;
-            }
-
-            
-            if (particle.Position != beforeCorrection)
-            {
-                particle.PreviousPosition = particle.Position;
-            }
-            else
-            {
-                particle.PreviousPosition = previousPosition;
-            }
-            
-
-            
-
-        }
-
+        );
 
         if (totalForceCount > 0)
         {
@@ -357,8 +413,6 @@ public partial class Game1
             _activeMesh.maxForceMagnitude = 0f;
         }
     }
-
-   
 
     private void SatisfyBuildableConstraints(int iterations)
     {

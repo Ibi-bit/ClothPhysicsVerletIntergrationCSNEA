@@ -53,6 +53,7 @@ public partial class Game1
             
         }
 
+        // _physicsActionsQueue.TryDequeue(out var meshToDraw);
         _activeMesh.Draw(_spriteBatch, _primitiveBatch,_drawParticles, _drawConstraints);
 
         if (_windDirectionArrow != null)

@@ -113,6 +113,13 @@ public partial class Game1 : Game
         // _font = Content.Load<SpriteFont>("Font");
         _guiRenderer.RebuildFontAtlas();
     }
+     protected override void UnloadContent()
+{
+    _physicsRunning = false;
+    _physicsSignal.Set();
+    _physicsThread?.Join(1000);
+    base.UnloadContent();
+}
 
     private DrawableParticle KeepInsideRect(DrawableParticle p, Rectangle rect, Vector2 difference)
     {
