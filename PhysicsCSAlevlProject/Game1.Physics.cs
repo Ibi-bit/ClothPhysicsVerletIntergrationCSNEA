@@ -10,7 +10,7 @@ public partial class Game1
     private const float FixedTimeStep = 1f / 60f;
 
     private Vector2 _collisonBoundsDifference;
-    private Vector2 BaseForce;
+    private Vector2 _baseForce;
     private float _timeAccumulator;
     private bool _useConstraintSolver;
     private int _subSteps;
@@ -19,61 +19,20 @@ public partial class Game1
     private void InitializePhysics()
     {
         _collisonBoundsDifference = new Vector2(0, -10);
-        BaseForce = new Vector2(0, 980f);
+        _baseForce = new Vector2(0, 980f);
         _timeAccumulator = 0f;
         _useConstraintSolver = false;
-        
+
         _subSteps = 50;
     }
 
-    private DrawableStick[][] ApplyStickForces(DrawableStick[][] sticks)
+    private void ApplyStickForcesDictionary(
+        Dictionary<int, Mesh.MeshStick> sticks,
+        float timeRatio = 1f
+    )
     {
-        float k = _activeMesh.springConstant;
-        const float LengthEpsilonSq = 1e-8f;
-        const float StretchEpsilon = 1e-4f;
-
-        for (int i = 0; i < sticks.Length; i++)
-        {
-            var row = sticks[i];
-            for (int j = 0, jl = row.Length; j < jl; j++)
-            {
-                var s = row[j];
-                if (s == null || s.IsCut)
-                    continue;
-
-                float L0 = s.Length;
-                if (L0 <= 0f)
-                    continue;
-
-                var p1 = s.P1;
-                var p2 = s.P2;
-
-                Vector2 v = p1.Position - p2.Position;
-                float lenSq = v.LengthSquared();
-                if (lenSq <= LengthEpsilonSq)
-                    continue;
-
-                float L = MathF.Sqrt(lenSq);
-                float stretch = L - L0;
-                if (MathF.Abs(stretch) <= StretchEpsilon)
-                    continue;
-
-                float invL = 1f / L;
-                float factor = (stretch * invL) * k;
-                Vector2 springForce = v * factor;
-
-                p1.AccumulatedForce -= springForce;
-                p2.AccumulatedForce += springForce;
-            }
-        }
-        return sticks;
-    }
-
-    private void ApplyStickForcesDictionary(Dictionary<int, Mesh.MeshStick> sticks, float timeRatio = 1f)
-    {
-
         float scaledK = _activeMesh.springConstant * timeRatio;
-        
+
         foreach (var stick in sticks.Values)
         {
             if (stick.Length <= 0f)
@@ -141,95 +100,6 @@ public partial class Game1
         }
     }
 
-    private void UpdateStickColorsRelative(DrawableStick[][] horizontal, DrawableStick[][] vertical)
-    {
-        int count = 0;
-        float sum = 0f;
-        float sumSq = 0f;
-
-        void Accumulate(DrawableStick[][] arr)
-        {
-            for (int i = 0; i < arr.Length; i++)
-            {
-                for (int j = 0; j < arr[i].Length; j++)
-                {
-                    var s = arr[i][j];
-                    if (s == null)
-                    {
-                        continue;
-                    }
-                    if (s.Length <= 0f)
-                    {
-                        continue;
-                    }
-                    Vector2 v = s.P1.Position - s.P2.Position;
-                    float L = v.Length();
-                    if (L <= 0f)
-                    {
-                        continue;
-                    }
-                    float e = (L - s.Length) / s.Length;
-                    sum += e;
-                    sumSq += e * e;
-                    count++;
-                }
-            }
-        }
-
-        Accumulate(horizontal);
-        Accumulate(vertical);
-
-        float mean = count > 0 ? sum / count : 0f;
-        float variance = count > 0 ? (sumSq / count) - mean * mean : 0f;
-        if (variance < 0f)
-        {
-            variance = 0f;
-        }
-        float std = (float)Math.Sqrt(variance);
-
-        void Colorize(DrawableStick[][] arr)
-        {
-            for (int i = 0; i < arr.Length; i++)
-            {
-                for (int j = 0; j < arr[i].Length; j++)
-                {
-                    var s = arr[i][j];
-                    if (s == null)
-                    {
-                        continue;
-                    }
-                    if (s.Length <= 0f)
-                    {
-                        continue;
-                    }
-                    Vector2 v = s.P1.Position - s.P2.Position;
-                    float L = v.Length();
-                    if (L <= 0f)
-                    {
-                        continue;
-                    }
-                    float e = (L - s.Length) / s.Length;
-
-                    float intensity = 0f;
-                    if (count > 0 && std > 1e-5f)
-                    {
-                        float z = (e - mean) / std;
-                        intensity = MathHelper.Clamp((z - 0.5f) / 1.5f, 0f, 1f);
-                    }
-                    else
-                    {
-                        intensity = MathHelper.Clamp((L / s.Length - 1f) / 0.5f, 0f, 1f);
-                    }
-                    float eased = intensity * intensity;
-                    s.Color = Color.Lerp(Color.White, Color.Red, eased);
-                }
-            }
-        }
-
-        Colorize(horizontal);
-        Colorize(vertical);
-    }
-
     private void UpdateParticles(float deltaTime)
     {
         float forceMagnitudeSum = 0f;
@@ -237,11 +107,9 @@ public partial class Game1
         float maxForceMagnitude = 0f;
         int totalForceCount = 0;
 
-        
-
         foreach (var particle in _activeMesh.Particles.Values)
         {
-            Vector2 totalForce = BaseForce + particle.AccumulatedForce + _windForce;
+            Vector2 totalForce = _baseForce + particle.AccumulatedForce + _windForce;
             Vector2 previousPosition = particle.Position;
 
             particle.TotalForceMagnitude = totalForce.Length();
@@ -259,7 +127,6 @@ public partial class Game1
                 particle.AccumulatedForce = Vector2.Zero;
                 continue;
             }
-            
 
             bool isBeingDragged = false;
             if (_leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag"))
@@ -272,7 +139,7 @@ public partial class Game1
 
             if (!isBeingDragged)
             {
-                Vector2 acceleration = BaseForce;
+                Vector2 acceleration = _baseForce;
                 if (_activeMesh.mass > 0f)
                 {
                     acceleration += (particle.AccumulatedForce + _windForce) / _activeMesh.mass;
@@ -284,22 +151,21 @@ public partial class Game1
                 particle.Position =
                     particle.Position + velocity + acceleration * (deltaTime * deltaTime);
                 // time corrected Verlet integration
-                
+
                 // Vector2 previousPosition = particle.Position;
-                
+
                 // float dtRatio = _previousDeltaTime > 0.0001f ?deltaTime / _previousDeltaTime : 1f;
-                // particle.Position = particle.Position + 
+                // particle.Position = particle.Position +
                 //                     velocity * dtRatio + acceleration * (deltaTime * deltaTime);
-                
+
                 particle.Position = new Vector2(
                     float.IsNaN(particle.Position.X) ? previousPosition.X : particle.Position.X,
-                    float.IsNaN(particle.Position.Y) ? previousPosition.Y : particle.Position.Y);
+                    float.IsNaN(particle.Position.Y) ? previousPosition.Y : particle.Position.Y
+                );
             }
             Vector2 beforeCorrection = particle.Position;
-            if(_selectedToolName == "Cursor Collider")
+            if (_selectedToolName == "Cursor Collider")
             {
-                
-                
                 _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
             }
 
@@ -321,7 +187,6 @@ public partial class Game1
                 particle.Position.Y = _windowBounds.Height - 10;
             }
 
-            
             if (particle.Position != beforeCorrection)
             {
                 particle.PreviousPosition = particle.Position;
@@ -330,12 +195,7 @@ public partial class Game1
             {
                 particle.PreviousPosition = previousPosition;
             }
-            
-
-            
-
         }
-
 
         if (totalForceCount > 0)
         {
@@ -355,60 +215,6 @@ public partial class Game1
             _activeMesh.meanForceMagnitude = 0f;
             _activeMesh.forceStdDeviation = 0f;
             _activeMesh.maxForceMagnitude = 0f;
-        }
-    }
-
-   
-
-    private void SatisfyBuildableConstraints(int iterations)
-    {
-        if (_activeMesh == null)
-            return;
-
-        for (int it = 0; it < iterations; it++)
-        {
-            foreach (var s in _activeMesh.Sticks.Values)
-            {
-                if (s == null)
-                    continue;
-
-                var p1 = s.P1;
-                var p2 = s.P2;
-                Vector2 delta = p2.Position - p1.Position;
-                float len = delta.Length();
-                if (len <= 1e-6f)
-                    continue;
-                float diff = (len - s.Length) / len;
-                Vector2 correction = delta * 0.5f * diff;
-
-                bool p1Pinned = p1.IsPinned;
-                bool p2Pinned = p2.IsPinned;
-
-                if (!p1Pinned && !p2Pinned)
-                {
-                    p1.Position += correction;
-                    p2.Position -= correction;
-                }
-                else if (!p1Pinned && p2Pinned)
-                {
-                    p1.Position += correction * 2f;
-                }
-                else if (p1Pinned && !p2Pinned)
-                {
-                    p2.Position -= correction * 2f;
-                }
-            }
-
-            foreach (var kvp in _activeMesh.Particles)
-            {
-                var id = kvp.Key;
-                var p = kvp.Value;
-                _activeMesh.Particles[id] = KeepInsideRect(
-                    p,
-                    _windowBounds,
-                    _collisonBoundsDifference
-                );
-            }
         }
     }
 }

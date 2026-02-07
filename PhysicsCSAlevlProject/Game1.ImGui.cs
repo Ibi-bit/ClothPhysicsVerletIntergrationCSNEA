@@ -9,7 +9,6 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
-    private bool _showPhysicsControlsWindow;
     private bool _showConfigurationWindow;
     private bool _showReadMeWindow;
     private bool _showStructureWindow;
@@ -38,7 +37,6 @@ public partial class Game1
 
     private void InitializeImGui()
     {
-        _showPhysicsControlsWindow = false;
         _showConfigurationWindow = false;
         _showReadMeWindow = false;
         _showStructureWindow = false;
@@ -59,12 +57,11 @@ public partial class Game1
             "JSONStructures"
         );
         _quickStructureName = "QuickStructure";
-        
+
         _cursorColliderStore = new Dictionary<string, Collider>
         {
             { "Rectangle", new RectangleCollider(new Rectangle(0, 0, 10, 10)) },
             { "Circle", new CircleCollider(Vector2.Zero, 5f) },
-            
         };
         _cursorCollider = _cursorColliderStore["Rectangle"];
         _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
@@ -72,11 +69,29 @@ public partial class Game1
         {
             {
                 "Cloth 20x20",
-                () => Mesh.CreateClothMesh(new Vector2(220, 20), new Vector2(420, 320), 10f, null, _activeMesh.springConstant, _activeMesh.drag, _activeMesh.mass)
+                () =>
+                    Mesh.CreateClothMesh(
+                        new Vector2(220, 20),
+                        new Vector2(420, 320),
+                        10f,
+                        null,
+                        _activeMesh.springConstant,
+                        _activeMesh.drag,
+                        _activeMesh.mass
+                    )
             },
             {
                 "Cloth 30x20",
-                () => Mesh.CreateClothMesh(new Vector2(220, 20), new Vector2(520, 220), 10f, null, _activeMesh.springConstant, _activeMesh.drag, _activeMesh.mass)
+                () =>
+                    Mesh.CreateClothMesh(
+                        new Vector2(220, 20),
+                        new Vector2(520, 220),
+                        10f,
+                        null,
+                        _activeMesh.springConstant,
+                        _activeMesh.drag,
+                        _activeMesh.mass
+                    )
             },
         };
 
@@ -96,11 +111,6 @@ public partial class Game1
         }
 
         DrawMainMenuBar();
-        if (_showPhysicsControlsWindow)
-        {
-            DrawPhysicsControlsWindow();
-        }
-
         if (_showConfigurationWindow)
         {
             DrawConfigurationWindow();
@@ -132,6 +142,7 @@ public partial class Game1
         DrawPopUps();
 
         ModeSwitchingImGui();
+        ToolSwitchingImGui();
 
         _guiRenderer.EndLayout();
     }
@@ -273,7 +284,7 @@ public partial class Game1
             SetMode((MeshMode)newModeIndex);
         }
 
-        if (_shiftHeld)
+        if (_shiftHeld && !_ctrlHeld)
         {
             var drawList = ImGui.GetForegroundDrawList();
             drawList.AddText(
@@ -284,13 +295,45 @@ public partial class Game1
             var modes = Enum.GetValues(typeof(MeshMode));
             for (int i = 0; i < modes.Length; i++)
             {
-                var mode = (MeshMode)modes.GetValue(i);
+                var mode = (MeshMode)modes.GetValue(i)!;
                 string text = mode == _currentMode ? $"> {mode} <" : $"  {mode}";
                 uint color =
                     mode == _currentMode
                         ? ImGui.GetColorU32(new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f))
                         : ImGui.GetColorU32(ImGuiCol.Text);
                 drawList.AddText(new System.Numerics.Vector2(10, 48 + i * 18), color, text);
+            }
+        }
+    }
+
+    private void ToolSwitchingImGui()
+    {
+        if (_ctrlHeld)
+        {
+            List<string> toolNames = _currentToolSet.Keys.ToList();
+            int currentIndex = toolNames.IndexOf(_selectedToolName);
+            if (ImGui.IsKeyPressed(ImGuiKey.T))
+            {
+                int nextIndex = (currentIndex + 1) % toolNames.Count;
+                _selectedToolName = toolNames[nextIndex];
+                _logger.AddLog($"Switched to tool: {_selectedToolName}");
+            }
+            else if (_shiftHeld && ImGui.IsKeyPressed(ImGuiKey.T))
+            {
+                int nextIndex = (currentIndex - 1 + toolNames.Count) % toolNames.Count;
+                _selectedToolName = toolNames[nextIndex];
+                _logger.AddLog($"Switched to tool: {_selectedToolName}");
+            }
+            for (int i = 0; i < toolNames.Count; i++)
+            {
+                var toolName = toolNames[i];
+                uint color =
+                    toolName == _selectedToolName
+                        ? ImGui.GetColorU32(new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f))
+                        : ImGui.GetColorU32(ImGuiCol.Text);
+                ImGui
+                    .GetForegroundDrawList()
+                    .AddText(new System.Numerics.Vector2(10, 60 + i * 18), color, toolName);
             }
         }
     }
@@ -331,22 +374,27 @@ public partial class Game1
             if (ImGui.MenuItem("New"))
             {
                 _showConfirmNewMeshPopup = true;
+                _logger.AddLog("File -> New: confirm new mesh");
             }
             if (ImGui.MenuItem("Open"))
             {
                 _showStructureWindow = true;
+                _logger.AddLog("File -> Open: show structure window");
             }
             if (ImGui.MenuItem("Save"))
             {
                 _showSaveWindow = true;
+                _logger.AddLog("File -> Save: show save window");
             }
             if (ImGui.MenuItem("Sign In/Sign Out"))
             {
                 _showSignInWindow = true;
+                _logger.AddLog("File -> Sign In/Sign Out");
             }
 
             if (ImGui.MenuItem("Exit"))
             {
+                _logger.AddLog("File -> Exit");
                 Exit();
             }
             ImGui.EndMenu();
@@ -357,24 +405,28 @@ public partial class Game1
             if (ImGui.Button(_paused ? "Resume (Esc)" : "Pause (Esc)"))
             {
                 _paused = !_paused;
+                _logger.AddLog(_paused ? "Paused simulation" : "Resumed simulation");
             }
             ImGui.SameLine();
-            ImGui.PushStyleColor(ImGuiCol.Button, new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f));
+            ImGui.PushStyleColor(
+                ImGuiCol.Button,
+                new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f)
+            );
             if (ImGui.Button("Reset Simulation (R)"))
             {
                 _activeMesh.ResetMesh();
+                _logger.AddLog("Reset simulation");
             }
             ImGui.PopStyleColor();
             ImGui.BeginDisabled(!_paused);
 
-            if(ImGui.Button("Step Forward (T)"))
+            if (ImGui.Button("Step Forward (T)"))
             {
                 _stepsToStep += _buttonSteps;
+                _logger.AddLog($"Step forward: {_buttonSteps} steps requested");
             }
             ImGui.SameLine();
             ImGui.InputInt("Steps to Step", ref _buttonSteps, 1, 100);
-
-            
 
             ImGui.EndDisabled();
             ImGui.EndMenu();
@@ -391,10 +443,12 @@ public partial class Game1
             if (ImGui.MenuItem("Interact", null, _currentMode == MeshMode.Interact))
             {
                 SetMode(MeshMode.Interact);
+                _logger.AddLog("Mode set to Interact");
             }
             if (ImGui.MenuItem("Edit", null, _currentMode == MeshMode.Edit))
             {
                 SetMode(MeshMode.Edit);
+                _logger.AddLog("Mode set to Edit");
             }
             ImGui.EndMenu();
         }
@@ -409,6 +463,7 @@ public partial class Game1
                     _activeMesh = mesh;
                     _defaultMesh = mesh;
                     SetMode(MeshMode.Interact);
+                    _logger.AddLog($"Loaded template mesh: {meshEntry.Key}");
                 }
             }
             ImGui.EndMenu();
@@ -418,17 +473,17 @@ public partial class Game1
             if (ImGui.Button("Refresh List"))
             {
                 _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+                _logger.AddLog("Quick Structures: refreshed list");
             }
 
             if (ImGui.Button("Save Current Mesh"))
             {
                 SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
                 _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+                _logger.AddLog($"Quick Structures: saved mesh as {_quickStructureName}");
             }
             ImGui.SameLine();
-            _quickStructureName = ImGui.InputText("Structure Name", ref _quickStructureName, 100)
-                ? _quickStructureName
-                : _quickStructureName;
+            ImGui.InputText("Structure Name", ref _quickStructureName, 100);
             ImGui.BeginDisabled(_quickMeshes.Count == 0);
             foreach (var meshEntry in _quickMeshes)
             {
@@ -438,7 +493,8 @@ public partial class Game1
                     _activeMesh = mesh;
                     _defaultMesh = mesh;
                     _quickStructureName = meshEntry.Key;
-                    SetMode( MeshMode.Interact);
+                    SetMode(MeshMode.Interact);
+                    _logger.AddLog($"Quick Structures: loaded mesh {meshEntry.Key}");
                 }
             }
             ImGui.EndDisabled();
@@ -457,9 +513,8 @@ public partial class Game1
                 _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
             }
             ImGui.SameLine();
-            _quickStructureName = ImGui.InputText("Structure Name", ref _quickStructureName, 100)
-                ? _quickStructureName
-                : _quickStructureName;
+            ImGui.InputText("Structure Name", ref _quickStructureName, 100);
+
             ImGui.BeginDisabled(_quickMeshes.Count == 0);
             foreach (var meshEntry in _quickMeshes)
             {
@@ -477,13 +532,25 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Quick Settings"))
         {
+            ImGui.InputFloat("Global Mass", ref _activeMesh.mass);
             ImGui.InputFloat("Spring Constant", ref _activeMesh.springConstant);
+            ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
+
+            float drag = _activeMesh.drag;
+            if (ImGui.SliderFloat("Drag (1.0 = no friction)", ref drag, 0.9f, 1.0f))
+            {
+                _activeMesh.drag = drag;
+            }
+
+            ImGui.SliderFloat("Base Force X", ref _baseForce.X, -1000f, 1000f);
+            ImGui.SliderFloat("Base Force Y", ref _baseForce.Y, -1000f, 1000f);
             ImGui.EndMenu();
         }
-        if (ImGui.BeginMenu("Tools"))
+        if (ImGui.BeginMenu("Tool Menu"))
         {
             DrawToolMenuItems();
-
+            ImGui.Separator();
+            DrawSelectedToolSettings();
             ImGui.EndMenu();
         }
         if (ImGui.MenuItem(_paused ? "Resume (Esc)" : "Pause (Esc)"))
@@ -493,7 +560,6 @@ public partial class Game1
         ImGui.SameLine();
         if (ImGui.BeginMenu("Show"))
         {
-            ImGui.MenuItem("Physics Controls", null, ref _showPhysicsControlsWindow);
             ImGui.MenuItem("Configuration", null, ref _showConfigurationWindow);
             ImGui.MenuItem("Logger", null, ref _showLoggerWindow);
             ImGui.MenuItem("ReadMe", null, ref _showReadMeWindow);
@@ -568,51 +634,6 @@ public partial class Game1
         ImGui.End();
     }
 
-    private void DrawPhysicsControlsWindow()
-    {
-        if (!ImGui.Begin("Physics Controls", ref _showPhysicsControlsWindow))
-        {
-            ImGui.End();
-            return;
-        }
-
-        ImGui.Text($"Current Mode: {_currentMode}");
-        ImGui.Separator();
-
-
-        ImGui.InputFloat("Global Mass", ref _activeMesh.mass);
-        ImGui.InputFloat("Global Spring Constant", ref _activeMesh.springConstant);
-        ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
-        
-        ImGui.Separator();
-
-        ImGui.Text("Tools:");
-
-        DrawToolButtons();
-
-        ImGui.Separator();
-        DrawSelectedToolSettings();
-
-        ImGui.Separator();
-
-        if (ImGui.Button(_paused ? "Resume (Esc)" : "Pause (Esc)"))
-        {
-            _paused = !_paused;
-        }
-        ImGui.SameLine();
-        var red = new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f);
-        ImGui.PushStyleColor(ImGuiCol.Button, red);
-        if (
-            (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
-            && ImGui.Button("Reset Buildable Mesh")
-        )
-        {
-            _activeMesh.ResetMesh();
-        }
-        ImGui.PopStyleColor();
-        ImGui.End();
-    }
-
     private void DrawConfigurationWindow()
     {
         if (!ImGui.Begin("Configuration", ref _showConfigurationWindow))
@@ -631,12 +652,16 @@ public partial class Game1
         if (ratioToggled && _keepAspectRatio)
         {
             _lockedAspectRatio =
-                _changedBounds.Height > 0 ? _changedBounds.Width / (float)_changedBounds.Height : 1f;
+                _changedBounds.Height > 0
+                    ? _changedBounds.Width / (float)_changedBounds.Height
+                    : 1f;
         }
         else if (_keepAspectRatio && _lockedAspectRatio <= 0.0001f)
         {
             _lockedAspectRatio =
-                _changedBounds.Height > 0 ? _changedBounds.Width / (float)_changedBounds.Height : 1f;
+                _changedBounds.Height > 0
+                    ? _changedBounds.Width / (float)_changedBounds.Height
+                    : 1f;
         }
 
         int newWidth = _changedBounds.Width;
@@ -685,35 +710,59 @@ public partial class Game1
         ImGui.Checkbox("Draw Constraints", ref _drawConstraints);
 
         ImGui.Separator();
-        ImGui.Text("Base Force:");
+        ImGui.Text("Physics Controls:");
 
-        ImGui.SliderFloat("X", ref BaseForce.X, -1000f, 1000f);
-        ImGui.SameLine();
-        if (ImGui.Button("Set X to 0"))
-        {
-            BaseForce.X = 0;
-        }
+        ImGui.InputFloat("Global Mass", ref _activeMesh.mass);
+        ImGui.InputFloat("Global Spring Constant", ref _activeMesh.springConstant);
+        ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
 
-        ImGui.SliderFloat("Y", ref BaseForce.Y, -1000f, 1000f);
-        ImGui.SameLine();
-        if (ImGui.Button("Set Y to 0"))
-        {
-            BaseForce.Y = 0;
-        }
-        if (ImGui.Button("Reset Base Force"))
-        {
-            BaseForce = new Vector2(0, 980f);
-        }
-
-        ImGui.Text($"Current Base Force: {BaseForce}");
-        ImGui.Text("Note: The Y axis is inverted, so positive Y values point downwards.");
-
-        ImGui.Separator();
         float drag = _activeMesh.drag;
         if (ImGui.SliderFloat("Drag (1.0 = no friction)", ref drag, 0.9f, 1.0f))
         {
             _activeMesh.drag = drag;
         }
+
+        ImGui.Separator();
+        ImGui.Text("Base Force:");
+
+        ImGui.SliderFloat("X", ref _baseForce.X, -1000f, 1000f);
+        ImGui.SameLine();
+        if (ImGui.Button("Set X to 0"))
+        {
+            _baseForce.X = 0;
+        }
+
+        ImGui.SliderFloat("Y", ref _baseForce.Y, -1000f, 1000f);
+        ImGui.SameLine();
+        if (ImGui.Button("Set Y to 0"))
+        {
+            _baseForce.Y = 0;
+        }
+        if (ImGui.Button("Reset Base Force"))
+        {
+            _baseForce = new Vector2(0, 980f);
+        }
+
+        ImGui.Text($"Current Base Force: {_baseForce}");
+        ImGui.Text("Note: The Y axis is inverted, so positive Y values point downwards.");
+
+        ImGui.Separator();
+
+        if (ImGui.Button(_paused ? "Resume (Esc)" : "Pause (Esc)"))
+        {
+            _paused = !_paused;
+        }
+        ImGui.SameLine();
+        var red = new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1f);
+        ImGui.PushStyleColor(ImGuiCol.Button, red);
+        if (
+            (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
+            && ImGui.Button("Reset Buildable Mesh")
+        )
+        {
+            _activeMesh.ResetMesh();
+        }
+        ImGui.PopStyleColor();
 
         ImGui.End();
     }
@@ -735,22 +784,17 @@ class ImGuiLogger
         public LogTypes Type;
     }
 
-    Queue<MessageLog> _logs;
+    readonly Queue<MessageLog> _logs = new();
     public bool autoScrollLogs = true;
     public bool wrapText = true;
 
     // public bool clearLogs = false;
-    Dictionary<LogTypes, bool> _logTypeVisibility = new Dictionary<LogTypes, bool>
+    readonly Dictionary<LogTypes, bool> _logTypeVisibility = new Dictionary<LogTypes, bool>
     {
         { LogTypes.Info, true },
         { LogTypes.Warning, true },
         { LogTypes.Error, true },
     };
-
-    public ImGuiLogger()
-    {
-        _logs = new Queue<MessageLog>();
-    }
 
     public void AddLog(string message, LogTypes type = LogTypes.Info)
     {

@@ -8,38 +8,63 @@ public partial class Game1
 {
     private void SaveMeshToJSON(Mesh mesh, string Name, string filePath)
     {
-        var settings = new JsonSerializerSettings
+        try
         {
-            TypeNameHandling = TypeNameHandling.All,
-            Formatting = Formatting.Indented,
-        };
-        var fileWriteableMesh = new FileWriteableMesh(mesh);
-        System.IO.Directory.CreateDirectory(filePath);
-        filePath = System.IO.Path.Combine(filePath, Name + ".json");
-        string json = JsonConvert.SerializeObject(fileWriteableMesh, settings);
-        System.IO.File.WriteAllText(filePath, json);
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                Formatting = Formatting.Indented,
+            };
+            var fileWriteableMesh = new FileWriteableMesh(mesh);
+            System.IO.Directory.CreateDirectory(filePath);
+            filePath = System.IO.Path.Combine(filePath, Name + ".json");
+            string json = JsonConvert.SerializeObject(fileWriteableMesh, settings);
+            System.IO.File.WriteAllText(filePath, json);
+        }
+        catch (Exception ex)
+        {
+            _logger.AddLog(
+                $"Failed to save mesh '{Name}' to {filePath}: {ex.Message}",
+                ImGuiLogger.LogTypes.Error
+            );
+        }
     }
 
     private Mesh LoadMeshFromJSON(string filePath)
     {
-        var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        try
+        {
+            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
-        string json = System.IO.File.ReadAllText(filePath);
-        FileWriteableMesh fileWriteableMesh = JsonConvert.DeserializeObject<FileWriteableMesh>(
-            json,
-            settings
-        );
+            string json = System.IO.File.ReadAllText(filePath);
+            FileWriteableMesh fileWriteableMesh = JsonConvert.DeserializeObject<FileWriteableMesh>(
+                json,
+                settings
+            );
 
-        Mesh mesh = fileWriteableMesh.ToMesh();
-        mesh.RestoreStickReferences();
+            Mesh mesh = fileWriteableMesh.ToMesh();
+            mesh.RestoreStickReferences();
 
-        return mesh;
+            return mesh;
+        }
+        catch (Exception ex)
+        {
+            _logger.AddLog(
+                $"Failed to load mesh from {filePath}: {ex.Message}",
+                ImGuiLogger.LogTypes.Error
+            );
+            return _activeMesh;
+        }
     }
 
     private Dictionary<string, Mesh> LoadAllMeshesFromDirectory(string directoryPath)
     {
         if (!System.IO.Directory.Exists(directoryPath))
         {
+            _logger.AddLog(
+                $"Mesh directory not found: {directoryPath}",
+                ImGuiLogger.LogTypes.Warning
+            );
             return new Dictionary<string, Mesh>();
         }
 

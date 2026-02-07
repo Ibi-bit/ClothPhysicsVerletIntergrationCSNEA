@@ -111,13 +111,17 @@ public partial class Game1
             if (isSelected)
             {
                 ImGui.PushStyleColor(
-                    ImGuiCol.Button,
-                    new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
+                    ImGuiCol.Text,
+                    new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f)
                 );
             }
 
             if (ImGui.MenuItem(toolName))
             {
+                if (!string.Equals(_selectedToolName, toolName, StringComparison.Ordinal))
+                {
+                    _logger.AddLog($"Selected tool: {toolName}");
+                }
                 _selectedToolName = toolName;
             }
 
@@ -360,6 +364,14 @@ public partial class Game1
     private void PinParticleBuildable(Vector2 center, float radius)
     {
         var particleIDs = GetMeshParticlesInRadius(center, radius);
+        if (particleIDs.Count == 0)
+        {
+            _logger.AddLog(
+                $"Pin tool: no particles found within radius {radius} at {center}",
+                ImGuiLogger.LogTypes.Warning
+            );
+            return;
+        }
         foreach (var id in particleIDs)
             if (_activeMesh.Particles.TryGetValue(id, out var particle))
             {
@@ -411,6 +423,14 @@ public partial class Game1
         {
             _activeMesh.RemoveStick(stickId);
         }
+
+        if (sticksToRemove.Count == 0)
+        {
+            _logger.AddLog(
+                $"Cut tool: no sticks found within radius {radius} at {center}",
+                ImGuiLogger.LogTypes.Warning
+            );
+        }
     }
 
     private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float _)
@@ -423,13 +443,20 @@ public partial class Game1
             : 5f;
 
         if (windDistance < minDist)
+        {
+            _logger.AddLog(
+                $"Wind tool: drag distance {windDistance:0.00} below minimum {minDist:0.00}",
+                ImGuiLogger.LogTypes.Warning
+            );
             return;
+        }
 
         float strength = _currentToolSet["Wind"].Properties.ContainsKey("StrengthScale")
             ? (float)_currentToolSet["Wind"].Properties["StrengthScale"]
             : 1.0f;
 
         _windForce = windDirection * (windDistance / 50f) * strength;
+        _logger.AddLog($"Wind applied: force {_windForce}");
     }
 
     private bool DoTwoLinesIntersect(
@@ -693,6 +720,14 @@ public partial class Game1
             ? r
             : 10f;
         var ids = GetMeshParticlesInRadius(clickPos, radius, 1);
+        if (ids.Count == 0)
+        {
+            _logger.AddLog(
+                $"Add Stick tool: no particle found within radius {radius} at {clickPos}",
+                ImGuiLogger.LogTypes.Warning
+            );
+            return;
+        }
         if (ids.Count >= 1)
         {
             int hitId = ids[0];

@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
 
 namespace PhysicsCSAlevlProject;
 
@@ -30,7 +30,7 @@ public partial class Game1
     {
         KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
-        
+
         if (_currentToolSet.ContainsKey("Cursor Collider"))
         {
             var props = _currentToolSet["Cursor Collider"].Properties;
@@ -49,7 +49,11 @@ public partial class Game1
         }
 
         // Step one physics frame when paused (press Space)
-        if (_paused && keyboardState.IsKeyDown(Keys.Space) && !_prevKeyboardState.IsKeyDown(Keys.Space))
+        if (
+            _paused
+            && keyboardState.IsKeyDown(Keys.Space)
+            && !_prevKeyboardState.IsKeyDown(Keys.Space)
+        )
         {
             _stepsToStep = 1;
         }
@@ -95,6 +99,13 @@ public partial class Game1
                                 props.ContainsKey("Radius") ? (float)props["Radius"] : _dragRadius,
                                 maxParticles
                             );
+                            if (_meshParticlesInDragArea.Count == 0)
+                            {
+                                _logger.AddLog(
+                                    "Drag tool: no particles found in radius",
+                                    ImGuiLogger.LogTypes.Warning
+                                );
+                            }
                         }
                         break;
                     case "Pin":
@@ -135,6 +146,13 @@ public partial class Game1
                                     _initialMousePosWhenPressed,
                                     physRadius
                                 );
+                                if (_meshParticlesInDragArea.Count == 0)
+                                {
+                                    _logger.AddLog(
+                                        "PhysicsDrag tool: no particles found in radius",
+                                        ImGuiLogger.LogTypes.Warning
+                                    );
+                                }
                             }
                         }
                         break;
@@ -163,6 +181,9 @@ public partial class Game1
                                 false,
                                 Color.White
                             );
+                            _logger.AddLog(
+                                $"Added particle at {_initialMousePosWhenPressed} (mass {particleMass})"
+                            );
                         }
                         break;
                     case "Remove Particle":
@@ -176,7 +197,18 @@ public partial class Game1
                                 removeRadius,
                                 1
                             );
-                            _activeMesh.RemoveParticle(pS[0]);
+                            if (pS.Count > 0)
+                            {
+                                _activeMesh.RemoveParticle(pS[0]);
+                                _logger.AddLog($"Removed particle {pS[0]}");
+                            }
+                            else
+                            {
+                                _logger.AddLog(
+                                    "Remove Particle tool: no particle found in radius",
+                                    ImGuiLogger.LogTypes.Warning
+                                );
+                            }
                         }
                         break;
                     case "Inspect Particles":
@@ -227,6 +259,13 @@ public partial class Game1
                     {
                         CutSticksAlongLine(_initialMousePosWhenPressed, currentMousePos);
                     }
+                    else
+                    {
+                        _logger.AddLog(
+                            "LineCut tool: drag too short to cut",
+                            ImGuiLogger.LogTypes.Warning
+                        );
+                    }
                 }
                 else if (
                     _selectedToolName == "Inspect Particles"
@@ -253,7 +292,6 @@ public partial class Game1
                     var props = _currentToolSet["Line Tool"].Properties;
                     int constraintsInLine = (int)props["Constraints in Line"];
                     float naturalLengthRatio = (float)props["Natural Length Ratio"];
-                        
 
                     _activeMesh.AddSticksAccrossLength(
                         _initialMousePosWhenPressed,
@@ -306,17 +344,20 @@ public partial class Game1
                 _windForce = Vector2.Zero;
             }
         }
-        else if (_selectedToolName == "LineCut" && _leftPressed)
+        else if (
+            _selectedToolName == "LineCut" && _leftPressed
+            || _selectedToolName == "Line Tool" && _leftPressed
+        )
         {
             Vector2 cutDirection = currentMousePos - _initialMousePosWhenPressed;
             float cutDistance = cutDirection.Length();
-            float minDist = _currentToolSet["LineCut"].Properties.ContainsKey("MinDistance")
-                ? (float)_currentToolSet["LineCut"].Properties["MinDistance"]
+            float minDist = _currentToolSet[_selectedToolName].Properties.ContainsKey("MinDistance")
+                ? (float)_currentToolSet[_selectedToolName].Properties["MinDistance"]
                 : 5f;
             if (cutDistance > minDist)
             {
-                float thickness = _currentToolSet["LineCut"].Properties.ContainsKey("Thickness")
-                    ? (float)_currentToolSet["LineCut"].Properties["Thickness"]
+                float thickness = _currentToolSet[_selectedToolName].Properties.ContainsKey("Thickness")
+                    ? (float)_currentToolSet[_selectedToolName].Properties["Thickness"]
                     : 3f;
                 _cutLine = new VectorGraphics.PrimitiveBatch.Line(
                     _initialMousePosWhenPressed,
@@ -336,7 +377,12 @@ public partial class Game1
             float distance = (float)props["DistanceBetweenParticles"];
             if (keyboardState.IsKeyDown(Keys.C) && !_prevKeyboardState.IsKeyDown(Keys.C))
             {
-                _activeMesh = Mesh.CreateGridMesh(_initialMousePosWhenPressed, currentMousePos, distance, _activeMesh);
+                _activeMesh = Mesh.CreateGridMesh(
+                    _initialMousePosWhenPressed,
+                    currentMousePos,
+                    distance,
+                    _activeMesh
+                );
             }
 
             if (_leftPressed)
@@ -385,13 +431,16 @@ public partial class Game1
         const int maxStepsPerFrame = 10000;
         int subSteps = Math.Max(1, _subSteps);
         Vector2 mouseDelta = currentMousePos - _previousMousePos;
-        int plannedStepsThisFrame = _paused 
-            ? _stepsToStep 
+        int plannedStepsThisFrame = _paused
+            ? _stepsToStep
             : Math.Min((int)(_timeAccumulator / FixedTimeStep), maxStepsPerFrame);
         int totalIterations = Math.Max(1, plannedStepsThisFrame * subSteps);
         Vector2 deltaPerIteration = mouseDelta / totalIterations;
 
-        while ((_timeAccumulator >= FixedTimeStep || _stepsToStep > 0) && stepsThisFrame < maxStepsPerFrame)
+        while (
+            (_timeAccumulator >= FixedTimeStep || _stepsToStep > 0)
+            && stepsThisFrame < maxStepsPerFrame
+        )
         {
             float subDt = FixedTimeStep / subSteps;
 
@@ -407,23 +456,30 @@ public partial class Game1
                     ApplyStickForcesDictionary(_activeMesh.Sticks, timeRatio);
                 }
                 float iterationLerpFactor = 1f / (stepsThisFrame + 1f);
-                
+
                 Vector2 cursorCenter = GetCursorColliderCenter();
                 cursorCenter = Vector2.Lerp(cursorCenter, currentMousePos, iterationLerpFactor);
                 SetCursorColliderCenter(cursorCenter);
-                
-                if (_leftPressed && _selectedToolName == "Drag" && _currentMode == MeshMode.Interact)
+
+                if (
+                    _leftPressed
+                    && _selectedToolName == "Drag"
+                    && _currentMode == MeshMode.Interact
+                )
                 {
                     foreach (int particleId in _meshParticlesInDragArea)
                     {
-                        if (_activeMesh.Particles.TryGetValue(particleId, out var particle) && !particle.IsPinned)
+                        if (
+                            _activeMesh.Particles.TryGetValue(particleId, out var particle)
+                            && !particle.IsPinned
+                        )
                         {
                             particle.PreviousPosition = particle.Position;
                             particle.Position += deltaPerIteration;
                         }
                     }
                 }
-                
+
                 UpdateParticles(subDt);
                 _previousDeltaTime = subDt;
             }
@@ -433,7 +489,7 @@ public partial class Game1
                 _stepsToStep--;
             else
                 _timeAccumulator -= FixedTimeStep;
-            
+
             stepsThisFrame++;
         }
 
@@ -456,8 +512,6 @@ public partial class Game1
         }
         else if (_selectedToolName == "PhysicsDrag")
         {
-            
-
             if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
             {
                 DragMeshParticlesWithPhysics(mouseState, _leftPressed, _meshParticlesInDragArea);
@@ -471,10 +525,7 @@ public partial class Game1
         _prevMouseState = mouseState;
     }
 
-    private void UpdateStep()
-    {
-        
-    }
+    private void UpdateStep() { }
 
     private Vector2 GetCursorColliderCenter()
     {
@@ -487,8 +538,6 @@ public partial class Game1
         {
             return new Vector2(rectangle.Rectangle.Center.X, rectangle.Rectangle.Center.Y);
         }
-
-        
 
         return Vector2.Zero;
     }
@@ -512,8 +561,6 @@ public partial class Game1
             );
             return;
         }
-
-       
     }
 
     private void UpdateCursorColliderSize(float radius)
@@ -528,16 +575,16 @@ public partial class Game1
 
         if (_cursorCollider is RectangleCollider rectangle)
         {
-            Vector2 center = new Vector2(rectangle.Rectangle.Center.X, rectangle.Rectangle.Center.Y);
+            Vector2 center = new Vector2(
+                rectangle.Rectangle.Center.X,
+                rectangle.Rectangle.Center.Y
+            );
             rectangle.Rectangle = new Rectangle(
                 (int)(center.X - size / 2f),
                 (int)(center.Y - size / 2f),
                 size,
                 size
             );
-            
         }
-
-        
     }
 }
