@@ -693,6 +693,7 @@ public partial class Game1
         }
         ImGui.Checkbox("Draw Particles", ref _drawParticles);
         ImGui.Checkbox("Draw Constraints", ref _drawConstraints);
+        ImGui.SliderFloat("Constraint Thickness", ref _activeMesh.stickDrawThickness, 1f, 10f);
 
         ImGui.Separator();
         ImGui.Text("Physics Controls:");

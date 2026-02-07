@@ -231,9 +231,10 @@ class DrawableStick : Stick
         line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color, Width);
     }
 
-    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch,float stickDrawThickness= -1)
     {
-        line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color, Width);
+        float w = -1 != stickDrawThickness ? stickDrawThickness : Width;
+        line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color,w);
         if (!IsCut)
             line.Draw(spriteBatch, primitiveBatch);
     }
@@ -243,6 +244,8 @@ class Mesh
 {
     private int _nextParticleId = 1;
     private int _nextStickId = 1;
+
+    public float stickDrawThickness = -1;
 
     public Dictionary<int, DrawableParticle> Particles { get; } =
         new Dictionary<int, DrawableParticle>();
@@ -570,7 +573,7 @@ class Mesh
         {
             foreach (var s in Sticks.Values)
             {
-                s.Draw(spriteBatch, primitiveBatch);
+                s.Draw(spriteBatch, primitiveBatch,stickDrawThickness);
             }
         }
 
