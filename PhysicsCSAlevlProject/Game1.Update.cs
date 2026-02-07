@@ -8,21 +8,18 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     private VectorGraphics.PrimitiveBatch.Rectangle _selectRectangle;
-    private float _previousDeltaTime;
+
     private Vector2 _windForce;
     private VectorGraphics.PrimitiveBatch.Arrow _windDirectionArrow;
     private VectorGraphics.PrimitiveBatch.Line _cutLine;
-    private List<Vector2> _particlesInDragArea;
     private List<int> _meshParticlesInDragArea;
 
     private void InitializeUpdate()
     {
         _selectRectangle = null;
-        _previousDeltaTime = 0f;
         _windForce = Vector2.Zero;
         _windDirectionArrow = null;
         _cutLine = null;
-        _particlesInDragArea = new List<Vector2>();
         _meshParticlesInDragArea = new List<int>();
     }
 
@@ -34,8 +31,8 @@ public partial class Game1
         if (_currentToolSet.ContainsKey("Cursor Collider"))
         {
             var props = _currentToolSet["Cursor Collider"].Properties;
-            float radius = props.ContainsKey("Radius") ? (float)props["Radius"] : 20f;
-            string shape = props.ContainsKey("Shape") ? (string)props["Shape"] : "Circle";
+            float radius = props.TryGetValue("Radius", out var prop) ? (float)prop : 20f;
+            string shape = props.TryGetValue("Shape", out var prop1) ? (string)prop1 : "Circle";
             if (_cursorColliderStore.TryGetValue(shape, out var collider))
             {
                 _cursorCollider = collider;
@@ -89,14 +86,16 @@ public partial class Game1
                             int maxParticles = infiniteParticles
                                 ? -1
                                 : (
-                                    props.ContainsKey("MaxParticles")
-                                        ? (int)props["MaxParticles"]
+                                    props.TryGetValue("MaxParticles", out var prop1)
+                                        ? (int)prop1
                                         : -1
                                 );
 
                             _meshParticlesInDragArea = GetMeshParticlesInRadius(
                                 _initialMousePosWhenPressed,
-                                props.ContainsKey("Radius") ? (float)props["Radius"] : _dragRadius,
+                                props.TryGetValue("Radius", out var prop)
+                                    ? (float)prop
+                                    : _dragRadius,
                                 maxParticles
                             );
                             if (_meshParticlesInDragArea.Count == 0)
@@ -160,12 +159,6 @@ public partial class Game1
                         break;
                     case "Add Stick Between Particles":
                         {
-                            float stickRadius = _currentToolSet[
-                                "Add Stick Between Particles"
-                            ].Properties["Radius"]
-                                is float r
-                                ? r
-                                : 10f;
                             HandleAddStickBetweenParticlesClick(_initialMousePosWhenPressed);
                         }
                         break;
@@ -356,7 +349,8 @@ public partial class Game1
                 : 5f;
             if (cutDistance > minDist)
             {
-                float thickness = _currentToolSet[_selectedToolName].Properties.ContainsKey("Thickness")
+                float thickness = _currentToolSet[_selectedToolName]
+                    .Properties.ContainsKey("Thickness")
                     ? (float)_currentToolSet[_selectedToolName].Properties["Thickness"]
                     : 3f;
                 _cutLine = new VectorGraphics.PrimitiveBatch.Line(
@@ -401,7 +395,7 @@ public partial class Game1
         else if (_selectedToolName == "Inspect Particles")
         {
             var props = _currentToolSet["Inspect Particles"].Properties;
-            float inspectRadius = props.ContainsKey("Radius") ? (float)props["Radius"] : 10f;
+
             if (props.ContainsKey("RectangleSelect") && _leftPressed)
             {
                 _selectRectangle = new VectorGraphics.PrimitiveBatch.Rectangle(
@@ -481,10 +475,8 @@ public partial class Game1
                 }
 
                 UpdateParticles(subDt);
-                _previousDeltaTime = subDt;
             }
 
-            // Consume time or manual step
             if (_stepsToStep > 0)
                 _stepsToStep--;
             else
@@ -525,8 +517,6 @@ public partial class Game1
         _prevMouseState = mouseState;
     }
 
-    private void UpdateStep() { }
-
     private Vector2 GetCursorColliderCenter()
     {
         if (_cursorCollider is CircleCollider circle)
@@ -559,7 +549,6 @@ public partial class Game1
                 rectangle.Rectangle.Width,
                 rectangle.Rectangle.Height
             );
-            return;
         }
     }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-
 using Microsoft.Xna.Framework.Input;
 
 namespace PhysicsCSAlevlProject;
@@ -13,7 +12,8 @@ public partial class Game1
     private string _selectedToolName;
     private Dictionary<string, Tool> _interactTools;
     private Dictionary<string, Tool> _buildTools;
-    private Dictionary<string, Tool> _currentToolSet => _currentMode == MeshMode.Edit ? _buildTools : _interactTools;
+    private Dictionary<string, Tool> _currentToolSet =>
+        _currentMode == MeshMode.Edit ? _buildTools : _interactTools;
     private float _dragRadius;
     private List<int> _inspectedParticles;
     private int? _stickToolFirstParticleId;
@@ -40,8 +40,7 @@ public partial class Game1
             { "PhysicsDrag", new Tool("PhysicsDrag", null, null) },
             { "LineCut", new Tool("LineCut", null, null) },
             { "Inspect Particles", new Tool("Inspect Particles", null, null) },
-            {"Cursor Collider", new Tool("Cursor Collider", null, null)},
-
+            { "Cursor Collider", new Tool("Cursor Collider", null, null) },
         };
         foreach (var tool in _interactTools.Values)
         {
@@ -130,36 +129,6 @@ public partial class Game1
                 ImGui.PopStyleColor();
             }
         }
-    }
-
-    private void DrawToolButtons()
-    {
-        EnsureSelectedToolValid();
-        // foreach (var toolName in _currentToolSet.Keys)
-        // {
-        //     bool isSelected = _selectedToolName == toolName;
-        //     if (isSelected)
-        //     {
-        //         ImGui.PushStyleColor(
-        //             ImGuiCol.Button,
-        //             new System.Numerics.Vector4(0.2f, 0.6f, 0.2f, 1f)
-        //         );
-        //     }
-
-        //     if (ImGui.Button(toolName))
-        //     {
-        //         _selectedToolName = toolName;
-        //     }
-
-        //     if (isSelected)
-        //     {
-        //         ImGui.PopStyleColor();
-        //     }
-
-        //     ImGui.SameLine();
-        // }
-
-        ImGui.NewLine();
     }
 
     private void DrawSelectedToolSettings()
@@ -320,17 +289,19 @@ public partial class Game1
         {
             var props = _currentToolSet["Cursor Collider"].Properties;
             float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f)) props["Radius"] = radius;
+            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+                props["Radius"] = radius;
 
             string[] shapes = _cursorColliderStore.Keys.ToArray();
             int shapeIndex = Array.IndexOf(shapes, (string)props["Shape"]);
-            if (shapeIndex < 0) shapeIndex = 0;
+            if (shapeIndex < 0)
+                shapeIndex = 0;
             if (ImGui.Combo("Shape", ref shapeIndex, shapes, shapes.Length))
             {
                 props["Shape"] = shapes[shapeIndex];
             }
         }
-        else if(string.Equals(_selectedToolName, "Line Tool", StringComparison.Ordinal))
+        else if (string.Equals(_selectedToolName, "Line Tool", StringComparison.Ordinal))
         {
             var props = _currentToolSet["Line Tool"].Properties;
             int constraintsInLine = (int)props["Constraints in Line"];
@@ -359,8 +330,6 @@ public partial class Game1
         }
     }
 
-   
-
     private void PinParticleBuildable(Vector2 center, float radius)
     {
         var particleIDs = GetMeshParticlesInRadius(center, radius);
@@ -381,28 +350,6 @@ public partial class Game1
             }
     }
 
-    private void CutSticksInRadius(Vector2 center, float radius, DrawableStick[][] sticks)
-    {
-        for (int i = 0; i < sticks.Length; i++)
-        {
-            for (int j = 0; j < sticks[i].Length; j++)
-            {
-                if (sticks[i][j] != null && !sticks[i][j].IsCut)
-                {
-                    Vector2 stickCenter =
-                        (sticks[i][j].P1.Position + sticks[i][j].P2.Position) * 0.5f;
-                    float distance = Vector2.Distance(stickCenter, center);
-                    if (distance <= radius)
-                    {
-                        sticks[i][j].IsCut = true;
-                        _logger.AddLog($"Cut stick [{i},{j}] at {stickCenter}");
-                    }
-                }
-            }
-        }
-    }
-
-   
     private void CutAllSticksInRadiusBuildable(Vector2 center, float radius)
     {
         var sticksToRemove = new List<int>();
@@ -481,7 +428,7 @@ public partial class Game1
         float t = (qMinusP.X * s.Y - qMinusP.Y * s.X) / rCrossS;
         float u = qMinusPCrossR / rCrossS;
 
-        return (t >= 0 && t <= 1 && u >= 0 && u <= 1);
+        return (t is >= 0 and <= 1 && u is >= 0 and <= 1);
     }
 
     private DrawableStick[][] DoLinesIntersect(
@@ -515,17 +462,6 @@ public partial class Game1
         _activeMesh.CutSticksAlongLine(lineStart, lineEnd);
     }
 
-    private List<Vector2> GetParticlesInRadius(
-        Vector2 mousePosition,
-        float radius,
-        int maxParticles = -1
-    )
-    {
-        var particlesInRadius = new List<Vector2>();
-
-        return particlesInRadius;
-    }
-
     private List<int> GetMeshParticlesInRadius(
         Vector2 mousePosition,
         float radius,
@@ -552,8 +488,6 @@ public partial class Game1
 
         return particleIds;
     }
-
-    
 
     private void DragMeshParticles(MouseState mouseState, bool isDragging, List<int> particleIds)
     {
@@ -628,9 +562,6 @@ public partial class Game1
         }
     }
 
-
-    
-
     private void InspectParticlesInRadiusLog(Vector2 center, float radius)
     {
         foreach (var kvp in _activeMesh.Particles)
@@ -701,7 +632,7 @@ public partial class Game1
     {
         var result = new List<int>();
         Rectangle rect = GetRectangleFromPoints(rectStart, rectEnd);
-       
+
         foreach (var kvp in _activeMesh.Particles)
         {
             var particle = kvp.Value;
