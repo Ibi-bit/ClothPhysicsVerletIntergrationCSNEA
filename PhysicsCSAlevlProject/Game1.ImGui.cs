@@ -357,7 +357,6 @@ public partial class Game1
         _leftPressed = false;
         _windDirectionArrow = null;
         _cutLine = null;
-        _particlesInDragArea.Clear();
         _meshParticlesInDragArea.Clear();
         _stickToolFirstParticleId = null;
     }
@@ -374,27 +373,22 @@ public partial class Game1
             if (ImGui.MenuItem("New"))
             {
                 _showConfirmNewMeshPopup = true;
-                _logger.AddLog("File -> New: confirm new mesh");
             }
             if (ImGui.MenuItem("Open"))
             {
                 _showStructureWindow = true;
-                _logger.AddLog("File -> Open: show structure window");
             }
             if (ImGui.MenuItem("Save"))
             {
                 _showSaveWindow = true;
-                _logger.AddLog("File -> Save: show save window");
             }
             if (ImGui.MenuItem("Sign In/Sign Out"))
             {
                 _showSignInWindow = true;
-                _logger.AddLog("File -> Sign In/Sign Out");
             }
 
             if (ImGui.MenuItem("Exit"))
             {
-                _logger.AddLog("File -> Exit");
                 Exit();
             }
             ImGui.EndMenu();
@@ -405,7 +399,6 @@ public partial class Game1
             if (ImGui.Button(_paused ? "Resume (Esc)" : "Pause (Esc)"))
             {
                 _paused = !_paused;
-                _logger.AddLog(_paused ? "Paused simulation" : "Resumed simulation");
             }
             ImGui.SameLine();
             ImGui.PushStyleColor(
@@ -415,7 +408,6 @@ public partial class Game1
             if (ImGui.Button("Reset Simulation (R)"))
             {
                 _activeMesh.ResetMesh();
-                _logger.AddLog("Reset simulation");
             }
             ImGui.PopStyleColor();
             ImGui.BeginDisabled(!_paused);
@@ -423,7 +415,6 @@ public partial class Game1
             if (ImGui.Button("Step Forward (T)"))
             {
                 _stepsToStep += _buttonSteps;
-                _logger.AddLog($"Step forward: {_buttonSteps} steps requested");
             }
             ImGui.SameLine();
             ImGui.InputInt("Steps to Step", ref _buttonSteps, 1, 100);
@@ -443,12 +434,10 @@ public partial class Game1
             if (ImGui.MenuItem("Interact", null, _currentMode == MeshMode.Interact))
             {
                 SetMode(MeshMode.Interact);
-                _logger.AddLog("Mode set to Interact");
             }
             if (ImGui.MenuItem("Edit", null, _currentMode == MeshMode.Edit))
             {
                 SetMode(MeshMode.Edit);
-                _logger.AddLog("Mode set to Edit");
             }
             ImGui.EndMenu();
         }
@@ -463,7 +452,6 @@ public partial class Game1
                     _activeMesh = mesh;
                     _defaultMesh = mesh;
                     SetMode(MeshMode.Interact);
-                    _logger.AddLog($"Loaded template mesh: {meshEntry.Key}");
                 }
             }
             ImGui.EndMenu();
@@ -473,14 +461,12 @@ public partial class Game1
             if (ImGui.Button("Refresh List"))
             {
                 _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
-                _logger.AddLog("Quick Structures: refreshed list");
             }
 
             if (ImGui.Button("Save Current Mesh"))
             {
                 SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
                 _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
-                _logger.AddLog($"Quick Structures: saved mesh as {_quickStructureName}");
             }
             ImGui.SameLine();
             ImGui.InputText("Structure Name", ref _quickStructureName, 100);
@@ -494,7 +480,6 @@ public partial class Game1
                     _defaultMesh = mesh;
                     _quickStructureName = meshEntry.Key;
                     SetMode(MeshMode.Interact);
-                    _logger.AddLog($"Quick Structures: loaded mesh {meshEntry.Key}");
                 }
             }
             ImGui.EndDisabled();

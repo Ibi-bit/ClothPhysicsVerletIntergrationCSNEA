@@ -5,7 +5,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using VectorGraphics;
+
 namespace PhysicsCSAlevlProject;
+
 class Particle
 {
     public Vector2 Position;
@@ -75,13 +77,14 @@ public class CircleCollider : Collider
         return false;
     }
 }
+
 public class RectangleCollider(Rectangle rectangle) : Collider
 {
     public Rectangle Rectangle = rectangle;
 
     public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
     {
-        if(Rectangle.Contains(point))
+        if (Rectangle.Contains(point))
         {
             float leftDist = point.X - Rectangle.Left;
             float rightDist = Rectangle.Right - point.X;
@@ -113,8 +116,6 @@ public class RectangleCollider(Rectangle rectangle) : Collider
         return false;
     }
 }
-
-
 
 class DrawableParticle : Particle
 {
@@ -256,11 +257,8 @@ class Mesh
 
     private int _polygonInitialParticle = -1;
     private int _polygonFinalParticle = -1;
-    private List<int> _polygonVertices = new List<int>();
+    private readonly List<int> _polygonVertices = new List<int>();
     private bool _isPolygonBuilding = false;
-
-    public bool IsPolygonBuilding => _isPolygonBuilding;
-    public int PolygonVertexCount => _polygonVertices.Count;
 
     public class MeshStick : DrawableStick
     {
@@ -268,8 +266,7 @@ class Mesh
         public int P1Id;
         public int P2Id;
 
-        public MeshStick()
-            : base() { }
+        public MeshStick() { }
 
         public MeshStick(DrawableParticle p1, DrawableParticle p2, Color color, float width = 2.0f)
             : base(p1, p2, color, width) { }
@@ -284,10 +281,13 @@ class Mesh
     {
         foreach (var stick in Sticks.Values)
         {
-            if (Particles.ContainsKey(stick.P1Id) && Particles.ContainsKey(stick.P2Id))
+            if (
+                Particles.ContainsKey(stick.P1Id)
+                && Particles.TryGetValue(stick.P2Id, out var particle)
+            )
             {
                 stick.P1 = Particles[stick.P1Id];
-                stick.P2 = Particles[stick.P2Id];
+                stick.P2 = particle;
                 stick.Length = Vector2.Distance(stick.P1.Position, stick.P2.Position);
             }
         }
@@ -298,10 +298,10 @@ class Mesh
         }
         foreach (var stick in Sticks.Values)
         {
-            if (_particleToStickIds.ContainsKey(stick.P1Id))
-                _particleToStickIds[stick.P1Id].Add(stick.Id);
-            if (_particleToStickIds.ContainsKey(stick.P2Id))
-                _particleToStickIds[stick.P2Id].Add(stick.Id);
+            if (_particleToStickIds.TryGetValue(stick.P1Id, out var id))
+                id.Add(stick.Id);
+            if (_particleToStickIds.TryGetValue(stick.P2Id, out var id2))
+                id2.Add(stick.Id);
         }
     }
 
@@ -451,10 +451,17 @@ class Mesh
             return (C.Y - A.Y) * (B.X - A.X) > (B.Y - A.Y) * (C.X - A.X) ? 1 : -1;
         }
 
-        return ccw(p1, p3, p4) != ccw(p2, p3, p4) && ccw(p1, p2, p3) != ccw(p1, p2, p4);
+        return Math.Sign(ccw(p1, p3, p4)) != Math.Sign(ccw(p2, p3, p4))
+            && Math.Sign(ccw(p1, p2, p3)) != Math.Sign(ccw(p1, p2, p4));
     }
 
-    public int? AddStick(int p1Id, int p2Id, Color color, float width = 2.0f,float naturalLength = -1f)
+    public int? AddStick(
+        int p1Id,
+        int p2Id,
+        Color color,
+        float width = 2.0f,
+        float naturalLength = -1f
+    )
     {
         if (p1Id == p2Id)
             return null;
@@ -476,7 +483,6 @@ class Mesh
         if (naturalLength > 0f)
         {
             s.Length = naturalLength;
-            
         }
         Sticks[s.Id] = s;
         if (!_particleToStickIds.ContainsKey(p1Id))
@@ -487,7 +493,13 @@ class Mesh
         _particleToStickIds[p2Id].Add(s.Id);
         return s.Id;
     }
-    public void AddSticksAccrossLength(Vector2 Start, Vector2 End, int numberOfSticks,float naturalLengthRatio = 1f)
+
+    public void AddSticksAccrossLength(
+        Vector2 Start,
+        Vector2 End,
+        int numberOfSticks,
+        float naturalLengthRatio = 1f
+    )
     {
         if (numberOfSticks < 1)
             return;
@@ -547,12 +559,15 @@ class Mesh
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch, bool drawParticles, bool drawConstraints)
+    public void Draw(
+        SpriteBatch spriteBatch,
+        PrimitiveBatch primitiveBatch,
+        bool drawParticles,
+        bool drawConstraints
+    )
     {
         if (drawConstraints)
         {
-
-
             foreach (var s in Sticks.Values)
             {
                 s.Draw(spriteBatch, primitiveBatch);
@@ -573,9 +588,9 @@ class Mesh
         return AddParticle(position, isPinned ? 0f : mass, isPinned, Color.White);
     }
 
-    public int? AddStickBetween(int p1Id, int p2Id,float naturalLength = -1f)
+    public int? AddStickBetween(int p1Id, int p2Id, float naturalLength = -1f)
     {
-        return AddStick(p1Id, p2Id, Color.White,2,naturalLength);
+        return AddStick(p1Id, p2Id, Color.White, 2, naturalLength);
     }
 
     public int? FindClosestParticle(Vector2 position, float radius)
@@ -663,8 +678,8 @@ class Mesh
         CreateGridMesh(Start, End, naturalLength, mesh);
         int idWidth = (int)Math.Max(1, Math.Abs(End.X - Start.X) / naturalLength) + 1;
         int idHeight = (int)Math.Max(1, Math.Abs(End.Y - Start.Y) / naturalLength) + 1;
-            int topLeftParticleId = offsetid;
-            int topRightParticleId = offsetid + (idWidth - 1) * idHeight;
+        int topLeftParticleId = offsetid;
+        int topRightParticleId = offsetid + (idWidth - 1) * idHeight;
 
         if (mesh.Particles.ContainsKey(topLeftParticleId))
         {

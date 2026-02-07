@@ -45,7 +45,6 @@ public partial class Game1
             _paused = !_paused;
         }
 
-        // Step one physics frame when paused (press Space)
         if (
             _paused
             && keyboardState.IsKeyDown(Keys.Space)
