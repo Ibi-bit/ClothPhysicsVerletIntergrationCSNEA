@@ -476,36 +476,7 @@ public partial class Game1
             ImGui.EndDisabled();
             ImGui.EndMenu();
         }
-        if (ImGui.BeginMenu("Quick Structures"))
-        {
-            if (ImGui.Button("Refresh List"))
-            {
-                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
-            }
-
-            if (ImGui.Button("Save Current Mesh"))
-            {
-                SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
-                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
-            }
-            ImGui.SameLine();
-            ImGui.InputText("Structure Name", ref _quickStructureName, 100);
-
-            ImGui.BeginDisabled(_quickMeshes.Count == 0);
-            foreach (var meshEntry in _quickMeshes)
-            {
-                if (ImGui.MenuItem(meshEntry.Key))
-                {
-                    var mesh = meshEntry.Value;
-                    _activeMesh = mesh;
-                    _defaultMesh = mesh;
-                    _quickStructureName = meshEntry.Key;
-                    SetMode(MeshMode.Interact);
-                }
-            }
-            ImGui.EndDisabled();
-            ImGui.EndMenu();
-        }
+       
         if (ImGui.BeginMenu("Quick Settings"))
         {
             ImGui.InputFloat("Global Mass", ref _activeMesh.mass);
