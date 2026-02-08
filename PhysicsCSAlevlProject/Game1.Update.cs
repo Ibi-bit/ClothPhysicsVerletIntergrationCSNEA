@@ -41,6 +41,7 @@ public partial class Game1
                 _meshRedoHistory.Push(_activeMesh.DeepCopy());
                 _activeMesh = _meshHistory.Pop();
                 _logger.AddLog("Undid last action", ImGuiLogger.LogTypes.Info);
+                _paused = true;
             }
             else
             {
@@ -54,6 +55,7 @@ public partial class Game1
                 _meshHistory.Push(_activeMesh.DeepCopy());
                 _activeMesh = _meshRedoHistory.Pop();
                 _logger.AddLog("Redid action", ImGuiLogger.LogTypes.Info);
+                _paused = true;
             }
             else
             {
@@ -76,6 +78,16 @@ public partial class Game1
         if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
         {
             _paused = !_paused;
+            MeshHistoryPush();
+            if (_paused)
+            {
+                _logger.AddLog("Simulation paused", ImGuiLogger.LogTypes.Info);
+                
+            }
+            else
+            {
+                _logger.AddLog("Simulation resumed", ImGuiLogger.LogTypes.Info);
+            }
         }
 
         if (
@@ -91,6 +103,7 @@ public partial class Game1
         {
             _timeAccumulator += frameTime;
         }
+        
 
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);

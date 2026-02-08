@@ -344,7 +344,12 @@ public partial class Game1
 
         _activeMesh ??= _defaultMesh;
         EnsureSelectedToolValid();
-
+        if (_currentMode == MeshMode.Edit)
+        {
+            _paused = true;
+        }
+        
+        MeshHistoryPush();
         _leftPressed = false;
         _windDirectionArrow = null;
         _cutLine = null;
