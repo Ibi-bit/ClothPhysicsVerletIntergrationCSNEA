@@ -27,6 +27,10 @@ public partial class Game1 : Game
     private Rectangle _changedBounds;
     private bool _keepAspectRatio;
     private float _lockedAspectRatio;
+    
+    
+    private Stack<Mesh> _meshHistory;
+    private Stack<Mesh> _meshRedoHistory;
 
     private Mesh _activeMesh;
     private Mesh _defaultMesh;
@@ -58,6 +62,7 @@ public partial class Game1 : Game
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;
         Window.AllowUserResizing = false;
+        
     }
 
     protected override void Initialize()
@@ -68,6 +73,10 @@ public partial class Game1 : Game
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;
         _graphics.ApplyChanges();
+
+        _meshHistory = new Stack<Mesh>();
+        _meshRedoHistory = new Stack<Mesh>();
+
 
         _database = new Game1Database();
 
@@ -114,37 +123,5 @@ public partial class Game1 : Game
         _guiRenderer.RebuildFontAtlas();
     }
 
-    private DrawableParticle KeepInsideRect(DrawableParticle p, Rectangle rect, Vector2 difference)
-    {
-        bool positionChanged = false;
-
-        if (p.Position.X < 0)
-        {
-            p.Position.X = 0;
-            positionChanged = true;
-        }
-        else if (p.Position.X > rect.Width)
-        {
-            p.Position.X = rect.Width;
-            positionChanged = true;
-        }
-
-        if (p.Position.Y < 0)
-        {
-            p.Position.Y = 0;
-            positionChanged = true;
-        }
-        else if (p.Position.Y > rect.Height + difference.Y)
-        {
-            p.Position.Y = rect.Height + difference.Y;
-            positionChanged = true;
-        }
-
-        if (positionChanged)
-        {
-            p.PreviousPosition = p.Position;
-        }
-
-        return p;
-    }
+    
 }

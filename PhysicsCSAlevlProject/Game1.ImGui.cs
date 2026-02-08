@@ -342,17 +342,8 @@ public partial class Game1
     {
         _currentMode = mode;
 
-        switch (_currentMode)
-        {
-            case MeshMode.Interact:
-                _activeMesh = _defaultMesh;
-                EnsureSelectedToolValid();
-                break;
-            case MeshMode.Edit:
-                _activeMesh = _defaultMesh;
-                EnsureSelectedToolValid();
-                break;
-        }
+        _activeMesh ??= _defaultMesh;
+        EnsureSelectedToolValid();
 
         _leftPressed = false;
         _windDirectionArrow = null;

@@ -308,6 +308,63 @@ class Mesh
         }
     }
 
+    public Mesh DeepCopy()
+    {
+        var copy = new Mesh
+        {
+            stickDrawThickness = stickDrawThickness,
+            meanForceMagnitude = meanForceMagnitude,
+            forceStdDeviation = forceStdDeviation,
+            maxForceMagnitude = maxForceMagnitude,
+            springConstant = springConstant,
+            drag = drag,
+            mass = mass,
+        };
+
+        copy._nextParticleId = _nextParticleId;
+        copy._nextStickId = _nextStickId;
+        copy._polygonInitialParticle = _polygonInitialParticle;
+        copy._polygonFinalParticle = _polygonFinalParticle;
+        copy._isPolygonBuilding = _isPolygonBuilding;
+        copy._polygonVertices.AddRange(_polygonVertices);
+
+        foreach (var kvp in Particles)
+        {
+            var p = kvp.Value;
+            var cloned = new DrawableParticle(p.Position, p.Mass, p.IsPinned, p.Color)
+            {
+                Size = p.Size,
+                PreviousPosition = p.PreviousPosition,
+                AccumulatedForce = p.AccumulatedForce,
+                ID = p.ID,
+                IsSelected = p.IsSelected,
+                TotalForceMagnitude = p.TotalForceMagnitude,
+            };
+            copy.Particles[kvp.Key] = cloned;
+            copy._particleToStickIds[kvp.Key] = new HashSet<int>();
+        }
+
+        foreach (var kvp in Sticks)
+        {
+            var s = kvp.Value;
+            var cloned = new MeshStick(copy.Particles[s.P1Id], copy.Particles[s.P2Id], s.Color, s.Width)
+            {
+                Id = s.Id,
+                P1Id = s.P1Id,
+                P2Id = s.P2Id,
+                Length = s.Length,
+                IsCut = s.IsCut,
+            };
+            copy.Sticks[kvp.Key] = cloned;
+            if (copy._particleToStickIds.TryGetValue(cloned.P1Id, out var set1))
+                set1.Add(cloned.Id);
+            if (copy._particleToStickIds.TryGetValue(cloned.P2Id, out var set2))
+                set2.Add(cloned.Id);
+        }
+
+        return copy;
+    }
+
     protected int RegisterParticle(DrawableParticle particle)
     {
         if (particle == null)
@@ -358,7 +415,8 @@ class Mesh
         KeyboardState previousKeyboardState,
         MouseState mouseState,
         MouseState previousMouseState,
-        bool imguiWantsMouse
+        bool imguiWantsMouse,
+        Action beforeChange = null
     )
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
@@ -369,6 +427,7 @@ class Mesh
             && !imguiWantsMouse
         )
         {
+            beforeChange?.Invoke();
             if (!_isPolygonBuilding)
             {
                 _isPolygonBuilding = true;
@@ -397,6 +456,7 @@ class Mesh
         {
             if (_isPolygonBuilding && _polygonVertices.Count >= 3)
             {
+                beforeChange?.Invoke();
                 AddStickBetween(_polygonFinalParticle, _polygonInitialParticle);
                 ResetPolygonBuilder();
             }
@@ -716,12 +776,19 @@ class FileWriteableMesh
 
     public List<particleData> Particles = new List<particleData>();
     public List<stickData> Sticks = new List<stickData>();
+    
+    public float SpringConstant = 10000f;
+    public float Drag = 0.997f;
+    public float Mass = 1f;
 
-    // Parameterless constructor for JSON deserialization
     public FileWriteableMesh() { }
 
     public FileWriteableMesh(Mesh mesh)
     {
+        SpringConstant = mesh.springConstant;
+        Drag = mesh.drag;
+        Mass = mesh.mass;
+        
         var particleIdMap = new Dictionary<int, int>();
         foreach (var kvp in mesh.Particles)
         {
@@ -748,12 +815,22 @@ class FileWriteableMesh
     public Mesh ToMesh()
     {
         var mesh = new Mesh();
+        
+        // Restore mesh physics properties
+        mesh.springConstant = SpringConstant;
+        mesh.drag = Drag;
+        mesh.mass = Mass;
+
+        // Map from saved index (0-based) to actual particle ID
+        var indexToParticleId = new Dictionary<int, int>();
 
         if (Particles != null)
         {
-            foreach (var pData in Particles)
+            for (int i = 0; i < Particles.Count; i++)
             {
-                mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
+                var pData = Particles[i];
+                int particleId = mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
+                indexToParticleId[i] = particleId;
             }
         }
 
@@ -761,7 +838,12 @@ class FileWriteableMesh
         {
             foreach (var sData in Sticks)
             {
-                mesh.AddStick(sData.P1Id, sData.P2Id, Color.White);
+                // Convert saved indices to actual particle IDs
+                if (indexToParticleId.TryGetValue(sData.P1Id, out int p1Id) &&
+                    indexToParticleId.TryGetValue(sData.P2Id, out int p2Id))
+                {
+                    mesh.AddStick(p1Id, p2Id, Color.White);
+                }
             }
         }
 
@@ -772,14 +854,41 @@ class FileWriteableMesh
 public class Tool
 {
     public string Name;
-    public Texture2D Icon;
-    public Texture2D CursorIcon;
+    
+    public PrimitiveBatch.Shape CursorIcon;
     public Dictionary<string, object> Properties = new Dictionary<string, object>();
 
-    public Tool(string name, Texture2D icon, Texture2D cursorIcon)
+    public Tool(string name, PrimitiveBatch.Shape CursorIcon,bool Centred)
     {
         Name = name;
-        Icon = icon;
-        CursorIcon = cursorIcon;
+        
+            this.CursorIcon = CursorIcon;
+        
+        
+    }
+    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch, Vector2 cursorPosition)
+    {
+        if (CursorIcon != null)
+        {
+            if (CursorIcon is PrimitiveBatch.Rectangle rect)
+            {
+                var drawRect = new PrimitiveBatch.Rectangle(
+                    new Vector2(cursorPosition.X - rect.size.X / 2, cursorPosition.Y - rect.size.Y / 2),
+                    rect.size,
+                    rect.color
+                );
+                drawRect.Draw(spriteBatch, primitiveBatch);
+            }
+            else if (CursorIcon is PrimitiveBatch.Circle circle)
+            {
+                var drawCircle = new PrimitiveBatch.Circle(
+                    cursorPosition,
+                    circle.radius,
+                    circle.color,
+                    true
+                );
+                drawCircle.Draw(spriteBatch, primitiveBatch);
+            }
+        }
     }
 }

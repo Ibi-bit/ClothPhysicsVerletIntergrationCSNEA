@@ -31,7 +31,7 @@ public partial class Game1
         float timeRatio = 1f
     )
     {
-        float scaledK = _activeMesh.springConstant * timeRatio;
+        float scaledK = _activeMesh.springConstant * 1;
 
         foreach (var stick in sticks.Values)
         {
@@ -110,7 +110,6 @@ public partial class Game1
         foreach (var particle in _activeMesh.Particles.Values)
         {
             Vector2 totalForce = _baseForce + particle.AccumulatedForce + _windForce;
-            Vector2 previousPosition = particle.Position;
 
             particle.TotalForceMagnitude = totalForce.Length();
             forceMagnitudeSum += particle.TotalForceMagnitude;
@@ -145,23 +144,24 @@ public partial class Game1
                     acceleration += (particle.AccumulatedForce + _windForce) / _activeMesh.mass;
                 }
                 Vector2 velocity = particle.Position - particle.PreviousPosition;
-                float dragPerSubstep = MathF.Pow(_activeMesh.drag, deltaTime / FixedTimeStep);
+                
+
+
+                float substepsPerFrame = FixedTimeStep / deltaTime;
+                float dragPerSubstep = MathF.Pow(_activeMesh.drag, 1f / substepsPerFrame);
                 velocity *= dragPerSubstep;
+
+                Vector2 oldPosition = particle.Position;
 
                 particle.Position =
                     particle.Position + velocity + acceleration * (deltaTime * deltaTime);
-                // time corrected Verlet integration
-
-                // Vector2 previousPosition = particle.Position;
-
-                // float dtRatio = _previousDeltaTime > 0.0001f ?deltaTime / _previousDeltaTime : 1f;
-                // particle.Position = particle.Position +
-                //                     velocity * dtRatio + acceleration * (deltaTime * deltaTime);
 
                 particle.Position = new Vector2(
-                    float.IsNaN(particle.Position.X) ? previousPosition.X : particle.Position.X,
-                    float.IsNaN(particle.Position.Y) ? previousPosition.Y : particle.Position.Y
+                    float.IsNaN(particle.Position.X) ? oldPosition.X : particle.Position.X,
+                    float.IsNaN(particle.Position.Y) ? oldPosition.Y : particle.Position.Y
                 );
+                
+                particle.PreviousPosition = oldPosition;
             }
             Vector2 beforeCorrection = particle.Position;
             if (_selectedToolName == "Cursor Collider")
@@ -187,14 +187,12 @@ public partial class Game1
                 particle.Position.Y = _windowBounds.Height - 10;
             }
 
+            
             if (particle.Position != beforeCorrection)
             {
                 particle.PreviousPosition = particle.Position;
             }
-            else
-            {
-                particle.PreviousPosition = previousPosition;
-            }
+
         }
 
         if (totalForceCount > 0)

@@ -37,4 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MonoGame.ImGuiNet\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="JSONStructures\" />
+  </ItemGroup>
 </Project>

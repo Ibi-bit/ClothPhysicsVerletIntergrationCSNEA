@@ -20,6 +20,10 @@ public partial class Game1
             filePath = System.IO.Path.Combine(filePath, Name + ".json");
             string json = JsonConvert.SerializeObject(fileWriteableMesh, settings);
             System.IO.File.WriteAllText(filePath, json);
+            _logger.AddLog(
+                $"Saved mesh '{Name}' with {mesh.Particles.Count} particles and {mesh.Sticks.Count} sticks",
+                ImGuiLogger.LogTypes.Info
+            );
         }
         catch (Exception ex)
         {

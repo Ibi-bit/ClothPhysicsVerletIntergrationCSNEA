@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
@@ -29,28 +30,138 @@ public partial class Game1
         var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 2);
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
 
-        if (_selectedToolName == "Cursor Collider")
+        // Draw cursor radius for tools that use it
+        MouseState mouseState = Mouse.GetState();
+        Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+        bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
+
+        if (!imguiWantsMouse)
         {
-            if (_cursorCollider is CircleCollider circle)
+            float radius = 0f;
+            Color cursorColor = Color.White * 0.5f;
+            bool shouldDrawCursor = false;
+
+            if (_currentToolSet.ContainsKey(_selectedToolName))
             {
-                var cursorCollider = new PrimitiveBatch.Circle(
-                    circle.Position,
-                    circle.Radius,
-                    Color.Red,
-                    true
-                );
-                cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+                var props = _currentToolSet[_selectedToolName].Properties;
+
+                switch (_selectedToolName)
+                {
+                    case "Drag":
+                        radius = props.TryGetValue("Radius", out var dragRadius) ? (float)dragRadius : 20f;
+                        cursorColor = Color.Yellow * 0.5f;
+                        shouldDrawCursor = true;
+                        break;
+
+                    case "Pin":
+                        radius = props.TryGetValue("Radius", out var pinRadius) ? (float)pinRadius : 20f;
+                        cursorColor = Color.BlueViolet * 0.5f;
+                        shouldDrawCursor = true;
+                        break;
+
+                    case "Cut":
+                        radius = props.TryGetValue("Radius", out var cutRadius) ? (float)cutRadius : 10f;
+                        cursorColor = Color.Red * 0.5f;
+                        shouldDrawCursor = true;
+                        break;
+
+                    case "PhysicsDrag":
+                        radius = props.TryGetValue("Radius", out var physRadius) ? (float)physRadius : 20f;
+                        cursorColor = Color.Orange * 0.5f;
+                        shouldDrawCursor = true;
+                        break;
+
+                    case "Inspect Particles":
+                        radius = props.TryGetValue("Radius", out var inspectRadius) ? (float)inspectRadius : 10f;
+                        cursorColor = Color.Cyan * 0.5f;
+                        shouldDrawCursor = true;
+                        break;
+
+                    case "Cursor Collider":
+                        radius = props.TryGetValue("Radius", out var colliderRadius) ? (float)colliderRadius : 50f;
+                        string shape = props.TryGetValue("Shape", out var shapeObj) ? (string)shapeObj : "Circle";
+                        
+                        if (shape == "Circle")
+                        {
+                            var cursorCollider = new PrimitiveBatch.Circle(
+                                currentMousePos,
+                                radius,
+                                Color.Red * 0.7f,
+                                true
+                            );
+                            cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+                        }
+                        else if (shape == "Rectangle")
+                        {
+                            int size = (int)(radius * 2f);
+                            var cursorRect = new Rectangle(
+                                (int)(currentMousePos.X - size / 2f),
+                                (int)(currentMousePos.Y - size / 2f),
+                                size,
+                                size
+                            );
+                            var cursorCollider = new PrimitiveBatch.Rectangle(
+                                cursorRect,
+                                Color.Red * 0.7f,
+                                true
+                            );
+                            cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+                        }
+                        break;
+
+                    case "Add Stick Between Particles":
+                        radius = props.TryGetValue("Radius", out var stickRadius) ? (float)stickRadius : 15f;
+                        cursorColor = Color.Green * 0.5f;
+                        shouldDrawCursor = true;
+                        break;
+
+                    case "Remove Particle":
+                        radius = props.TryGetValue("Radius", out var removeRadius) ? (float)removeRadius : 10f;
+                        cursorColor = Color.Red * 0.5f;
+                        shouldDrawCursor = true;
+                        break;
+                }
+
+                if (shouldDrawCursor && radius > 0)
+                {
+                    var cursorCircleFilled = new PrimitiveBatch.Circle(
+                        currentMousePos,
+                        radius,
+                        cursorColor,
+                        true
+                    );
+                    cursorCircleFilled.Draw(_spriteBatch, _primitiveBatch);
+                    
+                   Color outlineColor = cursorColor;
+                    outlineColor.A = 255;
+                    var cursorCircleOutline = new PrimitiveBatch.Circle(
+                        currentMousePos,
+                        radius,
+                        outlineColor,
+                        false
+                    );
+                    
+                    cursorCircleOutline.Draw(_spriteBatch, _primitiveBatch);
+                }
+                else
+                {
+                    var crosshairSize = 10;
+                    var horizontalLine = new PrimitiveBatch.Line(
+                        currentMousePos - new Vector2(crosshairSize, 0),
+                        currentMousePos + new Vector2(crosshairSize, 0),
+                        cursorColor,
+                        2
+                    );
+                    var verticalLine = new PrimitiveBatch.Line(
+                        currentMousePos - new Vector2(0, crosshairSize),
+                        currentMousePos + new Vector2(0, crosshairSize),
+                        cursorColor,
+                        2
+                    );
+                    horizontalLine.Draw(_spriteBatch, _primitiveBatch);
+                    verticalLine.Draw(_spriteBatch, _primitiveBatch);
+                }
             }
-            else if (_cursorCollider is RectangleCollider rectangle)
-            {
-                var cursorCollider = new PrimitiveBatch.Rectangle(
-                    rectangle.Rectangle,
-                    Color.Red,
-                    true
-                );
-                cursorCollider.Draw(_spriteBatch, _primitiveBatch);
-            }
-            
         }
 
         _activeMesh.Draw(_spriteBatch, _primitiveBatch,_drawParticles, _drawConstraints);

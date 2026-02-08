@@ -28,6 +28,39 @@ public partial class Game1
         KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
 
+        bool ctrlHeld = keyboardState.IsKeyDown(Keys.LeftControl)
+            || keyboardState.IsKeyDown(Keys.RightControl);
+        bool shiftHeld = keyboardState.IsKeyDown(Keys.LeftShift)
+            || keyboardState.IsKeyDown(Keys.RightShift);
+
+
+        if (ctrlHeld && !shiftHeld && keyboardState.IsKeyDown(Keys.Z) && !_prevKeyboardState.IsKeyDown(Keys.Z))
+        {
+            if (_meshHistory.Count > 0)
+            {
+                _meshRedoHistory.Push(_activeMesh.DeepCopy());
+                _activeMesh = _meshHistory.Pop();
+                _logger.AddLog("Undid last action", ImGuiLogger.LogTypes.Info);
+            }
+            else
+            {
+                _logger.AddLog("No more history to undo", ImGuiLogger.LogTypes.Warning);
+            }
+        }
+        else if (ctrlHeld && shiftHeld && keyboardState.IsKeyDown(Keys.Z) && !_prevKeyboardState.IsKeyDown(Keys.Z))
+        {
+            if (_meshRedoHistory.Count > 0)
+            {
+                _meshHistory.Push(_activeMesh.DeepCopy());
+                _activeMesh = _meshRedoHistory.Pop();
+                _logger.AddLog("Redid action", ImGuiLogger.LogTypes.Info);
+            }
+            else
+            {
+                _logger.AddLog("No more history to redo", ImGuiLogger.LogTypes.Warning);
+            }
+        }
+
         if (_currentToolSet.ContainsKey("Cursor Collider"))
         {
             var props = _currentToolSet["Cursor Collider"].Properties;
@@ -62,15 +95,27 @@ public partial class Game1
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
 
+        SetCursorColliderCenter(currentMousePos);
+
         bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
 
         if (!imguiWantsMouse)
         {
+            IsMouseVisible = false;
+            if (_leftPressed && _windowBounds.Contains(_initialMousePosWhenPressed) && IsActive)
+            {
+                var clampedPos = new Vector2(
+                    MathHelper.Clamp(currentMousePos.X, 0, _windowBounds.Width),
+                    MathHelper.Clamp(currentMousePos.Y, 0, _windowBounds.Height)
+                );
+                Mouse.SetPosition((int)clampedPos.X, (int)clampedPos.Y);
+            }
             if (mouseState.LeftButton == ButtonState.Pressed && !_leftPressed)
             {
                 _leftPressed = true;
                 _initialMousePosWhenPressed = currentMousePos;
                 _previousMousePos = currentMousePos;
+
 
                 switch (_selectedToolName)
                 {
@@ -108,6 +153,8 @@ public partial class Game1
                         break;
                     case "Pin":
                         {
+                            MeshHistoryPush();
+                            
                             float pinRadius = _currentToolSet["Pin"]
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Pin"].Properties["Radius"]
@@ -117,6 +164,7 @@ public partial class Game1
                         }
                         break;
                     case "Cut":
+                        MeshHistoryPush();
                         var radius =
                             _currentToolSet["Cut"].Properties["Radius"] != null
                                 ? (float)_currentToolSet["Cut"].Properties["Radius"]
@@ -140,10 +188,6 @@ public partial class Game1
                                     _initialMousePosWhenPressed,
                                     physRadius
                                 );
-                                _meshParticlesInDragArea = GetMeshParticlesInRadius(
-                                    _initialMousePosWhenPressed,
-                                    physRadius
-                                );
                                 if (_meshParticlesInDragArea.Count == 0)
                                 {
                                     _logger.AddLog(
@@ -158,11 +202,13 @@ public partial class Game1
                         break;
                     case "Add Stick Between Particles":
                         {
+                            MeshHistoryPush();
                             HandleAddStickBetweenParticlesClick(_initialMousePosWhenPressed);
                         }
                         break;
                     case "Add Particle":
                         {
+                            MeshHistoryPush();
                             float particleMass = _currentToolSet["Add Particle"]
                                 .Properties.ContainsKey("Mass")
                                 ? (float)_currentToolSet["Add Particle"].Properties["Mass"]
@@ -180,6 +226,7 @@ public partial class Game1
                         break;
                     case "Remove Particle":
                         {
+                            MeshHistoryPush();
                             float removeRadius = _currentToolSet["Remove Particle"]
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Remove Particle"].Properties["Radius"]
@@ -205,6 +252,7 @@ public partial class Game1
                         break;
                     case "Inspect Particles":
                         {
+                            
                             float inspectRadius = _currentToolSet["Inspect Particles"]
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Inspect Particles"].Properties["Radius"]
@@ -245,6 +293,7 @@ public partial class Game1
                     && _currentMode != MeshMode.Edit
                 )
                 {
+                    MeshHistoryPush();
                     Vector2 cutDirection = currentMousePos - _initialMousePosWhenPressed;
                     float cutDistance = cutDirection.Length();
                     if (cutDistance > 5f)
@@ -281,6 +330,7 @@ public partial class Game1
                 }
                 else if (_selectedToolName == "Line Tool" && _leftPressed)
                 {
+                    MeshHistoryPush();
                     var props = _currentToolSet["Line Tool"].Properties;
                     int constraintsInLine = (int)props["Constraints in Line"];
                     float naturalLengthRatio = (float)props["Natural Length Ratio"];
@@ -300,6 +350,10 @@ public partial class Game1
                 _selectRectangle = null;
                 _windForce = Vector2.Zero;
             }
+        }
+        else
+        {
+            IsMouseVisible = true;
         }
 
         if (_selectedToolName == "Wind" && _leftPressed)
@@ -370,6 +424,7 @@ public partial class Game1
             float distance = (float)props["DistanceBetweenParticles"];
             if (keyboardState.IsKeyDown(Keys.C) && !_prevKeyboardState.IsKeyDown(Keys.C))
             {
+                MeshHistoryPush();
                 _activeMesh = Mesh.CreateGridMesh(
                     _initialMousePosWhenPressed,
                     currentMousePos,
@@ -417,7 +472,8 @@ public partial class Game1
                 _prevKeyboardState,
                 mouseState,
                 _prevMouseState,
-                imguiWantsMouse
+                imguiWantsMouse,
+                MeshHistoryPush
             );
         }
         int stepsThisFrame = 0;
@@ -445,8 +501,8 @@ public partial class Game1
                 }
                 if (!_useConstraintSolver)
                 {
-                    float timeRatio = FixedTimeStep / subDt;
-                    ApplyStickForcesDictionary(_activeMesh.Sticks, timeRatio);
+
+                    ApplyStickForcesDictionary(_activeMesh.Sticks, 1f);
                 }
                 float iterationLerpFactor = 1f / (stepsThisFrame + 1f);
 

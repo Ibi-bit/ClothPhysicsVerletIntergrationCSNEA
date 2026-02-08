@@ -4,6 +4,7 @@ using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
 
@@ -33,14 +34,14 @@ public partial class Game1
     {
         _interactTools = new Dictionary<string, Tool>
         {
-            { "Drag", new Tool("Drag", null, null) },
-            { "Pin", new Tool("Pin", null, null) },
-            { "Cut", new Tool("Cut", null, null) },
-            { "Wind", new Tool("Wind", null, null) },
-            { "PhysicsDrag", new Tool("PhysicsDrag", null, null) },
-            { "LineCut", new Tool("LineCut", null, null) },
-            { "Inspect Particles", new Tool("Inspect Particles", null, null) },
-            { "Cursor Collider", new Tool("Cursor Collider", null, null) },
+            { "Drag", new Tool("Drag", null, true) },
+            { "Pin", new Tool("Pin", null, false) },
+            { "Cut", new Tool("Cut", null, false) },
+            { "Wind", new Tool("Wind", null, false) },
+            { "PhysicsDrag", new Tool("PhysicsDrag", null, false) },
+            { "LineCut", new Tool("LineCut", null, false) },
+            { "Inspect Particles", new Tool("Inspect Particles", null, false) },
+            { "Cursor Collider", new Tool("Cursor Collider", null, false) },
         };
         foreach (var tool in _interactTools.Values)
         {
@@ -77,14 +78,14 @@ public partial class Game1
     {
         _buildTools = new Dictionary<string, Tool>
         {
-            { "Add Particle", new Tool("Add Particle", null, null) },
-            { "Add Stick Between Particles", new Tool("Add Stick Between Particles", null, null) },
-            { "Remove Particle", new Tool("Remove Particle", null, null) },
-            { "LineCut", new Tool("LineCut", null, null) },
-            { "Pin", new Tool("Pin", null, null) },
-            { "Create Grid Mesh", new Tool("Create Grid Mesh", null, null) },
-            { "Line Tool", new Tool("Line Tool", null, null) },
-            { "Add Polygon", new Tool("Add Polygon", null, null) },
+            { "Add Particle", new Tool("Add Particle", null, false) },
+            { "Add Stick Between Particles", new Tool("Add Stick Between Particles", null, false) },
+            { "Remove Particle", new Tool("Remove Particle", null, false) },
+            { "LineCut", new Tool("LineCut", null, false) },
+            { "Pin", new Tool("Pin", null, false) },
+            { "Create Grid Mesh", new Tool("Create Grid Mesh", null, false) },
+            { "Line Tool", new Tool("Line Tool", null, false) },
+            { "Add Polygon", new Tool("Add Polygon", null, false) },
         };
         foreach (var tool in _buildTools.Values)
         {
@@ -470,7 +471,7 @@ public partial class Game1
     {
         var particleIds = new List<int>();
 
-        if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
+        if (_currentMode is MeshMode.Interact or MeshMode.Edit)
         {
             foreach (var kvp in _activeMesh.Particles)
             {
@@ -697,6 +698,12 @@ public partial class Game1
                 );
             }
         }
+    }
+
+    private void MeshHistoryPush()
+    {
+        _meshHistory.Push(_activeMesh.DeepCopy());
+        _meshRedoHistory.Clear();
     }
 
     private Rectangle GetRectangleFromPoints(Vector2 point1, Vector2 point2)
