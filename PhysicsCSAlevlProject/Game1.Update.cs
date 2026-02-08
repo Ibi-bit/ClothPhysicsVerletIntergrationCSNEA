@@ -567,6 +567,8 @@ public partial class Game1
                 if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
                 {
                     particle.Color = _leftPressed ? Color.Yellow : Color.White;
+                    if(_paused)
+                        DragMeshParticles(mouseState, _leftPressed, _meshParticlesInDragArea);
                 }
             }
         }
