@@ -231,10 +231,14 @@ class DrawableStick : Stick
         line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color, Width);
     }
 
-    public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch,float stickDrawThickness= -1)
+    public void Draw(
+        SpriteBatch spriteBatch,
+        PrimitiveBatch primitiveBatch,
+        float stickDrawThickness = -1
+    )
     {
         float w = -1 != stickDrawThickness ? stickDrawThickness : Width;
-        line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color,w);
+        line = new PrimitiveBatch.Line(P1.Position, P2.Position, Color, w);
         if (!IsCut)
             line.Draw(spriteBatch, primitiveBatch);
     }
@@ -347,7 +351,12 @@ class Mesh
         foreach (var kvp in Sticks)
         {
             var s = kvp.Value;
-            var cloned = new MeshStick(copy.Particles[s.P1Id], copy.Particles[s.P2Id], s.Color, s.Width)
+            var cloned = new MeshStick(
+                copy.Particles[s.P1Id],
+                copy.Particles[s.P2Id],
+                s.Color,
+                s.Width
+            )
             {
                 Id = s.Id,
                 P1Id = s.P1Id,
@@ -633,7 +642,7 @@ class Mesh
         {
             foreach (var s in Sticks.Values)
             {
-                s.Draw(spriteBatch, primitiveBatch,stickDrawThickness);
+                s.Draw(spriteBatch, primitiveBatch, stickDrawThickness);
             }
         }
 
@@ -776,7 +785,7 @@ class FileWriteableMesh
 
     public List<particleData> Particles = new List<particleData>();
     public List<stickData> Sticks = new List<stickData>();
-    
+
     public float SpringConstant = 10000f;
     public float Drag = 0.997f;
     public float Mass = 1f;
@@ -788,7 +797,7 @@ class FileWriteableMesh
         SpringConstant = mesh.springConstant;
         Drag = mesh.drag;
         Mass = mesh.mass;
-        
+
         var particleIdMap = new Dictionary<int, int>();
         foreach (var kvp in mesh.Particles)
         {
@@ -815,7 +824,7 @@ class FileWriteableMesh
     public Mesh ToMesh()
     {
         var mesh = new Mesh();
-        
+
         // Restore mesh physics properties
         mesh.springConstant = SpringConstant;
         mesh.drag = Drag;
@@ -829,7 +838,12 @@ class FileWriteableMesh
             for (int i = 0; i < Particles.Count; i++)
             {
                 var pData = Particles[i];
-                int particleId = mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
+                int particleId = mesh.AddParticle(
+                    pData.Position,
+                    pData.Mass,
+                    pData.IsPinned,
+                    Color.White
+                );
                 indexToParticleId[i] = particleId;
             }
         }
@@ -838,9 +852,10 @@ class FileWriteableMesh
         {
             foreach (var sData in Sticks)
             {
-                // Convert saved indices to actual particle IDs
-                if (indexToParticleId.TryGetValue(sData.P1Id, out int p1Id) &&
-                    indexToParticleId.TryGetValue(sData.P2Id, out int p2Id))
+                if (
+                    indexToParticleId.TryGetValue(sData.P1Id, out int p1Id)
+                    && indexToParticleId.TryGetValue(sData.P2Id, out int p2Id)
+                )
                 {
                     mesh.AddStick(p1Id, p2Id, Color.White);
                 }
@@ -854,18 +869,17 @@ class FileWriteableMesh
 public class Tool
 {
     public string Name;
-    
+
     public PrimitiveBatch.Shape CursorIcon;
     public Dictionary<string, object> Properties = new Dictionary<string, object>();
 
-    public Tool(string name, PrimitiveBatch.Shape CursorIcon,bool Centred)
+    public Tool(string name, PrimitiveBatch.Shape CursorIcon, bool Centred)
     {
         Name = name;
-        
-            this.CursorIcon = CursorIcon;
-        
-        
+
+        this.CursorIcon = CursorIcon;
     }
+
     public void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch, Vector2 cursorPosition)
     {
         if (CursorIcon != null)
@@ -873,7 +887,10 @@ public class Tool
             if (CursorIcon is PrimitiveBatch.Rectangle rect)
             {
                 var drawRect = new PrimitiveBatch.Rectangle(
-                    new Vector2(cursorPosition.X - rect.size.X / 2, cursorPosition.Y - rect.size.Y / 2),
+                    new Vector2(
+                        cursorPosition.X - rect.size.X / 2,
+                        cursorPosition.Y - rect.size.Y / 2
+                    ),
                     rect.size,
                     rect.color
                 );
