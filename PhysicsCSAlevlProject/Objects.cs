@@ -174,31 +174,21 @@ class DrawableParticle : Particle
     }
 }
 
-class OscillatingParticle : DrawableParticle
+class OscillatingParticle(
+    Vector2 position,
+    float mass,
+    bool isPinned,
+    Color color,
+    float amplitude,
+    float frequency,
+    float angle
+) : DrawableParticle(position, mass, isPinned, color)
 {
-    public float OscillationAmplitude;
-    public float OscillationFrequency;
-    public float OscillationAngle;
-    private float _oscillationTime;
-    private Vector2 _anchorPosition;
-
-    public OscillatingParticle(
-        Vector2 position,
-        float mass,
-        bool isPinned,
-        Color color,
-        float amplitude,
-        float frequency,
-        float angle
-    )
-        : base(position, mass, isPinned, color)
-    {
-        OscillationAmplitude = amplitude;
-        OscillationFrequency = frequency;
-        OscillationAngle = angle;
-        _oscillationTime = 0f;
-        _anchorPosition = position;
-    }
+    public float OscillationAmplitude = amplitude;
+    public float OscillationFrequency = frequency;
+    public float OscillationAngle = angle;
+    private float _oscillationTime = 0f;
+    private Vector2 _anchorPosition = position;
 
     public void UpdateOscillation(float deltaTime)
     {
@@ -369,13 +359,13 @@ class Mesh
             springConstant = springConstant,
             drag = drag,
             mass = mass,
+            _nextParticleId = _nextParticleId,
+            _nextStickId = _nextStickId,
+            _polygonInitialParticle = _polygonInitialParticle,
+            _polygonFinalParticle = _polygonFinalParticle,
+            _isPolygonBuilding = _isPolygonBuilding,
         };
 
-        copy._nextParticleId = _nextParticleId;
-        copy._nextStickId = _nextStickId;
-        copy._polygonInitialParticle = _polygonInitialParticle;
-        copy._polygonFinalParticle = _polygonFinalParticle;
-        copy._isPolygonBuilding = _isPolygonBuilding;
         copy._polygonVertices.AddRange(_polygonVertices);
 
         foreach (var kvp in Particles)
@@ -482,10 +472,7 @@ class Mesh
         return id;
     }
 
-    public int NextParticle
-    {
-        get { return _nextParticleId; }
-    }
+    public int NextParticle => _nextParticleId;
 
     public void ResetMesh()
     {
