@@ -174,6 +174,52 @@ class DrawableParticle : Particle
     }
 }
 
+class OscillatingParticle : DrawableParticle
+{
+    public float OscillationAmplitude;
+    public float OscillationFrequency;
+    public float OscillationAngle;
+    private float _oscillationTime;
+    private Vector2 _anchorPosition;
+
+    public OscillatingParticle(
+        Vector2 position,
+        float mass,
+        bool isPinned,
+        Color color,
+        float amplitude,
+        float frequency,
+        float angle
+    )
+        : base(position, mass, isPinned, color)
+    {
+        OscillationAmplitude = amplitude;
+        OscillationFrequency = frequency;
+        OscillationAngle = angle;
+        _oscillationTime = 0f;
+        _anchorPosition = position;
+    }
+
+    public void UpdateOscillation(float deltaTime)
+    {
+        _oscillationTime += deltaTime;
+        float oscillationOffset =
+            OscillationAmplitude
+            * MathF.Sin(2 * MathF.PI * OscillationFrequency * _oscillationTime);
+
+        Position = new Vector2(
+            _anchorPosition.X + oscillationOffset * MathF.Cos(OscillationAngle - MathF.PI / 2),
+            _anchorPosition.Y + oscillationOffset * MathF.Sin(OscillationAngle - MathF.PI / 2)
+        );
+        PreviousPosition = Position;
+    }
+
+    public void SetAnchorPosition(Vector2 newAnchor)
+    {
+        _anchorPosition = newAnchor;
+    }
+}
+
 class Stick
 {
     public Particle P1;
@@ -335,15 +381,41 @@ class Mesh
         foreach (var kvp in Particles)
         {
             var p = kvp.Value;
-            var cloned = new DrawableParticle(p.Position, p.Mass, p.IsPinned, p.Color)
+            DrawableParticle cloned;
+
+            if (p is OscillatingParticle op)
             {
-                Size = p.Size,
-                PreviousPosition = p.PreviousPosition,
-                AccumulatedForce = p.AccumulatedForce,
-                ID = p.ID,
-                IsSelected = p.IsSelected,
-                TotalForceMagnitude = p.TotalForceMagnitude,
-            };
+                var clonedOp = new OscillatingParticle(
+                    op.Position,
+                    op.Mass,
+                    op.IsPinned,
+                    op.Color,
+                    op.OscillationAmplitude,
+                    op.OscillationFrequency,
+                    op.OscillationAngle
+                )
+                {
+                    Size = op.Size,
+                    PreviousPosition = op.PreviousPosition,
+                    AccumulatedForce = op.AccumulatedForce,
+                    ID = op.ID,
+                    IsSelected = op.IsSelected,
+                    TotalForceMagnitude = op.TotalForceMagnitude,
+                };
+                cloned = clonedOp;
+            }
+            else
+            {
+                cloned = new DrawableParticle(p.Position, p.Mass, p.IsPinned, p.Color)
+                {
+                    Size = p.Size,
+                    PreviousPosition = p.PreviousPosition,
+                    AccumulatedForce = p.AccumulatedForce,
+                    ID = p.ID,
+                    IsSelected = p.IsSelected,
+                    TotalForceMagnitude = p.TotalForceMagnitude,
+                };
+            }
             copy.Particles[kvp.Key] = cloned;
             copy._particleToStickIds[kvp.Key] = new HashSet<int>();
         }
@@ -394,10 +466,11 @@ class Mesh
         float mass,
         bool isPinned,
         Color color,
-        Vector2? size = null
+        Vector2? size = null,
+        OscillatingParticle oscillatingProps = null
     )
     {
-        var particle = new DrawableParticle(position, mass, isPinned, color);
+        var particle = oscillatingProps ?? new DrawableParticle(position, mass, isPinned, color);
         if (size.HasValue)
         {
             particle.Size = size.Value;
@@ -407,6 +480,11 @@ class Mesh
         Particles[id] = particle;
         _particleToStickIds[id] = new HashSet<int>();
         return id;
+    }
+
+    public int NextParticle
+    {
+        get { return _nextParticleId; }
     }
 
     public void ResetMesh()
@@ -777,6 +855,13 @@ class FileWriteableMesh
         public bool IsPinned;
     }
 
+    public class OscillatingParticleData : particleData
+    {
+        public float OscillationAmplitude;
+        public float OscillationFrequency;
+        public float OscillationAngle;
+    }
+
     public class stickData
     {
         public int P1Id;
@@ -784,6 +869,7 @@ class FileWriteableMesh
     }
 
     public List<particleData> Particles = new List<particleData>();
+
     public List<stickData> Sticks = new List<stickData>();
 
     public float SpringConstant = 10000f;
@@ -803,6 +889,21 @@ class FileWriteableMesh
         {
             var p = kvp.Value;
             particleIdMap[kvp.Key] = Particles.Count;
+            if (p is OscillatingParticle op)
+            {
+                Particles.Add(
+                    new OscillatingParticleData
+                    {
+                        Position = p.Position,
+                        Mass = p.Mass,
+                        IsPinned = p.IsPinned,
+                        OscillationAmplitude = op.OscillationAmplitude,
+                        OscillationFrequency = op.OscillationFrequency,
+                        OscillationAngle = op.OscillationAngle,
+                    }
+                );
+                continue;
+            }
             Particles.Add(
                 new particleData
                 {
@@ -825,12 +926,10 @@ class FileWriteableMesh
     {
         var mesh = new Mesh();
 
-        // Restore mesh physics properties
         mesh.springConstant = SpringConstant;
         mesh.drag = Drag;
         mesh.mass = Mass;
 
-        // Map from saved index (0-based) to actual particle ID
         var indexToParticleId = new Dictionary<int, int>();
 
         if (Particles != null)
@@ -838,13 +937,30 @@ class FileWriteableMesh
             for (int i = 0; i < Particles.Count; i++)
             {
                 var pData = Particles[i];
-                int particleId = mesh.AddParticle(
-                    pData.Position,
-                    pData.Mass,
-                    pData.IsPinned,
-                    Color.White
-                );
-                indexToParticleId[i] = particleId;
+                if (pData is OscillatingParticleData opData)
+                {
+                    int particleId = mesh.AddParticle(
+                        opData.Position,
+                        opData.Mass,
+                        opData.IsPinned,
+                        Color.White,
+                        null,
+                        new OscillatingParticle(
+                            opData.Position,
+                            opData.Mass,
+                            opData.IsPinned,
+                            Color.White,
+                            opData.OscillationAmplitude,
+                            opData.OscillationFrequency,
+                            opData.OscillationAngle
+                        )
+                    );
+                    indexToParticleId[i] = particleId;
+                    continue;
+                }
+
+                int Id = mesh.AddParticle(pData.Position, pData.Mass, pData.IsPinned, Color.White);
+                indexToParticleId[i] = Id;
             }
         }
 

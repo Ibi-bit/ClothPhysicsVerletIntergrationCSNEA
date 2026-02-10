@@ -4,6 +4,7 @@ using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
@@ -17,13 +18,17 @@ public partial class Game1
         _currentMode == MeshMode.Edit ? _buildTools : _interactTools;
     private float _dragRadius;
     private List<int> _inspectedParticles;
+    private List<int> _openedInspectedParticles;
     private int? _stickToolFirstParticleId;
+
+    private List<Collider> _colliders;
 
     private void InitializeTools()
     {
         _selectedToolName = "Drag";
         _dragRadius = 20f;
         _inspectedParticles = new List<int>();
+        _openedInspectedParticles = new List<int>();
         _stickToolFirstParticleId = null;
 
         InitializeInteractTools();
@@ -40,7 +45,7 @@ public partial class Game1
             { "Wind", new Tool("Wind", null, false) },
             { "PhysicsDrag", new Tool("PhysicsDrag", null, false) },
             { "LineCut", new Tool("LineCut", null, false) },
-            { "Inspect Particles", new Tool("Inspect Particles", null, false) },
+            { "Select Particles", new Tool("Select Particles", null, false) },
             { "Cursor Collider", new Tool("Cursor Collider", null, false) },
         };
         foreach (var tool in _interactTools.Values)
@@ -65,10 +70,10 @@ public partial class Game1
         _interactTools["LineCut"].Properties["MinDistance"] = 5f;
         _interactTools["LineCut"].Properties["Thickness"] = 3f;
 
-        _interactTools["Inspect Particles"].Properties["Radius"] = 10f;
-        _interactTools["Inspect Particles"].Properties["IsLog"] = false;
-        _interactTools["Inspect Particles"].Properties["Clear When Use"] = false;
-        _interactTools["Inspect Particles"].Properties["RectangleSelect"] = true;
+        _interactTools["Select Particles"].Properties["Radius"] = 10f;
+        _interactTools["Select Particles"].Properties["IsLog"] = false;
+        _interactTools["Select Particles"].Properties["Clear When Use"] = false;
+        _interactTools["Select Particles"].Properties["RectangleSelect"] = true;
 
         _interactTools["Cursor Collider"].Properties["Radius"] = 50f;
         _interactTools["Cursor Collider"].Properties["Shape"] = "Circle";
@@ -86,6 +91,7 @@ public partial class Game1
             { "Create Grid Mesh", new Tool("Create Grid Mesh", null, false) },
             { "Line Tool", new Tool("Line Tool", null, false) },
             { "Add Polygon", new Tool("Add Polygon", null, false) },
+            { "Oscillating Particle", new Tool("Oscillating Particle", null, false) },
         };
         foreach (var tool in _buildTools.Values)
         {
@@ -94,12 +100,15 @@ public partial class Game1
         _buildTools["Add Particle"].Properties["SnapToGrid"] = true;
         _buildTools["Add Stick Between Particles"].Properties["Radius"] = 15f;
         _buildTools["Remove Particle"].Properties["Radius"] = 10f;
-        _interactTools["LineCut"].Properties["MinDistance"] = 5f;
-        _interactTools["LineCut"].Properties["Thickness"] = 3f;
+        _buildTools["LineCut"].Properties["MinDistance"] = 5f;
+        _buildTools["LineCut"].Properties["Thickness"] = 3f;
         _buildTools["Pin"].Properties["Radius"] = 20f;
         _buildTools["Create Grid Mesh"].Properties["DistanceBetweenParticles"] = 10f;
         _buildTools["Line Tool"].Properties["Constraints in Line"] = 100;
         _buildTools["Line Tool"].Properties["Natural Length Ratio"] = 1.0f;
+        _buildTools["Oscillating Particle"].Properties["Amplitude"] = 20f;
+        _buildTools["Oscillating Particle"].Properties["Frequency"] = 1f;
+        _buildTools["Oscillating Particle"].Properties["Angle"] = 0f;
     }
 
     private void DrawToolMenuItems()
@@ -225,9 +234,9 @@ public partial class Game1
                 props["Thickness"] = thickness;
             }
         }
-        else if (_selectedToolName == "Inspect Particles")
+        else if (_selectedToolName == "Select Particles")
         {
-            var props = _currentToolSet["Inspect Particles"].Properties;
+            var props = _currentToolSet["Select Particles"].Properties;
             float radius = (float)props["Radius"];
             if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
             {
@@ -314,6 +323,25 @@ public partial class Game1
             if (ImGui.InputFloat("Natural Length Ratio", ref naturalLengthRatio, 0.1f, 3.0f))
             {
                 props["Natural Length Ratio"] = naturalLengthRatio;
+            }
+        }
+        else if (string.Equals(_selectedToolName, "Oscillating Particle", StringComparison.Ordinal))
+        {
+            var props = _currentToolSet["Oscillating Particle"].Properties;
+            float amplitude = (float)props["Amplitude"];
+            if (ImGui.SliderFloat("Amplitude", ref amplitude, 1f, 100f))
+            {
+                props["Amplitude"] = amplitude;
+            }
+            float frequency = (float)props["Frequency"];
+            if (ImGui.SliderFloat("Frequency", ref frequency, 0.1f, 10f))
+            {
+                props["Frequency"] = frequency;
+            }
+            float angle = (float)props["Angle"];
+            if (ImGui.SliderAngle("Angle (degrees)", ref angle, 0f, 360f))
+            {
+                props["Angle"] = angle;
             }
         }
     }
@@ -583,7 +611,7 @@ public partial class Game1
 
     private void InspectParticlesInRadiusWindow(Vector2 center, float radius)
     {
-        if ((bool)_interactTools["Inspect Particles"].Properties["Clear When Use"])
+        if ((bool)_interactTools["Select Particles"].Properties["Clear When Use"])
             _inspectedParticles.Clear();
         foreach (var kvp in _activeMesh.Particles)
         {

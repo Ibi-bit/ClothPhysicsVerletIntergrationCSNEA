@@ -201,9 +201,42 @@ public partial class Game1
             ImGui.End();
             return;
         }
+        ImGui.Text("Press a particle index to inspect");
+        float windowWidth = ImGui.GetContentRegionAvail().X;
 
-        ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -30));
-        foreach (var index in _inspectedParticles)
+        float cursorX = 0f;
+        ImGui.BeginChild("ParticleIndexList", new System.Numerics.Vector2(0, 80));
+        foreach (int pID in _inspectedParticles)
+        {
+            bool isOpen = _openedInspectedParticles.Contains(pID);
+            float itemWidth = ImGui.CalcTextSize(pID.ToString()).X + 30f;
+
+            if (cursorX + itemWidth > windowWidth && cursorX > 0f)
+            {
+                cursorX = 0f;
+            }
+            else if (cursorX > 0f)
+            {
+                ImGui.SameLine();
+            }
+
+            if (ImGui.Checkbox(pID.ToString(), ref isOpen))
+            {
+                if (isOpen)
+                {
+                    _openedInspectedParticles.Add(pID);
+                }
+                else
+                {
+                    _openedInspectedParticles.Remove(pID);
+                }
+            }
+            cursorX += itemWidth + ImGui.GetStyle().ItemSpacing.X;
+        }
+        ImGui.EndChild();
+
+        ImGui.BeginChild("ParticleInfoScrollArea", new System.Numerics.Vector2(0, -100));
+        foreach (var index in _openedInspectedParticles)
         {
             if (!_activeMesh.Particles.TryGetValue(index, out var p))
             {
@@ -348,7 +381,7 @@ public partial class Game1
         {
             _paused = true;
         }
-        
+
         MeshHistoryPush();
         _leftPressed = false;
         _windDirectionArrow = null;
@@ -481,7 +514,7 @@ public partial class Game1
             ImGui.EndDisabled();
             ImGui.EndMenu();
         }
-       
+
         if (ImGui.BeginMenu("Quick Settings"))
         {
             ImGui.InputFloat("Global Mass", ref _activeMesh.mass);
@@ -721,102 +754,4 @@ public partial class Game1
     }
 }
 
-class ImGuiLogger
-{
-    public enum LogTypes
-    {
-        Info,
-        Warning,
-        Error,
-    };
 
-    class MessageLog
-    {
-        public string Message;
-        public int Count;
-        public LogTypes Type;
-    }
-
-    readonly Queue<MessageLog> _logs = new();
-    public bool autoScrollLogs = true;
-    public bool wrapText = true;
-
-    // public bool clearLogs = false;
-    readonly Dictionary<LogTypes, bool> _logTypeVisibility = new Dictionary<LogTypes, bool>
-    {
-        { LogTypes.Info, true },
-        { LogTypes.Warning, true },
-        { LogTypes.Error, true },
-    };
-
-    public void AddLog(string message, LogTypes type = LogTypes.Info)
-    {
-        var lastLog = _logs.LastOrDefault();
-        if (lastLog != null && lastLog.Message == message && lastLog.Type == type)
-        {
-            lastLog.Count++;
-        }
-        else
-        {
-            _logs.Enqueue(
-                new MessageLog
-                {
-                    Message = message,
-                    Count = 1,
-                    Type = type,
-                }
-            );
-        }
-    }
-
-    public void DrawLogs(ref bool openWindow)
-    {
-        if (!ImGui.Begin("Logs", ref openWindow))
-        {
-            ImGui.End();
-            return;
-        }
-        bool infoVisible = _logTypeVisibility[LogTypes.Info];
-        if (ImGui.Checkbox("Info", ref infoVisible))
-            _logTypeVisibility[LogTypes.Info] = infoVisible;
-        ImGui.SameLine();
-        bool errorVisible = _logTypeVisibility[LogTypes.Error];
-        if (ImGui.Checkbox("Error", ref errorVisible))
-            _logTypeVisibility[LogTypes.Error] = errorVisible;
-        ImGui.SameLine();
-        bool warningVisible = _logTypeVisibility[LogTypes.Warning];
-        if (ImGui.Checkbox("Warning", ref warningVisible))
-            _logTypeVisibility[LogTypes.Warning] = warningVisible;
-
-        ImGui.Separator();
-        ImGui.Checkbox("Auto Scroll Logs", ref autoScrollLogs);
-
-        ImGui.Checkbox("Wrap Text", ref wrapText);
-
-        ImGui.SeparatorText("Logs");
-        ImGui.BeginChild("LogScrollArea", new System.Numerics.Vector2(0, 0));
-        if (wrapText)
-            ImGui.PushTextWrapPos(0.0f);
-        foreach (var log in _logs)
-        {
-            string displayMessage = log.Count > 1 ? $"{log.Message} (x{log.Count})" : log.Message;
-            var color = log.Type switch
-            {
-                LogTypes.Info => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
-                LogTypes.Warning => new System.Numerics.Vector4(1f, 1f, 0f, 1f),
-                LogTypes.Error => new System.Numerics.Vector4(1f, 0f, 0f, 1f),
-                _ => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
-            };
-            if (_logTypeVisibility[log.Type])
-                ImGui.TextColored(color, displayMessage);
-        }
-        if (wrapText)
-            ImGui.PopTextWrapPos();
-        if (autoScrollLogs)
-        {
-            ImGui.SetScrollHereY(1.0f);
-        }
-        ImGui.EndChild();
-        ImGui.End();
-    }
-}

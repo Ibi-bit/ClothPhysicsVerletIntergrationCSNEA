@@ -109,6 +109,13 @@ public partial class Game1
 
         foreach (var particle in _activeMesh.Particles.Values)
         {
+            if (particle is OscillatingParticle op)
+            {
+                op.UpdateOscillation(deltaTime);
+                particle.AccumulatedForce = Vector2.Zero;
+                continue;
+            }
+
             Vector2 totalForce = _baseForce + particle.AccumulatedForce + _windForce;
 
             particle.TotalForceMagnitude = totalForce.Length();

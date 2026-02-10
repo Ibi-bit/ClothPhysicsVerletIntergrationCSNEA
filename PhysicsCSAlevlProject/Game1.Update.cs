@@ -27,14 +27,18 @@ public partial class Game1
     {
         KeyboardState keyboardState = Keyboard.GetState();
         float frameTime = (float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.1);
+        ProcessDebugCommands();
+        bool ctrlHeld =
+            keyboardState.IsKeyDown(Keys.LeftControl) || keyboardState.IsKeyDown(Keys.RightControl);
+        bool shiftHeld =
+            keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
 
-        bool ctrlHeld = keyboardState.IsKeyDown(Keys.LeftControl)
-            || keyboardState.IsKeyDown(Keys.RightControl);
-        bool shiftHeld = keyboardState.IsKeyDown(Keys.LeftShift)
-            || keyboardState.IsKeyDown(Keys.RightShift);
-
-
-        if (ctrlHeld && !shiftHeld && keyboardState.IsKeyDown(Keys.Z) && !_prevKeyboardState.IsKeyDown(Keys.Z))
+        if (
+            ctrlHeld
+            && !shiftHeld
+            && keyboardState.IsKeyDown(Keys.Z)
+            && !_prevKeyboardState.IsKeyDown(Keys.Z)
+        )
         {
             if (_meshHistory.Count > 0)
             {
@@ -48,7 +52,12 @@ public partial class Game1
                 _logger.AddLog("No more history to undo", ImGuiLogger.LogTypes.Warning);
             }
         }
-        else if (ctrlHeld && shiftHeld && keyboardState.IsKeyDown(Keys.Z) && !_prevKeyboardState.IsKeyDown(Keys.Z))
+        else if (
+            ctrlHeld
+            && shiftHeld
+            && keyboardState.IsKeyDown(Keys.Z)
+            && !_prevKeyboardState.IsKeyDown(Keys.Z)
+        )
         {
             if (_meshRedoHistory.Count > 0)
             {
@@ -82,7 +91,6 @@ public partial class Game1
             if (_paused)
             {
                 _logger.AddLog("Simulation paused", ImGuiLogger.LogTypes.Info);
-                
             }
             else
             {
@@ -103,7 +111,6 @@ public partial class Game1
         {
             _timeAccumulator += frameTime;
         }
-        
 
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
@@ -128,7 +135,6 @@ public partial class Game1
                 _leftPressed = true;
                 _initialMousePosWhenPressed = currentMousePos;
                 _previousMousePos = currentMousePos;
-
 
                 switch (_selectedToolName)
                 {
@@ -167,7 +173,7 @@ public partial class Game1
                     case "Pin":
                         {
                             MeshHistoryPush();
-                            
+
                             float pinRadius = _currentToolSet["Pin"]
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Pin"].Properties["Radius"]
@@ -233,7 +239,7 @@ public partial class Game1
                                 Color.White
                             );
                             _logger.AddLog(
-                                $"Added particle at {_initialMousePosWhenPressed} (mass {particleMass})"
+                                $"Added particle at {_initialMousePosWhenPressed} (mass {particleMass}) (ID {_activeMesh.NextParticle - 1})"
                             );
                         }
                         break;
@@ -252,7 +258,7 @@ public partial class Game1
                             if (pS.Count > 0)
                             {
                                 _activeMesh.RemoveParticle(pS[0]);
-                                _logger.AddLog($"Removed particle {pS[0]}");
+                                _logger.AddLog($"Removed particle {pS[0]} (ID {pS[0]})");
                             }
                             else
                             {
@@ -265,7 +271,6 @@ public partial class Game1
                         break;
                     case "Inspect Particles":
                         {
-                            
                             float inspectRadius = _currentToolSet["Inspect Particles"]
                                 .Properties.ContainsKey("Radius")
                                 ? (float)_currentToolSet["Inspect Particles"].Properties["Radius"]
@@ -286,6 +291,50 @@ public partial class Game1
                                     _initialMousePosWhenPressed,
                                     inspectRadius
                                 );
+                        }
+                        break;
+                    case "Oscillating Particle":
+                        {
+                            MeshHistoryPush();
+                            float mass = _currentToolSet["Oscillating Particle"]
+                                .Properties.ContainsKey("Mass")
+                                ? (float)_currentToolSet["Oscillating Particle"].Properties["Mass"]
+                                : 1f;
+                            float amplitude = _currentToolSet["Oscillating Particle"]
+                                .Properties.ContainsKey("Amplitude")
+                                ? (float)
+                                    _currentToolSet["Oscillating Particle"].Properties["Amplitude"]
+                                : 20f;
+                            float frequency = _currentToolSet["Oscillating Particle"]
+                                .Properties.ContainsKey("Frequency")
+                                ? (float)
+                                    _currentToolSet["Oscillating Particle"].Properties["Frequency"]
+                                : 1f;
+                            float angle = _currentToolSet["Oscillating Particle"]
+                                .Properties.ContainsKey("Angle")
+                                ? (float)_currentToolSet["Oscillating Particle"].Properties["Angle"]
+                                : 0f;
+
+                            var op = new OscillatingParticle(
+                                _initialMousePosWhenPressed,
+                                mass,
+                                true,
+                                Color.White,
+                                amplitude,
+                                frequency,
+                                angle
+                            );
+                            _activeMesh.AddParticle(
+                                _initialMousePosWhenPressed,
+                                mass,
+                                true,
+                                Color.White,
+                                null,
+                                op
+                            );
+                            _logger.AddLog(
+                                $"Added oscillating particle at {_initialMousePosWhenPressed} (mass {mass}, amplitude {amplitude}, frequency {frequency})"
+                            );
                         }
                         break;
                 }
@@ -322,23 +371,23 @@ public partial class Game1
                     }
                 }
                 else if (
-                    _selectedToolName == "Inspect Particles"
+                    _selectedToolName == "Select Particles"
                     && _leftPressed
                     && _currentMode != MeshMode.Edit
-                    && _currentToolSet["Inspect Particles"]
+                    && _currentToolSet["Select Particles"]
                         .Properties.ContainsKey("RectangleSelect")
-                    && (bool)_currentToolSet["Inspect Particles"].Properties["RectangleSelect"]
+                    && (bool)_currentToolSet["Select Particles"].Properties["RectangleSelect"]
                 )
                 {
                     InspectParticlesInRectangle(
                         _initialMousePosWhenPressed,
                         currentMousePos,
-                        _currentToolSet["Inspect Particles"].Properties.ContainsKey("IsLog")
-                            && (bool)_currentToolSet["Inspect Particles"].Properties["IsLog"],
-                        _currentToolSet["Inspect Particles"]
+                        _currentToolSet["Select Particles"].Properties.ContainsKey("IsLog")
+                            && (bool)_currentToolSet["Select Particles"].Properties["IsLog"],
+                        _currentToolSet["Select Particles"]
                             .Properties.ContainsKey("Clear When Use")
                             && (bool)
-                                _currentToolSet["Inspect Particles"].Properties["Clear When Use"]
+                                _currentToolSet["Select Particles"].Properties["Clear When Use"]
                     );
                 }
                 else if (_selectedToolName == "Line Tool" && _leftPressed)
@@ -459,9 +508,9 @@ public partial class Game1
                 _selectRectangle = null;
             }
         }
-        else if (_selectedToolName == "Inspect Particles")
+        else if (_selectedToolName == "Select Particles")
         {
-            var props = _currentToolSet["Inspect Particles"].Properties;
+            var props = _currentToolSet["Select Particles"].Properties;
 
             if (props.ContainsKey("RectangleSelect") && _leftPressed)
             {
@@ -514,7 +563,6 @@ public partial class Game1
                 }
                 if (!_useConstraintSolver)
                 {
-
                     ApplyStickForcesDictionary(_activeMesh.Sticks, 1f);
                 }
                 float iterationLerpFactor = 1f / (stepsThisFrame + 1f);
@@ -567,7 +615,7 @@ public partial class Game1
                 if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
                 {
                     particle.Color = _leftPressed ? Color.Yellow : Color.White;
-                    if(_paused)
+                    if (_paused)
                         DragMeshParticles(mouseState, _leftPressed, _meshParticlesInDragArea);
                 }
             }

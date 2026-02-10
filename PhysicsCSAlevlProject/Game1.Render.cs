@@ -48,39 +48,53 @@ public partial class Game1
                 switch (_selectedToolName)
                 {
                     case "Drag":
-                        radius = props.TryGetValue("Radius", out var dragRadius) ? (float)dragRadius : 20f;
+                        radius = props.TryGetValue("Radius", out var dragRadius)
+                            ? (float)dragRadius
+                            : 20f;
                         cursorColor = Color.Yellow * 0.5f;
                         shouldDrawCursor = true;
                         break;
 
                     case "Pin":
-                        radius = props.TryGetValue("Radius", out var pinRadius) ? (float)pinRadius : 20f;
+                        radius = props.TryGetValue("Radius", out var pinRadius)
+                            ? (float)pinRadius
+                            : 20f;
                         cursorColor = Color.BlueViolet * 0.5f;
                         shouldDrawCursor = true;
                         break;
 
                     case "Cut":
-                        radius = props.TryGetValue("Radius", out var cutRadius) ? (float)cutRadius : 10f;
+                        radius = props.TryGetValue("Radius", out var cutRadius)
+                            ? (float)cutRadius
+                            : 10f;
                         cursorColor = Color.Red * 0.5f;
                         shouldDrawCursor = true;
                         break;
 
                     case "PhysicsDrag":
-                        radius = props.TryGetValue("Radius", out var physRadius) ? (float)physRadius : 20f;
+                        radius = props.TryGetValue("Radius", out var physRadius)
+                            ? (float)physRadius
+                            : 20f;
                         cursorColor = Color.Orange * 0.5f;
                         shouldDrawCursor = true;
                         break;
 
                     case "Inspect Particles":
-                        radius = props.TryGetValue("Radius", out var inspectRadius) ? (float)inspectRadius : 10f;
+                        radius = props.TryGetValue("Radius", out var inspectRadius)
+                            ? (float)inspectRadius
+                            : 10f;
                         cursorColor = Color.Cyan * 0.5f;
                         shouldDrawCursor = true;
                         break;
 
                     case "Cursor Collider":
-                        radius = props.TryGetValue("Radius", out var colliderRadius) ? (float)colliderRadius : 50f;
-                        string shape = props.TryGetValue("Shape", out var shapeObj) ? (string)shapeObj : "Circle";
-                        
+                        radius = props.TryGetValue("Radius", out var colliderRadius)
+                            ? (float)colliderRadius
+                            : 50f;
+                        string shape = props.TryGetValue("Shape", out var shapeObj)
+                            ? (string)shapeObj
+                            : "Circle";
+
                         if (shape == "Circle")
                         {
                             var cursorCollider = new PrimitiveBatch.Circle(
@@ -110,13 +124,17 @@ public partial class Game1
                         break;
 
                     case "Add Stick Between Particles":
-                        radius = props.TryGetValue("Radius", out var stickRadius) ? (float)stickRadius : 15f;
+                        radius = props.TryGetValue("Radius", out var stickRadius)
+                            ? (float)stickRadius
+                            : 15f;
                         cursorColor = Color.Green * 0.5f;
                         shouldDrawCursor = true;
                         break;
 
                     case "Remove Particle":
-                        radius = props.TryGetValue("Radius", out var removeRadius) ? (float)removeRadius : 10f;
+                        radius = props.TryGetValue("Radius", out var removeRadius)
+                            ? (float)removeRadius
+                            : 10f;
                         cursorColor = Color.Red * 0.5f;
                         shouldDrawCursor = true;
                         break;
@@ -131,8 +149,8 @@ public partial class Game1
                         true
                     );
                     cursorCircleFilled.Draw(_spriteBatch, _primitiveBatch);
-                    
-                   Color outlineColor = cursorColor;
+
+                    Color outlineColor = cursorColor;
                     outlineColor.A = 255;
                     var cursorCircleOutline = new PrimitiveBatch.Circle(
                         currentMousePos,
@@ -140,7 +158,7 @@ public partial class Game1
                         outlineColor,
                         false
                     );
-                    
+
                     cursorCircleOutline.Draw(_spriteBatch, _primitiveBatch);
                 }
                 else
@@ -164,7 +182,7 @@ public partial class Game1
             }
         }
 
-        _activeMesh.Draw(_spriteBatch, _primitiveBatch,_drawParticles, _drawConstraints);
+        _activeMesh.Draw(_spriteBatch, _primitiveBatch, _drawParticles, _drawConstraints);
 
         if (_windDirectionArrow != null)
         {
