@@ -1,11 +1,5 @@
 -- PostgreSQL Schema for Stick Simulation Database
--- Run the DROP/CREATE DATABASE commands separately (outside a transaction)
--- Then connect to stick_simulation and run the rest
-
-DROP DATABASE IF EXISTS stick_simulation;
-CREATE DATABASE stick_simulation;
-
-
+-- Database is created by Docker, just create the tables
 
 CREATE TYPE role_type AS ENUM ('teacher', 'student');
 
@@ -19,6 +13,7 @@ CREATE TABLE Users
 (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
+    pass VARCHAR(100) NOT NULL,
     role_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (role_id) REFERENCES Roles(id)

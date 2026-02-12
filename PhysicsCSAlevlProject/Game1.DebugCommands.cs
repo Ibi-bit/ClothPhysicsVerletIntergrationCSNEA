@@ -25,6 +25,12 @@ public partial class Game1
                 case "Get":
                     ProccessGetCommands(command);
                     break;
+                case "Database":
+                    ProccessDatabaseCommands(command);
+                    break;
+                case "Exit":
+                    Exit();
+                    break;
                 default:
                     _logger.AddLog(
                         $"Unknown command path: {string.Join(".", command.CommandPath)}",
@@ -118,9 +124,32 @@ public partial class Game1
         }
     }
 
-    private void ProccessGetCommands(ImGuiLogger.Command command)
+    private void ProccessGetCommands(ImGuiLogger.Command command) { }
+
+    private void ProccessDatabaseCommands(ImGuiLogger.Command command)
     {
-        
+        if (command.ExCommand == "TestConnection")
+        {
+            try
+            {
+                _database.TestConnection();
+                _logger.AddLog("Database connection successful");
+            }
+            catch (Exception ex)
+            {
+                _logger.AddLog(
+                    $"Database connection failed: {ex.Message}",
+                    ImGuiLogger.LogTypes.Error
+                );
+            }
+        }
+        else
+        {
+            _logger.AddLog(
+                $"Unknown command: Database.{command.ExCommand}",
+                ImGuiLogger.LogTypes.Error
+            );
+        }
     }
 }
 
@@ -150,8 +179,10 @@ public class ImGuiLogger
     readonly Queue<MessageLog> _logs = new();
     readonly Queue<Command> _commands = new();
     private string _commandInput = "";
+    private List<String> _logStringHistory = new();
+    
 
-    // Command history
+    
     private readonly List<string> _commandHistory = new();
     private int _historyIndex = -1;
     private string _savedInput = "";
@@ -185,6 +216,9 @@ public class ImGuiLogger
                     Type = type,
                 }
             );
+            var log = _logs.Peek();
+            string displayMessage = log.Count > 1 ? $"{log.Message} (x{log.Count})" : log.Message;
+            _logStringHistory.Add(displayMessage);
         }
     }
 
@@ -310,7 +344,6 @@ public class ImGuiLogger
                 && !string.IsNullOrWhiteSpace(_commandInput)
             )
             {
-                // Add to history (avoid duplicates at the end)
                 if (_commandHistory.Count == 0 || _commandHistory[^1] != _commandInput)
                 {
                     _commandHistory.Add(_commandInput);
@@ -328,6 +361,7 @@ public class ImGuiLogger
         foreach (var log in _logs)
         {
             string displayMessage = log.Count > 1 ? $"{log.Message} (x{log.Count})" : log.Message;
+            _logStringHistory.Add(displayMessage);
             var color = log.Type switch
             {
                 LogTypes.Info => new System.Numerics.Vector4(1f, 1f, 1f, 1f),
@@ -347,5 +381,26 @@ public class ImGuiLogger
         ImGui.EndChild();
 
         ImGui.End();
+    }
+    public string GetLogsAsString()
+    {
+        
+            
+        
+            
+        string historyString = string.Join(Environment.NewLine, _logStringHistory);
+        return historyString;
+    }
+    public void SaveLogsToFile(string filePath)
+    {
+        try
+        {
+            System.IO.File.WriteAllText(filePath, GetLogsAsString());
+            AddLog($"Logs saved to {filePath}");
+        }
+        catch (Exception ex)
+        {
+            AddLog($"Failed to save logs to {filePath}: {ex.Message}", LogTypes.Error);
+        }
     }
 }

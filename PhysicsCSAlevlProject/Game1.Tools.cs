@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Xml;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -21,7 +23,7 @@ public partial class Game1
     private List<int> _openedInspectedParticles;
     private int? _stickToolFirstParticleId;
 
-    private List<Collider> _colliders;
+    
 
     private void InitializeTools()
     {
@@ -92,6 +94,7 @@ public partial class Game1
             { "Line Tool", new Tool("Line Tool", null, false) },
             { "Add Polygon", new Tool("Add Polygon", null, false) },
             { "Oscillating Particle", new Tool("Oscillating Particle", null, false) },
+            { "Place Collider", new Tool("Place Collider", null, false) }
         };
         foreach (var tool in _buildTools.Values)
         {
@@ -109,6 +112,21 @@ public partial class Game1
         _buildTools["Oscillating Particle"].Properties["Amplitude"] = 20f;
         _buildTools["Oscillating Particle"].Properties["Frequency"] = 1f;
         _buildTools["Oscillating Particle"].Properties["Angle"] = 0f;
+        var colliderObject = new Dictionary<string, object>();
+        colliderObject["Circle"] = new Dictionary<string, object>
+        {
+            { "Radius", 20f }
+        };
+        colliderObject["Rectangle"] = new Dictionary<string, object>
+        {
+            { "Width", 40f },
+            { "Height", 20f },
+            { "Rotation", 0f }
+        };
+        _buildTools["Place Collider"].Properties["Object"] = colliderObject;
+        _buildTools["Place Collider"].Properties["SelectedColliderType"] = "Circle";
+
+
     }
 
     private void DrawToolMenuItems()
@@ -160,6 +178,7 @@ public partial class Game1
             {
                 props["InfiniteParticles"] = infiniteParticles;
             }
+            
 
             int maxParticles = (int)props["MaxParticles"];
             string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
@@ -343,6 +362,55 @@ public partial class Game1
             {
                 props["Angle"] = angle;
             }
+        }
+        else if (string.Equals(_selectedToolName, "Place Collider", StringComparison.Ordinal))
+        {
+                var props = _currentToolSet["Place Collider"].Properties;
+                var colliderObject = (Dictionary<string, object>)props["Object"];
+    
+                string[] colliderTypes = colliderObject.Keys.ToArray();
+                int colliderTypeIndex = Array.IndexOf(colliderTypes, (string)props["SelectedColliderType"]);
+                if (colliderTypeIndex < 0)
+                    colliderTypeIndex = 0;
+                if (ImGui.Combo("Collider Type", ref colliderTypeIndex, colliderTypes, colliderTypes.Length))
+                {
+                    props["SelectedColliderType"] = colliderTypes[colliderTypeIndex];
+                }
+    
+                string selectedColliderType = (string)props["SelectedColliderType"];
+                if (selectedColliderType == "Circle")
+                {
+                    var circleProps = (Dictionary<string, object>)colliderObject["Circle"];
+                    float radius = (float)circleProps["Radius"];
+                    if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+                    {
+                        circleProps["Radius"] = radius;
+                    }
+                }
+                else if (selectedColliderType == "Rectangle")
+                {
+                    var rectProps = (Dictionary<string, object>)colliderObject["Rectangle"];
+                    float width = (float)rectProps["Width"];
+                    float height = (float)rectProps["Height"];
+                    float rotation = (float)rectProps["Rotation"];
+    
+                    if (ImGui.SliderFloat("Width", ref width, 1f, 200f))
+                    {
+                        rectProps["Width"] = width;
+                    }
+                    if (ImGui.SliderFloat("Height", ref height, 1f, 200f))
+                    {
+                        rectProps["Height"] = height;
+                    }
+                    if (ImGui.SliderAngle("Rotation", ref rotation, -180f, 180f))
+                    {
+                        float normalizedRotation = rotation;
+                        if (normalizedRotation < 0)
+                            normalizedRotation += MathF.PI * 2;
+                        rectProps["Rotation"] = normalizedRotation;
+                    }
+                }
+            
         }
     }
 

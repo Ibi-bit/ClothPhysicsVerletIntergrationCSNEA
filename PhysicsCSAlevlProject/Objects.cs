@@ -50,6 +50,8 @@ public abstract class Collider
 {
     public Vector2 Position;
     public abstract bool ContainsPoint(Vector2 point, out Vector2 closestPoint);
+
+    public virtual void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch) { }
 }
 
 public class CircleCollider : Collider
@@ -75,6 +77,12 @@ public class CircleCollider : Collider
 
         closestPoint = point;
         return false;
+    }
+
+    public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    {
+        var circle = new PrimitiveBatch.Circle(Position, Radius, Color.Red, false); 
+        circle.Draw(spriteBatch, primitiveBatch);
     }
 }
 
@@ -114,6 +122,98 @@ public class RectangleCollider(Rectangle rectangle) : Collider
         closestPoint = point;
 
         return false;
+    }
+
+    public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    {
+        var rect = new PrimitiveBatch.Rectangle(Rectangle, Color.Red); 
+        rect.Draw(spriteBatch, primitiveBatch); 
+    }
+}
+
+public class SeperatedAxisRectangleCollider : Collider
+{
+    Vector2[] Axis = new Vector2[4];
+    public float HalfWidth;
+    public float HalfHeight;
+    private Vector2 Position;
+    private float angle;
+    private PrimitiveBatch.Rectangle rectangleDraw;
+
+    public float Angle
+    {
+        get { return angle; }
+        set
+        {
+            angle = value;
+            SetAxis();
+        }
+    }
+
+    private void SetAxis()
+    {
+        float cos = MathF.Cos(angle);
+        float sin = MathF.Sin(angle);
+
+        Axis[0] = new Vector2(cos, sin);
+        Axis[1] = new Vector2(-sin, cos);
+        Axis[2] = -Axis[0];
+        Axis[3] = -Axis[1];
+    }
+
+    public SeperatedAxisRectangleCollider(Rectangle rectangle, float angle)
+    {
+        HalfWidth = rectangle.Width / 2f;
+        HalfHeight = rectangle.Height / 2f;
+        Position = new Vector2(
+            rectangle.X + rectangle.Width / 2,
+            rectangle.Y + rectangle.Height / 2
+        );
+        Angle = angle;
+        rectangleDraw = new PrimitiveBatch.Rectangle(rectangle, Color.Red);
+        rectangleDraw.rotation = angle;
+
+        SetAxis();
+    }
+
+    public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
+    {
+        Vector2 localPoint = point - Position;
+        float xProjection = Vector2.Dot(localPoint, Axis[0]);
+        float yProjection = Vector2.Dot(localPoint, Axis[1]);
+
+        float clampedX = Math.Clamp(xProjection, -HalfWidth, HalfWidth);
+        float clampedY = Math.Clamp(yProjection, -HalfHeight, HalfHeight);
+
+        bool isOutside =
+            (Math.Abs(xProjection - clampedX) > 0.001f)
+            || (Math.Abs(yProjection - clampedY) > 0.001f);
+        if (isOutside)
+        {
+            closestPoint = point;
+            return false;
+        }
+
+        float dx = HalfWidth - Math.Abs(xProjection);
+        float dy = HalfHeight - Math.Abs(yProjection);
+
+        if (dx < dy)
+        {
+            float targetX = Math.Sign(xProjection) * HalfWidth;
+            closestPoint = Position + Axis[0] * targetX + Axis[1] * yProjection;
+        }
+        else
+        {
+            float targetY = Math.Sign(yProjection) * HalfHeight;
+            closestPoint = Position + Axis[0] * xProjection + Axis[1] * targetY;
+        }
+
+        return true;
+    }
+
+    public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    {
+        rectangleDraw.Draw(spriteBatch, primitiveBatch);
     }
 }
 
@@ -303,6 +403,8 @@ class Mesh
     private readonly List<int> _polygonVertices = new List<int>();
     private bool _isPolygonBuilding = false;
 
+    public List<Collider> Colliders;
+
     public class MeshStick : DrawableStick
     {
         public int Id;
@@ -409,6 +511,11 @@ class Mesh
             copy.Particles[kvp.Key] = cloned;
             copy._particleToStickIds[kvp.Key] = new HashSet<int>();
         }
+        Colliders ??= new List<Collider>();
+        copy.Colliders = new List<Collider>();
+        copy.Colliders.AddRange(Colliders);
+        
+        
 
         foreach (var kvp in Sticks)
         {

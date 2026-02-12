@@ -14,7 +14,10 @@ public partial class Game1 : Game
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
     public static ImGuiRenderer _guiRenderer;
+    
     public Game1Database _database;
+    
+    public string _currentAssignmentTitle;
 
     private bool _leftPressed;
     private Vector2 _initialMousePosWhenPressed;
@@ -79,6 +82,8 @@ public partial class Game1 : Game
 
 
         _database = new Game1Database();
+        _currentAssignmentTitle = "";
+        
 
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
@@ -121,6 +126,21 @@ public partial class Game1 : Game
 
         // _font = Content.Load<SpriteFont>("Font");
         _guiRenderer.RebuildFontAtlas();
+    }
+
+    protected override void OnExiting(object sender, ExitingEventArgs args)
+    {
+        
+        OnExit();
+        base.OnExiting(sender, args);
+    }
+
+    private void OnExit()
+    {
+        
+        _logger?.AddLog("Application closing...", ImGuiLogger.LogTypes.Info);
+        
+        _logger.SaveLogsToFile("logs.log");
     }
 
     

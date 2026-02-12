@@ -15,6 +15,8 @@ public partial class Game1
     private bool _useConstraintSolver;
     private int _subSteps;
     private int _stepsToStep;
+    
+
 
     private void InitializePhysics()
     {
@@ -22,6 +24,13 @@ public partial class Game1
         _baseForce = new Vector2(0, 980f);
         _timeAccumulator = 0f;
         _useConstraintSolver = false;
+        _activeMesh.Colliders = new();
+        _activeMesh.Colliders.Add(
+            
+            new SeperatedAxisRectangleCollider(
+                new Rectangle(200, 300, 400, 20),
+                Single.Pi/4f
+            ));
 
         _subSteps = 50;
     }
@@ -174,6 +183,18 @@ public partial class Game1
             if (_selectedToolName == "Cursor Collider")
             {
                 _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
+            }
+
+            if (!isBeingDragged)
+            {
+                foreach (var collider in _activeMesh.Colliders)
+                {
+                    Vector2 clampedPosition;
+                    if (collider.ContainsPoint(particle.Position, out clampedPosition))
+                    {
+                        particle.Position = clampedPosition;
+                    }
+                }
             }
 
             if (particle.Position.X < 0)

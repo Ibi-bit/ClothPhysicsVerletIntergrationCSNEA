@@ -30,15 +30,38 @@ public partial class Game1
         var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 2);
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
 
-        // Draw cursor radius for tools that use it
+        
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
         bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
 
+        
+
+        foreach (var collider in _activeMesh.Colliders)
+        {
+            collider.Draw(_spriteBatch, _primitiveBatch);
+        }
+
+        _activeMesh.Draw(_spriteBatch, _primitiveBatch, _drawParticles, _drawConstraints);
+
+        if (_windDirectionArrow != null)
+        {
+            _windDirectionArrow.Draw(_spriteBatch, _primitiveBatch);
+        }
+
+        if (_cutLine != null)
+        {
+            _cutLine.Draw(_spriteBatch, _primitiveBatch);
+        }
+        if (_selectRectangle != null)
+        {
+            _selectRectangle.Draw(_spriteBatch, _primitiveBatch);
+        }
         if (!imguiWantsMouse)
         {
+            const float cursorAlpha = 0.4f;
             float radius = 0f;
-            Color cursorColor = Color.White * 0.5f;
+            Color cursorColor = Color.White * cursorAlpha;
             bool shouldDrawCursor = false;
 
             if (_currentToolSet.ContainsKey(_selectedToolName))
@@ -51,7 +74,7 @@ public partial class Game1
                         radius = props.TryGetValue("Radius", out var dragRadius)
                             ? (float)dragRadius
                             : 20f;
-                        cursorColor = Color.Yellow * 0.5f;
+                        cursorColor = Color.Yellow * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
 
@@ -59,7 +82,7 @@ public partial class Game1
                         radius = props.TryGetValue("Radius", out var pinRadius)
                             ? (float)pinRadius
                             : 20f;
-                        cursorColor = Color.BlueViolet * 0.5f;
+                        cursorColor = Color.BlueViolet * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
 
@@ -67,7 +90,7 @@ public partial class Game1
                         radius = props.TryGetValue("Radius", out var cutRadius)
                             ? (float)cutRadius
                             : 10f;
-                        cursorColor = Color.Red * 0.5f;
+                        cursorColor = Color.Red * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
 
@@ -75,7 +98,7 @@ public partial class Game1
                         radius = props.TryGetValue("Radius", out var physRadius)
                             ? (float)physRadius
                             : 20f;
-                        cursorColor = Color.Orange * 0.5f;
+                        cursorColor = Color.Orange * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
 
@@ -83,7 +106,7 @@ public partial class Game1
                         radius = props.TryGetValue("Radius", out var inspectRadius)
                             ? (float)inspectRadius
                             : 10f;
-                        cursorColor = Color.Cyan * 0.5f;
+                        cursorColor = Color.Cyan * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
 
@@ -100,7 +123,7 @@ public partial class Game1
                             var cursorCollider = new PrimitiveBatch.Circle(
                                 currentMousePos,
                                 radius,
-                                Color.Red * 0.7f,
+                                Color.Red * cursorAlpha,
                                 true
                             );
                             cursorCollider.Draw(_spriteBatch, _primitiveBatch);
@@ -116,7 +139,7 @@ public partial class Game1
                             );
                             var cursorCollider = new PrimitiveBatch.Rectangle(
                                 cursorRect,
-                                Color.Red * 0.7f,
+                                Color.Red * cursorAlpha,
                                 true
                             );
                             cursorCollider.Draw(_spriteBatch, _primitiveBatch);
@@ -127,7 +150,7 @@ public partial class Game1
                         radius = props.TryGetValue("Radius", out var stickRadius)
                             ? (float)stickRadius
                             : 15f;
-                        cursorColor = Color.Green * 0.5f;
+                        cursorColor = Color.Green * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
 
@@ -135,7 +158,7 @@ public partial class Game1
                         radius = props.TryGetValue("Radius", out var removeRadius)
                             ? (float)removeRadius
                             : 10f;
-                        cursorColor = Color.Red * 0.5f;
+                        cursorColor = Color.Red * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
                 }
@@ -150,12 +173,10 @@ public partial class Game1
                     );
                     cursorCircleFilled.Draw(_spriteBatch, _primitiveBatch);
 
-                    Color outlineColor = cursorColor;
-                    outlineColor.A = 255;
                     var cursorCircleOutline = new PrimitiveBatch.Circle(
                         currentMousePos,
                         radius,
-                        outlineColor,
+                        cursorColor,
                         false
                     );
 
@@ -181,26 +202,11 @@ public partial class Game1
                 }
             }
         }
-
-        _activeMesh.Draw(_spriteBatch, _primitiveBatch, _drawParticles, _drawConstraints);
-
-        if (_windDirectionArrow != null)
-        {
-            _windDirectionArrow.Draw(_spriteBatch, _primitiveBatch);
-        }
-
-        if (_cutLine != null)
-        {
-            _cutLine.Draw(_spriteBatch, _primitiveBatch);
-        }
-        if (_selectRectangle != null)
-        {
-            _selectRectangle.Draw(_spriteBatch, _primitiveBatch);
-        }
         _spriteBatch.End();
         ImGuiDraw(gameTime);
         // HandleModeSelection();
 
         base.Draw(gameTime);
     }
+    
 }

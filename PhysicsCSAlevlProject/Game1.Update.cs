@@ -136,6 +136,7 @@ public partial class Game1
                 _initialMousePosWhenPressed = currentMousePos;
                 _previousMousePos = currentMousePos;
 
+                float radius;
                 switch (_selectedToolName)
                 {
                     case "Drag":
@@ -184,7 +185,7 @@ public partial class Game1
                         break;
                     case "Cut":
                         MeshHistoryPush();
-                        var radius =
+                        radius =
                             _currentToolSet["Cut"].Properties["Radius"] != null
                                 ? (float)_currentToolSet["Cut"].Properties["Radius"]
                                 : 10f;
@@ -337,6 +338,58 @@ public partial class Game1
                             );
                         }
                         break;
+                    case "Place Collider":
+                        var properties = _currentToolSet["Place Collider"].Properties;
+                        if (properties["SelectedColliderType"] == null)
+                            break;
+                        if (properties["SelectedColliderType"].ToString() == "Circle")
+                        {
+                            MeshHistoryPush();
+                            radius = properties.ContainsKey("Radius")
+                                ? (float)properties["Radius"]
+                                : 20f;
+                            var collider = new CircleCollider(_initialMousePosWhenPressed, radius);
+                            _activeMesh.Colliders.Add(collider);
+                            _logger.AddLog(
+                                $"Placed circle collider at {_initialMousePosWhenPressed} with radius {radius}"
+                            );
+                        }
+                        else if (properties["SelectedColliderType"].ToString() == "Rectangle")
+                        {
+                            var colliderObject = properties["Object"] as Dictionary<string, object>;
+                            var rectProps = colliderObject != null
+                                && colliderObject.TryGetValue("Rectangle", out var rectObj)
+                                && rectObj is Dictionary<string, object> rectDict
+                                ? rectDict
+                                : null;
+
+                            float height = rectProps != null && rectProps.TryGetValue("Height", out var heightObj)
+                                ? Convert.ToSingle(heightObj)
+                                : 20f;
+                            float width = rectProps != null && rectProps.TryGetValue("Width", out var widthObj)
+                                ? Convert.ToSingle(widthObj)
+                                : 20f;
+                            float angle = rectProps != null && rectProps.TryGetValue("Rotation", out var angleObj)
+                                ? Convert.ToSingle(angleObj)
+                                : 0f;
+
+                            MeshHistoryPush();
+                            var collider = new SeperatedAxisRectangleCollider(
+                                new Rectangle(
+                                    (int)(_initialMousePosWhenPressed.X-width/2f ),
+                                    (int)(_initialMousePosWhenPressed.Y-height/2f),
+                                    (int)width,
+                                    (int)height
+                                ),
+                                angle
+                            );
+                            _activeMesh.Colliders.Add(collider);
+                            _logger.AddLog(
+                                $"Placed rectangle collider at {_initialMousePosWhenPressed} with width {width} and height {height}"
+                            );
+                        }
+
+                        break;
                 }
             }
             else if (mouseState.LeftButton == ButtonState.Released)
@@ -374,8 +427,7 @@ public partial class Game1
                     _selectedToolName == "Select Particles"
                     && _leftPressed
                     && _currentMode != MeshMode.Edit
-                    && _currentToolSet["Select Particles"]
-                        .Properties.ContainsKey("RectangleSelect")
+                    && _currentToolSet["Select Particles"].Properties.ContainsKey("RectangleSelect")
                     && (bool)_currentToolSet["Select Particles"].Properties["RectangleSelect"]
                 )
                 {
@@ -384,8 +436,7 @@ public partial class Game1
                         currentMousePos,
                         _currentToolSet["Select Particles"].Properties.ContainsKey("IsLog")
                             && (bool)_currentToolSet["Select Particles"].Properties["IsLog"],
-                        _currentToolSet["Select Particles"]
-                            .Properties.ContainsKey("Clear When Use")
+                        _currentToolSet["Select Particles"].Properties.ContainsKey("Clear When Use")
                             && (bool)
                                 _currentToolSet["Select Particles"].Properties["Clear When Use"]
                     );

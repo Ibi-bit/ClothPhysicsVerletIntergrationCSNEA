@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 
@@ -16,6 +17,8 @@ public partial class Game1
     private bool _showSignInWindow;
     private bool _showLoggerWindow;
     private bool _showConfirmNewMeshPopup;
+    private bool _showSaveAssignmentPopup;
+    private bool _showTeacherAssignmentsWindow;
 
     private ImGuiLogger _logger;
     private string _meshName;
@@ -33,7 +36,20 @@ public partial class Game1
     private bool _capsActive;
     private bool _altHeld;
 
-    private int _signedInUserId;
+    private bool _LocalorRemoteStructureTab;
+
+    private Game1Database.User _currentUser;
+    private string _userInputUserId;
+    private string _password;
+    private Game1Database.Assignment _selectedAssignment;
+
+    private List<Game1Database.StructureInfo> _remoteStructures = new();
+    private string _remoteSaveName = "MyStructure";
+
+    
+    private List<Game1Database.User> _allTeachers = new();
+    private Dictionary<int, List<Game1Database.Assignment>> _teacherAssignments = new();
+    private int _selectedTeacherTabIndex = 0;
 
     private void InitializeImGui()
     {
@@ -44,6 +60,7 @@ public partial class Game1
         _showSignInWindow = false;
         _showLoggerWindow = false;
         _showConfirmNewMeshPopup = false;
+        _showTeacherAssignmentsWindow = false;
 
         _buttonSteps = 10;
 
@@ -95,7 +112,9 @@ public partial class Game1
             },
         };
 
-        _signedInUserId = -1;
+        
+        _userInputUserId = "";
+        _password = "";
     }
 
     private void ImGuiDraw(GameTime gameTime)
@@ -135,6 +154,10 @@ public partial class Game1
         {
             DrawSignInWindow();
         }
+        if (_showTeacherAssignmentsWindow)
+        {
+            DrawTeacherAssignmentsWindow();
+        }
         if (_inspectedParticles.Count > 0)
         {
             DrawInspectParticleWindow();
@@ -154,6 +177,12 @@ public partial class Game1
             ImGui.OpenPopup("ConfirmNewMeshPopup");
             _showConfirmNewMeshPopup = false;
         }
+        if(_showSaveAssignmentPopup && _selectedAssignment != null)
+        {
+            ImGui.OpenPopup("SaveToAssignmentPopup");
+            _showSaveAssignmentPopup = false;
+        }
+        PopUpSaveProjectToAssignment(_selectedAssignment);
 
         if (ImGui.BeginPopupModal("ConfirmNewMeshPopup"))
         {
@@ -224,10 +253,13 @@ public partial class Game1
             {
                 if (isOpen)
                 {
+                    _activeMesh.Particles[pID].Color = Color.Red;
                     _openedInspectedParticles.Add(pID);
                 }
                 else
                 {
+                    _activeMesh.Particles[pID].Color = Color.White;
+
                     _openedInspectedParticles.Remove(pID);
                 }
             }
@@ -278,26 +310,46 @@ public partial class Game1
             return;
         }
 
-        if (_signedInUserId == -1)
+        if (_currentUser == null)
         {
             ImGui.Text("Enter User ID to Sign In:");
-            string userIdInput = "";
-            ImGui.InputText("User ID", ref userIdInput, 20);
+
+            ImGui.InputText("User ID", ref _userInputUserId, 20);
+            ImGui.InputText("Password", ref _password, 20);
+            
+
             if (ImGui.Button("Sign In"))
             {
-                if (int.TryParse(userIdInput, out int userId))
+                _currentUser = _database.GetUser(_userInputUserId);
+                if (_currentUser != null)
                 {
-                    _signedInUserId = userId;
-                    _showSignInWindow = false;
+                    if (_currentUser.Password == _password)
+                    {
+                        _logger.AddLog(
+                            $"Signed in {_currentUser.RoleId}: {_currentUser.Username} with the ID:{_currentUser.Id}"
+                        );
+                    }
+                    else
+                    {
+                        _logger.AddLog("Incorrect password", ImGuiLogger.LogTypes.Error);
+                        _currentUser = null;
+                        _password = "";
+                    }
+                    
+                }
+                else
+                {
+                    _logger.AddLog("Failed to Sign in", ImGuiLogger.LogTypes.Error);
                 }
             }
         }
         else
         {
-            ImGui.Text($"Signed in as User ID: {_signedInUserId}");
+            ImGui.Text($"Signed in as User ID:{_currentUser.Id}");
             if (ImGui.Button("Sign Out"))
             {
-                _signedInUserId = -1;
+                _currentUser = null;
+                _logger.AddLog("Signed out");
             }
         }
 
@@ -341,33 +393,31 @@ public partial class Game1
 
     private void ToolSwitchingImGui()
     {
-        if (_ctrlHeld)
+        if (!_ctrlHeld) return;
+        List<string> toolNames = _currentToolSet.Keys.ToList();
+        int currentIndex = toolNames.IndexOf(_selectedToolName);
+        if (ImGui.IsKeyPressed(ImGuiKey.T))
         {
-            List<string> toolNames = _currentToolSet.Keys.ToList();
-            int currentIndex = toolNames.IndexOf(_selectedToolName);
-            if (ImGui.IsKeyPressed(ImGuiKey.T))
-            {
-                int nextIndex = (currentIndex + 1) % toolNames.Count;
-                _selectedToolName = toolNames[nextIndex];
-                _logger.AddLog($"Switched to tool: {_selectedToolName}");
-            }
-            else if (_shiftHeld && ImGui.IsKeyPressed(ImGuiKey.T))
-            {
-                int nextIndex = (currentIndex - 1 + toolNames.Count) % toolNames.Count;
-                _selectedToolName = toolNames[nextIndex];
-                _logger.AddLog($"Switched to tool: {_selectedToolName}");
-            }
-            for (int i = 0; i < toolNames.Count; i++)
-            {
-                var toolName = toolNames[i];
-                uint color =
-                    toolName == _selectedToolName
-                        ? ImGui.GetColorU32(new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f))
-                        : ImGui.GetColorU32(ImGuiCol.Text);
-                ImGui
-                    .GetForegroundDrawList()
-                    .AddText(new System.Numerics.Vector2(10, 60 + i * 18), color, toolName);
-            }
+            int nextIndex = (currentIndex + 1) % toolNames.Count;
+            _selectedToolName = toolNames[nextIndex];
+            _logger.AddLog($"Switched to tool: {_selectedToolName}");
+        }
+        else if (_shiftHeld && ImGui.IsKeyPressed(ImGuiKey.T))
+        {
+            int nextIndex = (currentIndex - 1 + toolNames.Count) % toolNames.Count;
+            _selectedToolName = toolNames[nextIndex];
+            _logger.AddLog($"Switched to tool: {_selectedToolName}");
+        }
+        for (int i = 0; i < toolNames.Count; i++)
+        {
+            var toolName = toolNames[i];
+            uint color =
+                toolName == _selectedToolName
+                    ? ImGui.GetColorU32(new System.Numerics.Vector4(0.2f, 1f, 0.2f, 1f))
+                    : ImGui.GetColorU32(ImGuiCol.Text);
+            ImGui
+                .GetForegroundDrawList()
+                .AddText(new System.Numerics.Vector2(10, 60 + i * 18), color, toolName);
         }
     }
 
@@ -429,6 +479,7 @@ public partial class Game1
             {
                 _paused = !_paused;
             }
+
             ImGui.SameLine();
             ImGui.PushStyleColor(
                 ImGuiCol.Button,
@@ -438,6 +489,7 @@ public partial class Game1
             {
                 _activeMesh.ResetMesh();
             }
+
             ImGui.PopStyleColor();
             ImGui.BeginDisabled(!_paused);
 
@@ -445,6 +497,7 @@ public partial class Game1
             {
                 _stepsToStep += _buttonSteps;
             }
+
             ImGui.SameLine();
             ImGui.InputInt("Steps to Step", ref _buttonSteps, 1, 100);
 
@@ -452,12 +505,6 @@ public partial class Game1
             ImGui.EndMenu();
         }
 
-        if (ImGui.BeginMenu("Edit"))
-        {
-            if (ImGui.MenuItem("Undo")) { }
-            if (ImGui.MenuItem("Redo")) { }
-            ImGui.EndMenu();
-        }
         if (ImGui.BeginMenu("Mode"))
         {
             if (ImGui.MenuItem("Interact", null, _currentMode == MeshMode.Interact))
@@ -468,6 +515,26 @@ public partial class Game1
             {
                 SetMode(MeshMode.Edit);
             }
+            ImGui.EndMenu();
+        }
+
+        if (ImGui.BeginMenu("Assignments"))
+        {
+            if (ImGui.MenuItem("Browse by Teacher"))
+            {
+                _showTeacherAssignmentsWindow = true;
+                if (_allTeachers.Count == 0)
+                {
+                    _allTeachers = _database.GetTeachersWithInfo();
+                    foreach (var teacher in _allTeachers)
+                    {
+                        _teacherAssignments[teacher.Id] = _database.GetAssignmentsForTeacher(teacher.Id);
+                    }
+                }
+            }
+            ImGui.Separator();
+            DrawAssignmentMenuItems();
+            
             ImGui.EndMenu();
         }
 
@@ -487,31 +554,8 @@ public partial class Game1
         }
         if (ImGui.BeginMenu("Quick Structures"))
         {
-            if (ImGui.Button("Refresh List"))
-            {
-                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
-            }
+            QuickStructureMenu();
 
-            if (ImGui.Button("Save Current Mesh"))
-            {
-                SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
-                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
-            }
-            ImGui.SameLine();
-            ImGui.InputText("Structure Name", ref _quickStructureName, 100);
-            ImGui.BeginDisabled(_quickMeshes.Count == 0);
-            foreach (var meshEntry in _quickMeshes)
-            {
-                if (ImGui.MenuItem(meshEntry.Key))
-                {
-                    var mesh = meshEntry.Value;
-                    _activeMesh = mesh;
-                    _defaultMesh = mesh;
-                    _quickStructureName = meshEntry.Key;
-                    SetMode(MeshMode.Interact);
-                }
-            }
-            ImGui.EndDisabled();
             ImGui.EndMenu();
         }
 
@@ -558,6 +602,143 @@ public partial class Game1
         }
 
         ImGui.EndMainMenuBar();
+    }
+
+    private void QuickStructureMenu()
+    {
+        if (
+            ImGui.Button(
+                $"Switch to {(_LocalorRemoteStructureTab ? "Local" : "Remote")} Structures"
+            )
+        )
+        {
+            _LocalorRemoteStructureTab = !_LocalorRemoteStructureTab;
+        }
+
+        ImGui.Separator();
+
+        if (!_LocalorRemoteStructureTab)
+        {
+            // Local structures tab
+            ImGui.Text("Local Structures:");
+
+            if (ImGui.Button("Refresh List"))
+            {
+                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+            }
+
+            if (ImGui.Button("Save Current Mesh"))
+            {
+                SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
+                _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
+            }
+            
+
+            ImGui.SameLine();
+            ImGui.InputText("Structure Name", ref _quickStructureName, 100);
+
+            ImGui.BeginChild("QuickStructureLocalList", new System.Numerics.Vector2(0, 200));
+            ImGui.BeginDisabled(_quickMeshes.Count == 0);
+            foreach (var meshEntry in _quickMeshes)
+            {
+                if (ImGui.MenuItem(meshEntry.Key))
+                {
+                    var mesh = meshEntry.Value;
+                    _activeMesh = mesh;
+                    _defaultMesh = mesh;
+                    _quickStructureName = meshEntry.Key;
+                    SetMode(MeshMode.Interact);
+                }
+            }
+            ImGui.EndDisabled();
+            ImGui.EndChild();
+        }
+        else
+        {
+            ImGui.Separator();
+            ImGui.Text("Remote Structures (Database):");
+
+            if (_currentUser != null)
+            {
+                ImGui.BeginChild("QuickStructureRemote", new System.Numerics.Vector2(0, 200));
+
+                ImGui.InputText("Save Name", ref _remoteSaveName, 100);
+                ImGui.SameLine();
+                if (ImGui.Button("Save to Database"))
+                {
+                    try
+                    {
+                        string json = SaveMeshToJsonString(_activeMesh);
+                        int structureId = _database.SaveStructureWithName(
+                            _currentUser.Id,
+                            json,
+                            _remoteSaveName
+                        );
+                        _logger.AddLog($"Saved structure to database (ID: {structureId})");
+                        _remoteStructures = _database.GetStructuresForUser(_currentUser.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.AddLog(
+                            $"Failed to save to database: {ex.Message}",
+                            ImGuiLogger.LogTypes.Error
+                        );
+                    }
+                }
+
+                ImGui.Separator();
+
+                if (ImGui.Button("Refresh Remote List"))
+                {
+                    try
+                    {
+                        _remoteStructures = _database.GetStructuresForUser(_currentUser.Id);
+                        _logger.AddLog($"Loaded {_remoteStructures.Count} remote structures");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.AddLog(
+                            $"Failed to load remote structures: {ex.Message}",
+                            ImGuiLogger.LogTypes.Error
+                        );
+                    }
+                }
+
+                foreach (var structure in _remoteStructures)
+                {
+                    if (ImGui.Selectable(structure.DisplayName))
+                    {
+                        try
+                        {
+                            string json = _database.GetStructureContent(structure.Id);
+                            if (!string.IsNullOrEmpty(json))
+                            {
+                                _activeMesh = LoadMeshFromJsonString(json);
+                                _defaultMesh = _activeMesh;
+                                SetMode(MeshMode.Interact);
+                                _logger.AddLog($"Loaded structure: {structure.AssignmentTitle}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.AddLog(
+                                $"Failed to load structure: {ex.Message}",
+                                ImGuiLogger.LogTypes.Error
+                            );
+                        }
+                    }
+                }
+
+                ImGui.EndChild();
+            }
+            else
+            {
+                ImGui.TextColored(
+                    new System.Numerics.Vector4(1f, 1f, 0f, 1f),
+                    "Sign in to access remote structures."
+                );
+            }
+        }
     }
 
     private void DrawStructureWindow()
@@ -617,6 +798,133 @@ public partial class Game1
         ImGui.TextWrapped("Hello World");
 
         ImGui.End();
+    }
+    private void DrawAssignmentMenuItems()
+    {
+        if (_currentUser == null)
+        {
+            ImGui.TextDisabled("Sign in to view assignments.");
+            return;
+        }
+
+        var teachers = _database.GetTeachers();
+        var assignments = new Dictionary<int, List<Game1Database.Assignment>>();
+        foreach (var teacher in teachers)
+        {
+            var teacherAssignments = _database.GetAssignmentsForTeacher(teacher);
+            if (teacherAssignments.Count > 0)
+            {
+                assignments[teacher] = teacherAssignments;
+            }
+        }
+        if (assignments.Count == 0)
+        {
+            ImGui.TextDisabled("No assignments found.");
+            return;
+        }
+
+        foreach (var teacherAssignmentPair in assignments)
+        {
+            if (ImGui.BeginMenu($"Teacher {teacherAssignmentPair.Key}"))
+            {
+                foreach (var assignment in teacherAssignmentPair.Value)
+                {
+                    if (ImGui.MenuItem(assignment.Title))
+                    {
+                        _selectedAssignment = assignment;
+                        _showSaveAssignmentPopup = true;
+                    }
+                }
+                ImGui.EndMenu();
+            }
+        }
+    }
+
+    private void DrawTeacherAssignmentsWindow()
+    {
+        if (!ImGui.Begin("Teacher Assignments", ref _showTeacherAssignmentsWindow, ImGuiWindowFlags.NoCollapse))
+        {       
+            ImGui.End();
+            return;
+        }
+        if(_currentUser == null || _currentUser.RoleId != Game1Database.Roles.Teacher)
+        {
+            ImGui.TextDisabled("Only teachers can view this window.");
+            ImGui.End();
+            return;
+        }
+        var assignments = _database.GetAssignmentsForTeacher(_currentUser.Id);
+        ImGui.BeginTabBar("TeacherAssignments");
+        foreach (var assignment in assignments)
+        {
+            if (ImGui.BeginTabItem(assignment.Title))
+            {
+                List<Game1Database.StructureInfo> structures = _database.GetStructuresForAssignment(assignment.Id);
+                ImGui.BeginTable("AssignmentStructures" + assignment.Id, 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders);
+                ImGui.TableSetupColumn("Structure Name", ImGuiTableColumnFlags.WidthStretch);
+                ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 150);
+                ImGui.TableHeadersRow();
+                foreach (var structure in structures)
+                {
+                    ImGui.TableNextRow();
+                    ImGui.TableNextColumn();
+                    ImGui.Text(structure.DisplayName);
+                    ImGui.TableNextColumn();
+                    if (ImGui.Button($"Load##{structure.Id}"))
+                    {
+                        try
+                        {
+                            string json = _database.GetStructureContent(structure.Id);
+                            if (!string.IsNullOrEmpty(json))
+                            {
+                                _activeMesh = LoadMeshFromJsonString(json);
+                                _defaultMesh = _activeMesh;
+                                SetMode(MeshMode.Interact);
+                                _logger.AddLog($"Loaded structure: {structure.DisplayName}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.AddLog(
+                                $"Failed to load structure: {ex.Message}",
+                                ImGuiLogger.LogTypes.Error
+                            );
+                        }
+                    }
+                }
+                ImGui.EndTable();
+                ImGui.EndTabItem();
+            }
+        }
+        ImGui.EndTabBar();
+
+
+        ImGui.End();
+    }
+
+    private void PopUpSaveProjectToAssignment(Game1Database.Assignment assignment)
+    {
+        if (ImGui.BeginPopupModal("SaveToAssignmentPopup"))
+        {
+            
+            ImGui.Text("Save current mesh to an assignment:");
+            ImGui.Text($"{assignment.Title}");
+            ImGui.Text($"{assignment.Description}");
+            ImGui.InputText("Name", ref _currentAssignmentTitle, 100);
+            if (ImGui.Button("Save"))
+            {
+                string jMesh = SaveMeshToJsonString(_activeMesh);
+                _database.SaveStructureWithName(_currentUser.Id, jMesh, _currentAssignmentTitle, assignment.Id);
+                ImGui.CloseCurrentPopup();
+            }
+            if(ImGui.Button("Cancel"))
+            {
+                ImGui.CloseCurrentPopup();
+            }
+
+            ImGui.EndPopup();
+        }
+
     }
 
     private void DrawConfigurationWindow()
@@ -753,5 +1061,3 @@ public partial class Game1
         ImGui.End();
     }
 }
-
-
