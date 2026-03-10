@@ -1,0 +1,8 @@
+{
+  "$type": "PhysicsCSAlevlProject.FileWriteableMesh, PhysicsCSAlevlProject",
+  "Particles": [],
+  "Sticks": [],
+  "SpringConstant": 5000.0,
+  "Drag": 0.997,
+  "Mass": 0.1
+}

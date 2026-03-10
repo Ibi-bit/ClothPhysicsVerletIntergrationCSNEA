@@ -8,6 +8,8 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     private const float FixedTimeStep = 1f / 60f;
+    private const float FrictionCoefficient = 0.2f; // Lower = more sliding
+    private const float BounceCoefficient = 0.2f; // Lower = less bounce
 
     private Vector2 _collisonBoundsDifference;
     private Vector2 _baseForce;
@@ -15,8 +17,6 @@ public partial class Game1
     private bool _useConstraintSolver;
     private int _subSteps;
     private int _stepsToStep;
-    
-
 
     private void InitializePhysics()
     {
@@ -25,12 +25,6 @@ public partial class Game1
         _timeAccumulator = 0f;
         _useConstraintSolver = false;
         _activeMesh.Colliders = new();
-        _activeMesh.Colliders.Add(
-            
-            new SeperatedAxisRectangleCollider(
-                new Rectangle(200, 300, 400, 20),
-                Single.Pi/4f
-            ));
 
         _subSteps = 50;
     }
@@ -94,7 +88,7 @@ public partial class Game1
                 continue;
             float e = (L - s.Length) / s.Length;
 
-            float intensity = 0f;
+            float intensity;
             if (count > 0 && std > 1e-5f)
             {
                 float z = (e - mean) / std;
@@ -160,8 +154,6 @@ public partial class Game1
                     acceleration += (particle.AccumulatedForce + _windForce) / _activeMesh.mass;
                 }
                 Vector2 velocity = particle.Position - particle.PreviousPosition;
-                
-
 
                 float substepsPerFrame = FixedTimeStep / deltaTime;
                 float dragPerSubstep = MathF.Pow(_activeMesh.drag, 1f / substepsPerFrame);
@@ -176,25 +168,52 @@ public partial class Game1
                     float.IsNaN(particle.Position.X) ? oldPosition.X : particle.Position.X,
                     float.IsNaN(particle.Position.Y) ? oldPosition.Y : particle.Position.Y
                 );
-                
+
                 particle.PreviousPosition = oldPosition;
             }
             Vector2 beforeCorrection = particle.Position;
-            if (_selectedToolName == "Cursor Collider")
+            bool collisionOccurred = false;
+            Vector2 collisionNormal = Vector2.Zero;
+            foreach (var collider in _activeMesh.Colliders)
             {
-                _cursorCollider.ContainsPoint(particle.Position, out particle.Position);
-            }
-
-            if (!isBeingDragged)
-            {
-                foreach (var collider in _activeMesh.Colliders)
+                Vector2 clampedPosition;
+                if (collider.ContainsPoint(particle.Position, out clampedPosition))
                 {
-                    Vector2 clampedPosition;
-                    if (collider.ContainsPoint(particle.Position, out clampedPosition))
+                    collisionOccurred = true;
+                    particle.Position = clampedPosition;
+                    if (collider is SeperatedAxisRectangleCollider sarc)
                     {
-                        particle.Position = clampedPosition;
+                        Vector2 localPoint = particle.Position - sarc.Position;
+                        float xProjection = Vector2.Dot(localPoint, sarc.Axis[0]);
+                        float yProjection = Vector2.Dot(localPoint, sarc.Axis[1]);
+                        if (
+                            Math.Abs(sarc.HalfWidth - Math.Abs(xProjection))
+                            < Math.Abs(sarc.HalfHeight - Math.Abs(yProjection))
+                        )
+                            collisionNormal = sarc.Axis[0] * Math.Sign(xProjection);
+                        else
+                            collisionNormal = sarc.Axis[1] * Math.Sign(yProjection);
+                    }
+                    else if (collider is CircleCollider cc)
+                    {
+                        collisionNormal = Vector2.Normalize(particle.Position - cc.Position);
+                    }
+                    else
+                    {
+                        collisionNormal = Vector2.UnitY;
                     }
                 }
+            }
+            if (collisionOccurred)
+            {
+                Vector2 velocity = particle.Position - particle.PreviousPosition;
+                float normalVel = Vector2.Dot(velocity, collisionNormal);
+                Vector2 normalComponent = collisionNormal * normalVel;
+                Vector2 tangentComponent = velocity - normalComponent;
+                normalComponent *= -BounceCoefficient;
+                tangentComponent *= (1f - FrictionCoefficient);
+                Vector2 newVelocity = normalComponent + tangentComponent;
+                particle.PreviousPosition = particle.Position - newVelocity;
             }
 
             if (particle.Position.X < 0)
@@ -215,12 +234,10 @@ public partial class Game1
                 particle.Position.Y = _windowBounds.Height - 10;
             }
 
-            
             if (particle.Position != beforeCorrection)
             {
                 particle.PreviousPosition = particle.Position;
             }
-
         }
 
         if (totalForceCount > 0)

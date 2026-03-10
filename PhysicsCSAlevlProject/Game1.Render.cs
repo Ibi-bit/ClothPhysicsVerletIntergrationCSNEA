@@ -1,5 +1,7 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
@@ -30,16 +32,16 @@ public partial class Game1
         var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 2);
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
 
-        
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
         bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
 
-        
-
-        foreach (var collider in _activeMesh.Colliders)
+        if (_activeMesh?.Colliders != null)
         {
-            collider.Draw(_spriteBatch, _primitiveBatch);
+            foreach (var collider in _activeMesh.Colliders)
+            {
+                collider?.Draw(_spriteBatch, _primitiveBatch);
+            }
         }
 
         _activeMesh.Draw(_spriteBatch, _primitiveBatch, _drawParticles, _drawConstraints);
@@ -64,7 +66,11 @@ public partial class Game1
             Color cursorColor = Color.White * cursorAlpha;
             bool shouldDrawCursor = false;
 
-            if (_currentToolSet.ContainsKey(_selectedToolName))
+            if (
+                !string.IsNullOrEmpty(_selectedToolName)
+                && _currentToolSet != null
+                && _currentToolSet.ContainsKey(_selectedToolName)
+            )
             {
                 var props = _currentToolSet[_selectedToolName].Properties;
 
@@ -161,6 +167,68 @@ public partial class Game1
                         cursorColor = Color.Red * cursorAlpha;
                         shouldDrawCursor = true;
                         break;
+                    case "Place Collider":
+                        string selectedType = props.TryGetValue(
+                            "SelectedColliderType",
+                            out var selectedColliderType
+                        )
+                            ? selectedColliderType?.ToString() ?? "Circle"
+                            : "Circle";
+
+                        props.TryGetValue("Object", out var objectValue);
+                        var objectDict = objectValue as Dictionary<string, object>;
+
+                        if (selectedType == "Rectangle")
+                        {
+                            object rectangleObj = null;
+                            if (objectDict != null)
+                                objectDict.TryGetValue("Rectangle", out rectangleObj);
+
+                            var rectangleDict = rectangleObj as Dictionary<string, object>;
+                            float width =
+                                rectangleDict != null
+                                && rectangleDict.TryGetValue("Width", out var widthObj)
+                                    ? Convert.ToSingle(widthObj)
+                                    : 40f;
+                            float height =
+                                rectangleDict != null
+                                && rectangleDict.TryGetValue("Height", out var heightObj)
+                                    ? Convert.ToSingle(heightObj)
+                                    : 20f;
+                            float rotation =
+                                rectangleDict != null
+                                && rectangleDict.TryGetValue("Rotation", out var rotationObj)
+                                    ? Convert.ToSingle(rotationObj)
+                                    : 0f;
+
+                            var cursorRect = new PrimitiveBatch.Rectangle(
+                                currentMousePos - new Vector2(width, height) / 2f,
+                                new Vector2(width, height),
+                                Color.Red * cursorAlpha,
+                                true
+                            );
+                            cursorRect.rotation = rotation;
+                            cursorRect.Draw(_spriteBatch, _primitiveBatch);
+                            shouldDrawCursor = false;
+                        }
+                        else
+                        {
+                            object circleObj = null;
+                            if (objectDict != null)
+                                objectDict.TryGetValue("Circle", out circleObj);
+                            var circleDict = circleObj as Dictionary<string, object>;
+                            float placeRadius = 20f;
+                            if (circleDict != null && circleDict.TryGetValue("Radius", out var radiusObj))
+                                placeRadius = Convert.ToSingle(radiusObj);
+                            radius = placeRadius;
+                            cursorColor = Color.Red * cursorAlpha;
+                            shouldDrawCursor = true;
+                        }
+                        break;
+
+                    default:
+                        shouldDrawCursor = false;
+                        break;
                 }
 
                 if (shouldDrawCursor && radius > 0)
@@ -202,11 +270,12 @@ public partial class Game1
                 }
             }
         }
+
         _spriteBatch.End();
         ImGuiDraw(gameTime);
         // HandleModeSelection();
+        // GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, _primitiveBatch.VertexBuffer, 0, _primitiveBatch.CurrentVertexCount / 2);
 
         base.Draw(gameTime);
     }
-    
 }

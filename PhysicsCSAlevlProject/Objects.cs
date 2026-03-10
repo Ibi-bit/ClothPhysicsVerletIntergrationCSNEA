@@ -48,7 +48,7 @@ class Particle
 
 public abstract class Collider
 {
-    public Vector2 Position;
+    public virtual Vector2 Position { get; set; }
     public abstract bool ContainsPoint(Vector2 point, out Vector2 closestPoint);
 
     public virtual void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch) { }
@@ -133,12 +133,35 @@ public class RectangleCollider(Rectangle rectangle) : Collider
 
 public class SeperatedAxisRectangleCollider : Collider
 {
-    Vector2[] Axis = new Vector2[4];
+    public Vector2[] Axis { get; private set; } = new Vector2[4];
+    Vector2[] _axisPrivate = new Vector2[4];
     public float HalfWidth;
     public float HalfHeight;
-    private Vector2 Position;
+    private Vector2 _position;
     private float angle;
     private PrimitiveBatch.Rectangle rectangleDraw;
+
+    public override Vector2 Position
+    {
+        get { return _position; }
+        set
+        {
+            _position = value;
+            if (rectangleDraw != null)
+            {
+                rectangleDraw = new PrimitiveBatch.Rectangle(
+                    new Rectangle(
+                        (int)(_position.X - HalfWidth),
+                        (int)(_position.Y - HalfHeight),
+                        (int)(HalfWidth * 2),
+                        (int)(HalfHeight * 2)
+                    ),
+                    Color.Red
+                );
+                rectangleDraw.rotation = angle;
+            }
+        }
+    }
 
     public float Angle
     {
@@ -147,6 +170,10 @@ public class SeperatedAxisRectangleCollider : Collider
         {
             angle = value;
             SetAxis();
+            if (rectangleDraw != null)
+            {
+                rectangleDraw.rotation = angle;
+            }
         }
     }
 
@@ -165,13 +192,12 @@ public class SeperatedAxisRectangleCollider : Collider
     {
         HalfWidth = rectangle.Width / 2f;
         HalfHeight = rectangle.Height / 2f;
-        Position = new Vector2(
+        _position = new Vector2(
             rectangle.X + rectangle.Width / 2,
             rectangle.Y + rectangle.Height / 2
         );
-        Angle = angle;
         rectangleDraw = new PrimitiveBatch.Rectangle(rectangle, Color.Red);
-        rectangleDraw.rotation = angle;
+        Angle = angle;
 
         SetAxis();
     }
@@ -403,7 +429,7 @@ class Mesh
     private readonly List<int> _polygonVertices = new List<int>();
     private bool _isPolygonBuilding = false;
 
-    public List<Collider> Colliders;
+    public List<Collider> Colliders = new List<Collider>();
 
     public class MeshStick : DrawableStick
     {

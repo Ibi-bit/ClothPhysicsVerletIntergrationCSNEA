@@ -13,6 +13,9 @@ public partial class Game1
     private VectorGraphics.PrimitiveBatch.Arrow _windDirectionArrow;
     private VectorGraphics.PrimitiveBatch.Line _cutLine;
     private List<int> _meshParticlesInDragArea;
+    private Collider _draggedCollider;
+    private bool _openColliderRightClickMenu;
+    private Vector2 _rightClickedPosition;
 
     private void InitializeUpdate()
     {
@@ -130,6 +133,7 @@ public partial class Game1
                 );
                 Mouse.SetPosition((int)clampedPos.X, (int)clampedPos.Y);
             }
+
             if (mouseState.LeftButton == ButtonState.Pressed && !_leftPressed)
             {
                 _leftPressed = true;
@@ -170,6 +174,7 @@ public partial class Game1
                                 );
                             }
                         }
+
                         break;
                     case "Pin":
                         {
@@ -344,9 +349,17 @@ public partial class Game1
                             break;
                         if (properties["SelectedColliderType"].ToString() == "Circle")
                         {
+                            var colliderObject = properties["Object"] as Dictionary<string, object>;
+                            colliderObject =
+                                colliderObject != null
+                                && colliderObject.TryGetValue("Circle", out var circleObj)
+                                && circleObj is Dictionary<string, object> circleDict
+                                    ? circleDict
+                                    : null;
+
                             MeshHistoryPush();
-                            radius = properties.ContainsKey("Radius")
-                                ? (float)properties["Radius"]
+                            radius = colliderObject.ContainsKey("Radius")
+                                ? (float)colliderObject["Radius"]
                                 : 20f;
                             var collider = new CircleCollider(_initialMousePosWhenPressed, radius);
                             _activeMesh.Colliders.Add(collider);
@@ -357,27 +370,34 @@ public partial class Game1
                         else if (properties["SelectedColliderType"].ToString() == "Rectangle")
                         {
                             var colliderObject = properties["Object"] as Dictionary<string, object>;
-                            var rectProps = colliderObject != null
+                            var rectProps =
+                                colliderObject != null
                                 && colliderObject.TryGetValue("Rectangle", out var rectObj)
                                 && rectObj is Dictionary<string, object> rectDict
-                                ? rectDict
-                                : null;
+                                    ? rectDict
+                                    : null;
 
-                            float height = rectProps != null && rectProps.TryGetValue("Height", out var heightObj)
-                                ? Convert.ToSingle(heightObj)
-                                : 20f;
-                            float width = rectProps != null && rectProps.TryGetValue("Width", out var widthObj)
-                                ? Convert.ToSingle(widthObj)
-                                : 20f;
-                            float angle = rectProps != null && rectProps.TryGetValue("Rotation", out var angleObj)
-                                ? Convert.ToSingle(angleObj)
-                                : 0f;
+                            float height =
+                                rectProps != null
+                                && rectProps.TryGetValue("Height", out var heightObj)
+                                    ? Convert.ToSingle(heightObj)
+                                    : 20f;
+                            float width =
+                                rectProps != null
+                                && rectProps.TryGetValue("Width", out var widthObj)
+                                    ? Convert.ToSingle(widthObj)
+                                    : 20f;
+                            float angle =
+                                rectProps != null
+                                && rectProps.TryGetValue("Rotation", out var angleObj)
+                                    ? Convert.ToSingle(angleObj)
+                                    : 0f;
 
                             MeshHistoryPush();
                             var collider = new SeperatedAxisRectangleCollider(
                                 new Rectangle(
-                                    (int)(_initialMousePosWhenPressed.X-width/2f ),
-                                    (int)(_initialMousePosWhenPressed.Y-height/2f),
+                                    (int)(_initialMousePosWhenPressed.X - width / 2f),
+                                    (int)(_initialMousePosWhenPressed.Y - height / 2f),
                                     (int)width,
                                     (int)height
                                 ),
@@ -389,6 +409,45 @@ public partial class Game1
                             );
                         }
 
+                        break;
+                    case "Delete Collider":
+
+                        for (int i = _activeMesh.Colliders.Count - 1; i >= 0; i--)
+                        {
+                            var collider = _activeMesh.Colliders[i];
+                            if (collider.ContainsPoint(currentMousePos, out _))
+                            {
+                                MeshHistoryPush();
+                                _activeMesh.Colliders.RemoveAt(i);
+                                _logger.AddLog($"Deleted collider at {currentMousePos}");
+                                break;
+                            }
+                        }
+
+                        break;
+                    case "Move Collider":
+                        _draggedCollider = null;
+                        if (_activeMesh != null && _activeMesh.Colliders != null)
+                        {
+                            foreach (var collider in _activeMesh.Colliders)
+                            {
+                                if (collider != null)
+                                {
+                                    try
+                                    {
+                                        if (collider.ContainsPoint(currentMousePos, out _))
+                                        {
+                                            _draggedCollider = collider;
+                                            break;
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        // Skip this collider if ContainsPoint fails
+                                    }
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -462,6 +521,7 @@ public partial class Game1
                 _cutLine = null;
                 _selectRectangle = null;
                 _windForce = Vector2.Zero;
+                _draggedCollider = null;
             }
         }
         else
@@ -678,6 +738,20 @@ public partial class Game1
                 DragMeshParticlesWithPhysics(mouseState, _leftPressed, _meshParticlesInDragArea);
             }
         }
+        else if (_selectedToolName == "Move Collider" && _draggedCollider != null && _leftPressed)
+        {
+            // Simple drag - just update position
+            Vector2 delta = currentMousePos - _previousMousePos;
+            if (delta.LengthSquared() > 0)
+            {
+                _draggedCollider.Position += delta;
+            }
+        }
+        // Right-click menu disabled for now
+        // else if (_selectedToolName == "Move Collider" && mouseState.RightButton == ButtonState.Pressed && !_prevMouseState.RightButton.HasFlag(ButtonState.Pressed))
+        // {
+        //     ...
+        // }
 
         _previousMousePos = currentMousePos;
 

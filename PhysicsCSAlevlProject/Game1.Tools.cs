@@ -6,7 +6,6 @@ using System.Xml;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
@@ -16,14 +15,14 @@ public partial class Game1
     private string _selectedToolName;
     private Dictionary<string, Tool> _interactTools;
     private Dictionary<string, Tool> _buildTools;
+
     private Dictionary<string, Tool> _currentToolSet =>
         _currentMode == MeshMode.Edit ? _buildTools : _interactTools;
+
     private float _dragRadius;
     private List<int> _inspectedParticles;
     private List<int> _openedInspectedParticles;
     private int? _stickToolFirstParticleId;
-
-    
 
     private void InitializeTools()
     {
@@ -94,12 +93,15 @@ public partial class Game1
             { "Line Tool", new Tool("Line Tool", null, false) },
             { "Add Polygon", new Tool("Add Polygon", null, false) },
             { "Oscillating Particle", new Tool("Oscillating Particle", null, false) },
-            { "Place Collider", new Tool("Place Collider", null, false) }
+            { "Place Collider", new Tool("Place Collider", null, false) },
+            { "Move Collider", new Tool("Move Collider", null, false) },
+            { "Delete Collider", new Tool("Delete Collider", null, false) },
         };
         foreach (var tool in _buildTools.Values)
         {
             tool.Properties = new Dictionary<string, object>();
         }
+
         _buildTools["Add Particle"].Properties["SnapToGrid"] = true;
         _buildTools["Add Stick Between Particles"].Properties["Radius"] = 15f;
         _buildTools["Remove Particle"].Properties["Radius"] = 10f;
@@ -113,20 +115,26 @@ public partial class Game1
         _buildTools["Oscillating Particle"].Properties["Frequency"] = 1f;
         _buildTools["Oscillating Particle"].Properties["Angle"] = 0f;
         var colliderObject = new Dictionary<string, object>();
-        colliderObject["Circle"] = new Dictionary<string, object>
-        {
-            { "Radius", 20f }
-        };
+        colliderObject["Circle"] = new Dictionary<string, object> { { "Radius", 20f } };
         colliderObject["Rectangle"] = new Dictionary<string, object>
         {
             { "Width", 40f },
             { "Height", 20f },
-            { "Rotation", 0f }
+            { "Rotation", 0f },
         };
         _buildTools["Place Collider"].Properties["Object"] = colliderObject;
         _buildTools["Place Collider"].Properties["SelectedColliderType"] = "Circle";
 
-
+        var moveColliderObject = new Dictionary<string, object>();
+        moveColliderObject["Circle"] = new Dictionary<string, object> { { "Radius", 20f } };
+        moveColliderObject["Rectangle"] = new Dictionary<string, object>
+        {
+            { "Width", 40f },
+            { "Height", 20f },
+            { "Rotation", 0f },
+        };
+        _buildTools["Move Collider"].Properties["Object"] = moveColliderObject;
+        _buildTools["Move Collider"].Properties["SelectedColliderType"] = "Circle";
     }
 
     private void DrawToolMenuItems()
@@ -161,222 +169,247 @@ public partial class Game1
 
     private void DrawSelectedToolSettings()
     {
-        EnsureSelectedToolValid();
-        ImGui.Text($"Settings for {_selectedToolName} Tool:");
-
-        if (_selectedToolName == "Drag")
+        try
         {
-            var props = _currentToolSet["Drag"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            if (string.IsNullOrEmpty(_selectedToolName))
             {
-                props["Radius"] = radius;
+                ImGui.Text("No tool selected");
+                return;
             }
 
-            bool infiniteParticles = (bool)props["InfiniteParticles"];
-            if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
-            {
-                props["InfiniteParticles"] = infiniteParticles;
-            }
-            
+            EnsureSelectedToolValid();
+            ImGui.Text($"Settings for {_selectedToolName} Tool:");
 
-            int maxParticles = (int)props["MaxParticles"];
-            string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
+            if (_selectedToolName == "Drag")
+            {
+                var props = _currentToolSet["Drag"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+                {
+                    props["Radius"] = radius;
+                }
 
-            ImGui.BeginDisabled(infiniteParticles);
-            if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
-            {
-                props["MaxParticles"] = maxParticles;
-            }
-            ImGui.EndDisabled();
-        }
-        else if (_selectedToolName == "Pin")
-        {
-            var props = _currentToolSet["Pin"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
-            {
-                props["Radius"] = radius;
-            }
-        }
-        else if (_selectedToolName == "Cut")
-        {
-            var props = _currentToolSet["Cut"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
-            {
-                props["Radius"] = radius;
-            }
-        }
-        else if (_selectedToolName == "Wind")
-        {
-            var props = _currentToolSet["Wind"].Properties;
-            float minDist = (float)props["MinDistance"];
-            if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
-            {
-                props["MinDistance"] = minDist;
-            }
+                bool infiniteParticles = (bool)props["InfiniteParticles"];
+                if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
+                {
+                    props["InfiniteParticles"] = infiniteParticles;
+                }
 
-            float strength = (float)props["StrengthScale"];
-            if (ImGui.SliderFloat("Strength Scale", ref strength, 0.0f, 5.0f))
-            {
-                props["StrengthScale"] = strength;
-            }
+                int maxParticles = (int)props["MaxParticles"];
+                string maxParticlesLabel = infiniteParticles ? "Max Particles: ∞" : "Max Particles";
 
-            float thickness = (float)props["ArrowThickness"];
-            if (ImGui.SliderFloat("Arrow Thickness", ref thickness, 1f, 10f))
-            {
-                props["ArrowThickness"] = thickness;
-            }
-        }
-        else if (_selectedToolName == "PhysicsDrag")
-        {
-            var props = _currentToolSet["PhysicsDrag"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
-            {
-                props["Radius"] = radius;
-            }
-        }
-        else if (_selectedToolName == "LineCut")
-        {
-            var props = _currentToolSet["LineCut"].Properties;
-            float minDist = (float)props["MinDistance"];
-            if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
-            {
-                props["MinDistance"] = minDist;
-            }
+                ImGui.BeginDisabled(infiniteParticles);
+                if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
+                {
+                    props["MaxParticles"] = maxParticles;
+                }
 
-            float thickness = (float)props["Thickness"];
-            if (ImGui.SliderFloat("Line Thickness", ref thickness, 1f, 10f))
-            {
-                props["Thickness"] = thickness;
+                ImGui.EndDisabled();
             }
-        }
-        else if (_selectedToolName == "Select Particles")
-        {
-            var props = _currentToolSet["Select Particles"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+            else if (_selectedToolName == "Pin")
             {
-                props["Radius"] = radius;
+                var props = _currentToolSet["Pin"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+                {
+                    props["Radius"] = radius;
+                }
             }
+            else if (_selectedToolName == "Cut")
+            {
+                var props = _currentToolSet["Cut"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+                {
+                    props["Radius"] = radius;
+                }
+            }
+            else if (_selectedToolName == "Wind")
+            {
+                var props = _currentToolSet["Wind"].Properties;
+                float minDist = (float)props["MinDistance"];
+                if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
+                {
+                    props["MinDistance"] = minDist;
+                }
 
-            bool isLog = (bool)props["IsLog"];
-            if (ImGui.Checkbox("Log to Console or track realtime in window", ref isLog))
-            {
-                props["IsLog"] = isLog;
-            }
-            bool clearWhenUse = (bool)props["Clear When Use"];
-            if (ImGui.Checkbox("Clear When Use", ref clearWhenUse))
-            {
-                props["Clear When Use"] = clearWhenUse;
-            }
-            bool rectangleSelect = (bool)props["RectangleSelect"];
-            if (ImGui.Checkbox("Select with Rectangle", ref rectangleSelect))
-            {
-                props["RectangleSelect"] = rectangleSelect;
-            }
-        }
-        else if (_selectedToolName == "Add Particle")
-        {
-            var props = _currentToolSet["Add Particle"].Properties;
-            bool snapToGrid = (bool)props["SnapToGrid"];
-            if (ImGui.Checkbox("Snap To Grid", ref snapToGrid))
-            {
-                props["SnapToGrid"] = snapToGrid;
-            }
-        }
-        else if (_selectedToolName == "Add Stick Between Particles")
-        {
-            var props = _currentToolSet["Add Stick Between Particles"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
-            {
-                props["Radius"] = radius;
-            }
-        }
-        else if (_selectedToolName == "Remove Stick")
-        {
-            var props = _currentToolSet["Remove Stick"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
-            {
-                props["Radius"] = radius;
-            }
-        }
-        else if (_selectedToolName == "Create Grid Mesh")
-        {
-            var props = _currentToolSet["Create Grid Mesh"].Properties;
-            float distance = (float)props["DistanceBetweenParticles"];
-            if (ImGui.SliderFloat("Distance Between Particles", ref distance, 5f, 100f))
-            {
-                props["DistanceBetweenParticles"] = distance;
-            }
-        }
-        else if (string.Equals(_selectedToolName, "Cursor Collider", StringComparison.Ordinal))
-        {
-            var props = _currentToolSet["Cursor Collider"].Properties;
-            float radius = (float)props["Radius"];
-            if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
-                props["Radius"] = radius;
+                float strength = (float)props["StrengthScale"];
+                if (ImGui.SliderFloat("Strength Scale", ref strength, 0.0f, 5.0f))
+                {
+                    props["StrengthScale"] = strength;
+                }
 
-            string[] shapes = _cursorColliderStore.Keys.ToArray();
-            int shapeIndex = Array.IndexOf(shapes, (string)props["Shape"]);
-            if (shapeIndex < 0)
-                shapeIndex = 0;
-            if (ImGui.Combo("Shape", ref shapeIndex, shapes, shapes.Length))
-            {
-                props["Shape"] = shapes[shapeIndex];
+                float thickness = (float)props["ArrowThickness"];
+                if (ImGui.SliderFloat("Arrow Thickness", ref thickness, 1f, 10f))
+                {
+                    props["ArrowThickness"] = thickness;
+                }
             }
-        }
-        else if (string.Equals(_selectedToolName, "Line Tool", StringComparison.Ordinal))
-        {
-            var props = _currentToolSet["Line Tool"].Properties;
-            int constraintsInLine = (int)props["Constraints in Line"];
-            if (ImGui.SliderInt("Constraints in Line", ref constraintsInLine, 1, 500))
+            else if (_selectedToolName == "PhysicsDrag")
             {
-                props["Constraints in Line"] = constraintsInLine;
+                var props = _currentToolSet["PhysicsDrag"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+                {
+                    props["Radius"] = radius;
+                }
             }
-            float naturalLengthRatio = (float)props["Natural Length Ratio"];
-            if (ImGui.InputFloat("Natural Length Ratio", ref naturalLengthRatio, 0.1f, 3.0f))
+            else if (_selectedToolName == "LineCut")
             {
-                props["Natural Length Ratio"] = naturalLengthRatio;
+                var props = _currentToolSet["LineCut"].Properties;
+                float minDist = (float)props["MinDistance"];
+                if (ImGui.SliderFloat("Min Distance", ref minDist, 0f, 50f))
+                {
+                    props["MinDistance"] = minDist;
+                }
+
+                float thickness = (float)props["Thickness"];
+                if (ImGui.SliderFloat("Line Thickness", ref thickness, 1f, 10f))
+                {
+                    props["Thickness"] = thickness;
+                }
             }
-        }
-        else if (string.Equals(_selectedToolName, "Oscillating Particle", StringComparison.Ordinal))
-        {
-            var props = _currentToolSet["Oscillating Particle"].Properties;
-            float amplitude = (float)props["Amplitude"];
-            if (ImGui.SliderFloat("Amplitude", ref amplitude, 1f, 100f))
+            else if (_selectedToolName == "Select Particles")
             {
-                props["Amplitude"] = amplitude;
+                var props = _currentToolSet["Select Particles"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+                {
+                    props["Radius"] = radius;
+                }
+
+                bool isLog = (bool)props["IsLog"];
+                if (ImGui.Checkbox("Log to Console or track realtime in window", ref isLog))
+                {
+                    props["IsLog"] = isLog;
+                }
+
+                bool clearWhenUse = (bool)props["Clear When Use"];
+                if (ImGui.Checkbox("Clear When Use", ref clearWhenUse))
+                {
+                    props["Clear When Use"] = clearWhenUse;
+                }
+
+                bool rectangleSelect = (bool)props["RectangleSelect"];
+                if (ImGui.Checkbox("Select with Rectangle", ref rectangleSelect))
+                {
+                    props["RectangleSelect"] = rectangleSelect;
+                }
             }
-            float frequency = (float)props["Frequency"];
-            if (ImGui.SliderFloat("Frequency", ref frequency, 0.1f, 10f))
+            else if (_selectedToolName == "Add Particle")
             {
-                props["Frequency"] = frequency;
+                var props = _currentToolSet["Add Particle"].Properties;
+                bool snapToGrid = (bool)props["SnapToGrid"];
+                if (ImGui.Checkbox("Snap To Grid", ref snapToGrid))
+                {
+                    props["SnapToGrid"] = snapToGrid;
+                }
             }
-            float angle = (float)props["Angle"];
-            if (ImGui.SliderAngle("Angle (degrees)", ref angle, 0f, 360f))
+            else if (_selectedToolName == "Add Stick Between Particles")
             {
-                props["Angle"] = angle;
+                var props = _currentToolSet["Add Stick Between Particles"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
+                {
+                    props["Radius"] = radius;
+                }
             }
-        }
-        else if (string.Equals(_selectedToolName, "Place Collider", StringComparison.Ordinal))
-        {
+            else if (_selectedToolName == "Remove Stick")
+            {
+                var props = _currentToolSet["Remove Stick"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+                {
+                    props["Radius"] = radius;
+                }
+            }
+            else if (_selectedToolName == "Create Grid Mesh")
+            {
+                var props = _currentToolSet["Create Grid Mesh"].Properties;
+                float distance = (float)props["DistanceBetweenParticles"];
+                if (ImGui.SliderFloat("Distance Between Particles", ref distance, 5f, 100f))
+                {
+                    props["DistanceBetweenParticles"] = distance;
+                }
+            }
+            else if (string.Equals(_selectedToolName, "Cursor Collider", StringComparison.Ordinal))
+            {
+                var props = _currentToolSet["Cursor Collider"].Properties;
+                float radius = (float)props["Radius"];
+                if (ImGui.SliderFloat("Radius", ref radius, 1f, 100f))
+                    props["Radius"] = radius;
+
+                string[] shapes = _cursorColliderStore.Keys.ToArray();
+                int shapeIndex = Array.IndexOf(shapes, (string)props["Shape"]);
+                if (shapeIndex < 0)
+                    shapeIndex = 0;
+                if (ImGui.Combo("Shape", ref shapeIndex, shapes, shapes.Length))
+                {
+                    props["Shape"] = shapes[shapeIndex];
+                }
+            }
+            else if (string.Equals(_selectedToolName, "Line Tool", StringComparison.Ordinal))
+            {
+                var props = _currentToolSet["Line Tool"].Properties;
+                int constraintsInLine = (int)props["Constraints in Line"];
+                if (ImGui.SliderInt("Constraints in Line", ref constraintsInLine, 1, 500))
+                {
+                    props["Constraints in Line"] = constraintsInLine;
+                }
+
+                float naturalLengthRatio = (float)props["Natural Length Ratio"];
+                if (ImGui.InputFloat("Natural Length Ratio", ref naturalLengthRatio, 0.1f, 3.0f))
+                {
+                    props["Natural Length Ratio"] = naturalLengthRatio;
+                }
+            }
+            else if (
+                string.Equals(_selectedToolName, "Oscillating Particle", StringComparison.Ordinal)
+            )
+            {
+                var props = _currentToolSet["Oscillating Particle"].Properties;
+                float amplitude = (float)props["Amplitude"];
+                if (ImGui.SliderFloat("Amplitude", ref amplitude, 1f, 100f))
+                {
+                    props["Amplitude"] = amplitude;
+                }
+
+                float frequency = (float)props["Frequency"];
+                if (ImGui.SliderFloat("Frequency", ref frequency, 0.1f, 10f))
+                {
+                    props["Frequency"] = frequency;
+                }
+
+                float angle = (float)props["Angle"];
+                if (ImGui.SliderAngle("Angle (degrees)", ref angle, 0f, 360f))
+                {
+                    props["Angle"] = angle;
+                }
+            }
+            else if (string.Equals(_selectedToolName, "Place Collider", StringComparison.Ordinal))
+            {
                 var props = _currentToolSet["Place Collider"].Properties;
                 var colliderObject = (Dictionary<string, object>)props["Object"];
-    
+
                 string[] colliderTypes = colliderObject.Keys.ToArray();
-                int colliderTypeIndex = Array.IndexOf(colliderTypes, (string)props["SelectedColliderType"]);
+                int colliderTypeIndex = Array.IndexOf(
+                    colliderTypes,
+                    (string)props["SelectedColliderType"]
+                );
                 if (colliderTypeIndex < 0)
                     colliderTypeIndex = 0;
-                if (ImGui.Combo("Collider Type", ref colliderTypeIndex, colliderTypes, colliderTypes.Length))
+                if (
+                    ImGui.Combo(
+                        "Collider Type",
+                        ref colliderTypeIndex,
+                        colliderTypes,
+                        colliderTypes.Length
+                    )
+                )
                 {
                     props["SelectedColliderType"] = colliderTypes[colliderTypeIndex];
                 }
-    
+
                 string selectedColliderType = (string)props["SelectedColliderType"];
                 if (selectedColliderType == "Circle")
                 {
@@ -393,15 +426,17 @@ public partial class Game1
                     float width = (float)rectProps["Width"];
                     float height = (float)rectProps["Height"];
                     float rotation = (float)rectProps["Rotation"];
-    
+
                     if (ImGui.SliderFloat("Width", ref width, 1f, 200f))
                     {
                         rectProps["Width"] = width;
                     }
+
                     if (ImGui.SliderFloat("Height", ref height, 1f, 200f))
                     {
                         rectProps["Height"] = height;
                     }
+
                     if (ImGui.SliderAngle("Rotation", ref rotation, -180f, 180f))
                     {
                         float normalizedRotation = rotation;
@@ -410,7 +445,17 @@ public partial class Game1
                         rectProps["Rotation"] = normalizedRotation;
                     }
                 }
-            
+            }
+            else if (string.Equals(_selectedToolName, "Move Collider", StringComparison.Ordinal))
+            {
+                ImGui.Text("Left-click to select and drag colliders");
+                ImGui.Text("(Right-click menu temporarily disabled)");
+            }
+        }
+        catch (Exception ex)
+        {
+            ImGui.Text($"Tool Settings Error: {ex.Message}");
+            Console.WriteLine($"DrawSelectedToolSettings error: {ex.Message}\n{ex.StackTrace}");
         }
     }
 

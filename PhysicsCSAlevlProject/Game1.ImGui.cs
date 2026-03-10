@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 
@@ -46,7 +45,6 @@ public partial class Game1
     private List<Game1Database.StructureInfo> _remoteStructures = new();
     private string _remoteSaveName = "MyStructure";
 
-    
     private List<Game1Database.User> _allTeachers = new();
     private Dictionary<int, List<Game1Database.Assignment>> _teacherAssignments = new();
     private int _selectedTeacherTabIndex = 0;
@@ -112,7 +110,6 @@ public partial class Game1
             },
         };
 
-        
         _userInputUserId = "";
         _password = "";
     }
@@ -130,6 +127,11 @@ public partial class Game1
         }
 
         DrawMainMenuBar();
+        // Temporarily disabled - uncomment when crash is fixed
+        // if (_selectedToolName == "Move Collider" && _currentMode == MeshMode.Edit)
+        // {
+        //     DrawRightClickColliderMenu();
+        // }
         if (_showConfigurationWindow)
         {
             DrawConfigurationWindow();
@@ -177,7 +179,7 @@ public partial class Game1
             ImGui.OpenPopup("ConfirmNewMeshPopup");
             _showConfirmNewMeshPopup = false;
         }
-        if(_showSaveAssignmentPopup && _selectedAssignment != null)
+        if (_showSaveAssignmentPopup && _selectedAssignment != null)
         {
             ImGui.OpenPopup("SaveToAssignmentPopup");
             _showSaveAssignmentPopup = false;
@@ -316,7 +318,6 @@ public partial class Game1
 
             ImGui.InputText("User ID", ref _userInputUserId, 20);
             ImGui.InputText("Password", ref _password, 20);
-            
 
             if (ImGui.Button("Sign In"))
             {
@@ -335,7 +336,6 @@ public partial class Game1
                         _currentUser = null;
                         _password = "";
                     }
-                    
                 }
                 else
                 {
@@ -391,9 +391,114 @@ public partial class Game1
         }
     }
 
+    private void DrawRightClickColliderMenu()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(_selectedToolName) || _selectedToolName != "Move Collider")
+                return;
+
+            if (_buildTools == null)
+            {
+                Console.WriteLine("_buildTools is null");
+                return;
+            }
+
+            if (_openColliderRightClickMenu)
+            {
+                ImGui.OpenPopup("ColliderTypePopup");
+                _openColliderRightClickMenu = false;
+            }
+
+            if (ImGui.BeginPopup("ColliderTypePopup"))
+            {
+                DrawSelectedToolSettings();
+                if (ImGui.Button("ApplyChanges"))
+                {
+                    if (_draggedCollider != null)
+                    {
+                        if (!_buildTools.ContainsKey("Move Collider"))
+                        {
+                            _logger.AddLog(
+                                "Move Collider tool not found in _buildTools",
+                                ImGuiLogger.LogTypes.Error
+                            );
+                            ImGui.EndPopup();
+                            return;
+                        }
+
+                        var colliderTool = _buildTools["Move Collider"];
+                        var props = colliderTool.Properties;
+
+                        if (props != null && props.ContainsKey("Object"))
+                        {
+                            var colliderObject = (Dictionary<string, object>)props["Object"];
+
+                            // Apply based on actual collider type, not selected type
+                            if (_draggedCollider is SeperatedAxisRectangleCollider rectCollider)
+                            {
+                                var rectProps =
+                                    (Dictionary<string, object>)colliderObject["Rectangle"];
+                                float width = (float)rectProps["Width"];
+                                float height = (float)rectProps["Height"];
+                                float rotation = (float)rectProps["Rotation"];
+
+                                rectCollider.HalfWidth = width / 2f;
+                                rectCollider.HalfHeight = height / 2f;
+                                rectCollider.Angle = rotation;
+
+                                // Update the visual representation
+                                rectCollider.Position = rectCollider.Position;
+
+                                _logger.AddLog(
+                                    $"Updated rectangle collider: {width}x{height}, rotation={rotation}"
+                                );
+                            }
+                            else if (_draggedCollider is CircleCollider circleCollider)
+                            {
+                                var circleProps =
+                                    (Dictionary<string, object>)colliderObject["Circle"];
+                                float radius = (float)circleProps["Radius"];
+
+                                circleCollider.Radius = radius;
+
+                                _logger.AddLog($"Updated circle collider: radius={radius}");
+                            }
+                            else
+                            {
+                                _logger.AddLog(
+                                    $"Unknown collider type: {_draggedCollider.GetType().Name}",
+                                    ImGuiLogger.LogTypes.Warning
+                                );
+                            }
+                        }
+                        ImGui.CloseCurrentPopup();
+                    }
+                    else
+                    {
+                        _logger.AddLog(
+                            "No collider selected to modify",
+                            ImGuiLogger.LogTypes.Warning
+                        );
+                    }
+                }
+                ImGui.EndPopup();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"DrawRightClickColliderMenu error: {ex.Message}\n{ex.StackTrace}");
+            _logger?.AddLog(
+                $"DrawRightClickColliderMenu error: {ex.Message}",
+                ImGuiLogger.LogTypes.Error
+            );
+        }
+    }
+
     private void ToolSwitchingImGui()
     {
-        if (!_ctrlHeld) return;
+        if (!_ctrlHeld)
+            return;
         List<string> toolNames = _currentToolSet.Keys.ToList();
         int currentIndex = toolNames.IndexOf(_selectedToolName);
         if (ImGui.IsKeyPressed(ImGuiKey.T))
@@ -528,13 +633,15 @@ public partial class Game1
                     _allTeachers = _database.GetTeachersWithInfo();
                     foreach (var teacher in _allTeachers)
                     {
-                        _teacherAssignments[teacher.Id] = _database.GetAssignmentsForTeacher(teacher.Id);
+                        _teacherAssignments[teacher.Id] = _database.GetAssignmentsForTeacher(
+                            teacher.Id
+                        );
                     }
                 }
             }
             ImGui.Separator();
             DrawAssignmentMenuItems();
-            
+
             ImGui.EndMenu();
         }
 
@@ -632,7 +739,6 @@ public partial class Game1
                 SaveMeshToJSON(_activeMesh, _quickStructureName, _structurePath);
                 _quickMeshes = LoadAllMeshesFromDirectory(_structurePath);
             }
-            
 
             ImGui.SameLine();
             ImGui.InputText("Structure Name", ref _quickStructureName, 100);
@@ -799,6 +905,7 @@ public partial class Game1
 
         ImGui.End();
     }
+
     private void DrawAssignmentMenuItems()
     {
         if (_currentUser == null)
@@ -842,12 +949,18 @@ public partial class Game1
 
     private void DrawTeacherAssignmentsWindow()
     {
-        if (!ImGui.Begin("Teacher Assignments", ref _showTeacherAssignmentsWindow, ImGuiWindowFlags.NoCollapse))
-        {       
+        if (
+            !ImGui.Begin(
+                "Teacher Assignments",
+                ref _showTeacherAssignmentsWindow,
+                ImGuiWindowFlags.NoCollapse
+            )
+        )
+        {
             ImGui.End();
             return;
         }
-        if(_currentUser == null || _currentUser.RoleId != Game1Database.Roles.Teacher)
+        if (_currentUser == null || _currentUser.RoleId != Game1Database.Roles.Teacher)
         {
             ImGui.TextDisabled("Only teachers can view this window.");
             ImGui.End();
@@ -859,8 +972,14 @@ public partial class Game1
         {
             if (ImGui.BeginTabItem(assignment.Title))
             {
-                List<Game1Database.StructureInfo> structures = _database.GetStructuresForAssignment(assignment.Id);
-                ImGui.BeginTable("AssignmentStructures" + assignment.Id, 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders);
+                List<Game1Database.StructureInfo> structures = _database.GetStructuresForAssignment(
+                    assignment.Id
+                );
+                ImGui.BeginTable(
+                    "AssignmentStructures" + assignment.Id,
+                    2,
+                    ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders
+                );
                 ImGui.TableSetupColumn("Structure Name", ImGuiTableColumnFlags.WidthStretch);
                 ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, 150);
                 ImGui.TableHeadersRow();
@@ -898,7 +1017,6 @@ public partial class Game1
         }
         ImGui.EndTabBar();
 
-
         ImGui.End();
     }
 
@@ -906,7 +1024,6 @@ public partial class Game1
     {
         if (ImGui.BeginPopupModal("SaveToAssignmentPopup"))
         {
-            
             ImGui.Text("Save current mesh to an assignment:");
             ImGui.Text($"{assignment.Title}");
             ImGui.Text($"{assignment.Description}");
@@ -914,17 +1031,21 @@ public partial class Game1
             if (ImGui.Button("Save"))
             {
                 string jMesh = SaveMeshToJsonString(_activeMesh);
-                _database.SaveStructureWithName(_currentUser.Id, jMesh, _currentAssignmentTitle, assignment.Id);
+                _database.SaveStructureWithName(
+                    _currentUser.Id,
+                    jMesh,
+                    _currentAssignmentTitle,
+                    assignment.Id
+                );
                 ImGui.CloseCurrentPopup();
             }
-            if(ImGui.Button("Cancel"))
+            if (ImGui.Button("Cancel"))
             {
                 ImGui.CloseCurrentPopup();
             }
 
             ImGui.EndPopup();
         }
-
     }
 
     private void DrawConfigurationWindow()
