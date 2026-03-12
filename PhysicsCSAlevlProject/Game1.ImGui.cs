@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace PhysicsCSAlevlProject;
 
@@ -63,6 +64,10 @@ public partial class Game1
         _buttonSteps = 10;
 
         _logger = new ImGuiLogger();
+        _logger.RegisterEnvVar("mouseX", () => _prevMouseState.X.ToString());
+        _logger.RegisterEnvVar("mouseY", () => _prevMouseState.Y.ToString());
+        _logger.RegisterEnvVar("windowW", () => _windowBounds.Width.ToString());
+        _logger.RegisterEnvVar("windowH", () => _windowBounds.Height.ToString());
         _meshName = "MyMesh";
         _structurePath = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,

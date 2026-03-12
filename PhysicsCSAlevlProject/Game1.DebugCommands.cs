@@ -21,6 +21,10 @@ public partial class Game1
                     break;
                 case "Stick":
                     ProccessStickCommands(command);
+
+                    break;
+                case "Mesh":
+                    ProccessMeshCommands(command);
                     break;
                 case "Get":
                     ProccessGetCommands(command);
@@ -38,6 +42,62 @@ public partial class Game1
                     );
                     break;
             }
+        }
+    }
+
+    private void ProccessMeshCommands(ImGuiLogger.Command command)
+    {
+        switch (command.ExCommand)
+        {
+            // case "Clear":
+            //     _activeMesh.Clear();
+            //     _logger.AddLog("Cleared active mesh");
+            //     break;
+            case "AddTire":
+                if (command.Parameters.Length < 5)
+                {
+                    _logger.AddLog(
+                        $"Not enough parameters for Mesh.AddTire(centerX, centerY, OuterStickCount, radius, spokeLength) Expected 5, got {command.Parameters.Length}",
+                        ImGuiLogger.LogTypes.Error
+                    );
+                    return;
+                }
+                float centerX, centerY, outerRadius, innerRadius;
+                int outerStickCount;
+               
+                if (
+                    float.TryParse(command.Parameters[0], out centerX)
+                    && float.TryParse(command.Parameters[1], out centerY)
+                    && int.TryParse(command.Parameters[2], out outerStickCount)
+                    && float.TryParse(command.Parameters[3], out outerRadius)
+                    && float.TryParse(command.Parameters[4], out innerRadius))
+                {
+                    _activeMesh = Mesh.CreateHubSpokeTire(
+                        new Vector2(centerX, centerY),
+                        outerStickCount,
+                        outerRadius,
+                        innerRadius,
+                        _activeMesh
+                    );
+                    _logger.AddLog(
+                        $"Added tire to active mesh at ({centerX}, {centerY}) with outer radius {outerRadius} and inner radius {innerRadius} and {outerStickCount} outer sticks"
+                    );
+                }
+                else
+                {
+                    _logger.AddLog(
+                        $"Invalid parameters for Mesh.AddTire Could not parse floats from '{command.Parameters[0]}', '{command.Parameters[1]}', '{command.Parameters[2]}', or '{command.Parameters[3]}'",
+                        ImGuiLogger.LogTypes.Error
+                    );
+                }
+                break;
+
+            default:
+                _logger.AddLog(
+                    $"Unknown command: Mesh.{command.ExCommand}",
+                    ImGuiLogger.LogTypes.Error
+                );
+                break;
         }
     }
 
@@ -179,10 +239,29 @@ public class ImGuiLogger
     readonly Queue<MessageLog> _logs = new();
     readonly Queue<Command> _commands = new();
     private string _commandInput = "";
-    private List<String> _logStringHistory = new();
-    
+    private List<string> _logStringHistory = new();
+    private readonly Dictionary<string, Func<string>> _envVars = new();
 
-    
+    public void RegisterEnvVar(string name, Func<string> resolver)
+    {
+        _envVars[name] = resolver;
+    }
+
+    private string ResolveEnvVars(string command)
+    {
+        return Regex.Replace(
+            command,
+            @"\$(\w+)",
+            match =>
+            {
+                string varName = match.Groups[1].Value;
+                if (_envVars.TryGetValue(varName, out var resolver))
+                    return resolver();
+                return match.Value;
+            }
+        );
+    }
+
     private readonly List<string> _commandHistory = new();
     private int _historyIndex = -1;
     private string _savedInput = "";
@@ -225,6 +304,7 @@ public class ImGuiLogger
     public void AddCommand(string command)
     {
         // Example: mesh.particle.add(100, 200)
+        command = ResolveEnvVars(command);
 
         string commandWithoutParams = command.Split('(')[0];
         string[] pathParts = commandWithoutParams.Split('.');
@@ -382,15 +462,13 @@ public class ImGuiLogger
 
         ImGui.End();
     }
+
     public string GetLogsAsString()
     {
-        
-            
-        
-            
         string historyString = string.Join(Environment.NewLine, _logStringHistory);
         return historyString;
     }
+
     public void SaveLogsToFile(string filePath)
     {
         try

@@ -81,7 +81,7 @@ public class CircleCollider : Collider
 
     public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
-        var circle = new PrimitiveBatch.Circle(Position, Radius, Color.Red, false); 
+        var circle = new PrimitiveBatch.Circle(Position, Radius, Color.Red, false);
         circle.Draw(spriteBatch, primitiveBatch);
     }
 }
@@ -126,8 +126,8 @@ public class RectangleCollider(Rectangle rectangle) : Collider
 
     public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
-        var rect = new PrimitiveBatch.Rectangle(Rectangle, Color.Red); 
-        rect.Draw(spriteBatch, primitiveBatch); 
+        var rect = new PrimitiveBatch.Rectangle(Rectangle, Color.Red);
+        rect.Draw(spriteBatch, primitiveBatch);
     }
 }
 
@@ -540,8 +540,6 @@ class Mesh
         Colliders ??= new List<Collider>();
         copy.Colliders = new List<Collider>();
         copy.Colliders.AddRange(Colliders);
-        
-        
 
         foreach (var kvp in Sticks)
         {
@@ -926,6 +924,65 @@ class Mesh
                 }
             }
         }
+        return mesh;
+    }
+
+    public static Mesh CreateHubSpokeTire(
+        Vector2 center,
+        int rimParticleCount,
+        float innerRadius,
+        float outerRadius,
+        Mesh mesh = null
+    )
+    {
+        mesh = mesh ?? new Mesh();
+
+        List<int> innerRimIds = new List<int>();
+        List<int> outerRimIds = new List<int>();
+
+        for (int i = 0; i < rimParticleCount; i++)
+        {
+            float angle = 2 * MathF.PI * i / rimParticleCount;
+
+            Vector2 innerPos =
+                center
+                + new Vector2(innerRadius * MathF.Cos(angle), innerRadius * MathF.Sin(angle));
+            int innerId = mesh.AddParticleAt(innerPos);
+            innerRimIds.Add(innerId);
+
+            Vector2 outerPos =
+                center
+                + new Vector2(outerRadius * MathF.Cos(angle), outerRadius * MathF.Sin(angle));
+            int outerId = mesh.AddParticleAt(outerPos);
+            outerRimIds.Add(outerId);
+        }
+
+        float innerStickLength = 2f * innerRadius * MathF.Sin(MathF.PI / rimParticleCount);
+        for (int i = 0; i < rimParticleCount; i++)
+        {
+            int next = (i + 1) % rimParticleCount;
+            mesh.AddStickBetween(innerRimIds[i], innerRimIds[next], innerStickLength);
+        }
+
+        float outerStickLength = 2f * outerRadius * MathF.Sin(MathF.PI / rimParticleCount);
+        for (int i = 0; i < rimParticleCount; i++)
+        {
+            int next = (i + 1) % rimParticleCount;
+            mesh.AddStickBetween(outerRimIds[i], outerRimIds[next], outerStickLength);
+        }
+
+        float radialStickLength = outerRadius - innerRadius;
+        float diagonalStickLength = MathF.Sqrt(
+            radialStickLength * radialStickLength + outerStickLength * outerStickLength
+        );
+        for (int i = 0; i < rimParticleCount; i++)
+        {
+            int next = (i + 1) % rimParticleCount;
+            mesh.AddStickBetween(innerRimIds[i], outerRimIds[i], radialStickLength);
+            mesh.AddStickBetween(innerRimIds[i], outerRimIds[next], diagonalStickLength);
+            mesh.AddStickBetween(outerRimIds[i], innerRimIds[next], diagonalStickLength);
+        }
+
         return mesh;
     }
 
