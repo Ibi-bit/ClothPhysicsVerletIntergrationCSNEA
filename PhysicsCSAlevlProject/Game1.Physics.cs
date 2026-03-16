@@ -180,6 +180,7 @@ public partial class Game1
                 if (collider.ContainsPoint(particle.Position, out clampedPosition))
                 {
                     collisionOccurred = true;
+                    Vector2 originalPosition = particle.Position;
                     particle.Position = clampedPosition;
                     if (collider is SeperatedAxisRectangleCollider sarc)
                     {
@@ -200,7 +201,15 @@ public partial class Game1
                     }
                     else
                     {
-                        collisionNormal = Vector2.UnitY;
+                        Vector2 separation = clampedPosition - originalPosition;
+                        if (separation.LengthSquared() > 1e-8f)
+                        {
+                            collisionNormal = Vector2.Normalize(separation);
+                        }
+                        else
+                        {
+                            collisionNormal = Vector2.UnitY;
+                        }
                     }
                 }
             }
@@ -234,7 +243,7 @@ public partial class Game1
                 particle.Position.Y = _windowBounds.Height - 10;
             }
 
-            if (particle.Position != beforeCorrection)
+            if (particle.Position != beforeCorrection && !collisionOccurred)
             {
                 particle.PreviousPosition = particle.Position;
             }

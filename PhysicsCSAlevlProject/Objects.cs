@@ -116,7 +116,6 @@ public class RectangleCollider(Rectangle rectangle) : Collider
             {
                 closestPoint = new Vector2(point.X, Rectangle.Bottom);
             }
-
             return true;
         }
         closestPoint = point;
@@ -131,7 +130,7 @@ public class RectangleCollider(Rectangle rectangle) : Collider
     }
 }
 
-public class SeperatedAxisRectangleCollider : Collider
+public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
 {
     public Vector2[] Axis { get; private set; } = new Vector2[4];
     Vector2[] _axisPrivate = new Vector2[4];
@@ -186,9 +185,24 @@ public class SeperatedAxisRectangleCollider : Collider
         Axis[1] = new Vector2(-sin, cos);
         Axis[2] = -Axis[0];
         Axis[3] = -Axis[1];
+        Vertices =
+        [
+            new Vector2(-HalfWidth, -HalfHeight),
+            new Vector2(HalfWidth, -HalfHeight),
+            new Vector2(HalfWidth, HalfHeight),
+            new Vector2(-HalfWidth, HalfHeight),
+        ];
     }
 
     public SeperatedAxisRectangleCollider(Rectangle rectangle, float angle)
+        : base(
+            [
+                new Vector2(-rectangle.Width / 2f, -rectangle.Height / 2f),
+                new Vector2(rectangle.Width / 2f, -rectangle.Height / 2f),
+                new Vector2(rectangle.Width / 2f, rectangle.Height / 2f),
+                new Vector2(-rectangle.Width / 2f, rectangle.Height / 2f),
+            ]
+        )
     {
         HalfWidth = rectangle.Width / 2f;
         HalfHeight = rectangle.Height / 2f;
@@ -198,6 +212,13 @@ public class SeperatedAxisRectangleCollider : Collider
         );
         rectangleDraw = new PrimitiveBatch.Rectangle(rectangle, Color.Red);
         Angle = angle;
+        Vertices =
+        [
+            new Vector2(-HalfWidth, -HalfHeight),
+            new Vector2(HalfWidth, -HalfHeight),
+            new Vector2(HalfWidth, HalfHeight),
+            new Vector2(-HalfWidth, HalfHeight),
+        ];
 
         SetAxis();
     }
@@ -211,10 +232,11 @@ public class SeperatedAxisRectangleCollider : Collider
         float clampedX = Math.Clamp(xProjection, -HalfWidth, HalfWidth);
         float clampedY = Math.Clamp(yProjection, -HalfHeight, HalfHeight);
 
-        bool isOutside =
-            (Math.Abs(xProjection - clampedX) > 0.001f)
-            || (Math.Abs(yProjection - clampedY) > 0.001f);
-        if (isOutside)
+        bool isInside =
+            (Math.Abs(xProjection - clampedX) < 0.001f)
+            && (Math.Abs(yProjection - clampedY) < 0.001f);
+
+        if (!isInside)
         {
             closestPoint = point;
             return false;
@@ -240,6 +262,172 @@ public class SeperatedAxisRectangleCollider : Collider
     public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
         rectangleDraw.Draw(spriteBatch, primitiveBatch);
+    }
+}
+
+public class PolygonSeperatedAxisCollider : Collider
+{
+    public Vector2[] Vertices;
+    private List<Vector2[]> Triangles = new();
+    private Vector2[] _axisPrivate;
+    private float _angle;
+
+    public float angle
+    {
+        get { return _angle; }
+        set
+        {
+            _angle = value;
+            if (Vertices == null || _axisPrivate == null)
+                return;
+
+            float cos = MathF.Cos(_angle);
+            float sin = MathF.Sin(_angle);
+            for (int i = 0; i < Vertices.Length; i++)
+            {
+                _axisPrivate[i] = new Vector2(
+                    Vertices[i].X * cos - Vertices[i].Y * sin,
+                    Vertices[i].X * sin + Vertices[i].Y * cos
+                );
+            }
+        }
+    }
+
+    public PolygonSeperatedAxisCollider(Vector2[] vertices)
+    {
+        Vertices = vertices ?? Array.Empty<Vector2>();
+        _axisPrivate = new Vector2[Vertices.Length];
+
+        List<Vector2> vertsList = Vertices.ToList();
+        while (vertsList.Count > 3)
+        {
+            bool foundEar = false;
+            for (int i = 0; i < vertsList.Count; i++)
+            {
+                var A = vertsList[i];
+                var B = vertsList[(i + 1) % vertsList.Count];
+                var C = vertsList[(i + 2) % vertsList.Count];
+                if (IsEar(A, B, C, vertsList.ToArray()))
+                {
+                    Triangles.Add([A, B, C]);
+                    vertsList.RemoveAt((i + 1) % vertsList.Count);
+                    foundEar = true;
+                    break;
+                }
+            }
+            if (!foundEar)
+                break;
+            Triangles.Add(vertsList.Take(3).ToArray());
+        }
+    }
+
+    private bool IsEar(Vector2 A, Vector2 B, Vector2 C, Vector2[] points)
+    {
+        var cross = (B.X - A.X) * (C.Y - B.Y) - (B.Y - A.Y) * (C.X - B.X);
+        if (cross <= 0)
+            return false;
+        foreach (var P in points)
+        {
+            if (P == A || P == B || P == C)
+                continue;
+            if (PointInTriangle(P, A, B, C))
+                return false;
+        }
+        return true;
+    }
+
+    private bool PointInTriangle(Vector2 P, Vector2 A, Vector2 B, Vector2 C)
+    {
+        var areaABC = Area(A, B, C);
+        var areaPAB = Area(P, A, B);
+        var areaPBC = Area(P, B, C);
+        var areaPCA = Area(P, C, A);
+        return Math.Abs(areaABC - (areaPAB + areaPBC + areaPCA)) < 0.01f;
+    }
+
+    private Vector2 GetClosestPointOnLineSegment(Vector2 A, Vector2 B, Vector2 P)
+    {
+        Vector2 AB = B - A;
+        float t = Vector2.Dot(P - A, AB) / AB.LengthSquared();
+        t = MathHelper.Clamp(t, 0f, 1f);
+        return A + AB * t;
+    }
+
+    private float Area(Vector2 A, Vector2 B, Vector2 C)
+    {
+        return Math.Abs((A.X * (B.Y - C.Y) + B.X * (C.Y - A.Y) + C.X * (A.Y - B.Y)) / 2.0f);
+    }
+
+    public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
+    {
+        closestPoint = point;
+        if (Vertices == null || Vertices.Length < 3)
+        {
+            return false;
+        }
+
+        Vector2[] worldVertices = new Vector2[Vertices.Length];
+        for (int i = 0; i < Vertices.Length; i++)
+        {
+            worldVertices[i] = Vertices[i] + Position;
+        }
+
+        bool isInside = IsPointInPolygon(point, worldVertices);
+
+        float closestDistanceSq = float.MaxValue;
+        Vector2 bestPoint = point;
+
+        for (int i = 0; i < worldVertices.Length; i++)
+        {
+            Vector2 a = worldVertices[i];
+            Vector2 b = worldVertices[(i + 1) % worldVertices.Length];
+            Vector2 projected = GetClosestPointOnLineSegment(a, b, point);
+
+            float distSq = Vector2.DistanceSquared(point, projected);
+            if (distSq < closestDistanceSq)
+            {
+                closestDistanceSq = distSq;
+                bestPoint = projected;
+            }
+        }
+
+        closestPoint = bestPoint;
+        return isInside;
+    }
+
+    private bool IsPointInPolygon(Vector2 point, Vector2[] polygon)
+    {
+        bool inside = false;
+        for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
+        {
+            Vector2 pi = polygon[i];
+            Vector2 pj = polygon[j];
+
+            bool intersects =
+                ((pi.Y > point.Y) != (pj.Y > point.Y))
+                && (point.X < (pj.X - pi.X) * (point.Y - pi.Y) / ((pj.Y - pi.Y) + 1e-6f) + pi.X);
+
+            if (intersects)
+            {
+                inside = !inside;
+            }
+        }
+
+        return inside;
+    }
+
+    public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+    {
+        for (int i = 0; i < Vertices.Length; i++)
+        {
+            var line = new PrimitiveBatch.Line(
+                Vertices[i],
+                Vertices[(i + 1) % Vertices.Length],
+                Color.Red,
+                2
+            );
+            line.Draw(spriteBatch, primitiveBatch);
+        }
     }
 }
 
@@ -663,6 +851,29 @@ class Mesh
             {
                 beforeChange?.Invoke();
                 AddStickBetween(_polygonFinalParticle, _polygonInitialParticle);
+                ResetPolygonBuilder();
+            }
+        }
+        else if (
+            keyboardState.IsKeyDown(Keys.Escape) && !previousKeyboardState.IsKeyDown(Keys.Escape)
+        )
+        {
+            if (_isPolygonBuilding)
+            {
+                beforeChange?.Invoke();
+                ResetPolygonBuilder();
+            }
+        }
+        else if (keyboardState.IsKeyDown(Keys.C) && !previousKeyboardState.IsKeyDown(Keys.C))
+        {
+            if (_isPolygonBuilding && _polygonVertices.Count >= 2)
+            {
+                beforeChange?.Invoke();
+                Colliders.Add(
+                    new PolygonSeperatedAxisCollider(
+                        _polygonVertices.Select(id => Particles[id].Position).ToArray()
+                    )
+                );
                 ResetPolygonBuilder();
             }
         }

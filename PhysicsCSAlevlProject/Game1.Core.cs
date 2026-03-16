@@ -14,9 +14,9 @@ public partial class Game1 : Game
     private SpriteBatch _spriteBatch;
     private PrimitiveBatch _primitiveBatch;
     public static ImGuiRenderer _guiRenderer;
-    
+
     public Game1Database _database;
-    
+
     public string _currentAssignmentTitle;
 
     private bool _leftPressed;
@@ -30,8 +30,7 @@ public partial class Game1 : Game
     private Rectangle _changedBounds;
     private bool _keepAspectRatio;
     private float _lockedAspectRatio;
-    
-    
+
     private Stack<Mesh> _meshHistory;
     private Stack<Mesh> _meshRedoHistory;
 
@@ -65,7 +64,6 @@ public partial class Game1 : Game
         _graphics.PreferredBackBufferWidth = 800;
         _graphics.PreferredBackBufferHeight = 640;
         Window.AllowUserResizing = false;
-        
     }
 
     protected override void Initialize()
@@ -80,10 +78,8 @@ public partial class Game1 : Game
         _meshHistory = new Stack<Mesh>();
         _meshRedoHistory = new Stack<Mesh>();
 
-
         _database = new Game1Database();
         _currentAssignmentTitle = "";
-        
 
         var cbInit = Window.ClientBounds;
         _windowBounds = new Rectangle(0, 0, cbInit.Width, cbInit.Height);
@@ -130,18 +126,14 @@ public partial class Game1 : Game
 
     protected override void OnExiting(object sender, ExitingEventArgs args)
     {
-        
         OnExit();
         base.OnExiting(sender, args);
     }
 
     private void OnExit()
     {
-        
         _logger?.AddLog("Application closing...", ImGuiLogger.LogTypes.Info);
-        
+
         _logger.SaveLogsToFile("logs.log");
     }
-
-    
 }
