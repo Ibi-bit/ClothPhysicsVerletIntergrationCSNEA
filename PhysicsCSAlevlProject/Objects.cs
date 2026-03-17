@@ -1175,15 +1175,31 @@ class Mesh
     public void CreateHubSpokeTire(object[] args)
     {
         if (args.Length < 5)
-            return;
-        Vector2 center = new Vector2(
-            (float.Parse((string)args[0])),
-            (float.Parse((string)args[1]))
-        );
-                int rimParticleCount = (int.Parse((string)args[2]));
+        {
+            throw new ArgumentException(
+                "CreateHubSpokeTire needs 5 inputs: centerX, centerY, innerRadius, outerRadius, segments."
+            );
+        }
+        Vector2 center = new Vector2(float.Parse((string)args[0]), float.Parse((string)args[1]));
+        float innerRadius = float.Parse((string)args[2]);
+        float outerRadius = float.Parse((string)args[3]);
+        int rimParticleCount = int.Parse((string)args[4]);
 
-        float innerRadius = (float.Parse((string)args[3]));
-        float outerRadius = (float.Parse((string)args[4]));
+        if (innerRadius <= 0f || outerRadius <= 0f)
+        {
+            throw new ArgumentException("Inner and outer radius must be greater than zero.");
+        }
+
+        if (outerRadius <= innerRadius)
+        {
+            throw new ArgumentException("Outer radius must be greater than inner radius.");
+        }
+
+        if (rimParticleCount < 3)
+        {
+            throw new ArgumentException("Segments must be at least 3.");
+        }
+
         List<int> innerRimIds = new List<int>();
         List<int> outerRimIds = new List<int>();
 

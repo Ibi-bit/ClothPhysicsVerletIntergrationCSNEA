@@ -62,32 +62,27 @@ public partial class Game1
                     );
                     return;
                 }
-                float centerX, centerY, outerRadius, innerRadius;
-                int outerStickCount;
-               
-                if (
-                    float.TryParse(command.Parameters[0], out centerX)
-                    && float.TryParse(command.Parameters[1], out centerY)
-                    && int.TryParse(command.Parameters[2], out outerStickCount)
-                    && float.TryParse(command.Parameters[3], out outerRadius)
-                    && float.TryParse(command.Parameters[4], out innerRadius))
+
+                try
                 {
                     _activeMesh.CreateHubSpokeTire(
                         [
-                            new Vector2(centerX, centerY),
-                            outerStickCount,
-                            outerRadius,
-                            innerRadius
-                        ]);
-                    
+                            command.Parameters[0],
+                            command.Parameters[1],
+                            command.Parameters[2],
+                            command.Parameters[3],
+                            command.Parameters[4],
+                        ]
+                    );
+
                     _logger.AddLog(
-                        $"Added tire to active mesh at ({centerX}, {centerY}) with outer radius {outerRadius} and inner radius {innerRadius} and {outerStickCount} outer sticks"
+                        $"Added tire to active mesh at ({command.Parameters[0]}, {command.Parameters[1]}) with outer radius {command.Parameters[3]} and inner radius {command.Parameters[4]} and {command.Parameters[2]} outer sticks"
                     );
                 }
-                else
+                catch (Exception ex)
                 {
                     _logger.AddLog(
-                        $"Invalid parameters for Mesh.AddTire Could not parse floats from '{command.Parameters[0]}', '{command.Parameters[1]}', '{command.Parameters[2]}', or '{command.Parameters[3]}'",
+                        $"Invalid parameters for Mesh.AddTire Could not parse floats/ints from '{command.Parameters[0]}', '{command.Parameters[1]}', '{command.Parameters[2]}', '{command.Parameters[3]}', or '{command.Parameters[4]}' - {ex.Message}",
                         ImGuiLogger.LogTypes.Error
                     );
                 }

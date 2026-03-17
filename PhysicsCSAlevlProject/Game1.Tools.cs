@@ -22,7 +22,7 @@ public partial class Game1
     private float _dragRadius;
     private List<int> _inspectedParticles;
     private List<int> _openedInspectedParticles;
-    private List<Action<object[]>> _factories = new();
+    private List<Factory> _factories = new();
     private int? _stickToolFirstParticleId;
 
     private void InitializeTools()
@@ -32,7 +32,7 @@ public partial class Game1
         _inspectedParticles = new List<int>();
         _openedInspectedParticles = new List<int>();
         _stickToolFirstParticleId = null;
-        _factories.Add(_activeMesh.CreateHubSpokeTire);
+        _factories.Add(new TireFactory(args => _activeMesh.CreateHubSpokeTire(args)));
 
         InitializeInteractTools();
         InitializeBuildTools();
