@@ -36,6 +36,9 @@ public partial class Game1
     private bool _capsActive;
     private bool _altHeld;
 
+    private Action<object[]> _selectedFactoryAction;
+    private object[] _factoryIn = new object[10];
+
     private bool _LocalorRemoteStructureTab;
 
     private Game1Database.User _currentUser;
@@ -707,13 +710,48 @@ public partial class Game1
 
             ImGui.EndMenu();
         }
-        if (ImGui.BeginMenu("Help"))
+        if (ImGui.BeginMenu("Factories"))
         {
-            if (ImGui.MenuItem("About", null, ref _showReadMeWindow)) { }
+            FactoryMenu();
+
             ImGui.EndMenu();
         }
 
         ImGui.EndMainMenuBar();
+    }
+
+    private void FactoryMenu()
+    {
+        foreach (var factory in _factories)
+        {
+            if (ImGui.Selectable(factory.Method.Name, false, ImGuiSelectableFlags.DontClosePopups))
+            {
+                _selectedFactoryAction = factory;
+            }
+        }
+        for (int i = 0; i < _factoryIn.Length; i++)
+        {
+            string input = _factoryIn[i]?.ToString() ?? "";
+            if (ImGui.InputText($"Input {i}", ref input, 100))
+            {
+                _factoryIn[i] = input;
+            }
+        }
+        if (ImGui.Button("Run Factory") && _selectedFactoryAction != null)
+        {
+            MeshHistoryPush();
+            try{
+                _selectedFactoryAction(_factoryIn);
+            }
+            
+            catch (Exception ex)
+            {
+                _logger.AddLog(
+                    $"Factory execution error: {ex.Message}",
+                    ImGuiLogger.LogTypes.Error
+                );
+            }
+        }
     }
 
     private void QuickStructureMenu()

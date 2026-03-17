@@ -72,13 +72,14 @@ public partial class Game1
                     && float.TryParse(command.Parameters[3], out outerRadius)
                     && float.TryParse(command.Parameters[4], out innerRadius))
                 {
-                    _activeMesh = Mesh.CreateHubSpokeTire(
-                        new Vector2(centerX, centerY),
-                        outerStickCount,
-                        outerRadius,
-                        innerRadius,
-                        _activeMesh
-                    );
+                    _activeMesh.CreateHubSpokeTire(
+                        [
+                            new Vector2(centerX, centerY),
+                            outerStickCount,
+                            outerRadius,
+                            innerRadius
+                        ]);
+                    
                     _logger.AddLog(
                         $"Added tire to active mesh at ({centerX}, {centerY}) with outer radius {outerRadius} and inner radius {innerRadius} and {outerStickCount} outer sticks"
                     );

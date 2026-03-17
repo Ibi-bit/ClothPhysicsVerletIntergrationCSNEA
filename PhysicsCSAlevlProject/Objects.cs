@@ -271,6 +271,7 @@ public class PolygonSeperatedAxisCollider : Collider
     private List<Vector2[]> Triangles = new();
     private Vector2[] _axisPrivate;
     private float _angle;
+    private Rectangle broadPhase;
 
     public float angle
     {
@@ -298,7 +299,10 @@ public class PolygonSeperatedAxisCollider : Collider
         Vertices = vertices ?? Array.Empty<Vector2>();
         _axisPrivate = new Vector2[Vertices.Length];
 
+        broadPhase = CreateBroadPhase(vertices);
+
         List<Vector2> vertsList = Vertices.ToList();
+
         while (vertsList.Count > 3)
         {
             bool foundEar = false;
@@ -319,6 +323,29 @@ public class PolygonSeperatedAxisCollider : Collider
                 break;
             Triangles.Add(vertsList.Take(3).ToArray());
         }
+    }
+
+    private static Rectangle CreateBroadPhase(Vector2[] vertices)
+    {
+        Vector2 xmin = Vector2.Zero;
+        Vector2 xmax = Vector2.Zero;
+        foreach (var v in vertices)
+        {
+            if (v.X < xmin.X)
+                xmin.X = v.X;
+            if (v.Y < xmin.Y)
+                xmin.Y = v.Y;
+            if (v.X > xmax.X)
+                xmax.X = v.X;
+            if (v.Y > xmax.Y)
+                xmax.Y = v.Y;
+        }
+        return new Rectangle(
+            (int)xmin.X,
+            (int)xmin.Y,
+            (int)(xmax.X - xmin.X),
+            (int)(xmax.Y - xmin.Y)
+        );
     }
 
     private bool IsEar(Vector2 A, Vector2 B, Vector2 C, Vector2[] points)
@@ -362,6 +389,10 @@ public class PolygonSeperatedAxisCollider : Collider
     {
         closestPoint = point;
         if (Vertices == null || Vertices.Length < 3)
+        {
+            return false;
+        }
+        if (!broadPhase.Contains(point))
         {
             return false;
         }
@@ -868,12 +899,15 @@ class Mesh
         {
             if (_isPolygonBuilding && _polygonVertices.Count >= 2)
             {
-                beforeChange?.Invoke();
                 Colliders.Add(
                     new PolygonSeperatedAxisCollider(
                         _polygonVertices.Select(id => Particles[id].Position).ToArray()
                     )
                 );
+                foreach (var id in _polygonVertices)
+                {
+                    RemoveParticle(id);
+                }
                 ResetPolygonBuilder();
             }
         }
@@ -1138,16 +1172,18 @@ class Mesh
         return mesh;
     }
 
-    public static Mesh CreateHubSpokeTire(
-        Vector2 center,
-        int rimParticleCount,
-        float innerRadius,
-        float outerRadius,
-        Mesh mesh = null
-    )
+    public void CreateHubSpokeTire(object[] args)
     {
-        mesh = mesh ?? new Mesh();
+        if (args.Length < 5)
+            return;
+        Vector2 center = new Vector2(
+            (float.Parse((string)args[0])),
+            (float.Parse((string)args[1]))
+        );
+                int rimParticleCount = (int.Parse((string)args[2]));
 
+        float innerRadius = (float.Parse((string)args[3]));
+        float outerRadius = (float.Parse((string)args[4]));
         List<int> innerRimIds = new List<int>();
         List<int> outerRimIds = new List<int>();
 
@@ -1158,13 +1194,13 @@ class Mesh
             Vector2 innerPos =
                 center
                 + new Vector2(innerRadius * MathF.Cos(angle), innerRadius * MathF.Sin(angle));
-            int innerId = mesh.AddParticleAt(innerPos);
+            int innerId = AddParticleAt(innerPos);
             innerRimIds.Add(innerId);
 
             Vector2 outerPos =
                 center
                 + new Vector2(outerRadius * MathF.Cos(angle), outerRadius * MathF.Sin(angle));
-            int outerId = mesh.AddParticleAt(outerPos);
+            int outerId = AddParticleAt(outerPos);
             outerRimIds.Add(outerId);
         }
 
@@ -1172,14 +1208,14 @@ class Mesh
         for (int i = 0; i < rimParticleCount; i++)
         {
             int next = (i + 1) % rimParticleCount;
-            mesh.AddStickBetween(innerRimIds[i], innerRimIds[next], innerStickLength);
+            AddStickBetween(innerRimIds[i], innerRimIds[next], innerStickLength);
         }
 
         float outerStickLength = 2f * outerRadius * MathF.Sin(MathF.PI / rimParticleCount);
         for (int i = 0; i < rimParticleCount; i++)
         {
             int next = (i + 1) % rimParticleCount;
-            mesh.AddStickBetween(outerRimIds[i], outerRimIds[next], outerStickLength);
+            AddStickBetween(outerRimIds[i], outerRimIds[next], outerStickLength);
         }
 
         float radialStickLength = outerRadius - innerRadius;
@@ -1189,12 +1225,10 @@ class Mesh
         for (int i = 0; i < rimParticleCount; i++)
         {
             int next = (i + 1) % rimParticleCount;
-            mesh.AddStickBetween(innerRimIds[i], outerRimIds[i], radialStickLength);
-            mesh.AddStickBetween(innerRimIds[i], outerRimIds[next], diagonalStickLength);
-            mesh.AddStickBetween(outerRimIds[i], innerRimIds[next], diagonalStickLength);
+            AddStickBetween(innerRimIds[i], outerRimIds[next], diagonalStickLength);
+            AddStickBetween(innerRimIds[i], outerRimIds[i], radialStickLength);
+            AddStickBetween(outerRimIds[i], innerRimIds[next], diagonalStickLength);
         }
-
-        return mesh;
     }
 
     public static Mesh CreateClothMesh(
