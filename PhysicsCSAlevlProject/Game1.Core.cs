@@ -61,8 +61,8 @@ public partial class Game1 : Game
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        _graphics.PreferredBackBufferWidth = 800;
-        _graphics.PreferredBackBufferHeight = 640;
+        _graphics.PreferredBackBufferWidth = 960;
+        _graphics.PreferredBackBufferHeight = 768;
         Window.AllowUserResizing = false;
     }
 
@@ -71,8 +71,8 @@ public partial class Game1 : Game
         _primitiveBatch = new PrimitiveBatch(GraphicsDevice);
         _primitiveBatch.CreateTextures(20f);
 
-        _graphics.PreferredBackBufferWidth = 800;
-        _graphics.PreferredBackBufferHeight = 640;
+        _graphics.PreferredBackBufferWidth = 960;
+        _graphics.PreferredBackBufferHeight = 768;
         _graphics.ApplyChanges();
 
         _meshHistory = new Stack<Mesh>();
