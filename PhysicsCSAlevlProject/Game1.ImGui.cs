@@ -36,8 +36,7 @@ public partial class Game1
     private bool _capsActive;
     private bool _altHeld;
 
-    private Action<object[]> _selectedFactoryAction;
-    private object[] _factoryIn = new object[10];
+    private Factory _selectedFactoryAction;
 
     private bool _LocalorRemoteStructureTab;
 
@@ -724,26 +723,34 @@ public partial class Game1
     {
         foreach (var factory in _factories)
         {
-            if (ImGui.Selectable(factory.Method.Name, false, ImGuiSelectableFlags.DontClosePopups))
+            if (ImGui.Selectable(factory.Name, false, ImGuiSelectableFlags.DontClosePopups))
             {
                 _selectedFactoryAction = factory;
             }
         }
-        for (int i = 0; i < _factoryIn.Length; i++)
+
+        if (_selectedFactoryAction == null)
         {
-            string input = _factoryIn[i]?.ToString() ?? "";
-            if (ImGui.InputText($"Input {i}", ref input, 100))
+            return;
+        }
+
+        foreach (var key in _selectedFactoryAction.Parameters.Keys.ToList())
+        {
+            string value = _selectedFactoryAction.Parameters[key];
+            if (ImGui.InputText(key, ref value, 100))
             {
-                _factoryIn[i] = input;
+                _selectedFactoryAction.Parameters[key] = value;
             }
         }
+
         if (ImGui.Button("Run Factory") && _selectedFactoryAction != null)
         {
             MeshHistoryPush();
-            try{
-                _selectedFactoryAction(_factoryIn);
+            try
+            {
+                object[] args = _selectedFactoryAction.Parameters.Values.Cast<object>().ToArray();
+                _selectedFactoryAction.Method(args);
             }
-            
             catch (Exception ex)
             {
                 _logger.AddLog(
