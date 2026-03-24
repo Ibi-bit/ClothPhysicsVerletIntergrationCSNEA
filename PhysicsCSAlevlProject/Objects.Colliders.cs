@@ -11,6 +11,7 @@ public abstract class Collider
 {
     public virtual Vector2 Position { get; set; }
     public abstract bool ContainsPoint(Vector2 point, out Vector2 closestPoint);
+    public abstract Collider DeepCopy();
 
     public virtual void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch) { }
 }
@@ -18,6 +19,13 @@ public abstract class Collider
 public class CircleCollider : Collider
 {
     public float Radius;
+    public Rectangle BroadPhase =>
+        new Rectangle(
+            (int)(Position.X - Radius),
+            (int)(Position.Y - Radius),
+            (int)(Radius * 2),
+            (int)(Radius * 2)
+        );
 
     public CircleCollider(Vector2 center, float radius)
     {
@@ -25,8 +33,15 @@ public class CircleCollider : Collider
         Radius = radius;
     }
 
+    public override Collider DeepCopy() => new CircleCollider(Position, Radius);
+
     public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
     {
+        if (!BroadPhase.Contains(point))
+        {
+            closestPoint = point;
+            return false;
+        }
         Vector2 direction = point - Position;
         float distance = direction.LengthSquared();
 
@@ -50,6 +65,8 @@ public class CircleCollider : Collider
 public class RectangleCollider(Rectangle rectangle) : Collider
 {
     public Rectangle Rectangle = rectangle;
+
+    public override Collider DeepCopy() => new RectangleCollider(Rectangle);
 
     public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
     {
@@ -138,6 +155,17 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
             }
         }
     }
+
+    public override Collider DeepCopy() =>
+        new SeperatedAxisRectangleCollider(
+            new Rectangle(
+                (int)(Position.X - HalfWidth),
+                (int)(Position.Y - HalfHeight),
+                (int)(HalfWidth * 2),
+                (int)(HalfHeight * 2)
+            ),
+            angle
+        );
 
     private void SetAxis()
     {
@@ -258,6 +286,13 @@ public class PolygonSeperatedAxisCollider : Collider
             }
         }
     }
+
+    public override Collider DeepCopy() =>
+        new PolygonSeperatedAxisCollider(Vertices.Select(v => v).ToArray())
+        {
+            Position = Position,
+            angle = angle,
+        };
 
     public PolygonSeperatedAxisCollider(Vector2[] vertices)
     {

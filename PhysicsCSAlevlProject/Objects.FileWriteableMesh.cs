@@ -25,11 +25,7 @@ class FileWriteableMesh
         public int P2Id;
     }
 
-    public class ColliderData
-    {
-        public string Type;
-        public object[] Parameters;
-    }
+   
 
     public List<particleData> Particles = new List<particleData>();
 
@@ -86,7 +82,7 @@ class FileWriteableMesh
         }
         foreach (var c in mesh.Colliders)
         {
-            Colliders.Add(c);
+            Colliders.Add(c.DeepCopy());
         }
     }
 
@@ -143,6 +139,13 @@ class FileWriteableMesh
                 {
                     mesh.AddStick(p1Id, p2Id, Color.White);
                 }
+            }
+        }
+        if (Colliders != null)
+        {
+            foreach (var c in Colliders)
+            {
+                mesh.Colliders.Add(c.DeepCopy());
             }
         }
 

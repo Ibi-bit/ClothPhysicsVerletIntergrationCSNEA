@@ -23,7 +23,7 @@ public partial class Game1
         _windForce = Vector2.Zero;
         _windDirectionArrow = null;
         _cutLine = null;
-        _meshParticlesInDragArea = new List<int>();
+        _meshParticlesInDragArea = new();
     }
 
     protected override void Update(GameTime gameTime)
