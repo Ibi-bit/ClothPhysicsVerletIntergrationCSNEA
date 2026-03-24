@@ -30,7 +30,12 @@
     <Compile Include="Game1.DebugCommands.cs"/>
     <Compile Include="Game1.Factories.cs"/>
     <Compile Include="Program.cs" />
-    <Compile Include="Objects.cs" />
+    <Compile Include="Objects.Colliders.cs" />
+    <Compile Include="Objects.Particles.cs" />
+    <Compile Include="Objects.Sticks.cs" />
+    <Compile Include="Objects.Mesh.cs" />
+    <Compile Include="Objects.FileWriteableMesh.cs" />
+    <Compile Include="Objects.Tool.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />
   </ItemGroup>
   <ItemGroup>
