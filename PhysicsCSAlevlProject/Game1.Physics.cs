@@ -8,8 +8,8 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     private const float FixedTimeStep = 1f / 60f;
-    private const float FrictionCoefficient = 0.2f; // Lower = more sliding
-    private const float BounceCoefficient = 0.2f; // Lower = less bounce
+    private const float FrictionCoefficient = 0.2f;
+    private const float BounceCoefficient = 0.2f;
 
     private Vector2 _collisonBoundsDifference;
     private Vector2 _baseForce;

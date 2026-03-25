@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
@@ -218,7 +218,10 @@ public partial class Game1
                                 objectDict.TryGetValue("Circle", out circleObj);
                             var circleDict = circleObj as Dictionary<string, object>;
                             float placeRadius = 20f;
-                            if (circleDict != null && circleDict.TryGetValue("Radius", out var radiusObj))
+                            if (
+                                circleDict != null
+                                && circleDict.TryGetValue("Radius", out var radiusObj)
+                            )
                                 placeRadius = Convert.ToSingle(radiusObj);
                             radius = placeRadius;
                             cursorColor = Color.Red * cursorAlpha;

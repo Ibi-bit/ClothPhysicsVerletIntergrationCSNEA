@@ -115,7 +115,6 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
     public float HalfWidth;
     public float HalfHeight;
     private Vector2 _position;
-    private float angle;
     private PrimitiveBatch.Rectangle rectangleDraw;
 
     public override Vector2 Position

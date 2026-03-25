@@ -25,8 +25,6 @@ class FileWriteableMesh
         public int P2Id;
     }
 
-   
-
     public List<particleData> Particles = new List<particleData>();
 
     public List<stickData> Sticks = new List<stickData>();
