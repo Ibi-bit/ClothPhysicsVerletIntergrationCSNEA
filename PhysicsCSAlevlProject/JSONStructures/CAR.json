@@ -1,0 +1,1385 @@
+{
+  "$type": "PhysicsCSAlevlProject.FileWriteableMesh, PhysicsCSAlevlProject",
+  "Particles": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "130.75096, 193.39503",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "129.01012, 172.01634",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "138.80507, 194.35529",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "145.37737, 173.8419",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "145.77374, 198.242",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "159.58357, 182.1138",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "150.58316, 204.41968",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "169.90121, 194.79964",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "152.9206, 212.1313",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "174.48056, 210.62457",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "151.89828, 219.9902",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "172.3309, 226.91553",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "148.00127, 226.93262",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "164.14192, 240.88216",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "141.55113, 231.79834",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "151.20644, 251.14632",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "133.8761, 234.01437",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "135.49399, 255.43083",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "125.75374, 233.2177",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "119.26726, 253.49825",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "119.03446, 229.19293",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "105.03287, 245.54108",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "114.03669, 222.94214",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "94.9332, 232.66977",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "112.02067, 215.43947",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "90.47968, 216.9073",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "112.680145, 207.46184",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "92.28884, 200.6123",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "116.67069, 200.45749",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "100.23108, 186.33496",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "123.12543, 195.61",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "113.258415, 176.23312",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "110, 42",
+      "Mass": 1.0,
+      "IsPinned": true
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "323.70703, 482.85202",
+      "Mass": 1.0,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "23, 37",
+      "Mass": 1.0,
+      "IsPinned": true
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "90.751495, 101.06983",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "111.92321, 97.221825",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "90.64739, 109.340546",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "111.8135, 113.58903",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "87.427605, 116.772385",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "105.09877, 128.67522",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "81.54061, 121.97908",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "93.59917, 140.09508",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "74.33712, 125.16248",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "78.23557, 146.40079",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "66.34521, 125.062965",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "61.753376, 146.30022",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "58.923393, 122.057945",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "46.721592, 139.6479",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "53.20114, 116.53592",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "35.266056, 127.96294",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "50.577328, 108.73842",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "29.233671, 112.55048",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "50.718124, 100.72268",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "29.5426, 96.249054",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "53.851612, 93.08083",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "35.955063, 81.199974",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "59.521244, 87.44889",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "47.612278, 69.615845",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "66.95231, 84.59841",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "62.731503, 63.383186",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "74.658844, 84.73061",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "79.36035, 63.63902",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "82.10158, 87.77537",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "94.38908, 70.31875",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "87.72659, 93.81476",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "105.74872, 82.10523",
+      "Mass": 0.1,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "70.553795, 104.25456",
+      "Mass": 1.0,
+      "IsPinned": false
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "131.53455, 212.4488",
+      "Mass": 1.0,
+      "IsPinned": false
+    }
+  ],
+  "Sticks": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 0,
+      "P2Id": 2
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 2,
+      "P2Id": 4
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 4,
+      "P2Id": 6
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 6,
+      "P2Id": 8
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 8,
+      "P2Id": 10
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 10,
+      "P2Id": 12
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 12,
+      "P2Id": 14
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 14,
+      "P2Id": 16
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 16,
+      "P2Id": 18
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 18,
+      "P2Id": 20
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 20,
+      "P2Id": 22
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 22,
+      "P2Id": 24
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 24,
+      "P2Id": 26
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 26,
+      "P2Id": 28
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 28,
+      "P2Id": 30
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 30,
+      "P2Id": 0
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 1,
+      "P2Id": 3
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 3,
+      "P2Id": 5
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 5,
+      "P2Id": 7
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 7,
+      "P2Id": 9
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 9,
+      "P2Id": 11
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 11,
+      "P2Id": 13
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 13,
+      "P2Id": 15
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 15,
+      "P2Id": 17
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 17,
+      "P2Id": 19
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 19,
+      "P2Id": 21
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 21,
+      "P2Id": 23
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 23,
+      "P2Id": 25
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 25,
+      "P2Id": 27
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 27,
+      "P2Id": 29
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 29,
+      "P2Id": 31
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 31,
+      "P2Id": 1
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 0,
+      "P2Id": 3
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 0,
+      "P2Id": 1
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 1,
+      "P2Id": 2
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 2,
+      "P2Id": 5
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 2,
+      "P2Id": 3
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 3,
+      "P2Id": 4
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 4,
+      "P2Id": 7
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 4,
+      "P2Id": 5
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 5,
+      "P2Id": 6
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 6,
+      "P2Id": 9
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 6,
+      "P2Id": 7
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 7,
+      "P2Id": 8
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 8,
+      "P2Id": 11
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 8,
+      "P2Id": 9
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 9,
+      "P2Id": 10
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 10,
+      "P2Id": 13
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 10,
+      "P2Id": 11
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 11,
+      "P2Id": 12
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 12,
+      "P2Id": 15
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 12,
+      "P2Id": 13
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 13,
+      "P2Id": 14
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 14,
+      "P2Id": 17
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 14,
+      "P2Id": 15
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 15,
+      "P2Id": 16
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 16,
+      "P2Id": 19
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 16,
+      "P2Id": 17
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 17,
+      "P2Id": 18
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 18,
+      "P2Id": 21
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 18,
+      "P2Id": 19
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 19,
+      "P2Id": 20
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 20,
+      "P2Id": 23
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 20,
+      "P2Id": 21
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 21,
+      "P2Id": 22
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 22,
+      "P2Id": 25
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 22,
+      "P2Id": 23
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 23,
+      "P2Id": 24
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 24,
+      "P2Id": 27
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 24,
+      "P2Id": 25
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 25,
+      "P2Id": 26
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 26,
+      "P2Id": 29
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 26,
+      "P2Id": 27
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 27,
+      "P2Id": 28
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 28,
+      "P2Id": 31
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 28,
+      "P2Id": 29
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 29,
+      "P2Id": 30
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 30,
+      "P2Id": 1
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 30,
+      "P2Id": 31
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 31,
+      "P2Id": 0
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 37,
+      "P2Id": 39
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 35,
+      "P2Id": 37
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 39,
+      "P2Id": 41
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 41,
+      "P2Id": 43
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 43,
+      "P2Id": 45
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 45,
+      "P2Id": 47
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 47,
+      "P2Id": 49
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 49,
+      "P2Id": 51
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 51,
+      "P2Id": 53
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 53,
+      "P2Id": 55
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 55,
+      "P2Id": 57
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 57,
+      "P2Id": 59
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 59,
+      "P2Id": 61
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 61,
+      "P2Id": 63
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 63,
+      "P2Id": 65
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 65,
+      "P2Id": 35
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 36,
+      "P2Id": 38
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 38,
+      "P2Id": 40
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 40,
+      "P2Id": 42
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 42,
+      "P2Id": 44
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 44,
+      "P2Id": 46
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 46,
+      "P2Id": 48
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 48,
+      "P2Id": 50
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 50,
+      "P2Id": 52
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 52,
+      "P2Id": 54
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 54,
+      "P2Id": 56
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 56,
+      "P2Id": 58
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 58,
+      "P2Id": 60
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 60,
+      "P2Id": 62
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 62,
+      "P2Id": 64
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 64,
+      "P2Id": 66
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 66,
+      "P2Id": 36
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 35,
+      "P2Id": 38
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 35,
+      "P2Id": 36
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 36,
+      "P2Id": 37
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 37,
+      "P2Id": 40
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 37,
+      "P2Id": 38
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 38,
+      "P2Id": 39
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 39,
+      "P2Id": 42
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 39,
+      "P2Id": 40
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 40,
+      "P2Id": 41
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 41,
+      "P2Id": 44
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 41,
+      "P2Id": 42
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 42,
+      "P2Id": 43
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 43,
+      "P2Id": 46
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 43,
+      "P2Id": 44
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 44,
+      "P2Id": 45
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 45,
+      "P2Id": 48
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 45,
+      "P2Id": 46
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 46,
+      "P2Id": 47
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 47,
+      "P2Id": 50
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 47,
+      "P2Id": 48
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 48,
+      "P2Id": 49
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 49,
+      "P2Id": 52
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 49,
+      "P2Id": 50
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 50,
+      "P2Id": 51
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 51,
+      "P2Id": 54
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 51,
+      "P2Id": 52
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 52,
+      "P2Id": 53
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 53,
+      "P2Id": 56
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 53,
+      "P2Id": 54
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 54,
+      "P2Id": 55
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 55,
+      "P2Id": 58
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 55,
+      "P2Id": 56
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 56,
+      "P2Id": 57
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 57,
+      "P2Id": 60
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 57,
+      "P2Id": 58
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 58,
+      "P2Id": 59
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 59,
+      "P2Id": 62
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 59,
+      "P2Id": 60
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 60,
+      "P2Id": 61
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 61,
+      "P2Id": 64
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 61,
+      "P2Id": 62
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 62,
+      "P2Id": 63
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 63,
+      "P2Id": 66
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 63,
+      "P2Id": 64
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 64,
+      "P2Id": 65
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 65,
+      "P2Id": 36
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 65,
+      "P2Id": 66
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 66,
+      "P2Id": 35
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 67,
+      "P2Id": 68
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 67,
+      "P2Id": 53
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 67,
+      "P2Id": 47
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 67,
+      "P2Id": 37
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 67,
+      "P2Id": 59
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 67,
+      "P2Id": 43
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 68,
+      "P2Id": 14
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 68,
+      "P2Id": 24
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 68,
+      "P2Id": 0
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 68,
+      "P2Id": 20
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 68,
+      "P2Id": 4
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 68,
+      "P2Id": 10
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 34,
+      "P2Id": 58
+    }
+  ],
+  "Colliders": [
+    {
+      "$type": "PhysicsCSAlevlProject.PolygonSeperatedAxisCollider, PhysicsCSAlevlProject",
+      "Vertices": [
+        "26, 104",
+        "35, 142",
+        "45, 167",
+        "58, 187",
+        "75, 208",
+        "99, 238",
+        "123, 268",
+        "143, 295",
+        "165, 325",
+        "182, 352",
+        "200, 374",
+        "224, 406",
+        "257, 433",
+        "273, 446",
+        "314, 476",
+        "348, 500",
+        "382, 518",
+        "419, 536",
+        "455, 549",
+        "499, 564",
+        "546, 575",
+        "598, 580",
+        "640, 581",
+        "673, 572",
+        "714, 547",
+        "735, 527",
+        "762, 494",
+        "784, 460",
+        "807, 415",
+        "831, 711",
+        "44, 691"
+      ],
+      "worldVertices": [
+        "26, 104",
+        "35, 142",
+        "45, 167",
+        "58, 187",
+        "75, 208",
+        "99, 238",
+        "123, 268",
+        "143, 295",
+        "165, 325",
+        "182, 352",
+        "200, 374",
+        "224, 406",
+        "257, 433",
+        "273, 446",
+        "314, 476",
+        "348, 500",
+        "382, 518",
+        "419, 536",
+        "455, 549",
+        "499, 564",
+        "546, 575",
+        "598, 580",
+        "640, 581",
+        "673, 572",
+        "714, 547",
+        "735, 527",
+        "762, 494",
+        "784, 460",
+        "807, 415",
+        "831, 711",
+        "44, 691"
+      ],
+      "MaxArea": 1000.0,
+      "angle": 0.0,
+      "Position": "0, 0"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.PolygonSeperatedAxisCollider, PhysicsCSAlevlProject",
+      "Vertices": [
+        "807, 417",
+        "819, 382",
+        "828, 348",
+        "840, 321",
+        "875, 319",
+        "832, 435"
+      ],
+      "worldVertices": [
+        "807, 417",
+        "819, 382",
+        "828, 348",
+        "840, 321",
+        "875, 319",
+        "832, 435"
+      ],
+      "MaxArea": 1000.0,
+      "angle": 0.0,
+      "Position": "0, 0"
+    }
+  ],
+  "SpringConstant": 100000.0,
+  "Drag": 1.0,
+  "Mass": 0.1
+}

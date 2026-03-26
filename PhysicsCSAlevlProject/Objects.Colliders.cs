@@ -261,9 +261,25 @@ public class PolygonSeperatedAxisCollider : Collider
     public Vector2[] worldVertices;
     private List<Vector2[]> Triangles = new();
     private Vector2[] _axisPrivate;
+    private Vector2 _position;
     private float _angle;
-    private Rectangle broadPhase;
+    private Rectangle _localBroadPhase;
+    private Rectangle _worldBroadPhase;
+    private bool _worldCacheDirty;
     public float MaxArea = 1000f;
+
+    public override Vector2 Position
+    {
+        get { return _position; }
+        set
+        {
+            if (_position != value)
+            {
+                _position = value;
+                _worldCacheDirty = true;
+            }
+        }
+    }
 
     public float angle
     {
@@ -283,6 +299,7 @@ public class PolygonSeperatedAxisCollider : Collider
                     Vertices[i].X * sin + Vertices[i].Y * cos
                 );
             }
+            _worldCacheDirty = true;
         }
     }
 
@@ -295,11 +312,13 @@ public class PolygonSeperatedAxisCollider : Collider
 
     public PolygonSeperatedAxisCollider(Vector2[] vertices)
     {
-        Vertices = vertices ?? Array.Empty<Vector2>();
-        worldVertices = vertices;
+        Vertices = vertices?.ToArray() ?? Array.Empty<Vector2>();
+        worldVertices = new Vector2[Vertices.Length];
         _axisPrivate = new Vector2[Vertices.Length];
 
-        broadPhase = CreateBroadPhase(vertices);
+        _localBroadPhase = CreateBroadPhase(Vertices);
+        _worldBroadPhase = _localBroadPhase;
+        _worldCacheDirty = true;
 
         List<Vector2> vertsList = Vertices.ToList();
 
@@ -327,8 +346,13 @@ public class PolygonSeperatedAxisCollider : Collider
 
     private static Rectangle CreateBroadPhase(Vector2[] vertices)
     {
-        Vector2 xmin = Vector2.Zero;
-        Vector2 xmax = Vector2.Zero;
+        if (vertices == null || vertices.Length == 0)
+        {
+            return Rectangle.Empty;
+        }
+
+        Vector2 xmin = vertices[0];
+        Vector2 xmax = vertices[0];
         foreach (var v in vertices)
         {
             if (v.X < xmin.X)
@@ -346,6 +370,28 @@ public class PolygonSeperatedAxisCollider : Collider
             (int)(xmax.X - xmin.X),
             (int)(xmax.Y - xmin.Y)
         );
+    }
+
+    private void UpdateWorldCacheIfNeeded()
+    {
+        if (!_worldCacheDirty)
+        {
+            return;
+        }
+
+        for (int i = 0; i < Vertices.Length; i++)
+        {
+            worldVertices[i] = Vertices[i] + Position;
+        }
+
+        _worldBroadPhase = new Rectangle(
+            _localBroadPhase.X + (int)Position.X,
+            _localBroadPhase.Y + (int)Position.Y,
+            _localBroadPhase.Width,
+            _localBroadPhase.Height
+        );
+
+        _worldCacheDirty = false;
     }
 
     private bool IsEar(Vector2 A, Vector2 B, Vector2 C, Vector2[] points)
@@ -392,14 +438,12 @@ public class PolygonSeperatedAxisCollider : Collider
         {
             return false;
         }
-        if (!broadPhase.Contains(point))
+
+        UpdateWorldCacheIfNeeded();
+
+        if (!_worldBroadPhase.Contains(point))
         {
             return false;
-        }
-
-        for (int i = 0; i < Vertices.Length; i++)
-        {
-            worldVertices[i] = Vertices[i] + Position;
         }
 
         bool isInside = IsPointInPolygon(point, worldVertices);
@@ -448,6 +492,8 @@ public class PolygonSeperatedAxisCollider : Collider
 
     public override void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
     {
+        UpdateWorldCacheIfNeeded();
+
         for (int i = 0; i < worldVertices.Length; i++)
         {
             var line = new PrimitiveBatch.Line(
