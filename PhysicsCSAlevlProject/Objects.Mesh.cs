@@ -664,4 +664,25 @@ class Mesh
         }
         return mesh;
     }
+
+    public void ArgClothMeshFactory(object[] args)
+    {
+        if (args.Length < 5)
+        {
+            throw new ArgumentException(
+                "CreateClothMesh needs 5 inputs: startX, startY, endX, endY, naturalLength."
+            );
+        }
+        try
+        {
+            Vector2 Start = new Vector2(float.Parse((string)args[0]), float.Parse((string)args[1]));
+            Vector2 End = new Vector2(float.Parse((string)args[2]), float.Parse((string)args[3]));
+            float naturalLength = float.Parse((string)args[4]);
+            CreateClothMesh(Start, End, naturalLength, this, springConstant, drag, mass);
+        }
+        catch (Exception ex)
+        {
+            throw new ArgumentException("Invalid input for CreateClothMesh: " + ex.Message);
+        }
+    }
 }

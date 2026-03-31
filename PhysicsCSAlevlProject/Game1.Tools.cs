@@ -33,6 +33,7 @@ public partial class Game1
         _openedInspectedParticles = new List<int>();
         _stickToolFirstParticleId = null;
         _factories.Add(new TireFactory(args => _activeMesh.CreateHubSpokeTire(args)));
+        _factories.Add(new ClothFactory(args => _activeMesh.ArgClothMeshFactory(args)));
 
         InitializeInteractTools();
         InitializeBuildTools();

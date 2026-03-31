@@ -652,20 +652,6 @@ public partial class Game1
             ImGui.EndMenu();
         }
 
-        if (ImGui.BeginMenu("Templates"))
-        {
-            foreach (var meshEntry in _template)
-            {
-                if (ImGui.MenuItem(meshEntry.Key))
-                {
-                    var mesh = meshEntry.Value();
-                    _activeMesh = mesh;
-                    _defaultMesh = mesh;
-                    SetMode(MeshMode.Interact);
-                }
-            }
-            ImGui.EndMenu();
-        }
         if (ImGui.BeginMenu("Quick Structures"))
         {
             QuickStructureMenu();

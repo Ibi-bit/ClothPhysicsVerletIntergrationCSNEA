@@ -25,11 +25,28 @@ public sealed class TireFactory : Factory
             method,
             new Dictionary<string, string>
             {
-                { "Tire Center X", "0" },
-                { "Tire Center Y", "0" },
+                { "Tire Center X", "200" },
+                { "Tire Center Y", "200" },
                 { "Inner Radius", "20" },
                 { "Outer Radius", "40" },
                 { "Segments", "16" },
+            }
+        ) { }
+}
+
+public sealed class ClothFactory : Factory
+{
+    public ClothFactory(Action<object[]> method)
+        : base(
+            "Create Cloth",
+            method,
+            new Dictionary<string, string>
+            {
+                { "Top Left X", "100" },
+                { "Top Left Y", "100" },
+                { "Bottom Right X", "200" },
+                { "Bottom Right Y", "200" },
+                { "Natural Length", "10" },
             }
         ) { }
 }
