@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -5,11 +6,23 @@ namespace PhysicsCSAlevlProject;
 
 class FileWriteableMesh
 {
+    public class OscillationData
+    {
+        public float Amplitude;
+        public float Frequency;
+        public float Angle;
+    }
+
     public class particleData
     {
         public Vector2 Position;
         public float Mass;
         public bool IsPinned;
+        public string ParticleKind;
+        public OscillationData Oscillation;
+        public float? OscillationAmplitude;
+        public float? OscillationFrequency;
+        public float? OscillationAngle;
     }
 
     public class OscillatingParticleData : particleData
@@ -50,14 +63,21 @@ class FileWriteableMesh
             if (p is OscillatingParticle op)
             {
                 Particles.Add(
-                    new OscillatingParticleData
+                    new particleData
                     {
                         Position = p.Position,
                         Mass = p.Mass,
                         IsPinned = p.IsPinned,
+                        ParticleKind = "Oscillating",
                         OscillationAmplitude = op.OscillationAmplitude,
                         OscillationFrequency = op.OscillationFrequency,
                         OscillationAngle = op.OscillationAngle,
+                        Oscillation = new OscillationData
+                        {
+                            Amplitude = op.OscillationAmplitude,
+                            Frequency = op.OscillationFrequency,
+                            Angle = op.OscillationAngle,
+                        },
                     }
                 );
                 continue;
@@ -68,6 +88,7 @@ class FileWriteableMesh
                     Position = p.Position,
                     Mass = p.Mass,
                     IsPinned = p.IsPinned,
+                    ParticleKind = "Default",
                 }
             );
         }
@@ -99,22 +120,60 @@ class FileWriteableMesh
             for (int i = 0; i < Particles.Count; i++)
             {
                 var pData = Particles[i];
-                if (pData is OscillatingParticleData opData)
+
+                bool hasExplicitOscillation =
+                    pData.Oscillation != null
+                    && string.Equals(
+                        pData.ParticleKind,
+                        "Oscillating",
+                        StringComparison.OrdinalIgnoreCase
+                    );
+
+                bool hasLegacyOscillationType = pData is OscillatingParticleData;
+                bool hasFlatOscillationFields =
+                    pData.OscillationAmplitude.HasValue
+                    || pData.OscillationFrequency.HasValue
+                    || pData.OscillationAngle.HasValue;
+
+                if (hasExplicitOscillation || hasLegacyOscillationType || hasFlatOscillationFields)
                 {
+                    float amplitude = 20f;
+                    float frequency = 1f;
+                    float angle = 0f;
+
+                    if (hasExplicitOscillation)
+                    {
+                        amplitude = pData.Oscillation.Amplitude;
+                        frequency = pData.Oscillation.Frequency;
+                        angle = pData.Oscillation.Angle;
+                    }
+                    else if (pData is OscillatingParticleData opData)
+                    {
+                        amplitude = opData.OscillationAmplitude;
+                        frequency = opData.OscillationFrequency;
+                        angle = opData.OscillationAngle;
+                    }
+                    else
+                    {
+                        amplitude = pData.OscillationAmplitude ?? amplitude;
+                        frequency = pData.OscillationFrequency ?? frequency;
+                        angle = pData.OscillationAngle ?? angle;
+                    }
+
                     int particleId = mesh.AddParticle(
-                        opData.Position,
-                        opData.Mass,
-                        opData.IsPinned,
+                        pData.Position,
+                        pData.Mass,
+                        pData.IsPinned,
                         Color.White,
                         null,
                         new OscillatingParticle(
-                            opData.Position,
-                            opData.Mass,
-                            opData.IsPinned,
+                            pData.Position,
+                            pData.Mass,
+                            pData.IsPinned,
                             Color.White,
-                            opData.OscillationAmplitude,
-                            opData.OscillationFrequency,
-                            opData.OscillationAngle
+                            amplitude,
+                            frequency,
+                            angle
                         )
                     );
                     indexToParticleId[i] = particleId;
