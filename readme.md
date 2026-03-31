@@ -44,6 +44,26 @@ Run
 ```
 dotnet run --project PhysicsCSAlevlProject -c Release
 ```
+
+Database (Docker)
+
+All Docker and SQL database files are now in `infrastructure/database`.
+
+Set up from scratch (recreates container + volume, reapplies schema and sample data):
+```
+./infrastructure/database/setup.sh
+```
+
+Start normally (keeps existing data):
+```
+./infrastructure/database/run.sh
+```
+
+If Docker Desktop is not running, start it first:
+```
+open -a Docker
+```
+
 Common troubleshooting
 
 Submodule folder empty / missing files: re-run
