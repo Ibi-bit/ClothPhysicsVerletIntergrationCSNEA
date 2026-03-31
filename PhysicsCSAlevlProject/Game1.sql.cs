@@ -19,9 +19,7 @@ public class Game1Database
 
     public void TestConnection()
     {
-
         using var conn = OpenConnection();
-
     }
 
     public List<int> GetStudents()
@@ -59,17 +57,22 @@ public class Game1Database
         var teachers = new List<User>();
         using var conn = OpenConnection();
 
-        using var cmd = new NpgsqlCommand("SELECT id, username, role_id, pass FROM Users WHERE role_id = 1", conn);
+        using var cmd = new NpgsqlCommand(
+            "SELECT id, username, role_id, pass FROM Users WHERE role_id = 1",
+            conn
+        );
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            teachers.Add(new User
-            {
-                Id = reader.GetInt32(0),
-                Username = reader.GetString(1),
-                RoleId = reader.GetInt32(2),
-                Password = reader.GetString(3)
-            });
+            teachers.Add(
+                new User
+                {
+                    Id = reader.GetInt32(0),
+                    Username = reader.GetString(1),
+                    RoleId = reader.GetInt32(2),
+                    Password = reader.GetString(3),
+                }
+            );
         }
 
         return teachers;
@@ -116,7 +119,7 @@ public class Game1Database
                 Id = reader.GetInt32(0),
                 Username = reader.GetString(1),
                 RoleId = reader.GetInt32(2),
-                Password = reader.GetString(3)
+                Password = reader.GetString(3),
             };
         }
 
@@ -143,10 +146,9 @@ public class Game1Database
             Id = reader.GetInt32(0),
             Username = reader.GetString(1),
             RoleId = reader.GetInt32(2),
-            Password = reader.GetString(3)
+            Password = reader.GetString(3),
         };
     }
-
 
     public int CreateUser(string username, int roleId)
     {
@@ -195,7 +197,6 @@ public class Game1Database
         return structures;
     }
 
-
     public string GetStructureContent(int structureId)
     {
         using var conn = OpenConnection();
@@ -217,7 +218,6 @@ public class Game1Database
     )
     {
         using var conn = OpenConnection();
-
 
         int actualAssignmentId;
         if (assignmentId.HasValue)
@@ -275,7 +275,7 @@ public class Game1Database
                     Id = reader.GetInt32(0),
                     Title = reader.GetString(1),
                     Description = reader.GetString(2),
-                    TeacherId = teacherId
+                    TeacherId = teacherId,
                 }
             );
         }
@@ -302,21 +302,21 @@ public class Game1Database
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            structures.Add(new StructureInfo
-            {
-                Id = reader.GetInt32(0),
-                AssignmentId = reader.IsDBNull(1) ? null : reader.GetInt32(1),
-                StudentId = reader.GetInt32(2),
-                StudentName = reader.IsDBNull(3) ? "Unknown" : reader.GetString(3),
-                AssignmentTitle = reader.IsDBNull(4) ? "Personal Save" : reader.GetString(4),
-                SubmittedAt = reader.IsDBNull(5) ? null : reader.GetDateTime(5)
-            });
+            structures.Add(
+                new StructureInfo
+                {
+                    Id = reader.GetInt32(0),
+                    AssignmentId = reader.IsDBNull(1) ? null : reader.GetInt32(1),
+                    StudentId = reader.GetInt32(2),
+                    StudentName = reader.IsDBNull(3) ? "Unknown" : reader.GetString(3),
+                    AssignmentTitle = reader.IsDBNull(4) ? "Personal Save" : reader.GetString(4),
+                    SubmittedAt = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                }
+            );
         }
 
         return structures;
     }
-
-
 
     public class User
     {
@@ -353,4 +353,3 @@ public class Game1Database
         public static readonly int Student = 2;
     }
 }
-

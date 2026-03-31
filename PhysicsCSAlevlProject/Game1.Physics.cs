@@ -8,8 +8,8 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     private const float FixedTimeStep = 1f / 60f;
-    private const float FrictionCoefficient = 0.2f;
-    private const float BounceCoefficient = 0.2f;
+    private float _frictionCoefficient = 0.2f;
+    private float _bounceCoefficient = 0.2f;
 
     private Vector2 _collisonBoundsDifference;
     private Vector2 _baseForce;
@@ -213,40 +213,61 @@ public partial class Game1
                     }
                 }
             }
+            float xSeparation = 0f;
+            if (particle.Position.X < 0)
+            {
+                particle.Position.X = 0;
+                xSeparation = particle.Position.X - beforeCorrection.X;
+                collisionOccurred = true;
+            }
+            else if (particle.Position.X > _windowBounds.Width)
+            {
+                particle.Position.X = _windowBounds.Width;
+                xSeparation = particle.Position.X - beforeCorrection.X;
+                collisionOccurred = true;
+            }
+
+            float ySeparation = 0f;
+            if (particle.Position.Y < 0)
+            {
+                particle.Position.Y = 0;
+                ySeparation = particle.Position.Y - beforeCorrection.Y;
+                collisionOccurred = true;
+            }
+            else if (particle.Position.Y > _windowBounds.Height - 10)
+            {
+                particle.Position.Y = _windowBounds.Height - 10;
+                ySeparation = particle.Position.Y - beforeCorrection.Y;
+                collisionOccurred = true;
+            }
+
+            if (collisionOccurred && collisionNormal.Equals(Vector2.Zero))
+            {
+                if (Math.Abs(xSeparation) > Math.Abs(ySeparation))
+                    collisionNormal = Math.Sign(xSeparation) * Vector2.UnitX;
+                else if (Math.Abs(ySeparation) > 0f)
+                    collisionNormal = Math.Sign(ySeparation) * Vector2.UnitY;
+            }
             if (collisionOccurred)
             {
                 Vector2 velocity = particle.Position - particle.PreviousPosition;
                 float normalVel = Vector2.Dot(velocity, collisionNormal);
                 Vector2 normalComponent = collisionNormal * normalVel;
                 Vector2 tangentComponent = velocity - normalComponent;
-                normalComponent *= -BounceCoefficient;
-                tangentComponent *= (1f - FrictionCoefficient);
+                normalComponent *= -_bounceCoefficient;
+                tangentComponent *= 1f - _frictionCoefficient;
                 Vector2 newVelocity = normalComponent + tangentComponent;
                 particle.PreviousPosition = particle.Position - newVelocity;
             }
-
-            if (particle.Position.X < 0)
+            else if (particle.Position != beforeCorrection)
             {
-                particle.Position.X = 0;
-            }
-            else if (particle.Position.X > _windowBounds.Width)
-            {
-                particle.Position.X = _windowBounds.Width;
+                particle.PreviousPosition = beforeCorrection;
             }
 
-            if (particle.Position.Y < 0)
-            {
-                particle.Position.Y = 0;
-            }
-            else if (particle.Position.Y > _windowBounds.Height - 10)
-            {
-                particle.Position.Y = _windowBounds.Height - 10;
-            }
-
-            if (particle.Position != beforeCorrection && !collisionOccurred)
-            {
-                particle.PreviousPosition = particle.Position;
-            }
+            // if (particle.Position != beforeCorrection && !collisionOccurred)
+            // {
+            //     particle.PreviousPosition = particle.Position;
+            // }
         }
 
         if (totalForceCount > 0)

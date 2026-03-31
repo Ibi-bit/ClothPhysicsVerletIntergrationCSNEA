@@ -441,10 +441,7 @@ public partial class Game1
                                             break;
                                         }
                                     }
-                                    catch
-                                    {
-                                        // Skip this collider if ContainsPoint fails
-                                    }
+                                    catch { }
                                 }
                             }
                         }
@@ -740,14 +737,12 @@ public partial class Game1
         }
         else if (_selectedToolName == "Move Collider" && _draggedCollider != null && _leftPressed)
         {
-            // Simple drag - just update position
             Vector2 delta = currentMousePos - _previousMousePos;
             if (delta.LengthSquared() > 0)
             {
                 _draggedCollider.Position += delta;
             }
         }
-        // Right-click menu disabled for now
         // else if (_selectedToolName == "Move Collider" && mouseState.RightButton == ButtonState.Pressed && !_prevMouseState.RightButton.HasFlag(ButtonState.Pressed))
         // {
         //     ...

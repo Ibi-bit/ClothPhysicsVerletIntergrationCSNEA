@@ -572,7 +572,7 @@ public partial class Game1
         float t = (qMinusP.X * s.Y - qMinusP.Y * s.X) / rCrossS;
         float u = qMinusPCrossR / rCrossS;
 
-        return (t is >= 0 and <= 1 && u is >= 0 and <= 1);
+        return t is >= 0 and <= 1 && u is >= 0 and <= 1;
     }
 
     private DrawableStick[][] DoLinesIntersect(
