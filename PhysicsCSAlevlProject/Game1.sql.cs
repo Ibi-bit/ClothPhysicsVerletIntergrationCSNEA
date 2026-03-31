@@ -162,6 +162,22 @@ public class Game1Database
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
 
+    public int CreateAssignment(string title, string description, DateTime? dueDate, int teacherId)
+    {
+        using var conn = OpenConnection();
+        using var cmd = new NpgsqlCommand(
+            @"INSERT INTO Assignments (title, description, due_date, teacher_id)
+              VALUES (@title, @description, @dueDate, @teacherId)
+              RETURNING id",
+            conn
+        );
+        cmd.Parameters.AddWithValue("title", title);
+        cmd.Parameters.AddWithValue("description", description);
+        cmd.Parameters.AddWithValue("dueDate", dueDate.HasValue ? dueDate.Value : DBNull.Value);
+        cmd.Parameters.AddWithValue("teacherId", teacherId);
+        return Convert.ToInt32(cmd.ExecuteScalar());
+    }
+
     public List<StructureInfo> GetStructuresForUser(int userId)
     {
         var structures = new List<StructureInfo>();

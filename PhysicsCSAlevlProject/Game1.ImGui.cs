@@ -51,6 +51,9 @@ public partial class Game1
     private List<Game1Database.User> _allTeachers = new();
     private Dictionary<int, List<Game1Database.Assignment>> _teacherAssignments = new();
     private int _selectedTeacherTabIndex = 0;
+    private string _newAssignmentTitle = "";
+    private string _newAssignmentDescription = "";
+    private string _newAssignmentDueDate = "";
 
     private void InitializeImGui()
     {
@@ -119,6 +122,9 @@ public partial class Game1
 
         _userInputUserId = "";
         _password = "";
+        _newAssignmentTitle = "";
+        _newAssignmentDescription = "";
+        _newAssignmentDueDate = "";
     }
 
     private void ImGuiDraw(GameTime gameTime)
@@ -1004,6 +1010,81 @@ public partial class Game1
             ImGui.End();
             return;
         }
+
+        ImGui.Text("Create Assignment");
+        ImGui.InputText("Title", ref _newAssignmentTitle, 100);
+        ImGui.InputTextMultiline(
+            "Description",
+            ref _newAssignmentDescription,
+            500,
+            new System.Numerics.Vector2(-1, 80)
+        );
+        ImGui.InputText("Due Date (optional, yyyy-MM-dd HH:mm)", ref _newAssignmentDueDate, 40);
+
+        if (ImGui.Button("Create Assignment"))
+        {
+            if (string.IsNullOrWhiteSpace(_newAssignmentTitle))
+            {
+                _logger.AddLog("Assignment title is required.", ImGuiLogger.LogTypes.Warning);
+            }
+            else
+            {
+                try
+                {
+                    DateTime? dueDate = null;
+                    if (!string.IsNullOrWhiteSpace(_newAssignmentDueDate))
+                    {
+                        if (
+                            DateTime.TryParse(_newAssignmentDueDate, out var parsedDueDate)
+                            || DateTime.TryParseExact(
+                                _newAssignmentDueDate,
+                                "yyyy-MM-dd HH:mm",
+                                null,
+                                System.Globalization.DateTimeStyles.None,
+                                out parsedDueDate
+                            )
+                        )
+                        {
+                            dueDate = parsedDueDate;
+                        }
+                        else
+                        {
+                            _logger.AddLog(
+                                "Invalid due date. Use yyyy-MM-dd HH:mm.",
+                                ImGuiLogger.LogTypes.Warning
+                            );
+                            ImGui.End();
+                            return;
+                        }
+                    }
+
+                    int assignmentId = _database.CreateAssignment(
+                        _newAssignmentTitle.Trim(),
+                        _newAssignmentDescription.Trim(),
+                        dueDate,
+                        _currentUser.Id
+                    );
+
+                    _logger.AddLog(
+                        $"Created assignment '{_newAssignmentTitle}' (ID: {assignmentId})."
+                    );
+
+                    _newAssignmentTitle = "";
+                    _newAssignmentDescription = "";
+                    _newAssignmentDueDate = "";
+                }
+                catch (Exception ex)
+                {
+                    _logger.AddLog(
+                        $"Failed to create assignment: {ex.Message}",
+                        ImGuiLogger.LogTypes.Error
+                    );
+                }
+            }
+        }
+
+        ImGui.Separator();
+        ImGui.Text("Existing Assignments");
         var assignments = _database.GetAssignmentsForTeacher(_currentUser.Id);
         ImGui.BeginTabBar("TeacherAssignments");
         foreach (var assignment in assignments)

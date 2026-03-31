@@ -19,6 +19,13 @@ used_existing_container=false
 if docker ps -a --format '{{.Names}}' | grep -qx 'cloth-physics-db'; then
   docker start cloth-physics-db >/dev/null 2>&1 || true
   used_existing_container=true
+
+  is_running="$(docker inspect -f '{{.State.Running}}' cloth-physics-db 2>/dev/null || echo false)"
+  if [ "$is_running" != "true" ]; then
+    docker rm -f cloth-physics-db >/dev/null 2>&1 || true
+    used_existing_container=false
+    docker compose up -d
+  fi
 else
   docker compose up -d
 fi
