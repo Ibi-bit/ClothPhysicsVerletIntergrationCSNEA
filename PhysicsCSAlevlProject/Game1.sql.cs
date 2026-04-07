@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace PhysicsCSAlevlProject;
@@ -9,12 +10,27 @@ public class Game1Database
 {
     private readonly string _connectionString =
         "Host=localhost;Port=5432;Database=stick_simulation;Username=dev;Password=dev123";
-
+    public ImGuiLogger logger;
+    public Game1Database(ImGuiLogger logger)
+    {
+        this.logger = logger;
+    }
     private NpgsqlConnection OpenConnection()
     {
-        var conn = new NpgsqlConnection(_connectionString);
-        conn.Open();
-        return conn;
+        try
+        {
+            var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+            return conn;
+        }
+        catch (Exception ex)
+        {
+            logger.AddLog(
+                $"Error connecting to database: {ex.Message}",
+                ImGuiLogger.LogTypes.Error
+            );
+            throw;
+        }
     }
 
     public void TestConnection()

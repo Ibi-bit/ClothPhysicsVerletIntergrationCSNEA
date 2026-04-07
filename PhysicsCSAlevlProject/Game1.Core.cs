@@ -78,7 +78,7 @@ public partial class Game1 : Game
         _meshHistory = new Stack<Mesh>();
         _meshRedoHistory = new Stack<Mesh>();
 
-        _database = new Game1Database();
+        _database = new Game1Database(_logger);
         _currentAssignmentTitle = "";
 
         var cbInit = Window.ClientBounds;

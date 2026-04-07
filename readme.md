@@ -49,6 +49,18 @@ Database (Docker)
 
 All Docker and SQL database files are now in `infrastructure/database`.
 
+Windows setup:
+```
+cd infrastructure\database
+.\setup.ps1
+```
+
+Windows start (keeps existing data):
+```
+cd infrastructure\database
+.\run.ps1
+```
+
 Set up from scratch (recreates container + volume, reapplies schema and sample data):
 ```
 ./infrastructure/database/setup.sh
