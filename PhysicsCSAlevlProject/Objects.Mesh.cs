@@ -554,6 +554,18 @@ class Mesh
         return mesh;
     }
 
+    [ConsoleCommand("Mesh.ResetSimulation")]
+    public void ResetSimulation(string[] parameters)
+    {
+        
+        foreach (var p in Particles.Values)
+        {
+            p.PreviousPosition = p.Position;
+            p.AccumulatedForce = Vector2.Zero;
+        }
+    }
+
+    [ConsoleCommand("Mesh.CreateHubSpokeTire")]
     public void CreateHubSpokeTire(object[] args)
     {
         if (args.Length < 5)

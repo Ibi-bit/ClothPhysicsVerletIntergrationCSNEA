@@ -125,6 +125,10 @@ public partial class Game1
         _newAssignmentTitle = "";
         _newAssignmentDescription = "";
         _newAssignmentDueDate = "";
+
+        _commandRegistry = new CommandRegistry(_logger);
+        _commandRegistry.RegisterType(this, typeof(Game1));
+        _commandRegistry.RegisterType(_activeMesh, typeof(Mesh));
     }
 
     private void ImGuiDraw(GameTime gameTime)

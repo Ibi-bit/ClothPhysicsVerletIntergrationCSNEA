@@ -1,200 +1,248 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 
 namespace PhysicsCSAlevlProject;
 
+
+class ConsoleCommandAttribute : Attribute
+{
+    public string CommandPath { get; }
+
+    public ConsoleCommandAttribute(string commandPath)
+    {
+        CommandPath = commandPath;
+    }
+}
+
+class CommandRegistry
+{
+    private readonly ImGuiLogger _logger;
+    private readonly Dictionary<
+        string,
+        (object instance, MethodInfo method, string commandPath)
+    > _commands = new();
+
+    public CommandRegistry(ImGuiLogger logger)
+    {
+        _logger = logger;
+    }
+
+    public void RegisterType(object instance, Type type, bool logRegistration = true)
+    {
+        var methods = type.GetMethods(
+            BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly
+        );
+
+        foreach (var method in methods)
+        {
+            var attr = method.GetCustomAttribute<ConsoleCommandAttribute>();
+            if (attr != null)
+            {
+                string commandKey = attr.CommandPath.ToLower();
+                _commands[commandKey] = (instance, method, attr.CommandPath);
+                if (logRegistration)
+                {
+                    _logger.AddLog($"Registered command: {attr.CommandPath}");
+                }
+            }
+        }
+    }
+
+    public IEnumerable<string> GetRegisteredCommandPaths()
+    {
+        return _commands
+            .Select(entry => entry.Value.commandPath)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(commandPath => commandPath, StringComparer.OrdinalIgnoreCase);
+    }
+
+    public bool TryInvokeCommand(ImGuiLogger.Command command)
+    {
+        string fullPath = string.Join(".", command.CommandPath) + "." + command.ExCommand;
+        string key = fullPath.ToLower();
+
+        if (_commands.TryGetValue(key, out var entry))
+        {
+            try
+            {
+                var (instance, method, _) = entry;
+                object[] parameters = [command.Parameters];
+                method.Invoke(instance, parameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.AddLog(
+                    $"Error invoking command {fullPath}: {ex.InnerException?.Message ?? ex.Message}",
+                    ImGuiLogger.LogTypes.Error
+                );
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
 public partial class Game1
 {
+    private CommandRegistry _commandRegistry;
+    private Mesh _commandRegistryMeshBinding;
+
+    private void RefreshMeshCommandBindings()
+    {
+        if (_commandRegistry == null || _activeMesh == null)
+        {
+            return;
+        }
+
+        if (!ReferenceEquals(_commandRegistryMeshBinding, _activeMesh))
+        {
+            _commandRegistry.RegisterType(_activeMesh, typeof(Mesh), false);
+            _commandRegistryMeshBinding = _activeMesh;
+        }
+    }
+
     private void ProcessDebugCommands()
     {
+        RefreshMeshCommandBindings();
+
         if (_logger.HasPendingCommands)
         {
             _logger.TryDequeueCommand(out var command);
-            switch (command.CommandPath[0])
+
+            if (command.CommandPath[0] == "Exit")
             {
-                case "Particle":
-                    ProccessParticleCommands(command);
-                    break;
-                case "Stick":
-                    ProccessStickCommands(command);
-
-                    break;
-                case "Mesh":
-                    ProccessMeshCommands(command);
-                    break;
-                case "Get":
-                    ProccessGetCommands(command);
-                    break;
-                case "Database":
-                    ProccessDatabaseCommands(command);
-                    break;
-                case "Exit":
-                    Exit();
-                    break;
-                default:
-                    _logger.AddLog(
-                        $"Unknown command path: {string.Join(".", command.CommandPath)}",
-                        ImGuiLogger.LogTypes.Error
-                    );
-                    break;
-            }
-        }
-    }
-
-    private void ProccessMeshCommands(ImGuiLogger.Command command)
-    {
-        switch (command.ExCommand)
-        {
-            // case "Clear":
-            //     _activeMesh.Clear();
-            //     _logger.AddLog("Cleared active mesh");
-            //     break;
-            case "AddTire":
-                if (command.Parameters.Length < 5)
-                {
-                    _logger.AddLog(
-                        $"Not enough parameters for Mesh.AddTire(centerX, centerY, OuterStickCount, radius, spokeLength) Expected 5, got {command.Parameters.Length}",
-                        ImGuiLogger.LogTypes.Error
-                    );
-                    return;
-                }
-
-                try
-                {
-                    _activeMesh.CreateHubSpokeTire(
-                        [
-                            command.Parameters[0],
-                            command.Parameters[1],
-                            command.Parameters[2],
-                            command.Parameters[3],
-                            command.Parameters[4],
-                        ]
-                    );
-
-                    _logger.AddLog(
-                        $"Added tire to active mesh at ({command.Parameters[0]}, {command.Parameters[1]}) with outer radius {command.Parameters[3]} and inner radius {command.Parameters[4]} and {command.Parameters[2]} outer sticks"
-                    );
-                }
-                catch (Exception ex)
-                {
-                    _logger.AddLog(
-                        $"Invalid parameters for Mesh.AddTire Could not parse floats/ints from '{command.Parameters[0]}', '{command.Parameters[1]}', '{command.Parameters[2]}', '{command.Parameters[3]}', or '{command.Parameters[4]}' - {ex.Message}",
-                        ImGuiLogger.LogTypes.Error
-                    );
-                }
-                break;
-
-            default:
-                _logger.AddLog(
-                    $"Unknown command: Mesh.{command.ExCommand}",
-                    ImGuiLogger.LogTypes.Error
-                );
-                break;
-        }
-    }
-
-    private void ProccessParticleCommands(ImGuiLogger.Command command)
-    {
-        if (command.ExCommand == "Add")
-        {
-            if (command.Parameters.Length < 3)
-            {
-                _logger.AddLog(
-                    $"Not enough parameters for Particle.Add(x, y, mass) Expected 3, got {command.Parameters.Length}",
-                    ImGuiLogger.LogTypes.Error
-                );
+                Exit();
                 return;
             }
 
-            if (
-                float.TryParse(command.Parameters[0], out float x)
-                && float.TryParse(command.Parameters[1], out float y)
-                && float.TryParse(command.Parameters[2], out float mass)
-            )
-            {
-                int id = _activeMesh.AddParticle(new Vector2(x, y), mass, false, Color.White);
-                _logger.AddLog($"Added particle at ({x}, {y}) with mass {mass} (ID {id})");
-            }
-            else
+            if (!_commandRegistry.TryInvokeCommand(command))
             {
                 _logger.AddLog(
-                    $"Invalid parameters for Particle.Add Could not parse floats from '{command.Parameters[0]}', '{command.Parameters[1]}', or '{command.Parameters[2]}'",
+                    $"Unknown command: {string.Join(".", command.CommandPath)}.{command.ExCommand}",
                     ImGuiLogger.LogTypes.Error
                 );
             }
         }
     }
 
-    private void ProccessStickCommands(ImGuiLogger.Command command)
+    [ConsoleCommand("Commands.List")]
+    private void ListCommands(string[] parameters)
     {
-        if (command.ExCommand == "Add")
+        if (_commandRegistry == null)
         {
-            if (command.Parameters.Length < 2)
-            {
-                _logger.AddLog(
-                    $"Not enough parameters for Stick.Add(id1, id2) Expected 2, got {command.Parameters.Length}",
-                    ImGuiLogger.LogTypes.Error
-                );
-                return;
-            }
-
-            if (
-                int.TryParse(command.Parameters[0], out int p1Id)
-                && int.TryParse(command.Parameters[1], out int p2Id)
-            )
-            {
-                if (
-                    _activeMesh.Particles.ContainsKey(p1Id)
-                    && _activeMesh.Particles.ContainsKey(p2Id)
-                )
-                {
-                    _activeMesh.AddStickBetween(p1Id, p2Id);
-                    _logger.AddLog($"Added stick between particles {p1Id} and {p2Id}");
-                }
-                else
-                {
-                    _logger.AddLog(
-                        $"One or both particle IDs not found: {p1Id}, {p2Id}",
-                        ImGuiLogger.LogTypes.Error
-                    );
-                }
-            }
-            else
-            {
-                _logger.AddLog(
-                    $"Invalid parameters for Stick.Add Could not parse floats from '{command.Parameters[0]}' and '{command.Parameters[1]}'",
-                    ImGuiLogger.LogTypes.Error
-                );
-            }
+            _logger.AddLog("Command registry is not ready yet.", ImGuiLogger.LogTypes.Warning);
+            return;
         }
-        else
+
+        var commands = _commandRegistry.GetRegisteredCommandPaths().ToList();
+        _logger.AddLog($"Available commands ({commands.Count}):", ImGuiLogger.LogTypes.Info);
+
+        foreach (var command in commands)
+        {
+            _logger.AddLog($"- {command}", ImGuiLogger.LogTypes.Info);
+        }
+
+        if (parameters.Length > 0)
+        {
+            _logger.AddLog("Commands.List does not take parameters.", ImGuiLogger.LogTypes.Warning);
+        }
+    }
+
+    [ConsoleCommand("Mesh.AddTire")]
+    private void AddTire(string[] parameters)
+    {
+        if (parameters.Length < 5)
         {
             _logger.AddLog(
-                $"Unknown command: Stick.{command.ExCommand}",
+                $"Not enough parameters for Mesh.AddTire(centerX, centerY, OuterStickCount, radius, spokeLength) Expected 5, got {parameters.Length}",
+                ImGuiLogger.LogTypes.Error
+            );
+            return;
+        }
+
+        try
+        {
+            _activeMesh.CreateHubSpokeTire([
+                parameters[0],
+                parameters[1],
+                parameters[2],
+                parameters[3],
+                parameters[4],
+            ]);
+
+            _logger.AddLog(
+                $"Added tire to active mesh at ({parameters[0]}, {parameters[1]}) with outer radius {parameters[3]} and inner radius {parameters[4]} and {parameters[2]} outer sticks"
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.AddLog(
+                $"Invalid parameters for Mesh.AddTire Could not parse floats/ints from '{parameters[0]}', '{parameters[1]}', '{parameters[2]}', '{parameters[3]}', or '{parameters[4]}' - {ex.Message}",
                 ImGuiLogger.LogTypes.Error
             );
         }
     }
 
-    private void ProccessGetCommands(ImGuiLogger.Command command) { }
-
-    private void ProccessDatabaseCommands(ImGuiLogger.Command command)
+    [ConsoleCommand("Particle.Add")]
+    private void AddParticle(string[] parameters)
     {
-        if (command.ExCommand == "TestConnection")
+        if (parameters.Length < 3)
         {
-            try
+            _logger.AddLog(
+                $"Not enough parameters for Particle.Add(x, y, mass) Expected 3, got {parameters.Length}",
+                ImGuiLogger.LogTypes.Error
+            );
+            return;
+        }
+
+        if (
+            float.TryParse(parameters[0], out float x)
+            && float.TryParse(parameters[1], out float y)
+            && float.TryParse(parameters[2], out float mass)
+        )
+        {
+            int id = _activeMesh.AddParticle(new Vector2(x, y), mass, false, Color.White);
+            _logger.AddLog($"Added particle at ({x}, {y}) with mass {mass} (ID {id})");
+        }
+        else
+        {
+            _logger.AddLog(
+                $"Invalid parameters for Particle.Add Could not parse floats from '{parameters[0]}', '{parameters[1]}', or '{parameters[2]}'",
+                ImGuiLogger.LogTypes.Error
+            );
+        }
+    }
+
+    [ConsoleCommand("Stick.Add")]
+    private void AddStick(string[] parameters)
+    {
+        if (parameters.Length < 2)
+        {
+            _logger.AddLog(
+                $"Not enough parameters for Stick.Add(id1, id2) Expected 2, got {parameters.Length}",
+                ImGuiLogger.LogTypes.Error
+            );
+            return;
+        }
+
+        if (int.TryParse(parameters[0], out int p1Id) && int.TryParse(parameters[1], out int p2Id))
+        {
+            if (_activeMesh.Particles.ContainsKey(p1Id) && _activeMesh.Particles.ContainsKey(p2Id))
             {
-                _database.TestConnection();
-                _logger.AddLog("Database connection successful");
+                _activeMesh.AddStickBetween(p1Id, p2Id);
+                _logger.AddLog($"Added stick between particles {p1Id} and {p2Id}");
             }
-            catch (Exception ex)
+            else
             {
                 _logger.AddLog(
-                    $"Database connection failed: {ex.Message}",
+                    $"One or both particle IDs not found: {p1Id}, {p2Id}",
                     ImGuiLogger.LogTypes.Error
                 );
             }
@@ -202,7 +250,32 @@ public partial class Game1
         else
         {
             _logger.AddLog(
-                $"Unknown command: Database.{command.ExCommand}",
+                $"Invalid parameters for Stick.Add Could not parse floats from '{parameters[0]}' and '{parameters[1]}'",
+                ImGuiLogger.LogTypes.Error
+            );
+        }
+    }
+
+    [ConsoleCommand("Database.TestConnection")]
+    private void TestConnection(string[] parameters)
+    {
+        if (parameters.Length > 0)
+        {
+            _logger.AddLog(
+                "Database.TestConnection does not take parameters.",
+                ImGuiLogger.LogTypes.Warning
+            );
+        }
+
+        try
+        {
+            _database.TestConnection();
+            _logger.AddLog("Database connection successful");
+        }
+        catch (Exception ex)
+        {
+            _logger.AddLog(
+                $"Database connection failed: {ex.Message}",
                 ImGuiLogger.LogTypes.Error
             );
         }
@@ -299,7 +372,12 @@ public class ImGuiLogger
 
     public void AddCommand(string command)
     {
-        // Example: mesh.particle.add(100, 200)
+        command = command?.Trim();
+        if (string.IsNullOrWhiteSpace(command))
+        {
+            return;
+        }
+
         command = ResolveEnvVars(command);
 
         string commandWithoutParams = command.Split('(')[0];
