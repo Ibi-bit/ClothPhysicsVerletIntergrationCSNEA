@@ -565,7 +565,6 @@ class Mesh
         }
     }
 
-    [ConsoleCommand("Mesh.CreateHubSpokeTire")]
     public void CreateHubSpokeTire(object[] args)
     {
         if (args.Length < 5)
