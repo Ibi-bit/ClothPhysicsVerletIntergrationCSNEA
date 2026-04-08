@@ -47,7 +47,6 @@ public partial class Game1
             { "Pin", new Tool("Pin", null, false) },
             { "Cut", new Tool("Cut", null, false) },
             { "Wind", new Tool("Wind", null, false) },
-            { "PhysicsDrag", new Tool("PhysicsDrag", null, false) },
             { "LineCut", new Tool("LineCut", null, false) },
             { "Select Particles", new Tool("Select Particles", null, false) },
             { "Cursor Collider", new Tool("Cursor Collider", null, false) },
@@ -68,8 +67,6 @@ public partial class Game1
         _interactTools["Wind"].Properties["MinDistance"] = 5f;
         _interactTools["Wind"].Properties["StrengthScale"] = 1.0f;
         _interactTools["Wind"].Properties["ArrowThickness"] = 3f;
-
-        _interactTools["PhysicsDrag"].Properties["Radius"] = 20f;
 
         _interactTools["LineCut"].Properties["MinDistance"] = 5f;
         _interactTools["LineCut"].Properties["Thickness"] = 3f;
@@ -170,6 +167,9 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Draws the settings for the currently selected tool in the UI. Depending on which tool is selected, it displays different configurable parameters such as radius, strength, or shape options. The method uses ImGui controls like sliders, checkboxes, and combo boxes to allow users to adjust these parameters in real-time. It also includes error handling to catch any exceptions that may occur while drawing the tool settings, ensuring that the application remains stable and provides feedback on any issues encountered.
+    /// </summary>
     private void DrawSelectedToolSettings()
     {
         try
@@ -475,6 +475,11 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Pins or unpins particles within a specified radius of a given center point. The method retrieves the IDs of particles that are within the radius from the center, and toggles their pinned state. If a particle is pinned, it becomes unpinned, and if it is unpinned, it becomes pinned. The method also logs the action taken for each particle, including its ID and position. If no particles are found within the radius, it logs a warning message indicating that no particles were affected by the pin tool at the specified location and radius.
+    /// </summary>
+    /// <param name="center"></param>
+    /// <param name="radius"></param>
     private void PinParticleBuildable(Vector2 center, float radius)
     {
         var particleIDs = GetMeshParticlesInRadius(center, radius);
@@ -495,6 +500,11 @@ public partial class Game1
             }
     }
 
+    /// <summary>
+    /// Cuts sticks that are within a specified radius of a given center point. The method iterates through all the sticks in the active mesh and calculates the center point of each stick. If the distance from the stick's center to the specified center point is less than or equal to the given radius, the stick is marked for removal. After checking all sticks, the method removes the marked sticks from the mesh and logs the action taken for each cut stick, including its ID and center position. If no sticks are found within the radius, it logs a warning message indicating that no sticks were affected by the cut tool at the specified location and radius.
+    /// </summary>
+    /// <param name="center"></param>
+    /// <param name="radius"></param>
     private void CutAllSticksInRadiusBuildable(Vector2 center, float radius)
     {
         var sticksToRemove = new List<int>();
@@ -525,6 +535,12 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Applies a wind force to particles based on the drag distance and direction between a start and end position. The method calculates the wind direction as the vector from the start position to the end position, and determines the distance of the drag. If the drag distance is below a specified minimum threshold, it logs a warning message and does not apply any force. If the drag distance is sufficient, it calculates the wind force by scaling the wind direction with the drag distance and a strength factor. The resulting wind force is stored in a variable for later application to particles in the simulation. This method allows users to interactively apply wind forces to particles by dragging across the screen, with configurable parameters for minimum drag distance and strength scaling.
+    /// </summary>
+    /// <param name="startPos"></param>
+    /// <param name="endPos"></param>
+    /// <param name="_"></param>
     private void ApplyWindForceFromDrag(Vector2 startPos, Vector2 endPos, float _)
     {
         Vector2 windDirection = endPos - startPos;
@@ -607,6 +623,13 @@ public partial class Game1
         _activeMesh.CutSticksAlongLine(lineStart, lineEnd);
     }
 
+    /// <summary>
+    /// Retrieves a list of particle IDs from the active mesh that are within a specified radius of a given mouse position. The method iterates through all particles in the active mesh and calculates the distance from each particle's position to the mouse position. If the distance is less than the specified radius, the particle's ID is added to the list of nearby particles. The method also takes an optional parameter for maximum particles to return; if this limit is reached, it returns the list immediately. This function is used by various tools to identify which particles should be affected based on their proximity to the user's cursor.
+    /// </summary>
+    /// <param name="mousePosition"></param>
+    /// <param name="radius"></param>
+    /// <param name="maxParticles"></param>
+    /// <returns></returns>
     private List<int> GetMeshParticlesInRadius(
         Vector2 mousePosition,
         float radius,
@@ -634,6 +657,12 @@ public partial class Game1
         return particleIds;
     }
 
+    /// <summary>
+    /// Drags particles in the active mesh based on the current mouse state and whether the user is actively dragging. The method takes a list of particle IDs that are within the drag radius and updates their positions accordingly. If the user is dragging, it calculates the movement delta from the previous mouse position and applies this delta to each particle's current and previous positions, effectively moving them with the cursor. The particles being dragged are visually highlighted by changing their color to yellow. If the user is not dragging, it resets the color of the affected particles back to white. This method allows for interactive manipulation of particles in the mesh using a drag tool.
+    /// </summary>
+    /// <param name="mouseState"></param>
+    /// <param name="isDragging"></param>
+    /// <param name="particleIds"></param>
     private void DragMeshParticles(MouseState mouseState, bool isDragging, List<int> particleIds)
     {
         Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
@@ -669,44 +698,11 @@ public partial class Game1
         }
     }
 
-    private void DragMeshParticlesWithPhysics(
-        MouseState mouseState,
-        bool isDragging,
-        List<int> particleIds
-    )
-    {
-        Vector2 mousePos = new Vector2(mouseState.X, mouseState.Y);
-
-        if (isDragging)
-        {
-            foreach (int particleId in particleIds)
-            {
-                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
-                {
-                    if (!particle.IsPinned)
-                    {
-                        particle.Position = mousePos;
-                        particle.PreviousPosition = mousePos;
-                        particle.Color = Color.Red;
-                    }
-                }
-            }
-        }
-        else
-        {
-            foreach (int particleId in particleIds)
-            {
-                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
-                {
-                    if (!particle.IsPinned)
-                    {
-                        particle.Color = Color.White;
-                    }
-                }
-            }
-        }
-    }
-
+    /// <summary>
+    /// Inspects particles within a specified radius of a given center point and logs their information to the console. The method iterates through all particles in the active mesh and calculates the distance from each particle's position to the center point. If the distance is less than or equal to the specified radius, it logs the particle's ID, position, and pinned state to the console. Additionally, it visually highlights inspected particles by changing their color to cyan. If no particles are found within the radius, it logs a warning message indicating that no particles were inspected at the specified location and radius.
+    /// </summary>
+    /// <param name="center"></param>
+    /// <param name="radius"></param>
     private void InspectParticlesInRadiusLog(Vector2 center, float radius)
     {
         foreach (var kvp in _activeMesh.Particles)
@@ -789,6 +785,10 @@ public partial class Game1
         return result;
     }
 
+    /// <summary>
+    /// Handles the logic for adding a stick between two particles when the user clicks on the canvas. The method first retrieves the radius parameter from the tool settings and then gets the IDs of particles that are within this radius of the click position. If no particles are found, it logs a warning message. If one or more particles are found, it checks if there is already a first particle selected for creating a stick. If not, it sets the first particle ID and highlights it in yellow. If there is already a first particle selected and the newly clicked particle is different, it creates a stick between the two particles, logs the action, and resets their colors back to white. If the user clicks on the same particle that is already selected as the first particle, it logs a message indicating that a stick cannot be created to the same particle and prompts the user to select a different particle.
+    /// </summary>
+    /// <param name="clickPos"></param>
     private void HandleAddStickBetweenParticlesClick(Vector2 clickPos)
     {
         float radius = _currentToolSet["Add Stick Between Particles"].Properties["Radius"]
@@ -844,6 +844,9 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Pushes the History for undo and redo functionality. When a change is made to the mesh, this method creates a deep copy of the current active mesh and pushes it onto the history stack. It also clears the redo history stack, ensuring that any new changes invalidate the previous redo states. This allows users to undo and redo their actions on the mesh effectively, maintaining a consistent state of the mesh throughout their editing process.
+    /// </summary>
     private void MeshHistoryPush()
     {
         _meshHistory.Push(_activeMesh.DeepCopy());

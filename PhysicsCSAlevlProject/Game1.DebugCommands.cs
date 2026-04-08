@@ -8,7 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace PhysicsCSAlevlProject;
 
-
+/// <summary>
+/// Attribute to mark methods as console commands. The CommandPath property specifies the command path that will be used to invoke the method from the debug console. For example, a method marked with [ConsoleCommand("Mesh.AddTire")] can be invoked by entering "Mesh.AddTire" in the debug console, along with any required parameters. This attribute allows for easy registration and organization of debug commands within the application.
+/// </summary>
 class ConsoleCommandAttribute : Attribute
 {
     public string CommandPath { get; }
@@ -19,6 +21,9 @@ class ConsoleCommandAttribute : Attribute
     }
 }
 
+/// <summary>
+/// Registry for console commands that can be invoked from the debug console. This class allows for registering methods as console commands using the ConsoleCommandAttribute, and provides functionality to invoke these commands based on user input. The commands are stored in a dictionary for efficient lookup, and the registry supports invoking commands with parameters as well as listing all registered commands. This system enables a flexible and extensible way to add debug functionality to the application without hardcoding command handling logic in the main game loop.
+/// </summary>
 class CommandRegistry
 {
     private readonly ImGuiLogger _logger;
@@ -32,10 +37,19 @@ class CommandRegistry
         _logger = logger;
     }
 
+    /// <summary>
+    /// Registers all methods of the given instance that are marked with the ConsoleCommandAttribute as console commands. The method uses reflection to find all methods in the specified type that have the ConsoleCommandAttribute, and adds them to the _commands dictionary using the command path as the key. This allows for dynamic registration of commands based on the attributes applied to methods, making it easy to add new commands by simply marking methods with the appropriate attribute. The logRegistration parameter can be set to false to suppress logging of each registered command, which can be useful when registering a large number of commands or when registering commands in a context where logging is not desired.
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <param name="type"></param>
+    /// <param name="logRegistration"></param>
     public void RegisterType(object instance, Type type, bool logRegistration = true)
     {
         var methods = type.GetMethods(
-            BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly
+            BindingFlags.Public
+                | BindingFlags.Instance
+                | BindingFlags.NonPublic
+                | BindingFlags.DeclaredOnly
         );
 
         foreach (var method in methods)
@@ -53,6 +67,10 @@ class CommandRegistry
         }
     }
 
+    /// <summary>
+    /// Returns a list of all registered command paths in the registry. This method extracts the command paths from the _commands dictionary, ensuring that they are distinct and sorted alphabetically for easier readability. The returned list can be used to display available commands to the user or for debugging purposes to verify which commands have been registered in the system.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerable<string> GetRegisteredCommandPaths()
     {
         return _commands
@@ -61,6 +79,11 @@ class CommandRegistry
             .OrderBy(commandPath => commandPath, StringComparer.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Attempts to invoke a console command based on the provided command information. The method constructs the full command key from the command path and command name, and looks it up in the _commands dictionary. If a matching command is found, it invokes the associated method with the provided parameters. If the invocation is successful, it returns true. If an error occurs during invocation, it logs the error message and also returns true to indicate that the command was recognized but failed to execute. If no matching command is found, it returns false to indicate that the command is unknown. This method allows for dynamic execution of commands based on user input from the debug console, providing a flexible way to interact with the application for debugging and testing purposes.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns></returns>
     public bool TryInvokeCommand(ImGuiLogger.Command command)
     {
         string fullPath = string.Join(".", command.CommandPath) + "." + command.ExCommand;
@@ -91,9 +114,18 @@ class CommandRegistry
 
 public partial class Game1
 {
+    /// <summary>
+    /// The CommandRegistry is used to store and manage console commands
+    /// </summary>
     private CommandRegistry _commandRegistry;
+    /// <summary>
+    /// The mesh that is currently bound to the command registry
+    /// </summary>
     private Mesh _commandRegistryMeshBinding;
 
+    /// <summary>
+    /// Refreshes the command bindings for the active mesh in the command registry. This method checks if the command registry and active mesh are available, and if the active mesh has changed since the last binding, it registers the new active mesh with the command registry. This allows console commands that operate on the mesh to always reference the current active mesh without needing to specify it as a parameter in each command. By keeping track of the last bound mesh, this method avoids unnecessary re-registrations when the active mesh has not changed, improving efficiency while ensuring that commands remain up-to-date with the current state of the application.
+    /// </summary>
     private void RefreshMeshCommandBindings()
     {
         if (_commandRegistry == null || _activeMesh == null)
@@ -108,6 +140,9 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Processes pending debug commands from the ImGuiLogger's command queue. This method checks if there are any commands waiting to be executed, and if so, it dequeues each command and attempts to invoke it using the CommandRegistry. If a command is recognized and successfully invoked, it executes the associated method. If a command is recognized but fails to execute due to an error, it logs the error message. If a command is not recognized, it logs a warning indicating that the command is unknown. This method allows for dynamic execution of debug commands entered by the user in the debug console, providing a powerful tool for testing and debugging the application without needing to modify code or restart the application.
+    /// </summary>
     private void ProcessDebugCommands()
     {
         RefreshMeshCommandBindings();
@@ -132,6 +167,10 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Lists all registered console commands in the ImGuiLogger. This method retrieves the list of registered command paths from the CommandRegistry and logs them to the ImGuiLogger for display in the debug console. If the command registry is not ready, it logs a warning message instead. This command can be invoked from the debug console to provide users with a reference of available commands they can use for debugging and testing purposes. The method also checks if any parameters were provided when invoking the command, and if so, it logs a warning that this command does not take parameters, helping to guide users on correct usage.
+    /// </summary>
+    /// <param name="parameters"></param>
     [ConsoleCommand("Commands.List")]
     private void ListCommands(string[] parameters)
     {
@@ -155,6 +194,10 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Adds a tire-shaped structure to the active mesh based on the provided parameters. The command expects five parameters: centerX, centerY, OuterStickCount, radius, and spokeLength. It creates a hub-and-spoke tire structure by adding particles and sticks to the active mesh according to the specified parameters. If the parameters are invalid or cannot be parsed correctly, it logs an error message indicating the issue. This command allows users to quickly create complex structures in the mesh for testing and debugging purposes using simple console commands.
+    /// </summary>
+    /// <param name="parameters"></param>
     [ConsoleCommand("Mesh.AddTire")]
     private void AddTire(string[] parameters)
     {
@@ -169,13 +212,9 @@ public partial class Game1
 
         try
         {
-            _activeMesh.CreateHubSpokeTire([
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
-            ]);
+            _activeMesh.CreateHubSpokeTire(
+                [parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]]
+            );
 
             _logger.AddLog(
                 $"Added tire to active mesh at ({parameters[0]}, {parameters[1]}) with outer radius {parameters[3]} and inner radius {parameters[4]} and {parameters[2]} outer sticks"
@@ -256,6 +295,10 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Tests the database connection and logs the result. This command can be invoked from the debug console to verify that the application can successfully connect to the database. If the connection test is successful, it logs a success message. If the connection test fails, it catches the exception and logs an error message with details about the failure. This command does not take any parameters, and if any parameters are provided, it logs a warning indicating that they are not expected. This allows developers to quickly check database connectivity without needing to write additional code or use external tools.
+    /// </summary>
+    /// <param name="parameters"></param>
     [ConsoleCommand("Database.TestConnection")]
     private void TestConnection(string[] parameters)
     {
@@ -274,10 +317,7 @@ public partial class Game1
         }
         catch (Exception ex)
         {
-            _logger.AddLog(
-                $"Database connection failed: {ex.Message}",
-                ImGuiLogger.LogTypes.Error
-            );
+            _logger.AddLog($"Database connection failed: {ex.Message}", ImGuiLogger.LogTypes.Error);
         }
     }
 }
@@ -291,6 +331,9 @@ public class ImGuiLogger
         Error,
     };
 
+    /// <summary>
+    /// Represents a log message with its content, count of occurrences, and log type (info, warning, error). This class is used to store log messages in the ImGuiLogger, allowing for features like message aggregation (counting repeated messages) and categorization by log type for filtering and display purposes in the debug console. Each MessageLog instance contains the actual log message, how many times it has been logged (for repeated messages), and the type of log to determine how it should be displayed in the UI.
+    /// </summary>
     class MessageLog
     {
         public string Message;
@@ -298,6 +341,9 @@ public class ImGuiLogger
         public LogTypes Type;
     }
 
+    /// <summary>
+    /// Represents a console command with its command path, command name, and parameters. This class is used to store commands that are entered by the user in the debug console, allowing them to be queued for execution. Each Command instance contains the full path of the command (split into parts), the specific command to execute, and any parameters that were provided with the command. This structure enables the CommandRegistry to look up and invoke the correct method based on the command path and name when processing user input from the debug console.
+    /// </summary>
     public class Command
     {
         public string[] CommandPath;
@@ -311,6 +357,11 @@ public class ImGuiLogger
     private List<string> _logStringHistory = new();
     private readonly Dictionary<string, Func<string>> _envVars = new();
 
+    /// <summary>
+    /// Registers an environment variable that can be used in console commands. The name parameter specifies the name of the environment variable, which can be referenced in commands using the syntax $VariableName. The resolver parameter is a function that returns the current value of the environment variable as a string. When a command is processed, any occurrences of $VariableName will be replaced with the value returned by the corresponding resolver function. This allows for dynamic values to be used in console commands, such as referencing the current active mesh or other runtime information without needing to hardcode values into commands. By using environment variables, users can create more flexible and powerful commands that adapt to the current state of the application.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="resolver"></param>
     public void RegisterEnvVar(string name, Func<string> resolver)
     {
         _envVars[name] = resolver;
@@ -340,6 +391,9 @@ public class ImGuiLogger
     public bool supportDebugConsole = true;
 
     // public bool clearLogs = false;
+    /// <summary>
+    /// Dictionary to track the visibility of different log types (info, warning, error) in the debug console. This allows users to filter which types of log messages they want to see by toggling the corresponding checkboxes in the UI. Each log type can be shown or hidden based on the user's preference, making it easier to focus on specific types of messages when debugging. For example, a user might choose to hide info messages and only show warnings and errors to quickly identify issues without being overwhelmed by less critical information.
+    /// </summary>
     readonly Dictionary<LogTypes, bool> _logTypeVisibility = new Dictionary<LogTypes, bool>
     {
         { LogTypes.Info, true },
@@ -370,6 +424,10 @@ public class ImGuiLogger
         }
     }
 
+    /// <summary>
+    /// Adds a console command to the command queue for later processing. The command string is trimmed and checked for validity before being added to the queue. If the command is empty or consists only of whitespace, it is ignored. The method also resolves any environment variables in the command string before parsing it into its components (command path, command name, and parameters). The parsed command is then enqueued for execution, and a log message is added to indicate that the command has been queued. This allows users to enter commands in the debug console, which can then be processed asynchronously in the main game loop without blocking the UI or requiring immediate execution.
+    /// </summary>
+    /// <param name="command"></param>
     public void AddCommand(string command)
     {
         command = command?.Trim();

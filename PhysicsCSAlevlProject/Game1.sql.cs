@@ -11,10 +11,16 @@ public class Game1Database
     private readonly string _connectionString =
         "Host=localhost;Port=5432;Database=stick_simulation;Username=dev;Password=dev123";
     public ImGuiLogger logger;
+
     public Game1Database(ImGuiLogger logger)
     {
         this.logger = logger;
     }
+
+    /// <summary>
+    /// Opens a connection to the PostgreSQL database using the provided connection string. If the connection is successful, it returns an open NpgsqlConnection object that can be used for executing queries. If there is an error during the connection process, it logs the error message using the provided ImGuiLogger and rethrows the exception to be handled by the calling code. This method centralizes the database connection logic and ensures that any issues are properly logged for debugging purposes.
+    /// </summary>
+    /// <returns></returns>
     private NpgsqlConnection OpenConnection()
     {
         try
@@ -38,6 +44,10 @@ public class Game1Database
         using var conn = OpenConnection();
     }
 
+    /// <summary>
+    /// Retrieves a list of student IDs from the database by executing a SQL query that selects the IDs of users with a role_id of 2 (indicating they are students). The method opens a connection to the database, executes the query, and reads the results into a list of integers. If there are any issues during the database connection or query execution, it logs the error message using the ImGuiLogger and rethrows the exception for further handling. This method provides a way to programmatically access student information from the database for use in the application.
+    /// </summary>
+    /// <returns></returns>
     public List<int> GetStudents()
     {
         var studentIds = new List<int>();
@@ -53,6 +63,10 @@ public class Game1Database
         return studentIds;
     }
 
+    /// <summary>
+    /// Retrieves a list of teacher IDs from the database by executing a SQL query that selects the IDs of users with a role_id of 1 (indicating they are teachers). The method opens a connection to the database, executes the query, and reads the results into a list of integers. If there are any issues during the database connection or query execution, it logs the error message using the ImGuiLogger and rethrows the exception for further handling. This method provides a way to programmatically access teacher information from the database for use in the application.
+    /// </summary>
+    /// <returns></returns>
     public List<int> GetTeachers()
     {
         var teacherIds = new List<int>();
@@ -68,6 +82,10 @@ public class Game1Database
         return teacherIds;
     }
 
+    /// <summary>
+    /// Retrieves a list of teacher information from the database by executing a SQL query that selects the id, username, role_id, and password of users with a role_id of 1 (indicating they are teachers). The method opens a connection to the database, executes the query, and reads the results into a list of User objects containing the relevant information. If there are any issues during the database connection or query execution, it logs the error message using the ImGuiLogger and rethrows the exception for further handling. This method provides a way to programmatically access detailed teacher information from the database for use in the application.
+    /// </summary>
+    /// <returns></returns>
     public List<User> GetTeachersWithInfo()
     {
         var teachers = new List<User>();
@@ -94,6 +112,11 @@ public class Game1Database
         return teachers;
     }
 
+    /// <summary>
+    /// Retrieves a dictionary of student structures from the database for a given student ID by executing a SQL query that selects the content of structures associated with the specified student. The method opens a connection to the database, executes the query, and reads the results into a dictionary where the key is "content" and the value is the JSON string representing the structure. If there are any issues during the database connection or query execution, it logs the error message using the ImGuiLogger and rethrows the exception for further handling. This method provides a way to programmatically access a student's saved structures from the database for use in the application.
+    /// </summary>
+    /// <param name="studentId"></param>
+    /// <returns></returns>
     public Dictionary<string, string> GetStudentStructures(int studentId)
     {
         var data = new Dictionary<string, string>();
@@ -113,6 +136,11 @@ public class Game1Database
         return data;
     }
 
+    /// <summary>
+    /// Retrieves a user from the database based on the provided username or user ID. If the input can be parsed as an integer, it treats it as a user ID and retrieves the user by ID. Otherwise, it treats the input as a username and retrieves the user by username. The method opens a connection to the database, executes the appropriate SQL query, and reads the results into a User object containing the relevant information. If there are any issues during the database connection or query execution, it logs the error message using the ImGuiLogger and rethrows the exception for further handling. This method provides a way to programmatically access user information from the database based on either username or user ID for use in the application.
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
     public User GetUser(string user)
     {
         if (!int.TryParse(user, out var userId))
@@ -228,6 +256,11 @@ public class Game1Database
 
         return structures;
     }
+    /// <summary>
+    /// Retrieves the content of a structure from the database based on the provided structure ID. The method opens a connection to the database, executes a SQL query to select the content of the structure with the specified ID, and returns the content as a string. If there are any issues during the database connection or query execution, it logs the error message using the ImGuiLogger and rethrows the exception for further handling. This method provides a way to programmatically access the content of a specific structure from the database for use in the application.
+    /// </summary>
+    /// <param name="structureId"></param>
+    /// <returns>StructureJson</returns>
 
     public string GetStructureContent(int structureId)
     {

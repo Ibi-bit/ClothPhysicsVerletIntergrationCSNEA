@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
-
+/// <summary>
+/// The Stick class represents a connection between two particles in the physics simulation, defined by its endpoints (P1 and P2) and its natural length. The DrawableStick class extends Stick by adding visual properties such as color and width, and includes a method to draw itself using a SpriteBatch and PrimitiveBatch. The IsCut property allows for simulating stick breakage, where a stick can be marked as cut to prevent it from being drawn or participating in physics interactions. This design allows for flexible representation of connections between particles, supporting both intact and broken sticks while also providing visual feedback for rendering the mesh structure.
+/// </summary>
 class Stick
 {
     public Particle P1;

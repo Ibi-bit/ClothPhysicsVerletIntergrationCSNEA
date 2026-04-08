@@ -728,13 +728,7 @@ public partial class Game1
                 }
             }
         }
-        else if (_selectedToolName == "PhysicsDrag")
-        {
-            if (_currentMode == MeshMode.Interact || _currentMode == MeshMode.Edit)
-            {
-                DragMeshParticlesWithPhysics(mouseState, _leftPressed, _meshParticlesInDragArea);
-            }
-        }
+       
         else if (_selectedToolName == "Move Collider" && _draggedCollider != null && _leftPressed)
         {
             Vector2 delta = currentMousePos - _previousMousePos;

@@ -10,42 +10,104 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1 : Game
 {
+    /// <summary>
+    /// Used for everything related to the window
+    /// </summary>
     private GraphicsDeviceManager _graphics;
+    /// <summary>
+    /// Used to Draw Everything with Texture or a generated texture
+    /// </summary>
     private SpriteBatch _spriteBatch;
+    /// <summary>
+    /// The main class that is used to generate and maniplulate primitive shapes like lines, rectangles and circles. This is used to draw the particles, sticks and colliders in the mesh.
+    /// </summary>
     private PrimitiveBatch _primitiveBatch;
+    /// <summary>
+    /// The ImGuiRenderer is used to render the ImGui UI elements in the application. It is initialized in the Initialize method and is responsible for drawing the ImGui interface on top of the game content. This allows for creating interactive UI elements such as buttons, sliders, and windows that can be used for debugging, tool selection, and other user interactions within the application.
+    /// </summary>
     public static ImGuiRenderer _guiRenderer;
-
+  
+    /// <summary>
+    /// the database class is an interface for the postgress sql
+    /// </summary>
     public Game1Database _database;
-
+    /// <summary>
+    /// stores the current assignment being worked on  for use in the UI 
+    /// </summary>
     public string _currentAssignmentTitle;
-
+    /// <summary>
+    /// just a bool for if the left mouse is pressed
+    /// </summary>
     private bool _leftPressed;
+    /// <summary>
+    /// stores the position at the start of a left mouse drag
+    /// </summary>
     private Vector2 _initialMousePosWhenPressed;
+    /// <summary>
+    /// used to make sure that a keyboard press is only the inital press and not repeated while the key is held down
+    /// </summary>
     private KeyboardState _prevKeyboardState;
+    /// <summary>
+    /// used to make sure that a mouse click is only the inital click and not repeated while the button is held down, also stores the previous mouse position for use in dragging calculation
+    /// </summary>
     private MouseState _prevMouseState;
+    /// <summary>
+    /// stores the position of the previous frames mouse pos to interpolate drags as the physics update multiple times per frame 
+    /// </summary>
     private Vector2 _previousMousePos;
-
+    /// <summary>
+    /// just a toggle for if the simulating is paused or not
+    /// </summary>
     private bool _paused;
+    /// <summary>
+    /// the bounds of the physics window stored as a rectangle for easy collision checking and clamping of mouse position
+    /// </summary>
     private static Rectangle _windowBounds;
+    /// <summary>
+    /// The bounds of the window that have been changed, used for updating the window size and position.
+    /// </summary>
     private Rectangle _changedBounds;
+    /// <summary>
+    /// a toggle if the iniital aspect ratio is to be respected
+    /// </summary>
     private bool _keepAspectRatio;
+    /// <summary>
+    /// the aspect ratio of the window used for if _keepAspectRatio is true
+    /// </summary>
     private float _lockedAspectRatio;
-
+    /// <summary>
+    /// stores the state of the mesh before any changes are made to it for undo functionality, also stores the state of the mesh before any changes are made for redo functionality
+    /// </summary>
     private Stack<Mesh> _meshHistory;
+    /// <summary>
+    /// stores the state of the mesh before any changes are made for redo functionality, this is cleared whenever a new change is made to the mesh to prevent redoing changes that are no longer relevant. This allows for a linear undo/redo history where the user can only redo actions that were undone, and any new action will clear the redo history to maintain consistency in the state of the mesh.
+    /// </summary>
     private Stack<Mesh> _meshRedoHistory;
-
+    /// <summary>
+    /// stores the current mesh that physics is itterated on and the user is interacts with
+    /// </summary>
     private Mesh _activeMesh;
+    /// <summary>
+    /// a fallback for if the _activeMesh is null for any reason, this should never be used but it prevents the application from crashing if something goes wrong with the mesh loading or creation process. This mesh is a simple default mesh with no particles or sticks, and default physics parameters.
+    /// </summary>
     private Mesh _defaultMesh;
-
+    /// <summary>
+    /// the possible modes 
+    /// </summary>
     private enum MeshMode
     {
-        // Cloth,
         Interact,
         Edit,
     }
-
+    /// <summary>
+    /// stores the current mode the program is in
+    /// </summary>
     private MeshMode _currentMode = MeshMode.Interact;
-
+    /// <summary>
+    /// Sets the window size to the specified width and height, and updates the internal window bounds accordingly. This method also applies the changes to the graphics device to ensure the new size takes effect. The window bounds are stored in both _windowBounds and _changedBounds for later use in rendering and input handling.
+    /// </summary>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
     public void SetWindowSize(int width, int height)
     {
         _graphics.PreferredBackBufferWidth = width;
@@ -123,7 +185,11 @@ public partial class Game1 : Game
         // _font = Content.Load<SpriteFont>("Font");
         _guiRenderer.RebuildFontAtlas();
     }
-
+    /// <summary>
+    /// Handles the application exit event by performing necessary cleanup and logging before the application closes. This method is called when the user attempts to close the application, allowing for any final actions to be taken, such as saving logs or releasing resources. The base implementation is also called to ensure that any additional cleanup in the base class is performed.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
     protected override void OnExiting(object sender, ExitingEventArgs args)
     {
         OnExit();

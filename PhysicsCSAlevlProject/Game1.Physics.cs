@@ -29,6 +29,11 @@ public partial class Game1
         _subSteps = 50;
     }
 
+    /// <summary>
+    /// Applies spring forces to the particles based on the sticks connecting them. The force applied is proportional to the stretch of the stick from its rest length, multiplied by the spring constant. The forces are accumulated on each particle for later use in the integration step.
+    /// </summary>
+    /// <param name="sticks"></param>
+    /// <param name="timeRatio"></param>
     private void ApplyStickForcesDictionary(
         Dictionary<int, Mesh.MeshStick> sticks,
         float timeRatio = 1f
@@ -52,6 +57,10 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Updates the colors of the sticks based on their stretch relative to their rest length.
+    /// </summary>
+    /// <param name="sticks"></param>
     private void UpdateStickColorsDictionary(Dictionary<int, Mesh.MeshStick> sticks)
     {
         int count = 0;
@@ -103,6 +112,10 @@ public partial class Game1
         }
     }
 
+    /// <summary>
+    /// Updates the positions of the particles based on the accumulated forces, applying simple Verlet integration. It also handles collisions with colliders and the boundaries of the window, applying appropriate responses based on the bounce and friction coefficients. Additionally, it calculates statistics about the forces applied to the particles for potential use in visualization or debugging.
+    /// </summary>
+    /// <param name="deltaTime"></param>
     private void UpdateParticles(float deltaTime)
     {
         float forceMagnitudeSum = 0f;

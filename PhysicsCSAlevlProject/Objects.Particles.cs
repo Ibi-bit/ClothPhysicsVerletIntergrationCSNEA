@@ -4,7 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
-
+/// <summary>
+/// The Particle class represents a single particle in the physics simulation, containing properties such as position, mass, accumulated force, and whether it is pinned or selected. The DrawableParticle class extends Particle by adding visual properties like color and size, and includes a method to draw itself using a SpriteBatch and PrimitiveBatch. The OscillatingParticle class further extends DrawableParticle to include oscillation parameters such as amplitude, frequency, and angle, allowing it to move in a sinusoidal pattern around an anchor position. This design allows for flexible representation of particles in the simulation, supporting both static and dynamic behaviors while also providing visual feedback for rendering.
+/// </summary>
 class Particle
 {
     public Vector2 Position;

@@ -216,6 +216,16 @@ class Mesh
         ResetPolygonBuilder();
     }
 
+    /// <summary>
+    ///     Handles the logic for building a polygon by allowing the user to click to create vertices and sticks between them. The user can left-click to add vertices, press Enter to close the polygon by connecting the last vertex to the first, press Escape to cancel the polygon building process, or press C to create a collider from the current vertices. The method takes into account the current keyboard and mouse states, as well as whether ImGui is currently using the mouse input, to ensure that the polygon building interactions work smoothly without interfering with other UI interactions. The beforeChange action can be used to perform any necessary setup or state changes before modifying the mesh with new particles and sticks.
+    /// </summary>
+    /// <param name="keyboardState"></param>
+    /// <param name="previousKeyboardState"></param>
+    /// <param name="mouseState"></param>
+    /// <param name="previousMouseState"></param>
+    /// <param name="imguiWantsMouse"></param>
+    /// <param name="beforeChange"></param>
+
     public void BuildPolygon(
         KeyboardState keyboardState,
         KeyboardState previousKeyboardState,
@@ -503,7 +513,14 @@ class Mesh
         }
         return closest;
     }
-
+    /// <summary>
+    ///   Creates a grid mesh of particles and sticks between them based on the specified start and end positions, distance between particles, and an optional existing mesh to build upon. The method calculates the number of particles needed in both width and height directions based on the provided distance, and then iteratively adds particles at the calculated positions. It also creates sticks between adjacent particles to form a grid structure. The method ensures that the number of particles does not exceed a reasonable limit (1000 in either direction) to prevent performance issues. Finally, it returns the modified mesh with the newly added grid structure.
+    /// </summary>
+    /// <param name="Start"></param>
+    /// <param name="End"></param>
+    /// <param name="DistanceBetweenParticles"></param>
+    /// <param name="mesh"></param>
+    /// <returns></returns>
     public static Mesh CreateGridMesh(
         Vector2 Start,
         Vector2 End,
@@ -564,6 +581,11 @@ class Mesh
             p.AccumulatedForce = Vector2.Zero;
         }
     }
+    /// <summary>
+    /// Creates a hub-and-spoke tire structure in the mesh based on the specified center position, inner and outer radii, and the number of segments for the rim. The method calculates the positions of particles for both the inner and outer rims of the tire, and then creates sticks to connect these particles in a hub-and-spoke pattern. It ensures that the inner and outer radii are valid and that there are enough segments to form a proper tire structure. The resulting structure consists of two concentric circles of particles connected by sticks, with additional sticks connecting the inner rim to the outer rim to create a strong and flexible tire-like structure in the mesh.
+    /// </summary>
+    /// <param name="args"></param>
+    /// <exception cref="ArgumentException"></exception>
 
     public void CreateHubSpokeTire(object[] args)
     {
@@ -639,7 +661,17 @@ class Mesh
             AddStickBetween(outerRimIds[i], innerRimIds[next], diagonalStickLength);
         }
     }
-
+    /// <summary>
+    /// Creates a cloth mesh in the specified area defined by the start and end positions, with particles spaced according to the natural length parameter. The method builds a grid mesh using the CreateGridMesh method and then pins the top-left and top-right particles to create a hanging cloth effect. The spring constant, drag, and mass parameters can be customized to adjust the behavior of the cloth simulation. The resulting mesh will have a flexible cloth-like structure that can interact with forces and collisions in the physics simulation.
+    /// </summary>
+    /// <param name="Start"></param>
+    /// <param name="End"></param>
+    /// <param name="naturalLength"></param>
+    /// <param name="mesh"></param>
+    /// <param name="springConstant"></param>
+    /// <param name="drag"></param>
+    /// <param name="mass"></param>
+    /// <returns></returns>
     public static Mesh CreateClothMesh(
         Vector2 Start,
         Vector2 End,

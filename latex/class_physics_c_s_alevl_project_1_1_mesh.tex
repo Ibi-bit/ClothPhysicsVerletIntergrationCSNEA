@@ -1,0 +1,275 @@
+\doxysection{Physics\+CSAlevl\+Project.\+Mesh Class Reference}
+\hypertarget{class_physics_c_s_alevl_project_1_1_mesh}{}\label{class_physics_c_s_alevl_project_1_1_mesh}\index{PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick}{Mesh\+Stick}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aa3319f9e4869ea5637cbedcc025255d4}\label{class_physics_c_s_alevl_project_1_1_mesh_aa3319f9e4869ea5637cbedcc025255d4} 
+void {\bfseries Restore\+Stick\+References} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a6bf9bc8152d45214f22a69008b889418}\label{class_physics_c_s_alevl_project_1_1_mesh_a6bf9bc8152d45214f22a69008b889418} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} {\bfseries Deep\+Copy} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a5cc81c8533eae441111a2ada31f20429}\label{class_physics_c_s_alevl_project_1_1_mesh_a5cc81c8533eae441111a2ada31f20429} 
+int {\bfseries Add\+Particle} (Vector2 position, float mass, bool is\+Pinned, Color color, Vector2? size=null, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_oscillating_particle}{Oscillating\+Particle}} oscillating\+Props=null)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aa68e385cc4b6c8e403b42fd537d2b4c0}\label{class_physics_c_s_alevl_project_1_1_mesh_aa68e385cc4b6c8e403b42fd537d2b4c0} 
+void {\bfseries Reset\+Mesh} ()
+\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_aaaa7875142ba7338dd6b2caabb271461}{Build\+Polygon}} (Keyboard\+State keyboard\+State, Keyboard\+State previous\+Keyboard\+State, Mouse\+State mouse\+State, Mouse\+State previous\+Mouse\+State, bool imgui\+Wants\+Mouse, Action before\+Change=null)
+\begin{DoxyCompactList}\small\item\em Handles the logic for building a polygon by allowing the user to click to create vertices and sticks between them. The user can left-\/click to add vertices, press Enter to close the polygon by connecting the last vertex to the first, press Escape to cancel the polygon building process, or press C to create a collider from the current vertices. The method takes into account the current keyboard and mouse states, as well as whether Im\+Gui is currently using the mouse input, to ensure that the polygon building interactions work smoothly without interfering with other UI interactions. The before\+Change action can be used to perform any necessary setup or state changes before modifying the mesh with new particles and sticks. \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a84b6ce148ad4600c3ed7c8cc9f99d6c3}\label{class_physics_c_s_alevl_project_1_1_mesh_a84b6ce148ad4600c3ed7c8cc9f99d6c3} 
+void {\bfseries Reset\+Polygon\+Builder} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aba87b581ba4802254c901747ad8a177f}\label{class_physics_c_s_alevl_project_1_1_mesh_aba87b581ba4802254c901747ad8a177f} 
+bool {\bfseries Remove\+Particle} (int particle\+Id)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_ab8cb3037bfed85cf211813048e48e085}\label{class_physics_c_s_alevl_project_1_1_mesh_ab8cb3037bfed85cf211813048e48e085} 
+void {\bfseries Cut\+Sticks\+Along\+Line} (Vector2 line\+Start, Vector2 line\+End)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_af517bca0b3fb4c592db1872402520adb}\label{class_physics_c_s_alevl_project_1_1_mesh_af517bca0b3fb4c592db1872402520adb} 
+int? {\bfseries Add\+Stick} (int p1\+Id, int p2\+Id, Color color, float width=2.\+0f, float natural\+Length=-\/1f)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a1a184ef2f9f3732d0fcf36342ff7fe42}\label{class_physics_c_s_alevl_project_1_1_mesh_a1a184ef2f9f3732d0fcf36342ff7fe42} 
+void {\bfseries Add\+Sticks\+Accross\+Length} (Vector2 Start, Vector2 End, int number\+Of\+Sticks, float natural\+Length\+Ratio=1f)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a32753e239aa8465ca13f79276fd4a704}\label{class_physics_c_s_alevl_project_1_1_mesh_a32753e239aa8465ca13f79276fd4a704} 
+bool {\bfseries Remove\+Stick} (int stick\+Id)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a080cc86e57833041895173302b069c8d}\label{class_physics_c_s_alevl_project_1_1_mesh_a080cc86e57833041895173302b069c8d} 
+int {\bfseries Remove\+Sticks\+Between} (int p1\+Id, int p2\+Id)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a57755dbe2979ca0badb8a947bd457eca}\label{class_physics_c_s_alevl_project_1_1_mesh_a57755dbe2979ca0badb8a947bd457eca} 
+IEnumerable$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick}{Mesh\+Stick}} $>$ {\bfseries Get\+Sticks\+For\+Particle} (int particle\+Id)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a52789aaafe070ab7f69068a3ad60b503}\label{class_physics_c_s_alevl_project_1_1_mesh_a52789aaafe070ab7f69068a3ad60b503} 
+void {\bfseries Draw} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}} primitive\+Batch, bool draw\+Particles, bool draw\+Constraints)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a42fb4ae6b223dcd20843c8831a93774c}\label{class_physics_c_s_alevl_project_1_1_mesh_a42fb4ae6b223dcd20843c8831a93774c} 
+int {\bfseries Add\+Particle\+At} (Vector2 position, bool is\+Pinned=false)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a94a5ee889adce14e5e9d73b7574828f5}\label{class_physics_c_s_alevl_project_1_1_mesh_a94a5ee889adce14e5e9d73b7574828f5} 
+int? {\bfseries Add\+Stick\+Between} (int p1\+Id, int p2\+Id, float natural\+Length=-\/1f)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aa623c2b413aa5cead05386b77182c8f6}\label{class_physics_c_s_alevl_project_1_1_mesh_aa623c2b413aa5cead05386b77182c8f6} 
+int? {\bfseries Find\+Closest\+Particle} (Vector2 position, float radius)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aa446d7372cb6be7df5d298ddb2bfb89d}\label{class_physics_c_s_alevl_project_1_1_mesh_aa446d7372cb6be7df5d298ddb2bfb89d} 
+void {\bfseries Reset\+Simulation} (string\+[$\,$]\+ parameters)
+\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_af2f37a3f741ae361ff955cc78d1a0eb3}{Create\+Hub\+Spoke\+Tire}} (object\+[$\,$]\+ args)
+\begin{DoxyCompactList}\small\item\em Creates a hub-\/and-\/spoke tire structure in the mesh based on the specified center position, inner and outer radii, and the number of segments for the rim. The method calculates the positions of particles for both the inner and outer rims of the tire, and then creates sticks to connect these particles in a hub-\/and-\/spoke pattern. It ensures that the inner and outer radii are valid and that there are enough segments to form a proper tire structure. The resulting structure consists of two concentric circles of particles connected by sticks, with additional sticks connecting the inner rim to the outer rim to create a strong and flexible tire-\/like structure in the mesh. \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aa522e6fdbd9357cae0692b520d2dfe69}\label{class_physics_c_s_alevl_project_1_1_mesh_aa522e6fdbd9357cae0692b520d2dfe69} 
+void {\bfseries Arg\+Cloth\+Mesh\+Factory} (object\+[$\,$]\+ args)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_a6cde2f0f151f586c2823eb2b86d95cfc}{Create\+Grid\+Mesh}} (Vector2 Start, Vector2 End, float Distance\+Between\+Particles, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} mesh)
+\begin{DoxyCompactList}\small\item\em Creates a grid mesh of particles and sticks between them based on the specified start and end positions, distance between particles, and an optional existing mesh to build upon. The method calculates the number of particles needed in both width and height directions based on the provided distance, and then iteratively adds particles at the calculated positions. It also creates sticks between adjacent particles to form a grid structure. The method ensures that the number of particles does not exceed a reasonable limit (1000 in either direction) to prevent performance issues. Finally, it returns the modified mesh with the newly added grid structure. \end{DoxyCompactList}\item 
+static \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_a23299ba36c223fe39025a3c9ba818bd5}{Create\+Cloth\+Mesh}} (Vector2 Start, Vector2 End, float natural\+Length, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} mesh=null, float spring\+Constant=10000f, float drag=0.\+997f, float mass=1f)
+\begin{DoxyCompactList}\small\item\em Creates a cloth mesh in the specified area defined by the start and end positions, with particles spaced according to the natural length parameter. The method builds a grid mesh using the Create\+Grid\+Mesh method and then pins the top-\/left and top-\/right particles to create a hanging cloth effect. The spring constant, drag, and mass parameters can be customized to adjust the behavior of the cloth simulation. The resulting mesh will have a flexible cloth-\/like structure that can interact with forces and collisions in the physics simulation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_ab2ff007c59ec22373ea789bc34cfadc8}\label{class_physics_c_s_alevl_project_1_1_mesh_ab2ff007c59ec22373ea789bc34cfadc8} 
+float {\bfseries stick\+Draw\+Thickness} = -\/1
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_ac86900e99345e9626bba8a98aa402720}\label{class_physics_c_s_alevl_project_1_1_mesh_ac86900e99345e9626bba8a98aa402720} 
+float {\bfseries mean\+Force\+Magnitude} = 0f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a1a34e3dcfb87eb1e496550104082184e}\label{class_physics_c_s_alevl_project_1_1_mesh_a1a34e3dcfb87eb1e496550104082184e} 
+float {\bfseries force\+Std\+Deviation} = 0f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aa13ffe445e728b8d0e045f751e5e9713}\label{class_physics_c_s_alevl_project_1_1_mesh_aa13ffe445e728b8d0e045f751e5e9713} 
+float {\bfseries max\+Force\+Magnitude} = 0f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aeab185d6275df2a7db4b59a9a77dea94}\label{class_physics_c_s_alevl_project_1_1_mesh_aeab185d6275df2a7db4b59a9a77dea94} 
+float {\bfseries spring\+Constant} = 10000f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a4854875bd2f47cca8972ee4d738220f0}\label{class_physics_c_s_alevl_project_1_1_mesh_a4854875bd2f47cca8972ee4d738220f0} 
+float {\bfseries drag} = 0.\+997f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_ac884fcbe4bf308b0dc8d970fb23dfbd6}\label{class_physics_c_s_alevl_project_1_1_mesh_ac884fcbe4bf308b0dc8d970fb23dfbd6} 
+float {\bfseries mass} = 1f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_ae13e0376afaabfb0e259a95f93edb3b8}\label{class_physics_c_s_alevl_project_1_1_mesh_ae13e0376afaabfb0e259a95f93edb3b8} 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} $>$ {\bfseries Colliders} = new List$<$\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}}$>$()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_af9a531bb2761c2db0f16c8adce9804be}\label{class_physics_c_s_alevl_project_1_1_mesh_af9a531bb2761c2db0f16c8adce9804be} 
+int {\bfseries Register\+Particle} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle}} particle)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a92bb5e29931255b4f552a2aea0bd9315}\label{class_physics_c_s_alevl_project_1_1_mesh_a92bb5e29931255b4f552a2aea0bd9315} 
+Dictionary$<$ int, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle}} $>$ {\bfseries Particles} = new()\hspace{0.3cm}{\ttfamily  \+[get]\+}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_ae3e9094d4c09fa8439a1de251ef579d2}\label{class_physics_c_s_alevl_project_1_1_mesh_ae3e9094d4c09fa8439a1de251ef579d2} 
+Dictionary$<$ int, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick}{Mesh\+Stick}} $>$ {\bfseries Sticks} = new Dictionary$<$int, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick}{Mesh\+Stick}}$>$()\hspace{0.3cm}{\ttfamily  \+[get]\+}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a8ad96c1303de707493bac69d598ee5fc}\label{class_physics_c_s_alevl_project_1_1_mesh_a8ad96c1303de707493bac69d598ee5fc} 
+int {\bfseries Next\+Particle}\hspace{0.3cm}{\ttfamily  \+[get]\+}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a31e0c13bf45e3a70a1177e0a0b901d77}\label{class_physics_c_s_alevl_project_1_1_mesh_a31e0c13bf45e3a70a1177e0a0b901d77} 
+bool {\bfseries Lines\+Intersect} (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a248dbbf0f40a2afd29c05ef888623701}\label{class_physics_c_s_alevl_project_1_1_mesh_a248dbbf0f40a2afd29c05ef888623701} 
+int {\bfseries \+\_\+next\+Particle\+Id} = 1
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a46791be201f76d548736a0872901e92e}\label{class_physics_c_s_alevl_project_1_1_mesh_a46791be201f76d548736a0872901e92e} 
+int {\bfseries \+\_\+next\+Stick\+Id} = 1
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aad09866b80464660ac1729432b60bede}\label{class_physics_c_s_alevl_project_1_1_mesh_aad09866b80464660ac1729432b60bede} 
+int {\bfseries \+\_\+polygon\+Initial\+Particle} = -\/1
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aae1ccfddf110dd9eec91a7c197d8b40d}\label{class_physics_c_s_alevl_project_1_1_mesh_aae1ccfddf110dd9eec91a7c197d8b40d} 
+int {\bfseries \+\_\+polygon\+Final\+Particle} = -\/1
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a1ae88d728b6851bd0a52ba8bcd1374a7}\label{class_physics_c_s_alevl_project_1_1_mesh_a1ae88d728b6851bd0a52ba8bcd1374a7} 
+readonly List$<$ int $>$ {\bfseries \+\_\+polygon\+Vertices} = new List$<$int$>$()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a629edef5353429e5b7c76cac66d25264}\label{class_physics_c_s_alevl_project_1_1_mesh_a629edef5353429e5b7c76cac66d25264} 
+bool {\bfseries \+\_\+is\+Polygon\+Building} = false
+\item 
+readonly Dictionary$<$ int, Hash\+Set$<$ int $>$ $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh_ab485201bff2b9dde2a92456149e12dfa}{\+\_\+particle\+To\+Stick\+Ids}}
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_aaaa7875142ba7338dd6b2caabb271461}\index{PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}!BuildPolygon@{BuildPolygon}}
+\index{BuildPolygon@{BuildPolygon}!PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}}
+\doxysubsubsection{\texorpdfstring{BuildPolygon()}{BuildPolygon()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_mesh_aaaa7875142ba7338dd6b2caabb271461} 
+void Physics\+CSAlevl\+Project.\+Mesh.\+Build\+Polygon (\begin{DoxyParamCaption}\item[{Keyboard\+State}]{keyboard\+State}{, }\item[{Keyboard\+State}]{previous\+Keyboard\+State}{, }\item[{Mouse\+State}]{mouse\+State}{, }\item[{Mouse\+State}]{previous\+Mouse\+State}{, }\item[{bool}]{imgui\+Wants\+Mouse}{, }\item[{Action}]{before\+Change}{ = {\ttfamily null}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Handles the logic for building a polygon by allowing the user to click to create vertices and sticks between them. The user can left-\/click to add vertices, press Enter to close the polygon by connecting the last vertex to the first, press Escape to cancel the polygon building process, or press C to create a collider from the current vertices. The method takes into account the current keyboard and mouse states, as well as whether Im\+Gui is currently using the mouse input, to ensure that the polygon building interactions work smoothly without interfering with other UI interactions. The before\+Change action can be used to perform any necessary setup or state changes before modifying the mesh with new particles and sticks. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em keyboard\+State} & \\
+\hline
+{\em previous\+Keyboard\+State} & \\
+\hline
+{\em mouse\+State} & \\
+\hline
+{\em previous\+Mouse\+State} & \\
+\hline
+{\em imgui\+Wants\+Mouse} & \\
+\hline
+{\em before\+Change} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a23299ba36c223fe39025a3c9ba818bd5}\index{PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}!CreateClothMesh@{CreateClothMesh}}
+\index{CreateClothMesh@{CreateClothMesh}!PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}}
+\doxysubsubsection{\texorpdfstring{CreateClothMesh()}{CreateClothMesh()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_mesh_a23299ba36c223fe39025a3c9ba818bd5} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} Physics\+CSAlevl\+Project.\+Mesh.\+Create\+Cloth\+Mesh (\begin{DoxyParamCaption}\item[{Vector2}]{Start}{, }\item[{Vector2}]{End}{, }\item[{float}]{natural\+Length}{, }\item[{\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}}}]{mesh}{ = {\ttfamily null}, }\item[{float}]{spring\+Constant}{ = {\ttfamily 10000f}, }\item[{float}]{drag}{ = {\ttfamily 0:\+:\+997f}, }\item[{float}]{mass}{ = {\ttfamily 1f}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a cloth mesh in the specified area defined by the start and end positions, with particles spaced according to the natural length parameter. The method builds a grid mesh using the Create\+Grid\+Mesh method and then pins the top-\/left and top-\/right particles to create a hanging cloth effect. The spring constant, drag, and mass parameters can be customized to adjust the behavior of the cloth simulation. The resulting mesh will have a flexible cloth-\/like structure that can interact with forces and collisions in the physics simulation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Start} & \\
+\hline
+{\em End} & \\
+\hline
+{\em natural\+Length} & \\
+\hline
+{\em mesh} & \\
+\hline
+{\em spring\+Constant} & \\
+\hline
+{\em drag} & \\
+\hline
+{\em mass} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_a6cde2f0f151f586c2823eb2b86d95cfc}\index{PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}!CreateGridMesh@{CreateGridMesh}}
+\index{CreateGridMesh@{CreateGridMesh}!PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}}
+\doxysubsubsection{\texorpdfstring{CreateGridMesh()}{CreateGridMesh()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_mesh_a6cde2f0f151f586c2823eb2b86d95cfc} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} Physics\+CSAlevl\+Project.\+Mesh.\+Create\+Grid\+Mesh (\begin{DoxyParamCaption}\item[{Vector2}]{Start}{, }\item[{Vector2}]{End}{, }\item[{float}]{Distance\+Between\+Particles}{, }\item[{\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}}}]{mesh}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a grid mesh of particles and sticks between them based on the specified start and end positions, distance between particles, and an optional existing mesh to build upon. The method calculates the number of particles needed in both width and height directions based on the provided distance, and then iteratively adds particles at the calculated positions. It also creates sticks between adjacent particles to form a grid structure. The method ensures that the number of particles does not exceed a reasonable limit (1000 in either direction) to prevent performance issues. Finally, it returns the modified mesh with the newly added grid structure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Start} & \\
+\hline
+{\em End} & \\
+\hline
+{\em Distance\+Between\+Particles} & \\
+\hline
+{\em mesh} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_af2f37a3f741ae361ff955cc78d1a0eb3}\index{PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}!CreateHubSpokeTire@{CreateHubSpokeTire}}
+\index{CreateHubSpokeTire@{CreateHubSpokeTire}!PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}}
+\doxysubsubsection{\texorpdfstring{CreateHubSpokeTire()}{CreateHubSpokeTire()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_mesh_af2f37a3f741ae361ff955cc78d1a0eb3} 
+void Physics\+CSAlevl\+Project.\+Mesh.\+Create\+Hub\+Spoke\+Tire (\begin{DoxyParamCaption}\item[{object\+[$\,$]\+}]{args}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates a hub-\/and-\/spoke tire structure in the mesh based on the specified center position, inner and outer radii, and the number of segments for the rim. The method calculates the positions of particles for both the inner and outer rims of the tire, and then creates sticks to connect these particles in a hub-\/and-\/spoke pattern. It ensures that the inner and outer radii are valid and that there are enough segments to form a proper tire structure. The resulting structure consists of two concentric circles of particles connected by sticks, with additional sticks connecting the inner rim to the outer rim to create a strong and flexible tire-\/like structure in the mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Argument\+Exception} & \\
+\hline
+\end{DoxyExceptions}
+
+
+\label{doc-variable-members}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_ab485201bff2b9dde2a92456149e12dfa}\index{PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}!\_particleToStickIds@{\_particleToStickIds}}
+\index{\_particleToStickIds@{\_particleToStickIds}!PhysicsCSAlevlProject.Mesh@{PhysicsCSAlevlProject.Mesh}}
+\doxysubsubsection{\texorpdfstring{\_particleToStickIds}{\_particleToStickIds}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_mesh_ab485201bff2b9dde2a92456149e12dfa} 
+readonly Dictionary$<$int, Hash\+Set$<$int$>$ $>$ Physics\+CSAlevl\+Project.\+Mesh.\+\_\+particle\+To\+Stick\+Ids\hspace{0.3cm}{\ttfamily [private]}}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =}
+\DoxyCodeLine{\textcolor{keyword}{new}\ Dictionary<int,\ HashSet<int>>()}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+Physics\+CSAlevl\+Project/\+Objects.\+Mesh.\+cs\end{DoxyCompactItemize}

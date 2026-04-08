@@ -23,7 +23,12 @@
     <Compile Include="Game1.Physics.cs" />
     <Compile Include="Game1.Update.cs" />
     <Compile Include="Game1.Render.cs" />
-    <Compile Include="Game1.ImGui.cs" />
+    <Compile Include="Game1.ImGui.Core.cs" />
+    <Compile Include="Game1.ImGui.MenuBar.cs" />
+    <Compile Include="Game1.ImGui.Windows.cs" />
+    <Compile Include="Game1.ImGui.Structures.cs" />
+    <Compile Include="Game1.ImGui.Authentication.cs" />
+    <Compile Include="Game1.ImGui.Inspection.cs" />
     <Compile Include="Game1.Tools.cs" />
     <Compile Include="Game1.sql.cs" />
     <Compile Include="Game1.File.cs" />

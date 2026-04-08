@@ -1,0 +1,20 @@
+\doxysection{Physics\+CSAlevl\+Project/\+\+Game1.Debug\+Commands.\+cs File Reference}
+\hypertarget{_game1_8_debug_commands_8cs}{}\label{_game1_8_debug_commands_8cs}\index{PhysicsCSAlevlProject/Game1.DebugCommands.cs@{PhysicsCSAlevlProject/Game1.DebugCommands.cs}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_console_command_attribute}{Physics\+CSAlevl\+Project.\+Console\+Command\+Attribute}}
+\begin{DoxyCompactList}\small\item\em Attribute to mark methods as console commands. The Command\+Path property specifies the command path that will be used to invoke the method from the debug console. For example, a method marked with \+[Console\+Command("{}\+Mesh.\+Add\+Tire"{})]\+ can be invoked by entering "{}\+Mesh.\+Add\+Tire"{} in the debug console, along with any required parameters. This attribute allows for easy registration and organization of debug commands within the application. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_command_registry}{Physics\+CSAlevl\+Project.\+Command\+Registry}}
+\begin{DoxyCompactList}\small\item\em Registry for console commands that can be invoked from the debug console. This class allows for registering methods as console commands using the \doxylink{class_physics_c_s_alevl_project_1_1_console_command_attribute}{Console\+Command\+Attribute}, and provides functionality to invoke these commands based on user input. The commands are stored in a dictionary for efficient lookup, and the registry supports invoking commands with parameters as well as listing all registered commands. This system enables a flexible and extensible way to add debug functionality to the application without hardcoding command handling logic in the main game loop. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1}{Physics\+CSAlevl\+Project.\+Game1}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command}{Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger.\+Command}}
+\begin{DoxyCompactList}\small\item\em Represents a console command with its command path, command name, and parameters. This class is used to store commands that are entered by the user in the debug console, allowing them to be queued for execution. Each \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command}{Command} instance contains the full path of the command (split into parts), the specific command to execute, and any parameters that were provided with the command. This structure enables the \doxylink{class_physics_c_s_alevl_project_1_1_command_registry}{Command\+Registry} to look up and invoke the correct method based on the command path and name when processing user input from the debug console. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \doxymbox{\hyperlink{namespace_physics_c_s_alevl_project}{Physics\+CSAlevl\+Project}}
+\end{DoxyCompactItemize}

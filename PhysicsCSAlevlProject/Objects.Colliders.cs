@@ -10,6 +10,12 @@ namespace PhysicsCSAlevlProject;
 public abstract class Collider
 {
     public virtual Vector2 Position { get; set; }
+    /// <summary>
+    /// Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider's surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter.
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="closestPoint"></param>
+    /// <returns></returns>
     public abstract bool ContainsPoint(Vector2 point, out Vector2 closestPoint);
     public abstract Collider DeepCopy();
 

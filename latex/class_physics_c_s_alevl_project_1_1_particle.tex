@@ -1,0 +1,54 @@
+\doxysection{Physics\+CSAlevl\+Project.\+Particle Class Reference}
+\hypertarget{class_physics_c_s_alevl_project_1_1_particle}{}\label{class_physics_c_s_alevl_project_1_1_particle}\index{PhysicsCSAlevlProject.Particle@{PhysicsCSAlevlProject.Particle}}
+
+
+The \doxylink{class_physics_c_s_alevl_project_1_1_particle}{Particle} class represents a single particle in the physics simulation, containing properties such as position, mass, accumulated force, and whether it is pinned or selected. The \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} class extends \doxylink{class_physics_c_s_alevl_project_1_1_particle}{Particle} by adding visual properties like color and size, and includes a method to draw itself using a Sprite\+Batch and \doxylink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}. The \doxylink{class_physics_c_s_alevl_project_1_1_oscillating_particle}{Oscillating\+Particle} class further extends \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} to include oscillation parameters such as amplitude, frequency, and angle, allowing it to move in a sinusoidal pattern around an anchor position. This design allows for flexible representation of particles in the simulation, supporting both static and dynamic behaviors while also providing visual feedback for rendering.  
+
+
+Inheritance diagram for Physics\+CSAlevl\+Project.\+Particle:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_physics_c_s_alevl_project_1_1_particle}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_a29cf22e58f7f79ec3ecb19374edd0992}\label{class_physics_c_s_alevl_project_1_1_particle_a29cf22e58f7f79ec3ecb19374edd0992} 
+{\bfseries Particle} (Vector2 position, float mass, bool is\+Pinned)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_a9411234157f32b523981aa01d27097dc}\label{class_physics_c_s_alevl_project_1_1_particle_a9411234157f32b523981aa01d27097dc} 
+Vector2 {\bfseries Position}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_a116105b7a250bf6f122c7a85c365bb93}\label{class_physics_c_s_alevl_project_1_1_particle_a116105b7a250bf6f122c7a85c365bb93} 
+Vector2 {\bfseries Previous\+Position}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_a07de25d5f7ead569f6d80c0f1ef7de61}\label{class_physics_c_s_alevl_project_1_1_particle_a07de25d5f7ead569f6d80c0f1ef7de61} 
+float {\bfseries Mass}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_aef17bf4ee84c34b056f75fa736483bc2}\label{class_physics_c_s_alevl_project_1_1_particle_aef17bf4ee84c34b056f75fa736483bc2} 
+Vector2 {\bfseries Accumulated\+Force}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_a1c7c7357b61488c5c71b441e1095317a}\label{class_physics_c_s_alevl_project_1_1_particle_a1c7c7357b61488c5c71b441e1095317a} 
+int {\bfseries ID}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_af7ff36a54cf3aaac4b6d98b2c5a5015a}\label{class_physics_c_s_alevl_project_1_1_particle_af7ff36a54cf3aaac4b6d98b2c5a5015a} 
+float {\bfseries Total\+Force\+Magnitude}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_ae675cb21d454db9ad605a6827cd38389}\label{class_physics_c_s_alevl_project_1_1_particle_ae675cb21d454db9ad605a6827cd38389} 
+bool {\bfseries Is\+Pinned}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_particle_a1cf7b42b728fe98d9b46ec96df6173a0}\label{class_physics_c_s_alevl_project_1_1_particle_a1cf7b42b728fe98d9b46ec96df6173a0} 
+bool {\bfseries Is\+Selected}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The \doxylink{class_physics_c_s_alevl_project_1_1_particle}{Particle} class represents a single particle in the physics simulation, containing properties such as position, mass, accumulated force, and whether it is pinned or selected. The \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} class extends \doxylink{class_physics_c_s_alevl_project_1_1_particle}{Particle} by adding visual properties like color and size, and includes a method to draw itself using a Sprite\+Batch and \doxylink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}. The \doxylink{class_physics_c_s_alevl_project_1_1_oscillating_particle}{Oscillating\+Particle} class further extends \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} to include oscillation parameters such as amplitude, frequency, and angle, allowing it to move in a sinusoidal pattern around an anchor position. This design allows for flexible representation of particles in the simulation, supporting both static and dynamic behaviors while also providing visual feedback for rendering. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+Physics\+CSAlevl\+Project/\+Objects.\+Particles.\+cs\end{DoxyCompactItemize}
