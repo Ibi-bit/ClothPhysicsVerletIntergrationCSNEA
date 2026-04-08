@@ -62,39 +62,135 @@ public partial class Game1
     /// the logger used for logging messages to the ImGui logger window
     /// </summary>
     private ImGuiLogger _logger;
-    
+
+    /// <summary>
+    /// the name of the current mesh, used for saving and loading
+    /// </summary>
     private string _meshName;
+
+    /// <summary>
+    /// the path to the directory where structures are saved and loaded from
+    /// </summary>
     private string _structurePath;
+
+    /// <summary>
+    /// the name of the quick structure, used for saving and loading quick structures
+    /// </summary>
     private string _quickStructureName;
+
+    /// <summary>
+    /// the collider currently being used for cursor interaction
+    /// </summary>
     private Collider _cursorCollider;
+
+    /// <summary>
+    /// a store of colliders that can be used for cursor interaction, indexed by name
+    /// </summary>
     private Dictionary<string, Collider> _cursorColliderStore;
+
+    /// <summary>
+    /// a dictionary of meshes that can be quickly loaded, indexed by name
+    /// </summary>
     private Dictionary<string, Mesh> _quickMeshes;
+
+    /// <summary>
+    /// a dictionary of template functions for creating new meshes based on predefined configurations, indexed by name
+    /// </summary>
     private Dictionary<string, Func<Mesh>> _template;
 
+    ///<summary>
+    /// the number of steps to simulate when using the step forward and step back
+    /// </summary>
     private int _buttonSteps;
 
+    ///<summary>
+    /// if ctrl is currently held, used for tool switching
+    /// </summary>
     private bool _ctrlHeld;
+
+    ///<summary>
+    /// if shift is currently held, used for mode and tool switching
+    /// </summary>
     private bool _shiftHeld;
+
+    ///<summary>
+    /// if caps lock is currently active, used for mode switching
+    /// </summary>
     private bool _capsActive;
+
+    ///<summary>
+    /// if alt is currently held, used for mode switching on Mac
+    /// </summary>
     private bool _altHeld;
 
+    /// <summary>
+    /// the currently selected factory action, used for quick structure creation
+    /// </summary>
     private Factory _selectedFactoryAction;
 
+    /// <summary>
+    /// wether to show the local or remote structures in the quick structure menu
+    /// </summary>
     private bool _LocalorRemoteStructureTab;
 
+    /// <summary>
+    /// the current user signed in, null if no user is signed in
+    /// </summary>
     private Game1Database.User _currentUser;
+
+    /// <summary>
+    /// whats in the user id input field in the sign-in window
+    /// </summary>
     private string _userInputUserId;
+
+    /// <summary>
+    /// whats in the password input field in the sign-in window
+    /// </summary>
     private string _password;
+
+    /// <summary>
+    /// the currently selected assignment in the teacher assignments window, null if no assignment is selected
+    /// </summary>
     private Game1Database.Assignment _selectedAssignment;
 
+    /// <summary>
+    /// stores all remote structures for the user, loaded from the database when the user signs in
+    /// </summary>
     private List<Game1Database.StructureInfo> _remoteStructures = new();
+
+    /// <summary>
+    /// the name of the structure to save to the database when saving, taken from the input field in the teacher assignments window
+    /// </summary>
     private string _remoteSaveName = "MyStructure";
 
+    /// <summary>
+    /// lists all teachers in the database
+    /// </summary>
     private List<Game1Database.User> _allTeachers = new();
+
+    /// <summary>
+    /// stores the assignments for each teacher, loaded from the database when the user opens the teacher assignments window
+    /// </summary>
     private Dictionary<int, List<Game1Database.Assignment>> _teacherAssignments = new();
+
+    /// <summary>
+    /// the index of the currently selected teacher tab in the teacher assignments window, used for displaying the correct assignments when the user has multiple teachers
+    /// </summary>
     private int _selectedTeacherTabIndex = 0;
+
+    /// <summary>
+    /// stores the input field for creating a new assigmnment in the teacher assignments window
+    /// </summary>
     private string _newAssignmentTitle = "";
+
+    /// <summary>
+    /// stores the input field for creating a new assignment description in the teacher assignments window
+    /// </summary>
     private string _newAssignmentDescription = "";
+
+    /// <summary>
+    /// stores the input field for creating a new assignment due date in the teacher assignments window
+    /// </summary>
     private string _newAssignmentDueDate = "";
 
     private void InitializeImGui()
