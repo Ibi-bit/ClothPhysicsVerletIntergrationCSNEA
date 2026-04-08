@@ -451,7 +451,6 @@ public partial class Game1
                         {
                             var colliderObject = (Dictionary<string, object>)props["Object"];
 
-                            // Apply based on actual collider type, not selected type
                             if (_draggedCollider is SeperatedAxisRectangleCollider rectCollider)
                             {
                                 var rectProps =
@@ -464,7 +463,6 @@ public partial class Game1
                                 rectCollider.HalfHeight = height / 2f;
                                 rectCollider.Angle = rotation;
 
-                                // Update the visual representation
                                 rectCollider.Position = rectCollider.Position;
 
                                 _logger.AddLog(
@@ -518,15 +516,15 @@ public partial class Game1
             return;
         List<string> toolNames = _currentToolSet.Keys.ToList();
         int currentIndex = toolNames.IndexOf(_selectedToolName);
-        if (ImGui.IsKeyPressed(ImGuiKey.T))
+        if (_shiftHeld && ImGui.IsKeyPressed(ImGuiKey.T))
         {
-            int nextIndex = (currentIndex + 1) % toolNames.Count;
+            int nextIndex = (currentIndex - 1 + toolNames.Count) % toolNames.Count;
             _selectedToolName = toolNames[nextIndex];
             _logger.AddLog($"Switched to tool: {_selectedToolName}");
         }
-        else if (_shiftHeld && ImGui.IsKeyPressed(ImGuiKey.T))
+        else if (ImGui.IsKeyPressed(ImGuiKey.T))
         {
-            int nextIndex = (currentIndex - 1 + toolNames.Count) % toolNames.Count;
+            int nextIndex = (currentIndex + 1) % toolNames.Count;
             _selectedToolName = toolNames[nextIndex];
             _logger.AddLog($"Switched to tool: {_selectedToolName}");
         }
@@ -950,7 +948,47 @@ public partial class Game1
             return;
         }
 
-        ImGui.TextWrapped("Hello World");
+        string modeBackCycleModifier = OperatingSystem.IsMacOS() ? "Alt" : "Ctrl";
+        string currentUserText = _currentUser == null
+            ? "Not signed in"
+            : $"{_currentUser.Username} (ID {_currentUser.Id})";
+
+        ImGui.TextWrapped(
+            "Cloth Physics quick guide. Use this panel as a fast reference for controls and common workflows."
+        );
+        ImGui.Separator();
+
+        ImGui.Text("Keyboard Shortcuts");
+        ImGui.BulletText("Esc: Pause / Resume simulation");
+        ImGui.BulletText("Space (while paused): Step 1 physics tick");
+        ImGui.BulletText("Ctrl + Z: Undo");
+        ImGui.BulletText("Ctrl + Shift + Z: Redo");
+        ImGui.BulletText("Shift + Tab: Next mode");
+        ImGui.BulletText($"Shift + {modeBackCycleModifier} + Tab: Previous mode");
+        ImGui.BulletText("Ctrl + T: Next tool");
+        ImGui.BulletText("Ctrl + Shift + T: Previous tool");
+        ImGui.BulletText("C (Create Grid Mesh tool): Build grid in selected rectangle");
+
+        ImGui.Separator();
+        ImGui.Text("Mouse Basics");
+        ImGui.BulletText("Left click / drag applies the currently selected tool action");
+        ImGui.BulletText("Drag and PhysicsDrag: drag particles in the selected radius");
+        ImGui.BulletText("Wind and LineCut: click-drag to draw effect direction/line");
+
+        ImGui.Separator();
+        ImGui.Text("Helpful Tips");
+        ImGui.BulletText("Use Time menu while paused to step multiple ticks quickly");
+        ImGui.BulletText("Tune mass, spring constant, drag and substeps in Quick Settings");
+        ImGui.BulletText("Save local structures in Quick Structures and refresh to reload list");
+        ImGui.BulletText("Sign in to save/load remote structures and submit assignment work");
+        ImGui.BulletText("Use Select Particles to inspect/pin/remove groups safely");
+
+        ImGui.Separator();
+        ImGui.Text("Current Session");
+        ImGui.BulletText($"Mode: {_currentMode}");
+        ImGui.BulletText($"Tool: {_selectedToolName}");
+        ImGui.BulletText($"Simulation: {(_paused ? "Paused" : "Running")}");
+        ImGui.BulletText($"User: {currentUserText}");
 
         ImGui.End();
     }
