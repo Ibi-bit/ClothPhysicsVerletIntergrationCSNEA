@@ -671,8 +671,9 @@ public partial class Game1
 
         if (ImGui.BeginMenu("Quick Settings"))
         {
-            ImGui.InputFloat("Global Mass", ref _activeMesh.mass);
-            ImGui.InputFloat("Spring Constant", ref _activeMesh.springConstant);
+            ImGui.SliderFloat("Global Mass", ref _activeMesh.mass, 0.1f, 100f);
+            ImGui.SliderFloat("Spring Constant", ref _activeMesh.springConstant, 100f, 10000f);
+
             ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
             ImGui.SliderFloat("Collision Friction Coefficient", ref _frictionCoefficient, 0f, 1f);
             ImGui.SliderFloat("Collision Bounce Coefficient", ref _bounceCoefficient, 0f, 1f);
