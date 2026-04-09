@@ -8,5 +8,6 @@ var searchData=
   ['meshhistorypush_5',['MeshHistoryPush',['../class_physics_c_s_alevl_project_1_1_game1.html#a2cee533ad606273094e92a4ffc868597',1,'PhysicsCSAlevlProject::Game1']]],
   ['meshmode_6',['MeshMode',['../class_physics_c_s_alevl_project_1_1_game1.html#a9b5c75158025b372213fd6df913224cf',1,'PhysicsCSAlevlProject::Game1']]],
   ['meshstick_7',['MeshStick',['../class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick.html',1,'PhysicsCSAlevlProject::Mesh']]],
-  ['messagelog_8',['MessageLog',['../class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html',1,'PhysicsCSAlevlProject::ImGuiLogger']]]
+  ['messagelog_8',['MessageLog',['../class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html',1,'PhysicsCSAlevlProject::ImGuiLogger']]],
+  ['modeswitchingimgui_9',['ModeSwitchingImGui',['../class_physics_c_s_alevl_project_1_1_game1.html#ae7ebba639b79e44d2598d28a1a6eb599',1,'PhysicsCSAlevlProject::Game1']]]
 ];

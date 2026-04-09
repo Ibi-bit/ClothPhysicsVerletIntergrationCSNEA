@@ -1,5 +1,10 @@
 \doxysection{Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger Class Reference}
 \hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger}{}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
+
+
+the logger class for Im\+Gui with support for different types of logs, auto condensing for repeated messages and colouring of the logs also includes a debug console support with command history  
+
+
 \doxysubsubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
@@ -26,72 +31,69 @@ void {\bfseries Add\+Log} (string message, Log\+Types type=Log\+Types.\+Info)
 \item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_ab49025889ca125e66e342d48a959f516}{Add\+Command}} (string command)
 \begin{DoxyCompactList}\small\item\em Adds a console command to the command queue for later processing. The command string is trimmed and checked for validity before being added to the queue. If the command is empty or consists only of whitespace, it is ignored. The method also resolves any environment variables in the command string before parsing it into its components (command path, command name, and parameters). The parsed command is then enqueued for execution, and a log message is added to indicate that the command has been queued. This allows users to enter commands in the debug console, which can then be processed asynchronously in the main game loop without blocking the UI or requiring immediate execution. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_aea1b580f96bd642adfe173e9df0250ae}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_aea1b580f96bd642adfe173e9df0250ae} 
-bool {\bfseries Try\+Dequeue\+Command} (out \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command}{Command}} command)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a5a549254e99677f249d62bd02c7f2494}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a5a549254e99677f249d62bd02c7f2494} 
-void {\bfseries Draw\+Logs} (ref bool open\+Window)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a1f93a6d0357cea5defb6a824462b4e41}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a1f93a6d0357cea5defb6a824462b4e41} 
-string {\bfseries Get\+Logs\+As\+String} ()
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a96e4c84827d2084c5df5aafb3237e0b1}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a96e4c84827d2084c5df5aafb3237e0b1} 
-void {\bfseries Save\+Logs\+To\+File} (string file\+Path)
-\end{DoxyCompactItemize}
+bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_aea1b580f96bd642adfe173e9df0250ae}{Try\+Dequeue\+Command}} (out \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command}{Command}} command)
+\begin{DoxyCompactList}\small\item\em attempts to dequeue a command from the command queue if the command one is avoable it is returned through out \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_a5a549254e99677f249d62bd02c7f2494}{Draw\+Logs}} (ref bool open\+Window)
+\begin{DoxyCompactList}\small\item\em draws all logs in Im\+Gui with options to filter by log type, auto scroll and wrap text. \end{DoxyCompactList}\item 
+string \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_a1f93a6d0357cea5defb6a824462b4e41}{Get\+Logs\+As\+String}} ()
+\begin{DoxyCompactList}\small\item\em converts all of the logs to a string to be saved to a log file \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_a96e4c84827d2084c5df5aafb3237e0b1}{Save\+Logs\+To\+File}} (string file\+Path)
+\begin{DoxyCompactList}\small\item\em saves logs to a file in the specified file path \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a3ca8b1eb6bd40c698c85c1eb6b72af2b}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a3ca8b1eb6bd40c698c85c1eb6b72af2b} 
 bool {\bfseries auto\+Scroll\+Logs} = true
-\item 
+\begin{DoxyCompactList}\small\item\em deterimines on wether it should auto scroll the logs to the bottom when a new log is added this is toggled by the user \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_af57f4f2933377612d3452f5eea0114e5}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_af57f4f2933377612d3452f5eea0114e5} 
 bool {\bfseries wrap\+Text} = true
-\item 
+\begin{DoxyCompactList}\small\item\em deterimes wether the log messages should wrap in the log display \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_aca548454f049f26ab1df32e7fc44ef2e}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_aca548454f049f26ab1df32e7fc44ef2e} 
 bool {\bfseries support\+Debug\+Console} = true
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em a toggle for if the debug console is supported and should be displayed \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Properties}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_ac2738bea87c703dd4af06c29b9e48afa}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_ac2738bea87c703dd4af06c29b9e48afa} 
 bool {\bfseries Has\+Pending\+Commands}\hspace{0.3cm}{\ttfamily  \+[get]\+}
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em returns true if there are pending commands in the command queue \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Private Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_aaee857cb9f92eeecb4fb7a54f26a345d}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_aaee857cb9f92eeecb4fb7a54f26a345d} 
-string {\bfseries Resolve\+Env\+Vars} (string command)
-\end{DoxyCompactItemize}
+string \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_aaee857cb9f92eeecb4fb7a54f26a345d}{Resolve\+Env\+Vars}} (string command)
+\begin{DoxyCompactList}\small\item\em replaces the text of any environment variables in the command string with their current values by using regular expressions to find occurrences of \$\+Variable\+Name and replacing them with the output of the corresponding resolver function from the \+\_\+env\+Vars dictionary \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Private Attributes}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a267ec7c727d53e7a41f97380f21866c5}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a267ec7c727d53e7a41f97380f21866c5} 
 readonly Queue$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log}{Message\+Log}} $>$ {\bfseries \+\_\+logs} = new()
-\item 
+\begin{DoxyCompactList}\small\item\em the queue of log messages that have been added and for display in the imgui fiole \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a1d7cc1d156f9a04964126dec636b4c93}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a1d7cc1d156f9a04964126dec636b4c93} 
 readonly Queue$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command}{Command}} $>$ {\bfseries \+\_\+commands} = new()
-\item 
+\begin{DoxyCompactList}\small\item\em the queue of console commands that have been added but not yet processed for execution \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_ace083371015a0c92c43446cedd120ba4}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_ace083371015a0c92c43446cedd120ba4} 
 string {\bfseries \+\_\+command\+Input} = "{}"{}
-\item 
+\begin{DoxyCompactList}\small\item\em the raw text inputed by the user in the debug console input field \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a95bed840e393e7f6eb914d638c039cd6}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a95bed840e393e7f6eb914d638c039cd6} 
 List$<$ string $>$ {\bfseries \+\_\+log\+String\+History} = new()
-\item 
+\begin{DoxyCompactList}\small\item\em the proccessed log messages that are ready for saving to a file \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a762b080bed952dc11387061707ef6b48}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a762b080bed952dc11387061707ef6b48} 
 readonly Dictionary$<$ string, Func$<$ string $>$ $>$ {\bfseries \+\_\+env\+Vars} = new()
 \item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0a04db76ecf14b341e4bb99a6b7b1bf7}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0a04db76ecf14b341e4bb99a6b7b1bf7} 
-readonly List$<$ string $>$ {\bfseries \+\_\+command\+History} = new()
-\item 
+readonly List$<$ string $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0a04db76ecf14b341e4bb99a6b7b1bf7}{\+\_\+command\+History}} = new()
+\begin{DoxyCompactList}\small\item\em saves the text inputed by the user for comand history if the user wants to recall it later with arrow keys \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a84855187e6e03cb7bf7492c46a53b145}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a84855187e6e03cb7bf7492c46a53b145} 
 int {\bfseries \+\_\+history\+Index} = -\/1
-\item 
+\begin{DoxyCompactList}\small\item\em where the user is in the command history \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_af9b00a7f75a7612cb146fadc36c81bf8}\label{class_physics_c_s_alevl_project_1_1_im_gui_logger_af9b00a7f75a7612cb146fadc36c81bf8} 
 string {\bfseries \+\_\+saved\+Input} = "{}"{}
 \item 
 readonly Dictionary$<$ Log\+Types, bool $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0dc70c6f46e776f73c7a381609544ac7}{\+\_\+log\+Type\+Visibility}}
 \begin{DoxyCompactList}\small\item\em Dictionary to track the visibility of different log types (info, warning, error) in the debug console. This allows users to filter which types of log messages they want to see by toggling the corresponding checkboxes in the UI. Each log type can be shown or hidden based on the user\textquotesingle{}s preference, making it easier to focus on specific types of messages when debugging. For example, a user might choose to hide info messages and only show warnings and errors to quickly identify issues without being overwhelmed by less critical information. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
+
+\doxysubsection{Detailed Description}
+the logger class for Im\+Gui with support for different types of logs, auto condensing for repeated messages and colouring of the logs also includes a debug console support with command history 
 
 \label{doc-func-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_doc-func-members}
@@ -111,6 +113,34 @@ Adds a console command to the command queue for later processing. The command st
 {\em command} & \\
 \hline
 \end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a5a549254e99677f249d62bd02c7f2494}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!DrawLogs@{DrawLogs}}
+\index{DrawLogs@{DrawLogs}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
+\doxysubsubsection{\texorpdfstring{DrawLogs()}{DrawLogs()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a5a549254e99677f249d62bd02c7f2494} 
+void Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger.\+Draw\+Logs (\begin{DoxyParamCaption}\item[{ref bool}]{open\+Window}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+draws all logs in Im\+Gui with options to filter by log type, auto scroll and wrap text. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em open\+Window} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a1f93a6d0357cea5defb6a824462b4e41}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!GetLogsAsString@{GetLogsAsString}}
+\index{GetLogsAsString@{GetLogsAsString}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
+\doxysubsubsection{\texorpdfstring{GetLogsAsString()}{GetLogsAsString()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a1f93a6d0357cea5defb6a824462b4e41} 
+string Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger.\+Get\+Logs\+As\+String (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+converts all of the logs to a string to be saved to a log file 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a33cf7bcedd9cc6de7ef9de50fe480843}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!RegisterEnvVar@{RegisterEnvVar}}
 \index{RegisterEnvVar@{RegisterEnvVar}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
 \doxysubsubsection{\texorpdfstring{RegisterEnvVar()}{RegisterEnvVar()}}
@@ -128,12 +158,73 @@ Registers an environment variable that can be used in console commands. The name
 {\em resolver} & \\
 \hline
 \end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_aaee857cb9f92eeecb4fb7a54f26a345d}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!ResolveEnvVars@{ResolveEnvVars}}
+\index{ResolveEnvVars@{ResolveEnvVars}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
+\doxysubsubsection{\texorpdfstring{ResolveEnvVars()}{ResolveEnvVars()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_im_gui_logger_aaee857cb9f92eeecb4fb7a54f26a345d} 
+string Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger.\+Resolve\+Env\+Vars (\begin{DoxyParamCaption}\item[{string}]{command}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+replaces the text of any environment variables in the command string with their current values by using regular expressions to find occurrences of \$\+Variable\+Name and replacing them with the output of the corresponding resolver function from the \+\_\+env\+Vars dictionary 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a96e4c84827d2084c5df5aafb3237e0b1}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!SaveLogsToFile@{SaveLogsToFile}}
+\index{SaveLogsToFile@{SaveLogsToFile}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
+\doxysubsubsection{\texorpdfstring{SaveLogsToFile()}{SaveLogsToFile()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a96e4c84827d2084c5df5aafb3237e0b1} 
+void Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger.\+Save\+Logs\+To\+File (\begin{DoxyParamCaption}\item[{string}]{file\+Path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+saves logs to a file in the specified file path 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Path} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_aea1b580f96bd642adfe173e9df0250ae}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!TryDequeueCommand@{TryDequeueCommand}}
+\index{TryDequeueCommand@{TryDequeueCommand}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
+\doxysubsubsection{\texorpdfstring{TryDequeueCommand()}{TryDequeueCommand()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_im_gui_logger_aea1b580f96bd642adfe173e9df0250ae} 
+bool Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger.\+Try\+Dequeue\+Command (\begin{DoxyParamCaption}\item[{out \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command}{Command}}}]{command}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+attempts to dequeue a command from the command queue if the command one is avoable it is returned through out 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 
 
 \label{doc-variable-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_doc-variable-members}
 \doxysubsection{Member Data Documentation}
-\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0dc70c6f46e776f73c7a381609544ac7}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!\_logTypeVisibility@{\_logTypeVisibility}}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0a04db76ecf14b341e4bb99a6b7b1bf7}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!\_commandHistory@{\_commandHistory}}
+\index{\_commandHistory@{\_commandHistory}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
+\doxysubsubsection{\texorpdfstring{\_commandHistory}{\_commandHistory}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0a04db76ecf14b341e4bb99a6b7b1bf7} 
+readonly List$<$string$>$ Physics\+CSAlevl\+Project.\+Im\+Gui\+Logger.\+\_\+command\+History = new()\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+saves the text inputed by the user for comand history if the user wants to recall it later with arrow keys 
+
+/\+ \Hypertarget{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0dc70c6f46e776f73c7a381609544ac7}\index{PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}!\_logTypeVisibility@{\_logTypeVisibility}}
 \index{\_logTypeVisibility@{\_logTypeVisibility}!PhysicsCSAlevlProject.ImGuiLogger@{PhysicsCSAlevlProject.ImGuiLogger}}
 \doxysubsubsection{\texorpdfstring{\_logTypeVisibility}{\_logTypeVisibility}}
 {\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_im_gui_logger_a0dc70c6f46e776f73c7a381609544ac7} 

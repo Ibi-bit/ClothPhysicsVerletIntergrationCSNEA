@@ -33,7 +33,7 @@ var NAVTREE =
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
@@ -46,7 +46,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"class_physics_c_s_alevl_project_1_1_game1.html#ae86d722e522a2943507cc534c66b2d21"
+"class_physics_c_s_alevl_project_1_1_game1.html#ac1325617d8f8b316c77730a148b33156",
+"class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a29ba2ac234b29d0a7d39d7684928f643"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

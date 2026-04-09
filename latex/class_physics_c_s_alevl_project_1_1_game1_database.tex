@@ -30,26 +30,20 @@ Dictionary$<$ string, string $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_pr
 \begin{DoxyCompactList}\small\item\em Retrieves a dictionary of student structures from the database for a given student ID by executing a SQL query that selects the content of structures associated with the specified student. The method opens a connection to the database, executes the query, and reads the results into a dictionary where the key is "{}content"{} and the value is the JSON string representing the structure. If there are any issues during the database connection or query execution, it logs the error message using the \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger} and rethrows the exception for further handling. This method provides a way to programmatically access a student\textquotesingle{}s saved structures from the database for use in the application. \end{DoxyCompactList}\item 
 \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a9cfa02ca1832bcc1514ad161646620a1}{Get\+User}} (string user)
 \begin{DoxyCompactList}\small\item\em Retrieves a user from the database based on the provided username or user ID. If the input can be parsed as an integer, it treats it as a user ID and retrieves the user by ID. Otherwise, it treats the input as a username and retrieves the user by username. The method opens a connection to the database, executes the appropriate SQL query, and reads the results into a \doxylink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User} object containing the relevant information. If there are any issues during the database connection or query execution, it logs the error message using the \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger} and rethrows the exception for further handling. This method provides a way to programmatically access user information from the database based on either username or user ID for use in the application. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a5584067762ad077a76c31f663dc98ce0}\label{class_physics_c_s_alevl_project_1_1_game1_database_a5584067762ad077a76c31f663dc98ce0} 
-int {\bfseries Create\+User} (string username, int role\+Id)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a7d35ff9233ed01d6494c0bbfe9240de4}\label{class_physics_c_s_alevl_project_1_1_game1_database_a7d35ff9233ed01d6494c0bbfe9240de4} 
-int {\bfseries Create\+Assignment} (string title, string description, Date\+Time? due\+Date, int teacher\+Id)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a3d7878b3658921321c58fb5698821c1a}\label{class_physics_c_s_alevl_project_1_1_game1_database_a3d7878b3658921321c58fb5698821c1a} 
-List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Structure\+Info}} $>$ {\bfseries Get\+Structures\+For\+User} (int user\+Id)
-\item 
+int \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a5584067762ad077a76c31f663dc98ce0}{Create\+User}} (string username, int role\+Id)
+\begin{DoxyCompactList}\small\item\em Creates a new user in the database with the specified username and role ID. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a7d35ff9233ed01d6494c0bbfe9240de4}{Create\+Assignment}} (string title, string description, Date\+Time? due\+Date, int teacher\+Id)
+\begin{DoxyCompactList}\small\item\em Creates a new assignment in the database with the specified title, description, due date, and teacher ID. \end{DoxyCompactList}\item 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Structure\+Info}} $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a3d7878b3658921321c58fb5698821c1a}{Get\+Structures\+For\+User}} (int user\+Id)
+\begin{DoxyCompactList}\small\item\em gets all structures owned by the given userid \end{DoxyCompactList}\item 
 string \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a9f64e4f88b35b2e13c996d2d21f34194}{Get\+Structure\+Content}} (int structure\+Id)
 \begin{DoxyCompactList}\small\item\em Retrieves the content of a structure from the database based on the provided structure ID. The method opens a connection to the database, executes a SQL query to select the content of the structure with the specified ID, and returns the content as a string. If there are any issues during the database connection or query execution, it logs the error message using the \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger} and rethrows the exception for further handling. This method provides a way to programmatically access the content of a specific structure from the database for use in the application. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a9425f7fc0794b482161e4c7288bb6257}\label{class_physics_c_s_alevl_project_1_1_game1_database_a9425f7fc0794b482161e4c7288bb6257} 
-int {\bfseries Save\+Structure\+With\+Name} (int student\+Id, string content\+Json, string title=null, int? assignment\+Id=null)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_ab1a154d4103fc64d16ca74af7b670e6f}\label{class_physics_c_s_alevl_project_1_1_game1_database_ab1a154d4103fc64d16ca74af7b670e6f} 
-List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Assignment}} $>$ {\bfseries Get\+Assignments\+For\+Teacher} (int teacher\+Id)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a1b712cde3ae8d982e24c4688e4d97b07}\label{class_physics_c_s_alevl_project_1_1_game1_database_a1b712cde3ae8d982e24c4688e4d97b07} 
-List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Structure\+Info}} $>$ {\bfseries Get\+Structures\+For\+Assignment} (int assignment\+Id)
-\end{DoxyCompactItemize}
+int \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a9425f7fc0794b482161e4c7288bb6257}{Save\+Structure\+With\+Name}} (int student\+Id, string content\+Json, string title=null, int? assignment\+Id=null)
+\begin{DoxyCompactList}\small\item\em saves a structure to the database with the given student ID, content JSON, title and assignment ID. \end{DoxyCompactList}\item 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Assignment}} $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_ab1a154d4103fc64d16ca74af7b670e6f}{Get\+Assignments\+For\+Teacher}} (int teacher\+Id)
+\begin{DoxyCompactList}\small\item\em lists all assignments for a given teacher ID by querying the database and returns a list of \doxylink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Assignment} objects \end{DoxyCompactList}\item 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Structure\+Info}} $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a1b712cde3ae8d982e24c4688e4d97b07}{Get\+Structures\+For\+Assignment}} (int assignment\+Id)
+\begin{DoxyCompactList}\small\item\em returns a list of structures for a given assignment ID used for teachers to view all student submissions for a given assignment \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -61,9 +55,8 @@ List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_
 \item 
 Npgsql\+Connection \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a98786ddff4a9436e3275c244180bbbe9}{Open\+Connection}} ()
 \begin{DoxyCompactList}\small\item\em Opens a connection to the Postgre\+SQL database using the provided connection string. If the connection is successful, it returns an open Npgsql\+Connection object that can be used for executing queries. If there is an error during the connection process, it logs the error message using the provided \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger} and rethrows the exception to be handled by the calling code. This method centralizes the database connection logic and ensures that any issues are properly logged for debugging purposes. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a4a3aa42c0eaae9375219022469f12ed9}\label{class_physics_c_s_alevl_project_1_1_game1_database_a4a3aa42c0eaae9375219022469f12ed9} 
-\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User}} {\bfseries Get\+User\+By\+Id} (int user\+Id)
-\end{DoxyCompactItemize}
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a4a3aa42c0eaae9375219022469f12ed9}{Get\+User\+By\+Id}} (int user\+Id)
+\begin{DoxyCompactList}\small\item\em returns the \doxylink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User} class using the userid from the database if fails returns null and logs the error \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Private Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -74,6 +67,68 @@ readonly string \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_d
 \label{doc-func-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_doc-func-members}
 \doxysubsection{Member Function Documentation}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a7d35ff9233ed01d6494c0bbfe9240de4}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!CreateAssignment@{CreateAssignment}}
+\index{CreateAssignment@{CreateAssignment}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
+\doxysubsubsection{\texorpdfstring{CreateAssignment()}{CreateAssignment()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_a7d35ff9233ed01d6494c0bbfe9240de4} 
+int Physics\+CSAlevl\+Project.\+Game1\+Database.\+Create\+Assignment (\begin{DoxyParamCaption}\item[{string}]{title}{, }\item[{string}]{description}{, }\item[{Date\+Time?}]{due\+Date}{, }\item[{int}]{teacher\+Id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates a new assignment in the database with the specified title, description, due date, and teacher ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em title} & \\
+\hline
+{\em description} & \\
+\hline
+{\em due\+Date} & \\
+\hline
+{\em teacher\+Id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a5584067762ad077a76c31f663dc98ce0}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!CreateUser@{CreateUser}}
+\index{CreateUser@{CreateUser}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
+\doxysubsubsection{\texorpdfstring{CreateUser()}{CreateUser()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_a5584067762ad077a76c31f663dc98ce0} 
+int Physics\+CSAlevl\+Project.\+Game1\+Database.\+Create\+User (\begin{DoxyParamCaption}\item[{string}]{username}{, }\item[{int}]{role\+Id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates a new user in the database with the specified username and role ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em username} & \\
+\hline
+{\em role\+Id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_ab1a154d4103fc64d16ca74af7b670e6f}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!GetAssignmentsForTeacher@{GetAssignmentsForTeacher}}
+\index{GetAssignmentsForTeacher@{GetAssignmentsForTeacher}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
+\doxysubsubsection{\texorpdfstring{GetAssignmentsForTeacher()}{GetAssignmentsForTeacher()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_ab1a154d4103fc64d16ca74af7b670e6f} 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Assignment}} $>$ Physics\+CSAlevl\+Project.\+Game1\+Database.\+Get\+Assignments\+For\+Teacher (\begin{DoxyParamCaption}\item[{int}]{teacher\+Id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+lists all assignments for a given teacher ID by querying the database and returns a list of \doxylink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Assignment} objects 
+
+
+\begin{DoxyParams}{Parameters}
+{\em teacher\+Id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a9f64e4f88b35b2e13c996d2d21f34194}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!GetStructureContent@{GetStructureContent}}
 \index{GetStructureContent@{GetStructureContent}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
 \doxysubsubsection{\texorpdfstring{GetStructureContent()}{GetStructureContent()}}
@@ -91,6 +146,42 @@ Retrieves the content of a structure from the database based on the provided str
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Structure\+Json
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a1b712cde3ae8d982e24c4688e4d97b07}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!GetStructuresForAssignment@{GetStructuresForAssignment}}
+\index{GetStructuresForAssignment@{GetStructuresForAssignment}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
+\doxysubsubsection{\texorpdfstring{GetStructuresForAssignment()}{GetStructuresForAssignment()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_a1b712cde3ae8d982e24c4688e4d97b07} 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Structure\+Info}} $>$ Physics\+CSAlevl\+Project.\+Game1\+Database.\+Get\+Structures\+For\+Assignment (\begin{DoxyParamCaption}\item[{int}]{assignment\+Id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+returns a list of structures for a given assignment ID used for teachers to view all student submissions for a given assignment 
+
+
+\begin{DoxyParams}{Parameters}
+{\em assignment\+Id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a3d7878b3658921321c58fb5698821c1a}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!GetStructuresForUser@{GetStructuresForUser}}
+\index{GetStructuresForUser@{GetStructuresForUser}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
+\doxysubsubsection{\texorpdfstring{GetStructuresForUser()}{GetStructuresForUser()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_a3d7878b3658921321c58fb5698821c1a} 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Structure\+Info}} $>$ Physics\+CSAlevl\+Project.\+Game1\+Database.\+Get\+Structures\+For\+User (\begin{DoxyParamCaption}\item[{int}]{user\+Id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+gets all structures owned by the given userid 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+Id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
 \end{DoxyReturn}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a8eb0da06ee29853885c6dc94c8e2241f}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!GetStudents@{GetStudents}}
 \index{GetStudents@{GetStudents}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
@@ -167,6 +258,24 @@ Retrieves a user from the database based on the provided username or user ID. If
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a4a3aa42c0eaae9375219022469f12ed9}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!GetUserById@{GetUserById}}
+\index{GetUserById@{GetUserById}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
+\doxysubsubsection{\texorpdfstring{GetUserById()}{GetUserById()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_a4a3aa42c0eaae9375219022469f12ed9} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User}} Physics\+CSAlevl\+Project.\+Game1\+Database.\+Get\+User\+By\+Id (\begin{DoxyParamCaption}\item[{int}]{user\+Id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+returns the \doxylink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User} class using the userid from the database if fails returns null and logs the error 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+Id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a98786ddff4a9436e3275c244180bbbe9}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!OpenConnection@{OpenConnection}}
 \index{OpenConnection@{OpenConnection}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
 \doxysubsubsection{\texorpdfstring{OpenConnection()}{OpenConnection()}}
@@ -177,6 +286,30 @@ Npgsql\+Connection Physics\+CSAlevl\+Project.\+Game1\+Database.\+Open\+Connectio
 
 Opens a connection to the Postgre\+SQL database using the provided connection string. If the connection is successful, it returns an open Npgsql\+Connection object that can be used for executing queries. If there is an error during the connection process, it logs the error message using the provided \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger} and rethrows the exception to be handled by the calling code. This method centralizes the database connection logic and ensures that any issues are properly logged for debugging purposes. 
 
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a9425f7fc0794b482161e4c7288bb6257}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!SaveStructureWithName@{SaveStructureWithName}}
+\index{SaveStructureWithName@{SaveStructureWithName}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
+\doxysubsubsection{\texorpdfstring{SaveStructureWithName()}{SaveStructureWithName()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_a9425f7fc0794b482161e4c7288bb6257} 
+int Physics\+CSAlevl\+Project.\+Game1\+Database.\+Save\+Structure\+With\+Name (\begin{DoxyParamCaption}\item[{int}]{student\+Id}{, }\item[{string}]{content\+Json}{, }\item[{string}]{title}{ = {\ttfamily null}, }\item[{int?}]{assignment\+Id}{ = {\ttfamily null}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+saves a structure to the database with the given student ID, content JSON, title and assignment ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em student\+Id} & \\
+\hline
+{\em content\+Json} & \\
+\hline
+{\em title} & \\
+\hline
+{\em assignment\+Id} & \\
+\hline
+\end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}

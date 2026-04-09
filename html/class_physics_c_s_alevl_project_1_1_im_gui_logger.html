@@ -91,11 +91,14 @@ $(function(){initNavTree('class_physics_c_s_alevl_project_1_1_im_gui_logger.html
   <div class="headertitle"><div class="title">PhysicsCSAlevlProject.ImGuiLogger Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>the logger class for ImGui with support for different types of logs, auto condensing for repeated messages and colouring of the logs also includes a debug console support with command history  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:MessageLog" id="r_MessageLog"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html">MessageLog</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a log message with its content, count of occurrences, and log type (info, warning, error). This class is used to store log messages in the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html">ImGuiLogger</a>, allowing for features like message aggregation (counting repeated messages) and categorization by log type for filtering and display purposes in the debug console. Each <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html" title="Represents a log message with its content, count of occurrences, and log type (info,...">MessageLog</a> instance contains the actual log message, how many times it has been logged (for repeated messages), and the type of log to determine how it should be displayed in the UI.  <a href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a log message with its content, count of occurrences, and log type (info, warning, error). This class is used to store log messages in the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html" title="the logger class for ImGui with support for different types of logs, auto condensing for repeated mes...">ImGuiLogger</a>, allowing for features like message aggregation (counting repeated messages) and categorization by log type for filtering and display purposes in the debug console. Each <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html" title="Represents a log message with its content, count of occurrences, and log type (info,...">MessageLog</a> instance contains the actual log message, how many times it has been logged (for repeated messages), and the type of log to determine how it should be displayed in the UI.  <a href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html#details">More...</a><br /></td></tr>
 <tr class="memitem:Command" id="r_Command"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command.html">Command</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a console command with its command path, command name, and parameters. This class is used to store commands that are entered by the user in the debug console, allowing them to be queued for execution. Each <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command.html" title="Represents a console command with its command path, command name, and parameters. This class is used ...">Command</a> instance contains the full path of the command (split into parts), the specific command to execute, and any parameters that were provided with the command. This structure enables the <a class="el" href="class_physics_c_s_alevl_project_1_1_command_registry.html" title="Registry for console commands that can be invoked from the debug console. This class allows for regis...">CommandRegistry</a> to look up and invoke the correct method based on the command path and name when processing user input from the debug console.  <a href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
@@ -114,56 +117,67 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight"><b>AddLog</b> (string message, LogTypes type=LogTypes.Info)</td></tr>
 <tr class="memitem:ab49025889ca125e66e342d48a959f516" id="r_ab49025889ca125e66e342d48a959f516"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab49025889ca125e66e342d48a959f516">AddCommand</a> (string command)</td></tr>
 <tr class="memdesc:ab49025889ca125e66e342d48a959f516"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a console command to the command queue for later processing. The command string is trimmed and checked for validity before being added to the queue. If the command is empty or consists only of whitespace, it is ignored. The method also resolves any environment variables in the command string before parsing it into its components (command path, command name, and parameters). The parsed command is then enqueued for execution, and a log message is added to indicate that the command has been queued. This allows users to enter commands in the debug console, which can then be processed asynchronously in the main game loop without blocking the UI or requiring immediate execution.  <br /></td></tr>
-<tr class="memitem:aea1b580f96bd642adfe173e9df0250ae" id="r_aea1b580f96bd642adfe173e9df0250ae"><td class="memItemLeft"><a id="aea1b580f96bd642adfe173e9df0250ae" name="aea1b580f96bd642adfe173e9df0250ae"></a>
-bool&#160;</td><td class="memItemRight"><b>TryDequeueCommand</b> (out <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command.html">Command</a> command)</td></tr>
-<tr class="memitem:a5a549254e99677f249d62bd02c7f2494" id="r_a5a549254e99677f249d62bd02c7f2494"><td class="memItemLeft"><a id="a5a549254e99677f249d62bd02c7f2494" name="a5a549254e99677f249d62bd02c7f2494"></a>
-void&#160;</td><td class="memItemRight"><b>DrawLogs</b> (ref bool openWindow)</td></tr>
-<tr class="memitem:a1f93a6d0357cea5defb6a824462b4e41" id="r_a1f93a6d0357cea5defb6a824462b4e41"><td class="memItemLeft"><a id="a1f93a6d0357cea5defb6a824462b4e41" name="a1f93a6d0357cea5defb6a824462b4e41"></a>
-string&#160;</td><td class="memItemRight"><b>GetLogsAsString</b> ()</td></tr>
-<tr class="memitem:a96e4c84827d2084c5df5aafb3237e0b1" id="r_a96e4c84827d2084c5df5aafb3237e0b1"><td class="memItemLeft"><a id="a96e4c84827d2084c5df5aafb3237e0b1" name="a96e4c84827d2084c5df5aafb3237e0b1"></a>
-void&#160;</td><td class="memItemRight"><b>SaveLogsToFile</b> (string filePath)</td></tr>
+<tr class="memitem:aea1b580f96bd642adfe173e9df0250ae" id="r_aea1b580f96bd642adfe173e9df0250ae"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#aea1b580f96bd642adfe173e9df0250ae">TryDequeueCommand</a> (out <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command.html">Command</a> command)</td></tr>
+<tr class="memdesc:aea1b580f96bd642adfe173e9df0250ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">attempts to dequeue a command from the command queue if the command one is avoable it is returned through out  <br /></td></tr>
+<tr class="memitem:a5a549254e99677f249d62bd02c7f2494" id="r_a5a549254e99677f249d62bd02c7f2494"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a5a549254e99677f249d62bd02c7f2494">DrawLogs</a> (ref bool openWindow)</td></tr>
+<tr class="memdesc:a5a549254e99677f249d62bd02c7f2494"><td class="mdescLeft">&#160;</td><td class="mdescRight">draws all logs in ImGui with options to filter by log type, auto scroll and wrap text.  <br /></td></tr>
+<tr class="memitem:a1f93a6d0357cea5defb6a824462b4e41" id="r_a1f93a6d0357cea5defb6a824462b4e41"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#a1f93a6d0357cea5defb6a824462b4e41">GetLogsAsString</a> ()</td></tr>
+<tr class="memdesc:a1f93a6d0357cea5defb6a824462b4e41"><td class="mdescLeft">&#160;</td><td class="mdescRight">converts all of the logs to a string to be saved to a log file  <br /></td></tr>
+<tr class="memitem:a96e4c84827d2084c5df5aafb3237e0b1" id="r_a96e4c84827d2084c5df5aafb3237e0b1"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a96e4c84827d2084c5df5aafb3237e0b1">SaveLogsToFile</a> (string filePath)</td></tr>
+<tr class="memdesc:a96e4c84827d2084c5df5aafb3237e0b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">saves logs to a file in the specified file path  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a3ca8b1eb6bd40c698c85c1eb6b72af2b" id="r_a3ca8b1eb6bd40c698c85c1eb6b72af2b"><td class="memItemLeft"><a id="a3ca8b1eb6bd40c698c85c1eb6b72af2b" name="a3ca8b1eb6bd40c698c85c1eb6b72af2b"></a>
 bool&#160;</td><td class="memItemRight"><b>autoScrollLogs</b> = true</td></tr>
+<tr class="memdesc:a3ca8b1eb6bd40c698c85c1eb6b72af2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">deterimines on wether it should auto scroll the logs to the bottom when a new log is added this is toggled by the user <br /></td></tr>
 <tr class="memitem:af57f4f2933377612d3452f5eea0114e5" id="r_af57f4f2933377612d3452f5eea0114e5"><td class="memItemLeft"><a id="af57f4f2933377612d3452f5eea0114e5" name="af57f4f2933377612d3452f5eea0114e5"></a>
 bool&#160;</td><td class="memItemRight"><b>wrapText</b> = true</td></tr>
+<tr class="memdesc:af57f4f2933377612d3452f5eea0114e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">deterimes wether the log messages should wrap in the log display <br /></td></tr>
 <tr class="memitem:aca548454f049f26ab1df32e7fc44ef2e" id="r_aca548454f049f26ab1df32e7fc44ef2e"><td class="memItemLeft"><a id="aca548454f049f26ab1df32e7fc44ef2e" name="aca548454f049f26ab1df32e7fc44ef2e"></a>
 bool&#160;</td><td class="memItemRight"><b>supportDebugConsole</b> = true</td></tr>
+<tr class="memdesc:aca548454f049f26ab1df32e7fc44ef2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">a toggle for if the debug console is supported and should be displayed <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
 <tr class="memitem:ac2738bea87c703dd4af06c29b9e48afa" id="r_ac2738bea87c703dd4af06c29b9e48afa"><td class="memItemLeft"><a id="ac2738bea87c703dd4af06c29b9e48afa" name="ac2738bea87c703dd4af06c29b9e48afa"></a>
 bool&#160;</td><td class="memItemRight"><b>HasPendingCommands</b><code> [get]</code></td></tr>
+<tr class="memdesc:ac2738bea87c703dd4af06c29b9e48afa"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true if there are pending commands in the command queue <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:aaee857cb9f92eeecb4fb7a54f26a345d" id="r_aaee857cb9f92eeecb4fb7a54f26a345d"><td class="memItemLeft"><a id="aaee857cb9f92eeecb4fb7a54f26a345d" name="aaee857cb9f92eeecb4fb7a54f26a345d"></a>
-string&#160;</td><td class="memItemRight"><b>ResolveEnvVars</b> (string command)</td></tr>
+<tr class="memitem:aaee857cb9f92eeecb4fb7a54f26a345d" id="r_aaee857cb9f92eeecb4fb7a54f26a345d"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#aaee857cb9f92eeecb4fb7a54f26a345d">ResolveEnvVars</a> (string command)</td></tr>
+<tr class="memdesc:aaee857cb9f92eeecb4fb7a54f26a345d"><td class="mdescLeft">&#160;</td><td class="mdescRight">replaces the text of any environment variables in the command string with their current values by using regular expressions to find occurrences of $VariableName and replacing them with the output of the corresponding resolver function from the _envVars dictionary  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a267ec7c727d53e7a41f97380f21866c5" id="r_a267ec7c727d53e7a41f97380f21866c5"><td class="memItemLeft"><a id="a267ec7c727d53e7a41f97380f21866c5" name="a267ec7c727d53e7a41f97380f21866c5"></a>
 readonly Queue&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_message_log.html">MessageLog</a> &gt;&#160;</td><td class="memItemRight"><b>_logs</b> = new()</td></tr>
+<tr class="memdesc:a267ec7c727d53e7a41f97380f21866c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">the queue of log messages that have been added and for display in the imgui fiole <br /></td></tr>
 <tr class="memitem:a1d7cc1d156f9a04964126dec636b4c93" id="r_a1d7cc1d156f9a04964126dec636b4c93"><td class="memItemLeft"><a id="a1d7cc1d156f9a04964126dec636b4c93" name="a1d7cc1d156f9a04964126dec636b4c93"></a>
 readonly Queue&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command.html">Command</a> &gt;&#160;</td><td class="memItemRight"><b>_commands</b> = new()</td></tr>
+<tr class="memdesc:a1d7cc1d156f9a04964126dec636b4c93"><td class="mdescLeft">&#160;</td><td class="mdescRight">the queue of console commands that have been added but not yet processed for execution <br /></td></tr>
 <tr class="memitem:ace083371015a0c92c43446cedd120ba4" id="r_ace083371015a0c92c43446cedd120ba4"><td class="memItemLeft"><a id="ace083371015a0c92c43446cedd120ba4" name="ace083371015a0c92c43446cedd120ba4"></a>
 string&#160;</td><td class="memItemRight"><b>_commandInput</b> = &quot;&quot;</td></tr>
+<tr class="memdesc:ace083371015a0c92c43446cedd120ba4"><td class="mdescLeft">&#160;</td><td class="mdescRight">the raw text inputed by the user in the debug console input field <br /></td></tr>
 <tr class="memitem:a95bed840e393e7f6eb914d638c039cd6" id="r_a95bed840e393e7f6eb914d638c039cd6"><td class="memItemLeft"><a id="a95bed840e393e7f6eb914d638c039cd6" name="a95bed840e393e7f6eb914d638c039cd6"></a>
 List&lt; string &gt;&#160;</td><td class="memItemRight"><b>_logStringHistory</b> = new()</td></tr>
+<tr class="memdesc:a95bed840e393e7f6eb914d638c039cd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">the proccessed log messages that are ready for saving to a file <br /></td></tr>
 <tr class="memitem:a762b080bed952dc11387061707ef6b48" id="r_a762b080bed952dc11387061707ef6b48"><td class="memItemLeft"><a id="a762b080bed952dc11387061707ef6b48" name="a762b080bed952dc11387061707ef6b48"></a>
 readonly Dictionary&lt; string, Func&lt; string &gt; &gt;&#160;</td><td class="memItemRight"><b>_envVars</b> = new()</td></tr>
-<tr class="memitem:a0a04db76ecf14b341e4bb99a6b7b1bf7" id="r_a0a04db76ecf14b341e4bb99a6b7b1bf7"><td class="memItemLeft"><a id="a0a04db76ecf14b341e4bb99a6b7b1bf7" name="a0a04db76ecf14b341e4bb99a6b7b1bf7"></a>
-readonly List&lt; string &gt;&#160;</td><td class="memItemRight"><b>_commandHistory</b> = new()</td></tr>
+<tr class="memitem:a0a04db76ecf14b341e4bb99a6b7b1bf7" id="r_a0a04db76ecf14b341e4bb99a6b7b1bf7"><td class="memItemLeft">readonly List&lt; string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a0a04db76ecf14b341e4bb99a6b7b1bf7">_commandHistory</a> = new()</td></tr>
+<tr class="memdesc:a0a04db76ecf14b341e4bb99a6b7b1bf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">saves the text inputed by the user for comand history if the user wants to recall it later with arrow keys  <br /></td></tr>
 <tr class="memitem:a84855187e6e03cb7bf7492c46a53b145" id="r_a84855187e6e03cb7bf7492c46a53b145"><td class="memItemLeft"><a id="a84855187e6e03cb7bf7492c46a53b145" name="a84855187e6e03cb7bf7492c46a53b145"></a>
 int&#160;</td><td class="memItemRight"><b>_historyIndex</b> = -1</td></tr>
+<tr class="memdesc:a84855187e6e03cb7bf7492c46a53b145"><td class="mdescLeft">&#160;</td><td class="mdescRight">where the user is in the command history <br /></td></tr>
 <tr class="memitem:af9b00a7f75a7612cb146fadc36c81bf8" id="r_af9b00a7f75a7612cb146fadc36c81bf8"><td class="memItemLeft"><a id="af9b00a7f75a7612cb146fadc36c81bf8" name="af9b00a7f75a7612cb146fadc36c81bf8"></a>
 string&#160;</td><td class="memItemRight"><b>_savedInput</b> = &quot;&quot;</td></tr>
 <tr class="memitem:a0dc70c6f46e776f73c7a381609544ac7" id="r_a0dc70c6f46e776f73c7a381609544ac7"><td class="memItemLeft">readonly Dictionary&lt; LogTypes, bool &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a0dc70c6f46e776f73c7a381609544ac7">_logTypeVisibility</a></td></tr>
 <tr class="memdesc:a0dc70c6f46e776f73c7a381609544ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dictionary to track the visibility of different log types (info, warning, error) in the debug console. This allows users to filter which types of log messages they want to see by toggling the corresponding checkboxes in the UI. Each log type can be shown or hidden based on the user's preference, making it easier to focus on specific types of messages when debugging. For example, a user might choose to hide info messages and only show warnings and errors to quickly identify issues without being overwhelmed by less critical information.  <br /></td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>the logger class for ImGui with support for different types of logs, auto condensing for repeated messages and colouring of the logs also includes a debug console support with command history </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="ab49025889ca125e66e342d48a959f516" name="ab49025889ca125e66e342d48a959f516"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab49025889ca125e66e342d48a959f516">&#9670;&#160;</a></span>AddCommand()</h2>
 
@@ -194,6 +208,67 @@ string&#160;</td><td class="memItemRight"><b>_savedInput</b> = &quot;&quot;</td>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a5a549254e99677f249d62bd02c7f2494" name="a5a549254e99677f249d62bd02c7f2494"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a549254e99677f249d62bd02c7f2494">&#9670;&#160;</a></span>DrawLogs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.ImGuiLogger.DrawLogs </td>
+          <td>(</td>
+          <td class="paramtype">ref bool</td>          <td class="paramname"><span class="paramname"><em>openWindow</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>draws all logs in ImGui with options to filter by log type, auto scroll and wrap text. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">openWindow</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1f93a6d0357cea5defb6a824462b4e41" name="a1f93a6d0357cea5defb6a824462b4e41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f93a6d0357cea5defb6a824462b4e41">&#9670;&#160;</a></span>GetLogsAsString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string PhysicsCSAlevlProject.ImGuiLogger.GetLogsAsString </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>converts all of the logs to a string to be saved to a log file </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -235,7 +310,133 @@ string&#160;</td><td class="memItemRight"><b>_savedInput</b> = &quot;&quot;</td>
 
 </div>
 </div>
+<a id="aaee857cb9f92eeecb4fb7a54f26a345d" name="aaee857cb9f92eeecb4fb7a54f26a345d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaee857cb9f92eeecb4fb7a54f26a345d">&#9670;&#160;</a></span>ResolveEnvVars()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string PhysicsCSAlevlProject.ImGuiLogger.ResolveEnvVars </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>command</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>replaces the text of any environment variables in the command string with their current values by using regular expressions to find occurrences of $VariableName and replacing them with the output of the corresponding resolver function from the _envVars dictionary </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">command</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a96e4c84827d2084c5df5aafb3237e0b1" name="a96e4c84827d2084c5df5aafb3237e0b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96e4c84827d2084c5df5aafb3237e0b1">&#9670;&#160;</a></span>SaveLogsToFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.ImGuiLogger.SaveLogsToFile </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filePath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>saves logs to a file in the specified file path </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filePath</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aea1b580f96bd642adfe173e9df0250ae" name="aea1b580f96bd642adfe173e9df0250ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea1b580f96bd642adfe173e9df0250ae">&#9670;&#160;</a></span>TryDequeueCommand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool PhysicsCSAlevlProject.ImGuiLogger.TryDequeueCommand </td>
+          <td>(</td>
+          <td class="paramtype">out <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger_1_1_command.html">Command</a></td>          <td class="paramname"><span class="paramname"><em>command</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>attempts to dequeue a command from the command queue if the command one is avoable it is returned through out </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">command</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
+<a id="a0a04db76ecf14b341e4bb99a6b7b1bf7" name="a0a04db76ecf14b341e4bb99a6b7b1bf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a04db76ecf14b341e4bb99a6b7b1bf7">&#9670;&#160;</a></span>_commandHistory</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly List&lt;string&gt; PhysicsCSAlevlProject.ImGuiLogger._commandHistory = new()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>saves the text inputed by the user for comand history if the user wants to recall it later with arrow keys </p>
+<p>/ </p>
+
+</div>
+</div>
 <a id="a0dc70c6f46e776f73c7a381609544ac7" name="a0dc70c6f46e776f73c7a381609544ac7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0dc70c6f46e776f73c7a381609544ac7">&#9670;&#160;</a></span>_logTypeVisibility</h2>
 

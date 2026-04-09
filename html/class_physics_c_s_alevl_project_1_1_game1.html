@@ -125,12 +125,12 @@ static ImGuiRenderer&#160;</td><td class="memItemRight"><b>_guiRenderer</b></td>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a46ee73addd2d46a8fd596ebc7f3d7f57" id="r_a46ee73addd2d46a8fd596ebc7f3d7f57"><td class="memItemLeft"><a id="a46ee73addd2d46a8fd596ebc7f3d7f57" name="a46ee73addd2d46a8fd596ebc7f3d7f57"></a>
 override void&#160;</td><td class="memItemRight"><b>Initialize</b> ()</td></tr>
+<tr class="memdesc:a46ee73addd2d46a8fd596ebc7f3d7f57"><td class="mdescLeft">&#160;</td><td class="mdescRight">initialises the core variables <br /></td></tr>
 <tr class="memitem:adc42d28d690ac7fc65eb440954e71d49" id="r_adc42d28d690ac7fc65eb440954e71d49"><td class="memItemLeft"><a id="adc42d28d690ac7fc65eb440954e71d49" name="adc42d28d690ac7fc65eb440954e71d49"></a>
 override void&#160;</td><td class="memItemRight"><b>LoadContent</b> ()</td></tr>
+<tr class="memdesc:adc42d28d690ac7fc65eb440954e71d49"><td class="mdescLeft">&#160;</td><td class="mdescRight">loads textures and fonts <br /></td></tr>
 <tr class="memitem:adb8df048d3e206b7991232944ac60952" id="r_adb8df048d3e206b7991232944ac60952"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#adb8df048d3e206b7991232944ac60952">OnExiting</a> (object sender, ExitingEventArgs args)</td></tr>
 <tr class="memdesc:adb8df048d3e206b7991232944ac60952"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles the application exit event by performing necessary cleanup and logging before the application closes. This method is called when the user attempts to close the application, allowing for any final actions to be taken, such as saving logs or releasing resources. The base implementation is also called to ensure that any additional cleanup in the base class is performed.  <br /></td></tr>
-<tr class="memitem:aa1771df2169602f92343f7f4e7327bda" id="r_aa1771df2169602f92343f7f4e7327bda"><td class="memItemLeft"><a id="aa1771df2169602f92343f7f4e7327bda" name="aa1771df2169602f92343f7f4e7327bda"></a>
-override bool&#160;</td><td class="memItemRight"><b>BeginDraw</b> ()</td></tr>
 <tr class="memitem:a04f63b442c3bed84e594d5c25ceb74f8" id="r_a04f63b442c3bed84e594d5c25ceb74f8"><td class="memItemLeft"><a id="a04f63b442c3bed84e594d5c25ceb74f8" name="a04f63b442c3bed84e594d5c25ceb74f8"></a>
 override void&#160;</td><td class="memItemRight"><b>Draw</b> (GameTime gameTime)</td></tr>
 <tr class="memitem:a12bba18db4e17b9737e4ebf6125dbb1e" id="r_a12bba18db4e17b9737e4ebf6125dbb1e"><td class="memItemLeft"><a id="a12bba18db4e17b9737e4ebf6125dbb1e" name="a12bba18db4e17b9737e4ebf6125dbb1e"></a>
@@ -153,50 +153,58 @@ Private Types</h2></td></tr>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a1357d4212bbc5a028e74ab6bddfc8a0d" id="r_a1357d4212bbc5a028e74ab6bddfc8a0d"><td class="memItemLeft"><a id="a1357d4212bbc5a028e74ab6bddfc8a0d" name="a1357d4212bbc5a028e74ab6bddfc8a0d"></a>
 void&#160;</td><td class="memItemRight"><b>OnExit</b> ()</td></tr>
+<tr class="memdesc:a1357d4212bbc5a028e74ab6bddfc8a0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">cleans up and logs before exiting <br /></td></tr>
 <tr class="memitem:a98d7fe01db45a6c34df29a598b769c44" id="r_a98d7fe01db45a6c34df29a598b769c44"><td class="memItemLeft"><a id="a98d7fe01db45a6c34df29a598b769c44" name="a98d7fe01db45a6c34df29a598b769c44"></a>
 void&#160;</td><td class="memItemRight"><b>RefreshMeshCommandBindings</b> ()</td></tr>
 <tr class="memdesc:a98d7fe01db45a6c34df29a598b769c44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Refreshes the command bindings for the active mesh in the command registry. This method checks if the command registry and active mesh are available, and if the active mesh has changed since the last binding, it registers the new active mesh with the command registry. This allows console commands that operate on the mesh to always reference the current active mesh without needing to specify it as a parameter in each command. By keeping track of the last bound mesh, this method avoids unnecessary re-registrations when the active mesh has not changed, improving efficiency while ensuring that commands remain up-to-date with the current state of the application. <br /></td></tr>
 <tr class="memitem:a5555c205899bd7902f719b63e5ae13e6" id="r_a5555c205899bd7902f719b63e5ae13e6"><td class="memItemLeft"><a id="a5555c205899bd7902f719b63e5ae13e6" name="a5555c205899bd7902f719b63e5ae13e6"></a>
 void&#160;</td><td class="memItemRight"><b>ProcessDebugCommands</b> ()</td></tr>
-<tr class="memdesc:a5555c205899bd7902f719b63e5ae13e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes pending debug commands from the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html">ImGuiLogger</a>'s command queue. This method checks if there are any commands waiting to be executed, and if so, it dequeues each command and attempts to invoke it using the <a class="el" href="class_physics_c_s_alevl_project_1_1_command_registry.html" title="Registry for console commands that can be invoked from the debug console. This class allows for regis...">CommandRegistry</a>. If a command is recognized and successfully invoked, it executes the associated method. If a command is recognized but fails to execute due to an error, it logs the error message. If a command is not recognized, it logs a warning indicating that the command is unknown. This method allows for dynamic execution of debug commands entered by the user in the debug console, providing a powerful tool for testing and debugging the application without needing to modify code or restart the application. <br /></td></tr>
+<tr class="memdesc:a5555c205899bd7902f719b63e5ae13e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes pending debug commands from the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html" title="the logger class for ImGui with support for different types of logs, auto condensing for repeated mes...">ImGuiLogger</a>'s command queue. This method checks if there are any commands waiting to be executed, and if so, it dequeues each command and attempts to invoke it using the <a class="el" href="class_physics_c_s_alevl_project_1_1_command_registry.html" title="Registry for console commands that can be invoked from the debug console. This class allows for regis...">CommandRegistry</a>. If a command is recognized and successfully invoked, it executes the associated method. If a command is recognized but fails to execute due to an error, it logs the error message. If a command is not recognized, it logs a warning indicating that the command is unknown. This method allows for dynamic execution of debug commands entered by the user in the debug console, providing a powerful tool for testing and debugging the application without needing to modify code or restart the application. <br /></td></tr>
 <tr class="memitem:add2794cfcd35c67209a9d03c8a9c3a37" id="r_add2794cfcd35c67209a9d03c8a9c3a37"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#add2794cfcd35c67209a9d03c8a9c3a37">ListCommands</a> (string[] parameters)</td></tr>
-<tr class="memdesc:add2794cfcd35c67209a9d03c8a9c3a37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lists all registered console commands in the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html">ImGuiLogger</a>. This method retrieves the list of registered command paths from the <a class="el" href="class_physics_c_s_alevl_project_1_1_command_registry.html" title="Registry for console commands that can be invoked from the debug console. This class allows for regis...">CommandRegistry</a> and logs them to the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html">ImGuiLogger</a> for display in the debug console. If the command registry is not ready, it logs a warning message instead. This command can be invoked from the debug console to provide users with a reference of available commands they can use for debugging and testing purposes. The method also checks if any parameters were provided when invoking the command, and if so, it logs a warning that this command does not take parameters, helping to guide users on correct usage.  <br /></td></tr>
+<tr class="memdesc:add2794cfcd35c67209a9d03c8a9c3a37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lists all registered console commands in the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html" title="the logger class for ImGui with support for different types of logs, auto condensing for repeated mes...">ImGuiLogger</a>. This method retrieves the list of registered command paths from the <a class="el" href="class_physics_c_s_alevl_project_1_1_command_registry.html" title="Registry for console commands that can be invoked from the debug console. This class allows for regis...">CommandRegistry</a> and logs them to the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html" title="the logger class for ImGui with support for different types of logs, auto condensing for repeated mes...">ImGuiLogger</a> for display in the debug console. If the command registry is not ready, it logs a warning message instead. This command can be invoked from the debug console to provide users with a reference of available commands they can use for debugging and testing purposes. The method also checks if any parameters were provided when invoking the command, and if so, it logs a warning that this command does not take parameters, helping to guide users on correct usage.  <br /></td></tr>
 <tr class="memitem:acc2f0491bf821c63985edb31b2b6160a" id="r_acc2f0491bf821c63985edb31b2b6160a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#acc2f0491bf821c63985edb31b2b6160a">AddTire</a> (string[] parameters)</td></tr>
 <tr class="memdesc:acc2f0491bf821c63985edb31b2b6160a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a tire-shaped structure to the active mesh based on the provided parameters. The command expects five parameters: centerX, centerY, OuterStickCount, radius, and spokeLength. It creates a hub-and-spoke tire structure by adding particles and sticks to the active mesh according to the specified parameters. If the parameters are invalid or cannot be parsed correctly, it logs an error message indicating the issue. This command allows users to quickly create complex structures in the mesh for testing and debugging purposes using simple console commands.  <br /></td></tr>
-<tr class="memitem:a7a5ec48a15f61682668db9766ce3e8c3" id="r_a7a5ec48a15f61682668db9766ce3e8c3"><td class="memItemLeft"><a id="a7a5ec48a15f61682668db9766ce3e8c3" name="a7a5ec48a15f61682668db9766ce3e8c3"></a>
-void&#160;</td><td class="memItemRight"><b>AddParticle</b> (string[] parameters)</td></tr>
-<tr class="memitem:a702a618bc944bac7afa52595e3802f0f" id="r_a702a618bc944bac7afa52595e3802f0f"><td class="memItemLeft"><a id="a702a618bc944bac7afa52595e3802f0f" name="a702a618bc944bac7afa52595e3802f0f"></a>
-void&#160;</td><td class="memItemRight"><b>AddStick</b> (string[] parameters)</td></tr>
+<tr class="memitem:a7a5ec48a15f61682668db9766ce3e8c3" id="r_a7a5ec48a15f61682668db9766ce3e8c3"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a7a5ec48a15f61682668db9766ce3e8c3">AddParticle</a> (string[] parameters)</td></tr>
+<tr class="memdesc:a7a5ec48a15f61682668db9766ce3e8c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds a particle with parameters for use in the debug console  <br /></td></tr>
+<tr class="memitem:a702a618bc944bac7afa52595e3802f0f" id="r_a702a618bc944bac7afa52595e3802f0f"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a702a618bc944bac7afa52595e3802f0f">AddStick</a> (string[] parameters)</td></tr>
+<tr class="memdesc:a702a618bc944bac7afa52595e3802f0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">adds a stick with parameters for use in the debug console  <br /></td></tr>
 <tr class="memitem:a43446277b993b009608f302668174474" id="r_a43446277b993b009608f302668174474"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a43446277b993b009608f302668174474">TestConnection</a> (string[] parameters)</td></tr>
 <tr class="memdesc:a43446277b993b009608f302668174474"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tests the database connection and logs the result. This command can be invoked from the debug console to verify that the application can successfully connect to the database. If the connection test is successful, it logs a success message. If the connection test fails, it catches the exception and logs an error message with details about the failure. This command does not take any parameters, and if any parameters are provided, it logs a warning indicating that they are not expected. This allows developers to quickly check database connectivity without needing to write additional code or use external tools.  <br /></td></tr>
-<tr class="memitem:ad5e9b839361b313dabe585f301a71ce8" id="r_ad5e9b839361b313dabe585f301a71ce8"><td class="memItemLeft"><a id="ad5e9b839361b313dabe585f301a71ce8" name="ad5e9b839361b313dabe585f301a71ce8"></a>
-void&#160;</td><td class="memItemRight"><b>SaveMeshToJSON</b> (<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> mesh, string Name, string filePath)</td></tr>
-<tr class="memitem:a905a45ccb5f46601cef570cd6320ddd9" id="r_a905a45ccb5f46601cef570cd6320ddd9"><td class="memItemLeft"><a id="a905a45ccb5f46601cef570cd6320ddd9" name="a905a45ccb5f46601cef570cd6320ddd9"></a>
-string&#160;</td><td class="memItemRight"><b>SaveMeshToJsonString</b> (<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> mesh)</td></tr>
-<tr class="memitem:ab254c0d8c467ce3d89c2e02aeb2aafd2" id="r_ab254c0d8c467ce3d89c2e02aeb2aafd2"><td class="memItemLeft"><a id="ab254c0d8c467ce3d89c2e02aeb2aafd2" name="ab254c0d8c467ce3d89c2e02aeb2aafd2"></a>
-<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&#160;</td><td class="memItemRight"><b>LoadMeshFromJSON</b> (string filePath)</td></tr>
-<tr class="memitem:afa7c1dc7b567ebdde0fc9469e4b46d28" id="r_afa7c1dc7b567ebdde0fc9469e4b46d28"><td class="memItemLeft"><a id="afa7c1dc7b567ebdde0fc9469e4b46d28" name="afa7c1dc7b567ebdde0fc9469e4b46d28"></a>
-<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&#160;</td><td class="memItemRight"><b>LoadMeshFromJsonString</b> (string json)</td></tr>
-<tr class="memitem:ac1325617d8f8b316c77730a148b33156" id="r_ac1325617d8f8b316c77730a148b33156"><td class="memItemLeft"><a id="ac1325617d8f8b316c77730a148b33156" name="ac1325617d8f8b316c77730a148b33156"></a>
-Dictionary&lt; string, <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt;&#160;</td><td class="memItemRight"><b>LoadAllMeshesFromDirectory</b> (string directoryPath)</td></tr>
+<tr class="memitem:ad5e9b839361b313dabe585f301a71ce8" id="r_ad5e9b839361b313dabe585f301a71ce8"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ad5e9b839361b313dabe585f301a71ce8">SaveMeshToJSON</a> (<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> mesh, string Name, string filePath)</td></tr>
+<tr class="memdesc:ad5e9b839361b313dabe585f301a71ce8"><td class="mdescLeft">&#160;</td><td class="mdescRight">saves the given mesh to a JSOn file at the given filepath  <br /></td></tr>
+<tr class="memitem:a905a45ccb5f46601cef570cd6320ddd9" id="r_a905a45ccb5f46601cef570cd6320ddd9"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#a905a45ccb5f46601cef570cd6320ddd9">SaveMeshToJsonString</a> (<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> mesh)</td></tr>
+<tr class="memdesc:a905a45ccb5f46601cef570cd6320ddd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns a json string of the mesh used to save to the database  <br /></td></tr>
+<tr class="memitem:ab254c0d8c467ce3d89c2e02aeb2aafd2" id="r_ab254c0d8c467ce3d89c2e02aeb2aafd2"><td class="memItemLeft"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab254c0d8c467ce3d89c2e02aeb2aafd2">LoadMeshFromJSON</a> (string filePath)</td></tr>
+<tr class="memdesc:ab254c0d8c467ce3d89c2e02aeb2aafd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">attempts to load a <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh  <br /></td></tr>
+<tr class="memitem:afa7c1dc7b567ebdde0fc9469e4b46d28" id="r_afa7c1dc7b567ebdde0fc9469e4b46d28"><td class="memItemLeft"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&#160;</td><td class="memItemRight"><a class="el" href="#afa7c1dc7b567ebdde0fc9469e4b46d28">LoadMeshFromJsonString</a> (string json)</td></tr>
+<tr class="memdesc:afa7c1dc7b567ebdde0fc9469e4b46d28"><td class="mdescLeft">&#160;</td><td class="mdescRight">converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh  <br /></td></tr>
+<tr class="memitem:ac1325617d8f8b316c77730a148b33156" id="r_ac1325617d8f8b316c77730a148b33156"><td class="memItemLeft">Dictionary&lt; string, <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac1325617d8f8b316c77730a148b33156">LoadAllMeshesFromDirectory</a> (string directoryPath)</td></tr>
+<tr class="memdesc:ac1325617d8f8b316c77730a148b33156"><td class="mdescLeft">&#160;</td><td class="mdescRight">loads all mesh from a a directory path and returns a dictionary of the meshes with the key being the filename  <br /></td></tr>
 <tr class="memitem:a800fd1a0017d131511ccc9b9ee4fac9d" id="r_a800fd1a0017d131511ccc9b9ee4fac9d"><td class="memItemLeft"><a id="a800fd1a0017d131511ccc9b9ee4fac9d" name="a800fd1a0017d131511ccc9b9ee4fac9d"></a>
 void&#160;</td><td class="memItemRight"><b>DrawSignInWindow</b> ()</td></tr>
+<tr class="memdesc:a800fd1a0017d131511ccc9b9ee4fac9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">displays the sign in window where all users can inout username and password to sign in <br /></td></tr>
 <tr class="memitem:a04aa845fe839edd1b89c4845a8eff0c1" id="r_a04aa845fe839edd1b89c4845a8eff0c1"><td class="memItemLeft"><a id="a04aa845fe839edd1b89c4845a8eff0c1" name="a04aa845fe839edd1b89c4845a8eff0c1"></a>
 void&#160;</td><td class="memItemRight"><b>DrawAssignmentMenuItems</b> ()</td></tr>
+<tr class="memdesc:a04aa845fe839edd1b89c4845a8eff0c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">displays all assignments for the user seperated by teacher in a menu <br /></td></tr>
 <tr class="memitem:aab6106fbabae1de39c2e97cc8b2fcea8" id="r_aab6106fbabae1de39c2e97cc8b2fcea8"><td class="memItemLeft"><a id="aab6106fbabae1de39c2e97cc8b2fcea8" name="aab6106fbabae1de39c2e97cc8b2fcea8"></a>
 void&#160;</td><td class="memItemRight"><b>DrawTeacherAssignmentsWindow</b> ()</td></tr>
-<tr class="memitem:a6fc4add468575c1ee8285156faf8a8cf" id="r_a6fc4add468575c1ee8285156faf8a8cf"><td class="memItemLeft"><a id="a6fc4add468575c1ee8285156faf8a8cf" name="a6fc4add468575c1ee8285156faf8a8cf"></a>
-void&#160;</td><td class="memItemRight"><b>PopUpSaveProjectToAssignment</b> (<a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment.html">Game1Database.Assignment</a> assignment)</td></tr>
+<tr class="memdesc:aab6106fbabae1de39c2e97cc8b2fcea8"><td class="mdescLeft">&#160;</td><td class="mdescRight">diisplayes the assignment winow where teachers can create assigments and view existing one and the students work for each assignment <br /></td></tr>
+<tr class="memitem:a6fc4add468575c1ee8285156faf8a8cf" id="r_a6fc4add468575c1ee8285156faf8a8cf"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a6fc4add468575c1ee8285156faf8a8cf">PopUpSaveProjectToAssignment</a> (<a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment.html">Game1Database.Assignment</a> assignment)</td></tr>
+<tr class="memdesc:a6fc4add468575c1ee8285156faf8a8cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">the pop up window that appears for when a user wants to upload work for an a ssignemnt  <br /></td></tr>
 <tr class="memitem:a703ebca9ea27d36de8924fe2dd1e37e2" id="r_a703ebca9ea27d36de8924fe2dd1e37e2"><td class="memItemLeft"><a id="a703ebca9ea27d36de8924fe2dd1e37e2" name="a703ebca9ea27d36de8924fe2dd1e37e2"></a>
 void&#160;</td><td class="memItemRight"><b>InitializeImGui</b> ()</td></tr>
-<tr class="memitem:aa912e243752022dd4d1e2917d5ff8a81" id="r_aa912e243752022dd4d1e2917d5ff8a81"><td class="memItemLeft"><a id="aa912e243752022dd4d1e2917d5ff8a81" name="aa912e243752022dd4d1e2917d5ff8a81"></a>
-void&#160;</td><td class="memItemRight"><b>ImGuiDraw</b> (GameTime gameTime)</td></tr>
+<tr class="memdesc:a703ebca9ea27d36de8924fe2dd1e37e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes ImGui related variables and state <br /></td></tr>
+<tr class="memitem:aa912e243752022dd4d1e2917d5ff8a81" id="r_aa912e243752022dd4d1e2917d5ff8a81"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aa912e243752022dd4d1e2917d5ff8a81">ImGuiDraw</a> (GameTime gameTime)</td></tr>
+<tr class="memdesc:aa912e243752022dd4d1e2917d5ff8a81"><td class="mdescLeft">&#160;</td><td class="mdescRight">main drawing fucntion for imgui called every frame in the main draw loop  <br /></td></tr>
 <tr class="memitem:adff21c4f55246d3d0ea42aa36dfebd89" id="r_adff21c4f55246d3d0ea42aa36dfebd89"><td class="memItemLeft"><a id="adff21c4f55246d3d0ea42aa36dfebd89" name="adff21c4f55246d3d0ea42aa36dfebd89"></a>
 void&#160;</td><td class="memItemRight"><b>DrawPopUps</b> ()</td></tr>
+<tr class="memdesc:adff21c4f55246d3d0ea42aa36dfebd89"><td class="mdescLeft">&#160;</td><td class="mdescRight">opens all pop up windows based on their respective toggles and then unset the toggles <br /></td></tr>
 <tr class="memitem:ae7ebba639b79e44d2598d28a1a6eb599" id="r_ae7ebba639b79e44d2598d28a1a6eb599"><td class="memItemLeft"><a id="ae7ebba639b79e44d2598d28a1a6eb599" name="ae7ebba639b79e44d2598d28a1a6eb599"></a>
 void&#160;</td><td class="memItemRight"><b>ModeSwitchingImGui</b> ()</td></tr>
+<tr class="memdesc:ae7ebba639b79e44d2598d28a1a6eb599"><td class="mdescLeft">&#160;</td><td class="mdescRight">handles the switching between interaction modes by using the ImGui input system over monogames and draws the overlay that shows the current mode and the other modes available when shift is held, this allows for quick and intuitive switching between modes without needing to navigate through menus <br /></td></tr>
 <tr class="memitem:a0289892a9e14a720efd42e94c0914ffc" id="r_a0289892a9e14a720efd42e94c0914ffc"><td class="memItemLeft"><a id="a0289892a9e14a720efd42e94c0914ffc" name="a0289892a9e14a720efd42e94c0914ffc"></a>
 void&#160;</td><td class="memItemRight"><b>ToolSwitchingImGui</b> ()</td></tr>
+<tr class="memdesc:a0289892a9e14a720efd42e94c0914ffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">handles the switching between tools by using the ImGui input system over monogames and draws the overlay that shows the current tool and the other tools available when ctrl is held, this allows for quick and intuitive switching between tools without needing to navigate through menus <br /></td></tr>
 <tr class="memitem:abefc313bad3f4d6e993e2c6d171f59eb" id="r_abefc313bad3f4d6e993e2c6d171f59eb"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#abefc313bad3f4d6e993e2c6d171f59eb">SetMode</a> (<a class="el" href="#a9b5c75158025b372213fd6df913224cf">MeshMode</a> mode)</td></tr>
 <tr class="memdesc:abefc313bad3f4d6e993e2c6d171f59eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user's work and providing a consistent experience when switching between interacting with the mesh and editing it.  <br /></td></tr>
 <tr class="memitem:a7819d974eafd83724e29610a3e086f21" id="r_a7819d974eafd83724e29610a3e086f21"><td class="memItemLeft"><a id="a7819d974eafd83724e29610a3e086f21" name="a7819d974eafd83724e29610a3e086f21"></a>
@@ -204,13 +212,16 @@ void&#160;</td><td class="memItemRight"><b>DrawInspectParticleWindow</b> ()</td>
 <tr class="memdesc:a7819d974eafd83724e29610a3e086f21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the particle inspection window, allowing users to view and manage particles that they have selected for inspection. The window displays a list of inspected particles with checkboxes to toggle their detailed information display. Users can clear all inspected particles, delete them along with their connected sticks, or close the window. For each inspected particle, detailed information such as position, previous position, and pinned status is shown, along with options to pin/unpin the particle or remove it from inspection. This feature provides an in-depth look at specific particles in the mesh for debugging and analysis purposes. <br /></td></tr>
 <tr class="memitem:a34e6253e76eac836e7bfe2662450aa90" id="r_a34e6253e76eac836e7bfe2662450aa90"><td class="memItemLeft"><a id="a34e6253e76eac836e7bfe2662450aa90" name="a34e6253e76eac836e7bfe2662450aa90"></a>
 void&#160;</td><td class="memItemRight"><b>DrawMainMenuBar</b> ()</td></tr>
+<tr class="memdesc:a34e6253e76eac836e7bfe2662450aa90"><td class="mdescLeft">&#160;</td><td class="mdescRight">draws the main menu bar at the top of the screen <br /></td></tr>
 <tr class="memitem:a186b90dd692f039bcac3725b8277555b" id="r_a186b90dd692f039bcac3725b8277555b"><td class="memItemLeft"><a id="a186b90dd692f039bcac3725b8277555b" name="a186b90dd692f039bcac3725b8277555b"></a>
 void&#160;</td><td class="memItemRight"><b>FactoryMenu</b> ()</td></tr>
+<tr class="memdesc:a186b90dd692f039bcac3725b8277555b"><td class="mdescLeft">&#160;</td><td class="mdescRight">the menu for all factories that can be used to quickly create complex structures in the mesh, <br /></td></tr>
 <tr class="memitem:ace0e8ab92277e5ab7eef9802cd1acd7b" id="r_ace0e8ab92277e5ab7eef9802cd1acd7b"><td class="memItemLeft"><a id="ace0e8ab92277e5ab7eef9802cd1acd7b" name="ace0e8ab92277e5ab7eef9802cd1acd7b"></a>
 void&#160;</td><td class="memItemRight"><b>QuickStructureMenu</b> ()</td></tr>
 <tr class="memdesc:ace0e8ab92277e5ab7eef9802cd1acd7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a user interface for managing quick access to both local and remote structures. Users can toggle between viewing locally saved structures and structures stored in a remote database. The local structures tab allows users to refresh the list of available meshes, save the current mesh with a specified name, and load existing meshes from a designated directory. The remote structures tab enables signed-in users to save their current mesh to the database with a custom name, refresh the list of their saved structures, and load any of their previously saved structures into the application. This menu streamlines the process of managing and accessing different mesh configurations for users, enhancing their workflow and organization. <br /></td></tr>
 <tr class="memitem:aa6f310e037f5c77c3041d80d15d93463" id="r_aa6f310e037f5c77c3041d80d15d93463"><td class="memItemLeft"><a id="aa6f310e037f5c77c3041d80d15d93463" name="aa6f310e037f5c77c3041d80d15d93463"></a>
 void&#160;</td><td class="memItemRight"><b>DrawStructureWindow</b> ()</td></tr>
+<tr class="memdesc:aa6f310e037f5c77c3041d80d15d93463"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the structure window for loading and managing saved meshes. <br /></td></tr>
 <tr class="memitem:ac0354b09c773d59c7dc3e9f65f8c12c0" id="r_ac0354b09c773d59c7dc3e9f65f8c12c0"><td class="memItemLeft"><a id="ac0354b09c773d59c7dc3e9f65f8c12c0" name="ac0354b09c773d59c7dc3e9f65f8c12c0"></a>
 void&#160;</td><td class="memItemRight"><b>DrawSaveWindow</b> ()</td></tr>
 <tr class="memitem:ad77c6444ae4f2d8f9792445e4a41f662" id="r_ad77c6444ae4f2d8f9792445e4a41f662"><td class="memItemLeft"><a id="ad77c6444ae4f2d8f9792445e4a41f662" name="ad77c6444ae4f2d8f9792445e4a41f662"></a>
@@ -531,6 +542,73 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 <p><a class="el" href="class_physics_c_s_alevl_project_1_1_particle.html" title="The Particle class represents a single particle in the physics simulation, containing properties such...">Particle</a> inspection and inspection window functionality.</p>
 <p>Core ImGui functionality including initialization, main draw loop, and mode/tool switching. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a7a5ec48a15f61682668db9766ce3e8c3" name="a7a5ec48a15f61682668db9766ce3e8c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a5ec48a15f61682668db9766ce3e8c3">&#9670;&#160;</a></span>AddParticle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.AddParticle </td>
+          <td>(</td>
+          <td class="paramtype">string[]</td>          <td class="paramname"><span class="paramname"><em>parameters</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>adds a particle with parameters for use in the debug console </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parameters</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a702a618bc944bac7afa52595e3802f0f" name="a702a618bc944bac7afa52595e3802f0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a702a618bc944bac7afa52595e3802f0f">&#9670;&#160;</a></span>AddStick()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.AddStick </td>
+          <td>(</td>
+          <td class="paramtype">string[]</td>          <td class="paramname"><span class="paramname"><em>parameters</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>adds a stick with parameters for use in the debug console </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parameters</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<p>/ </p>
+
+</div>
+</div>
 <a id="acc2f0491bf821c63985edb31b2b6160a" name="acc2f0491bf821c63985edb31b2b6160a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acc2f0491bf821c63985edb31b2b6160a">&#9670;&#160;</a></span>AddTire()</h2>
 
@@ -806,6 +884,39 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
+<a id="aa912e243752022dd4d1e2917d5ff8a81" name="aa912e243752022dd4d1e2917d5ff8a81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa912e243752022dd4d1e2917d5ff8a81">&#9670;&#160;</a></span>ImGuiDraw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.ImGuiDraw </td>
+          <td>(</td>
+          <td class="paramtype">GameTime</td>          <td class="paramname"><span class="paramname"><em>gameTime</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>main drawing fucntion for imgui called every frame in the main draw loop </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gameTime</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ab35449e4811e68faf641726734576e34" name="ab35449e4811e68faf641726734576e34"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab35449e4811e68faf641726734576e34">&#9670;&#160;</a></span>InspectParticlesInRadiusLog()</h2>
 
@@ -867,13 +978,115 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 </table>
 </div><div class="memdoc">
 
-<p>Lists all registered console commands in the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html">ImGuiLogger</a>. This method retrieves the list of registered command paths from the <a class="el" href="class_physics_c_s_alevl_project_1_1_command_registry.html" title="Registry for console commands that can be invoked from the debug console. This class allows for regis...">CommandRegistry</a> and logs them to the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html">ImGuiLogger</a> for display in the debug console. If the command registry is not ready, it logs a warning message instead. This command can be invoked from the debug console to provide users with a reference of available commands they can use for debugging and testing purposes. The method also checks if any parameters were provided when invoking the command, and if so, it logs a warning that this command does not take parameters, helping to guide users on correct usage. </p>
+<p>Lists all registered console commands in the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html" title="the logger class for ImGui with support for different types of logs, auto condensing for repeated mes...">ImGuiLogger</a>. This method retrieves the list of registered command paths from the <a class="el" href="class_physics_c_s_alevl_project_1_1_command_registry.html" title="Registry for console commands that can be invoked from the debug console. This class allows for regis...">CommandRegistry</a> and logs them to the <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html" title="the logger class for ImGui with support for different types of logs, auto condensing for repeated mes...">ImGuiLogger</a> for display in the debug console. If the command registry is not ready, it logs a warning message instead. This command can be invoked from the debug console to provide users with a reference of available commands they can use for debugging and testing purposes. The method also checks if any parameters were provided when invoking the command, and if so, it logs a warning that this command does not take parameters, helping to guide users on correct usage. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">parameters</td><td></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ac1325617d8f8b316c77730a148b33156" name="ac1325617d8f8b316c77730a148b33156"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1325617d8f8b316c77730a148b33156">&#9670;&#160;</a></span>LoadAllMeshesFromDirectory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dictionary&lt; string, <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt; PhysicsCSAlevlProject.Game1.LoadAllMeshesFromDirectory </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>directoryPath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>loads all mesh from a a directory path and returns a dictionary of the meshes with the key being the filename </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">directoryPath</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Dictionary of FileName and <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a></dd></dl>
+
+</div>
+</div>
+<a id="ab254c0d8c467ce3d89c2e02aeb2aafd2" name="ab254c0d8c467ce3d89c2e02aeb2aafd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab254c0d8c467ce3d89c2e02aeb2aafd2">&#9670;&#160;</a></span>LoadMeshFromJSON()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> PhysicsCSAlevlProject.Game1.LoadMeshFromJSON </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filePath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>attempts to load a <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filePath</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="afa7c1dc7b567ebdde0fc9469e4b46d28" name="afa7c1dc7b567ebdde0fc9469e4b46d28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa7c1dc7b567ebdde0fc9469e4b46d28">&#9670;&#160;</a></span>LoadMeshFromJsonString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> PhysicsCSAlevlProject.Game1.LoadMeshFromJsonString </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>json</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">json</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
@@ -950,6 +1163,117 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a6fc4add468575c1ee8285156faf8a8cf" name="a6fc4add468575c1ee8285156faf8a8cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fc4add468575c1ee8285156faf8a8cf">&#9670;&#160;</a></span>PopUpSaveProjectToAssignment()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.PopUpSaveProjectToAssignment </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment.html">Game1Database.Assignment</a></td>          <td class="paramname"><span class="paramname"><em>assignment</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>the pop up window that appears for when a user wants to upload work for an a ssignemnt </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">assignment</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad5e9b839361b313dabe585f301a71ce8" name="ad5e9b839361b313dabe585f301a71ce8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5e9b839361b313dabe585f301a71ce8">&#9670;&#160;</a></span>SaveMeshToJSON()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.SaveMeshToJSON </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a></td>          <td class="paramname"><span class="paramname"><em>mesh</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>Name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>filePath</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>saves the given mesh to a JSOn file at the given filepath </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mesh</td><td></td></tr>
+    <tr><td class="paramname">Name</td><td></td></tr>
+    <tr><td class="paramname">filePath</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a905a45ccb5f46601cef570cd6320ddd9" name="a905a45ccb5f46601cef570cd6320ddd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a905a45ccb5f46601cef570cd6320ddd9">&#9670;&#160;</a></span>SaveMeshToJsonString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string PhysicsCSAlevlProject.Game1.SaveMeshToJsonString </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a></td>          <td class="paramname"><span class="paramname"><em>mesh</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns a json string of the mesh used to save to the database </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mesh</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>JSON String</dd></dl>
 
 </div>
 </div>

@@ -9,6 +9,7 @@ var searchData=
   ['refreshmeshcommandbindings_6',['RefreshMeshCommandBindings',['../class_physics_c_s_alevl_project_1_1_game1.html#a98d7fe01db45a6c34df29a598b769c44',1,'PhysicsCSAlevlProject::Game1']]],
   ['registerenvvar_7',['RegisterEnvVar',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#a33cf7bcedd9cc6de7ef9de50fe480843',1,'PhysicsCSAlevlProject::ImGuiLogger']]],
   ['registertype_8',['RegisterType',['../class_physics_c_s_alevl_project_1_1_command_registry.html#a11489b6a4f49c25bb6cf438def7e9f8c',1,'PhysicsCSAlevlProject::CommandRegistry']]],
-  ['roles_9',['Roles',['../class_physics_c_s_alevl_project_1_1_game1_database_1_1_roles.html',1,'PhysicsCSAlevlProject::Game1Database']]],
-  ['roundedrectangle_10',['RoundedRectangle',['../class_vector_graphics_1_1_primitive_batch_1_1_rounded_rectangle.html',1,'VectorGraphics::PrimitiveBatch']]]
+  ['resolveenvvars_9',['ResolveEnvVars',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#aaee857cb9f92eeecb4fb7a54f26a345d',1,'PhysicsCSAlevlProject::ImGuiLogger']]],
+  ['roles_10',['Roles',['../class_physics_c_s_alevl_project_1_1_game1_database_1_1_roles.html',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['roundedrectangle_11',['RoundedRectangle',['../class_vector_graphics_1_1_primitive_batch_1_1_rounded_rectangle.html',1,'VectorGraphics::PrimitiveBatch']]]
 ];

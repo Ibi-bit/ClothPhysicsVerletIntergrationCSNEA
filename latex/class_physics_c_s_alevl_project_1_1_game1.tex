@@ -36,15 +36,12 @@ static Im\+Gui\+Renderer {\bfseries \+\_\+gui\+Renderer}
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a46ee73addd2d46a8fd596ebc7f3d7f57}\label{class_physics_c_s_alevl_project_1_1_game1_a46ee73addd2d46a8fd596ebc7f3d7f57} 
 override void {\bfseries Initialize} ()
-\item 
+\begin{DoxyCompactList}\small\item\em initialises the core variables \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_adc42d28d690ac7fc65eb440954e71d49}\label{class_physics_c_s_alevl_project_1_1_game1_adc42d28d690ac7fc65eb440954e71d49} 
 override void {\bfseries Load\+Content} ()
-\item 
+\begin{DoxyCompactList}\small\item\em loads textures and fonts \end{DoxyCompactList}\item 
 override void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_adb8df048d3e206b7991232944ac60952}{On\+Exiting}} (object sender, Exiting\+Event\+Args args)
 \begin{DoxyCompactList}\small\item\em Handles the application exit event by performing necessary cleanup and logging before the application closes. This method is called when the user attempts to close the application, allowing for any final actions to be taken, such as saving logs or releasing resources. The base implementation is also called to ensure that any additional cleanup in the base class is performed. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa1771df2169602f92343f7f4e7327bda}\label{class_physics_c_s_alevl_project_1_1_game1_aa1771df2169602f92343f7f4e7327bda} 
-override bool {\bfseries Begin\+Draw} ()
-\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a04f63b442c3bed84e594d5c25ceb74f8}\label{class_physics_c_s_alevl_project_1_1_game1_a04f63b442c3bed84e594d5c25ceb74f8} 
 override void {\bfseries Draw} (Game\+Time game\+Time)
 \item 
@@ -70,7 +67,7 @@ enum \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a9b5c7515802
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a1357d4212bbc5a028e74ab6bddfc8a0d}\label{class_physics_c_s_alevl_project_1_1_game1_a1357d4212bbc5a028e74ab6bddfc8a0d} 
 void {\bfseries On\+Exit} ()
-\item 
+\begin{DoxyCompactList}\small\item\em cleans up and logs before exiting \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a98d7fe01db45a6c34df29a598b769c44}\label{class_physics_c_s_alevl_project_1_1_game1_a98d7fe01db45a6c34df29a598b769c44} 
 void {\bfseries Refresh\+Mesh\+Command\+Bindings} ()
 \begin{DoxyCompactList}\small\item\em Refreshes the command bindings for the active mesh in the command registry. This method checks if the command registry and active mesh are available, and if the active mesh has changed since the last binding, it registers the new active mesh with the command registry. This allows console commands that operate on the mesh to always reference the current active mesh without needing to specify it as a parameter in each command. By keeping track of the last bound mesh, this method avoids unnecessary re-\/registrations when the active mesh has not changed, improving efficiency while ensuring that commands remain up-\/to-\/date with the current state of the application. \end{DoxyCompactList}\item 
@@ -81,56 +78,47 @@ void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_add2794cfcd3
 \begin{DoxyCompactList}\small\item\em Lists all registered console commands in the \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger}. This method retrieves the list of registered command paths from the \doxylink{class_physics_c_s_alevl_project_1_1_command_registry}{Command\+Registry} and logs them to the \doxylink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger} for display in the debug console. If the command registry is not ready, it logs a warning message instead. This command can be invoked from the debug console to provide users with a reference of available commands they can use for debugging and testing purposes. The method also checks if any parameters were provided when invoking the command, and if so, it logs a warning that this command does not take parameters, helping to guide users on correct usage. \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_acc2f0491bf821c63985edb31b2b6160a}{Add\+Tire}} (string\+[$\,$]\+ parameters)
 \begin{DoxyCompactList}\small\item\em Adds a tire-\/shaped structure to the active mesh based on the provided parameters. The command expects five parameters:\+ centerX, centerY, Outer\+Stick\+Count, radius, and spoke\+Length. It creates a hub-\/and-\/spoke tire structure by adding particles and sticks to the active mesh according to the specified parameters. If the parameters are invalid or cannot be parsed correctly, it logs an error message indicating the issue. This command allows users to quickly create complex structures in the mesh for testing and debugging purposes using simple console commands. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7a5ec48a15f61682668db9766ce3e8c3}\label{class_physics_c_s_alevl_project_1_1_game1_a7a5ec48a15f61682668db9766ce3e8c3} 
-void {\bfseries Add\+Particle} (string\+[$\,$]\+ parameters)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a702a618bc944bac7afa52595e3802f0f}\label{class_physics_c_s_alevl_project_1_1_game1_a702a618bc944bac7afa52595e3802f0f} 
-void {\bfseries Add\+Stick} (string\+[$\,$]\+ parameters)
-\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a7a5ec48a15f61682668db9766ce3e8c3}{Add\+Particle}} (string\+[$\,$]\+ parameters)
+\begin{DoxyCompactList}\small\item\em adds a particle with parameters for use in the debug console \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a702a618bc944bac7afa52595e3802f0f}{Add\+Stick}} (string\+[$\,$]\+ parameters)
+\begin{DoxyCompactList}\small\item\em adds a stick with parameters for use in the debug console \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a43446277b993b009608f302668174474}{Test\+Connection}} (string\+[$\,$]\+ parameters)
 \begin{DoxyCompactList}\small\item\em Tests the database connection and logs the result. This command can be invoked from the debug console to verify that the application can successfully connect to the database. If the connection test is successful, it logs a success message. If the connection test fails, it catches the exception and logs an error message with details about the failure. This command does not take any parameters, and if any parameters are provided, it logs a warning indicating that they are not expected. This allows developers to quickly check database connectivity without needing to write additional code or use external tools. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad5e9b839361b313dabe585f301a71ce8}\label{class_physics_c_s_alevl_project_1_1_game1_ad5e9b839361b313dabe585f301a71ce8} 
-void {\bfseries Save\+Mesh\+To\+JSON} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} mesh, string Name, string file\+Path)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a905a45ccb5f46601cef570cd6320ddd9}\label{class_physics_c_s_alevl_project_1_1_game1_a905a45ccb5f46601cef570cd6320ddd9} 
-string {\bfseries Save\+Mesh\+To\+Json\+String} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} mesh)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ab254c0d8c467ce3d89c2e02aeb2aafd2}\label{class_physics_c_s_alevl_project_1_1_game1_ab254c0d8c467ce3d89c2e02aeb2aafd2} 
-\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} {\bfseries Load\+Mesh\+From\+JSON} (string file\+Path)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_afa7c1dc7b567ebdde0fc9469e4b46d28}\label{class_physics_c_s_alevl_project_1_1_game1_afa7c1dc7b567ebdde0fc9469e4b46d28} 
-\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} {\bfseries Load\+Mesh\+From\+Json\+String} (string json)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac1325617d8f8b316c77730a148b33156}\label{class_physics_c_s_alevl_project_1_1_game1_ac1325617d8f8b316c77730a148b33156} 
-Dictionary$<$ string, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $>$ {\bfseries Load\+All\+Meshes\+From\+Directory} (string directory\+Path)
-\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ad5e9b839361b313dabe585f301a71ce8}{Save\+Mesh\+To\+JSON}} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} mesh, string Name, string file\+Path)
+\begin{DoxyCompactList}\small\item\em saves the given mesh to a JSOn file at the given filepath \end{DoxyCompactList}\item 
+string \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a905a45ccb5f46601cef570cd6320ddd9}{Save\+Mesh\+To\+Json\+String}} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} mesh)
+\begin{DoxyCompactList}\small\item\em returns a json string of the mesh used to save to the database \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ab254c0d8c467ce3d89c2e02aeb2aafd2}{Load\+Mesh\+From\+JSON}} (string file\+Path)
+\begin{DoxyCompactList}\small\item\em attempts to load a \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_afa7c1dc7b567ebdde0fc9469e4b46d28}{Load\+Mesh\+From\+Json\+String}} (string json)
+\begin{DoxyCompactList}\small\item\em converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh \end{DoxyCompactList}\item 
+Dictionary$<$ string, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ac1325617d8f8b316c77730a148b33156}{Load\+All\+Meshes\+From\+Directory}} (string directory\+Path)
+\begin{DoxyCompactList}\small\item\em loads all mesh from a a directory path and returns a dictionary of the meshes with the key being the filename \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a800fd1a0017d131511ccc9b9ee4fac9d}\label{class_physics_c_s_alevl_project_1_1_game1_a800fd1a0017d131511ccc9b9ee4fac9d} 
 void {\bfseries Draw\+Sign\+In\+Window} ()
-\item 
+\begin{DoxyCompactList}\small\item\em displays the sign in window where all users can inout username and password to sign in \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a04aa845fe839edd1b89c4845a8eff0c1}\label{class_physics_c_s_alevl_project_1_1_game1_a04aa845fe839edd1b89c4845a8eff0c1} 
 void {\bfseries Draw\+Assignment\+Menu\+Items} ()
-\item 
+\begin{DoxyCompactList}\small\item\em displays all assignments for the user seperated by teacher in a menu \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aab6106fbabae1de39c2e97cc8b2fcea8}\label{class_physics_c_s_alevl_project_1_1_game1_aab6106fbabae1de39c2e97cc8b2fcea8} 
 void {\bfseries Draw\+Teacher\+Assignments\+Window} ()
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6fc4add468575c1ee8285156faf8a8cf}\label{class_physics_c_s_alevl_project_1_1_game1_a6fc4add468575c1ee8285156faf8a8cf} 
-void {\bfseries Pop\+Up\+Save\+Project\+To\+Assignment} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Game1\+Database.\+Assignment}} assignment)
-\item 
+\begin{DoxyCompactList}\small\item\em diisplayes the assignment winow where teachers can create assigments and view existing one and the students work for each assignment \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a6fc4add468575c1ee8285156faf8a8cf}{Pop\+Up\+Save\+Project\+To\+Assignment}} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Game1\+Database.\+Assignment}} assignment)
+\begin{DoxyCompactList}\small\item\em the pop up window that appears for when a user wants to upload work for an a ssignemnt \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a703ebca9ea27d36de8924fe2dd1e37e2}\label{class_physics_c_s_alevl_project_1_1_game1_a703ebca9ea27d36de8924fe2dd1e37e2} 
 void {\bfseries Initialize\+Im\+Gui} ()
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa912e243752022dd4d1e2917d5ff8a81}\label{class_physics_c_s_alevl_project_1_1_game1_aa912e243752022dd4d1e2917d5ff8a81} 
-void {\bfseries Im\+Gui\+Draw} (Game\+Time game\+Time)
-\item 
+\begin{DoxyCompactList}\small\item\em initializes Im\+Gui related variables and state \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_aa912e243752022dd4d1e2917d5ff8a81}{Im\+Gui\+Draw}} (Game\+Time game\+Time)
+\begin{DoxyCompactList}\small\item\em main drawing fucntion for imgui called every frame in the main draw loop \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_adff21c4f55246d3d0ea42aa36dfebd89}\label{class_physics_c_s_alevl_project_1_1_game1_adff21c4f55246d3d0ea42aa36dfebd89} 
 void {\bfseries Draw\+Pop\+Ups} ()
-\item 
+\begin{DoxyCompactList}\small\item\em opens all pop up windows based on their respective toggles and then unset the toggles \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae7ebba639b79e44d2598d28a1a6eb599}\label{class_physics_c_s_alevl_project_1_1_game1_ae7ebba639b79e44d2598d28a1a6eb599} 
 void {\bfseries Mode\+Switching\+Im\+Gui} ()
-\item 
+\begin{DoxyCompactList}\small\item\em handles the switching between interaction modes by using the Im\+Gui input system over monogames and draws the overlay that shows the current mode and the other modes available when shift is held, this allows for quick and intuitive switching between modes without needing to navigate through menus \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a0289892a9e14a720efd42e94c0914ffc}\label{class_physics_c_s_alevl_project_1_1_game1_a0289892a9e14a720efd42e94c0914ffc} 
 void {\bfseries Tool\+Switching\+Im\+Gui} ()
-\item 
+\begin{DoxyCompactList}\small\item\em handles the switching between tools by using the Im\+Gui input system over monogames and draws the overlay that shows the current tool and the other tools available when ctrl is held, this allows for quick and intuitive switching between tools without needing to navigate through menus \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb}{Set\+Mode}} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a9b5c75158025b372213fd6df913224cf}{Mesh\+Mode}} mode)
 \begin{DoxyCompactList}\small\item\em Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user\textquotesingle{}s work and providing a consistent experience when switching between interacting with the mesh and editing it. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7819d974eafd83724e29610a3e086f21}\label{class_physics_c_s_alevl_project_1_1_game1_a7819d974eafd83724e29610a3e086f21} 
@@ -138,16 +126,16 @@ void {\bfseries Draw\+Inspect\+Particle\+Window} ()
 \begin{DoxyCompactList}\small\item\em Draws the particle inspection window, allowing users to view and manage particles that they have selected for inspection. The window displays a list of inspected particles with checkboxes to toggle their detailed information display. Users can clear all inspected particles, delete them along with their connected sticks, or close the window. For each inspected particle, detailed information such as position, previous position, and pinned status is shown, along with options to pin/\+unpin the particle or remove it from inspection. This feature provides an in-\/depth look at specific particles in the mesh for debugging and analysis purposes. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a34e6253e76eac836e7bfe2662450aa90}\label{class_physics_c_s_alevl_project_1_1_game1_a34e6253e76eac836e7bfe2662450aa90} 
 void {\bfseries Draw\+Main\+Menu\+Bar} ()
-\item 
+\begin{DoxyCompactList}\small\item\em draws the main menu bar at the top of the screen \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a186b90dd692f039bcac3725b8277555b}\label{class_physics_c_s_alevl_project_1_1_game1_a186b90dd692f039bcac3725b8277555b} 
 void {\bfseries Factory\+Menu} ()
-\item 
+\begin{DoxyCompactList}\small\item\em the menu for all factories that can be used to quickly create complex structures in the mesh, \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ace0e8ab92277e5ab7eef9802cd1acd7b}\label{class_physics_c_s_alevl_project_1_1_game1_ace0e8ab92277e5ab7eef9802cd1acd7b} 
 void {\bfseries Quick\+Structure\+Menu} ()
 \begin{DoxyCompactList}\small\item\em Provides a user interface for managing quick access to both local and remote structures. Users can toggle between viewing locally saved structures and structures stored in a remote database. The local structures tab allows users to refresh the list of available meshes, save the current mesh with a specified name, and load existing meshes from a designated directory. The remote structures tab enables signed-\/in users to save their current mesh to the database with a custom name, refresh the list of their saved structures, and load any of their previously saved structures into the application. This menu streamlines the process of managing and accessing different mesh configurations for users, enhancing their workflow and organization. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa6f310e037f5c77c3041d80d15d93463}\label{class_physics_c_s_alevl_project_1_1_game1_aa6f310e037f5c77c3041d80d15d93463} 
 void {\bfseries Draw\+Structure\+Window} ()
-\item 
+\begin{DoxyCompactList}\small\item\em Draws the structure window for loading and managing saved meshes. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac0354b09c773d59c7dc3e9f65f8c12c0}\label{class_physics_c_s_alevl_project_1_1_game1_ac0354b09c773d59c7dc3e9f65f8c12c0} 
 void {\bfseries Draw\+Save\+Window} ()
 \item 
@@ -504,7 +492,37 @@ Core Im\+Gui functionality including initialization, main draw loop, and mode/\+
 \label{doc-func-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_doc-func-members}
 \doxysubsection{Member Function Documentation}
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_acc2f0491bf821c63985edb31b2b6160a}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!AddTire@{AddTire}}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7a5ec48a15f61682668db9766ce3e8c3}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!AddParticle@{AddParticle}}
+\index{AddParticle@{AddParticle}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{AddParticle()}{AddParticle()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a7a5ec48a15f61682668db9766ce3e8c3} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Add\+Particle (\begin{DoxyParamCaption}\item[{string\+[$\,$]\+}]{parameters}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+adds a particle with parameters for use in the debug console 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a702a618bc944bac7afa52595e3802f0f}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!AddStick@{AddStick}}
+\index{AddStick@{AddStick}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{AddStick()}{AddStick()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a702a618bc944bac7afa52595e3802f0f} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Add\+Stick (\begin{DoxyParamCaption}\item[{string\+[$\,$]\+}]{parameters}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+adds a stick with parameters for use in the debug console 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & \\
+\hline
+\end{DoxyParams}
+/\+ \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_acc2f0491bf821c63985edb31b2b6160a}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!AddTire@{AddTire}}
 \index{AddTire@{AddTire}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{AddTire()}{AddTire()}}
 {\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_acc2f0491bf821c63985edb31b2b6160a} 
@@ -628,6 +646,21 @@ Handles the logic for adding a stick between two particles when the user clicks 
 {\em click\+Pos} & \\
 \hline
 \end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa912e243752022dd4d1e2917d5ff8a81}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!ImGuiDraw@{ImGuiDraw}}
+\index{ImGuiDraw@{ImGuiDraw}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{ImGuiDraw()}{ImGuiDraw()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_aa912e243752022dd4d1e2917d5ff8a81} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Im\+Gui\+Draw (\begin{DoxyParamCaption}\item[{Game\+Time}]{game\+Time}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+main drawing fucntion for imgui called every frame in the main draw loop 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+Time} & \\
+\hline
+\end{DoxyParams}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ab35449e4811e68faf641726734576e34}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!InspectParticlesInRadiusLog@{InspectParticlesInRadiusLog}}
 \index{InspectParticlesInRadiusLog@{InspectParticlesInRadiusLog}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{InspectParticlesInRadiusLog()}{InspectParticlesInRadiusLog()}}
@@ -660,6 +693,60 @@ Lists all registered console commands in the \doxylink{class_physics_c_s_alevl_p
 {\em parameters} & \\
 \hline
 \end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac1325617d8f8b316c77730a148b33156}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!LoadAllMeshesFromDirectory@{LoadAllMeshesFromDirectory}}
+\index{LoadAllMeshesFromDirectory@{LoadAllMeshesFromDirectory}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{LoadAllMeshesFromDirectory()}{LoadAllMeshesFromDirectory()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ac1325617d8f8b316c77730a148b33156} 
+Dictionary$<$ string, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $>$ Physics\+CSAlevl\+Project.\+Game1.\+Load\+All\+Meshes\+From\+Directory (\begin{DoxyParamCaption}\item[{string}]{directory\+Path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+loads all mesh from a a directory path and returns a dictionary of the meshes with the key being the filename 
+
+
+\begin{DoxyParams}{Parameters}
+{\em directory\+Path} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Dictionary of File\+Name and \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ab254c0d8c467ce3d89c2e02aeb2aafd2}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!LoadMeshFromJSON@{LoadMeshFromJSON}}
+\index{LoadMeshFromJSON@{LoadMeshFromJSON}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{LoadMeshFromJSON()}{LoadMeshFromJSON()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ab254c0d8c467ce3d89c2e02aeb2aafd2} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} Physics\+CSAlevl\+Project.\+Game1.\+Load\+Mesh\+From\+JSON (\begin{DoxyParamCaption}\item[{string}]{file\+Path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+attempts to load a \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Path} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_afa7c1dc7b567ebdde0fc9469e4b46d28}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!LoadMeshFromJsonString@{LoadMeshFromJsonString}}
+\index{LoadMeshFromJsonString@{LoadMeshFromJsonString}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{LoadMeshFromJsonString()}{LoadMeshFromJsonString()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_afa7c1dc7b567ebdde0fc9469e4b46d28} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} Physics\+CSAlevl\+Project.\+Game1.\+Load\+Mesh\+From\+Json\+String (\begin{DoxyParamCaption}\item[{string}]{json}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh 
+
+
+\begin{DoxyParams}{Parameters}
+{\em json} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_adb8df048d3e206b7991232944ac60952}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!OnExiting@{OnExiting}}
 \index{OnExiting@{OnExiting}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{OnExiting()}{OnExiting()}}
@@ -694,6 +781,58 @@ Pins or unpins particles within a specified radius of a given center point. The 
 {\em radius} & \\
 \hline
 \end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6fc4add468575c1ee8285156faf8a8cf}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!PopUpSaveProjectToAssignment@{PopUpSaveProjectToAssignment}}
+\index{PopUpSaveProjectToAssignment@{PopUpSaveProjectToAssignment}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{PopUpSaveProjectToAssignment()}{PopUpSaveProjectToAssignment()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a6fc4add468575c1ee8285156faf8a8cf} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Pop\+Up\+Save\+Project\+To\+Assignment (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Game1\+Database.\+Assignment}}}]{assignment}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+the pop up window that appears for when a user wants to upload work for an a ssignemnt 
+
+
+\begin{DoxyParams}{Parameters}
+{\em assignment} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad5e9b839361b313dabe585f301a71ce8}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!SaveMeshToJSON@{SaveMeshToJSON}}
+\index{SaveMeshToJSON@{SaveMeshToJSON}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{SaveMeshToJSON()}{SaveMeshToJSON()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ad5e9b839361b313dabe585f301a71ce8} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Save\+Mesh\+To\+JSON (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}}}]{mesh}{, }\item[{string}]{Name}{, }\item[{string}]{file\+Path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+saves the given mesh to a JSOn file at the given filepath 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & \\
+\hline
+{\em Name} & \\
+\hline
+{\em file\+Path} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a905a45ccb5f46601cef570cd6320ddd9}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!SaveMeshToJsonString@{SaveMeshToJsonString}}
+\index{SaveMeshToJsonString@{SaveMeshToJsonString}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{SaveMeshToJsonString()}{SaveMeshToJsonString()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a905a45ccb5f46601cef570cd6320ddd9} 
+string Physics\+CSAlevl\+Project.\+Game1.\+Save\+Mesh\+To\+Json\+String (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}}}]{mesh}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+returns a json string of the mesh used to save to the database 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+JSON String
+\end{DoxyReturn}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!SetMode@{SetMode}}
 \index{SetMode@{SetMode}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{SetMode()}{SetMode()}}
