@@ -10,32 +10,96 @@ namespace PhysicsCSAlevlProject;
 
 class Mesh
 {
+    /// <summary>
+    /// the id for the next particle to be added to the mesh, which is used to ensure that each particle has a unique identifier.
+    /// </summary>
     private int _nextParticleId = 1;
+
+    /// <summary>
+    /// the id for the next stick to be added to the mesh, which is used to ensure that each stick has a unique identifier.
+    /// </summary>
     private int _nextStickId = 1;
 
+    /// <summary>
+    /// the thickness to use when drawing the sticks in the mesh. If set to a negative value, it will use the default thickness defined in the DrawableStick class
+    /// </summary>
     public float stickDrawThickness = -1;
 
+    /// <summary>
+    /// A dictionary that maps particle IDs to their corresponding DrawableParticle instances in the mesh.
+    /// </summary>
     public Dictionary<int, DrawableParticle> Particles { get; } = new();
 
+    /// <summary>
+    /// the mean force used for colouring the sticks
+    /// </summary>
     public float meanForceMagnitude = 0f;
+
+    /// <summary>
+    /// the standert deviation of the force used for colouring the sticks
+    /// </summary>
     public float forceStdDeviation = 0f;
+
+    /// <summary>
+    /// the max force magnitude experienced by any stick in the mesh, used for normalizing stick colours based on force. This value is updated during the physics simulation to reflect the current maximum force magnitude, allowing for dynamic coloring of sticks based on their stress levels.
+    /// </summary>
     public float maxForceMagnitude = 0f;
 
+    /// <summary>
+    /// the spring constant used for the sticks in the physics simulation, which determines how stiff the sticks are
+    /// </summary>
     public float springConstant = 10000f;
+
+    /// <summary>
+    /// the amount constant to multiply the velocity of the particles to simulate drag and icnrease stabilty
+    /// </summary>
     public float drag = 0.997f;
+
+    /// <summary>
+    /// the mass of all the particles in the mesh
+    /// </summary>
     public float mass = 1f;
 
+    /// <summary>
+    /// the particle id for the first particle when building a polygon to connect the first and last part together
+    /// </summary>
     private int _polygonInitialParticle = -1;
+
+    /// <summary>
+    /// the final particle id when building a polygon, used to connect the new particle to the last one created
+    /// </summary>
     private int _polygonFinalParticle = -1;
-    private readonly List<int> _polygonVertices = new List<int>();
+
+    /// <summary>
+    /// all of the ids in the polygon currently being created
+    /// </summary>
+    private readonly List<int> _polygonVertices = new();
+
+    /// <summary>
+    /// if the polygon is currently being built
+    /// </summary>
     private bool _isPolygonBuilding = false;
 
+    /// <summary>
+    /// all colliders in the mesh
+    /// </summary>
     public List<Collider> Colliders = new List<Collider>();
 
     public class MeshStick : DrawableStick
     {
+        /// <summary>
+        /// the id of the stick
+        /// </summary>
         public int Id;
+
+        /// <summary>
+        /// the id of the first particle the stick is connected too
+        /// </summary>
         public int P1Id;
+
+        /// <summary>
+        /// the id of the second particle the stick is connected too
+        /// </summary>
         public int P2Id;
 
         public MeshStick() { }
@@ -44,10 +108,15 @@ class Mesh
             : base(p1, p2, color, width) { }
     }
 
-    public Dictionary<int, MeshStick> Sticks { get; } = new Dictionary<int, MeshStick>();
+    /// <summary>
+    /// the dictionary store of all sticks
+    /// </summary>
+    public Dictionary<int, MeshStick> Sticks { get; } = new();
 
-    private readonly Dictionary<int, HashSet<int>> _particleToStickIds =
-        new Dictionary<int, HashSet<int>>();
+    /// <summary>
+    /// a helper dictionary that maps particle IDs to the set of stick IDs that are connected to that particle.
+    /// </summary>
+    private readonly Dictionary<int, HashSet<int>> _particleToStickIds = new();
 
     public void RestoreStickReferences()
     {
@@ -225,7 +294,6 @@ class Mesh
     /// <param name="previousMouseState"></param>
     /// <param name="imguiWantsMouse"></param>
     /// <param name="beforeChange"></param>
-
     public void BuildPolygon(
         KeyboardState keyboardState,
         KeyboardState previousKeyboardState,
@@ -513,6 +581,7 @@ class Mesh
         }
         return closest;
     }
+
     /// <summary>
     ///   Creates a grid mesh of particles and sticks between them based on the specified start and end positions, distance between particles, and an optional existing mesh to build upon. The method calculates the number of particles needed in both width and height directions based on the provided distance, and then iteratively adds particles at the calculated positions. It also creates sticks between adjacent particles to form a grid structure. The method ensures that the number of particles does not exceed a reasonable limit (1000 in either direction) to prevent performance issues. Finally, it returns the modified mesh with the newly added grid structure.
     /// </summary>
@@ -574,19 +643,18 @@ class Mesh
     [ConsoleCommand("Mesh.ResetSimulation")]
     public void ResetSimulation(string[] parameters)
     {
-        
         foreach (var p in Particles.Values)
         {
             p.PreviousPosition = p.Position;
             p.AccumulatedForce = Vector2.Zero;
         }
     }
+
     /// <summary>
     /// Creates a hub-and-spoke tire structure in the mesh based on the specified center position, inner and outer radii, and the number of segments for the rim. The method calculates the positions of particles for both the inner and outer rims of the tire, and then creates sticks to connect these particles in a hub-and-spoke pattern. It ensures that the inner and outer radii are valid and that there are enough segments to form a proper tire structure. The resulting structure consists of two concentric circles of particles connected by sticks, with additional sticks connecting the inner rim to the outer rim to create a strong and flexible tire-like structure in the mesh.
     /// </summary>
     /// <param name="args"></param>
     /// <exception cref="ArgumentException"></exception>
-
     public void CreateHubSpokeTire(object[] args)
     {
         if (args.Length < 5)
@@ -661,6 +729,7 @@ class Mesh
             AddStickBetween(outerRimIds[i], innerRimIds[next], diagonalStickLength);
         }
     }
+
     /// <summary>
     /// Creates a cloth mesh in the specified area defined by the start and end positions, with particles spaced according to the natural length parameter. The method builds a grid mesh using the CreateGridMesh method and then pins the top-left and top-right particles to create a hanging cloth effect. The spring constant, drag, and mass parameters can be customized to adjust the behavior of the cloth simulation. The resulting mesh will have a flexible cloth-like structure that can interact with forces and collisions in the physics simulation.
     /// </summary>

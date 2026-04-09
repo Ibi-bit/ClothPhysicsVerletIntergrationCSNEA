@@ -8,7 +8,13 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    /// <summary>
+    /// determines whether to draw particles
+    /// </summary>
     private bool _drawParticles;
+    /// <summary>
+    /// determines whether to draw constraints (sticks)
+    /// </summary>
     private bool _drawConstraints;
 
     private void InitializeRender()

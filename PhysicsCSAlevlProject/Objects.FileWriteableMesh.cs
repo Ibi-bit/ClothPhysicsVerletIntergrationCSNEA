@@ -7,7 +7,6 @@ namespace PhysicsCSAlevlProject;
 /// <summary>
 /// The FileWriteableMesh class serves as a serializable representation of the Mesh class, allowing for easy saving and loading of mesh data to and from JSON format. It contains nested classes for particle and stick data, as well as collider information, and provides methods to convert between the FileWriteableMesh and the original Mesh class. This design enables the application to persist mesh configurations, including particle properties, stick connections, and colliders, while also supporting oscillating particles with their specific parameters. The ToMesh method reconstructs a Mesh instance from the stored data, ensuring that all relevant properties are correctly transferred for accurate physics simulations when loaded back into the application.
 /// </summary>
-
 class FileWriteableMesh
 {
     public class OscillationData

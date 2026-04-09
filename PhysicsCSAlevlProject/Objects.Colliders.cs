@@ -9,6 +9,9 @@ namespace PhysicsCSAlevlProject;
 
 public abstract class Collider
 {
+    /// <summary>
+    /// the position of the collider
+    /// </summary>
     public virtual Vector2 Position { get; set; }
     /// <summary>
     /// Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider's surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter.
@@ -24,7 +27,14 @@ public abstract class Collider
 
 public class CircleCollider : Collider
 {
+    /// <summary>
+    /// the radiius of the circle collider
+    /// </summary>
     public float Radius;
+
+    /// <summary>
+    /// the rectangle used for the broad phase of collision detection, which is a simple bounding box that encompasses the circle collider. 
+    /// </summary>
     public Rectangle BroadPhase =>
         new Rectangle(
             (int)(Position.X - Radius),
@@ -70,6 +80,9 @@ public class CircleCollider : Collider
 
 public class RectangleCollider(Rectangle rectangle) : Collider
 {
+    /// <summary>
+    /// the rectangle that defines the bounds of the rectangle collider
+    /// </summary>
     public Rectangle Rectangle = rectangle;
 
     public override Collider DeepCopy() => new RectangleCollider(Rectangle);
@@ -116,13 +129,29 @@ public class RectangleCollider(Rectangle rectangle) : Collider
 
 public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
 {
+    /// <summary>
+    /// all of the axes of the rectangle collider, which are used for collision detection using the Separating Axis Theorem (SAT)
+    /// </summary>
     public Vector2[] Axis { get; private set; } = new Vector2[4];
-    Vector2[] _axisPrivate = new Vector2[4];
+    /// <summary>
+    /// the half width of the rectangle collider used for calculating the vertices and axes of the rectangle
+    /// </summary>
     public float HalfWidth;
+    /// <summary>
+    /// the half height of the rectangle collider used for calculating the vertices and axes of the rectangle
+    /// </summary>
     public float HalfHeight;
+    /// <summary>
+    /// the position of the rectangle collider, which is the center point of the rectangle 
+    /// </summary>
     private Vector2 _position;
+    /// <summary>
+    /// the rectangle used for drawing the collider
+    /// </summary>
     private PrimitiveBatch.Rectangle rectangleDraw;
-
+    /// <summary>
+    /// the position of the rectangle collider, which is the center point of the rectangle. When the position is set, it updates the position of the rectangle used for drawing and recalculates the vertices and axes of the rectangle based on the new position.
+    /// </summary>
     public override Vector2 Position
     {
         get { return _position; }
@@ -146,7 +175,9 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
             }
         }
     }
-
+    /// <summary>
+    /// the angle of the rectangle collider in radians, which determines the rotation of the rectangle. When the angle is set, it updates the rotation of the rectangle used for drawing and recalculates the vertices and axes of the rectangle based on the new angle.
+    /// </summary>
     public float Angle
     {
         get { return angle; }
@@ -263,17 +294,46 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
 
 public class PolygonSeperatedAxisCollider : Collider
 {
+    /// <summary>
+    /// the vertices of the polygon collider defined in local space
+    /// </summary>
     public Vector2[] Vertices;
+    /// <summary>
+    /// the vertices of the polygon collider defined in world space
+    /// </summary>
     public Vector2[] worldVertices;
+    /// <summary>
+    /// the triangles used for drawing the polygon collider
+    /// </summary>
     private List<Vector2[]> Triangles = new();
+    /// <summary>
+    /// the axis of the polygon collider used for collision detection using the Separating Axis Theorem (SAT)
+    /// </summary>
     private Vector2[] _axisPrivate;
+    /// <summary>
+    /// the position
+    /// </summary>
     private Vector2 _position;
+    /// <summary>
+    /// the angle of the polygon collider in radians
+    /// </summary>
     private float _angle;
+    /// <summary>
+    /// the broadphase rectangle used for a quick check to see if a point is potentially colliding with the polygon collider
+    /// </summary>
     private Rectangle _localBroadPhase;
+    /// <summary>
+    /// the broadphase rectangle used for a quick check to see if a point is potentially colliding with the polygon collider
+    /// </summary>
     private Rectangle _worldBroadPhase;
+    /// <summary>
+    /// a boolean flag to indicate whether the world vertices and world broadphase cache needs to be updated
+    /// </summary>
     private bool _worldCacheDirty;
-    public float MaxArea = 1000f;
 
+    /// <summary>
+    /// the position of the polygon collider, which is the center point of the polygon. When the position is set, it updates the position of the polygon used for drawing and recalculates the vertices and axes of the polygon based on the new position.
+    /// </summary>
     public override Vector2 Position
     {
         get { return _position; }
@@ -286,6 +346,9 @@ public class PolygonSeperatedAxisCollider : Collider
             }
         }
     }
+    /// <summary>
+    /// the angle of the polygon collider in radians, which determines the rotation of the polygon. When the angle is set, it updates the rotation of the polygon used for drawing and recalculates the vertices and axes of the polygon based on the new angle.
+    /// </summary>
 
     public float angle
     {

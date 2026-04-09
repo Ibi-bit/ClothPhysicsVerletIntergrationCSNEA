@@ -12,17 +12,50 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    /// <summary>
+    /// the selected tool name
+    /// </summary>
     private string _selectedToolName;
+
+    /// <summary>
+    /// a store of all tools used in the interact mode
+    /// </summary>
     private Dictionary<string, Tool> _interactTools;
+
+    /// <summary>
+    /// a store of all tools used in the edit mode
+    /// </summary>
     private Dictionary<string, Tool> _buildTools;
 
+    /// <summary>
+    /// a reference to the current tool set based on the mode the program is in, this is used to simplify code when drawing the tool menu and settings as it can just reference this instead of checking the mode multiple times
+    /// </summary>
     private Dictionary<string, Tool> _currentToolSet =>
         _currentMode == MeshMode.Edit ? _buildTools : _interactTools;
 
+    /// <summary>
+    /// the radius used for the drag tool,
+    /// </summary>
     private float _dragRadius;
+
+    /// <summary>
+    /// lists the ID of all particles selected but the select tool
+    /// </summary>
     private List<int> _inspectedParticles;
+
+    /// <summary>
+    /// the list if the ID of all particles opened in the select window
+    /// </summary>
     private List<int> _openedInspectedParticles;
+
+    /// <summary>
+    /// stores all factories
+    /// </summary>
     private List<Factory> _factories = new();
+
+    /// <summary>
+    /// the first particle ID to be paired with another to create a stick when using the add stick between particles tool, this is set to null when no particle has been selected yet or the pairing has been completed
+    /// </summary>
     private int? _stickToolFirstParticleId;
 
     private void InitializeTools()

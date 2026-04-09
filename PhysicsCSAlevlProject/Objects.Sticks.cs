@@ -3,13 +3,25 @@ using Microsoft.Xna.Framework.Graphics;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
+
 /// <summary>
 /// The Stick class represents a connection between two particles in the physics simulation, defined by its endpoints (P1 and P2) and its natural length. The DrawableStick class extends Stick by adding visual properties such as color and width, and includes a method to draw itself using a SpriteBatch and PrimitiveBatch. The IsCut property allows for simulating stick breakage, where a stick can be marked as cut to prevent it from being drawn or participating in physics interactions. This design allows for flexible representation of connections between particles, supporting both intact and broken sticks while also providing visual feedback for rendering the mesh structure.
 /// </summary>
 class Stick
 {
+    /// <summary>
+    /// the inital particle the stick is connected to
+    /// </summary>
     public Particle P1;
+
+    /// <summary>
+    /// the final particle the stick is connected to
+    /// </summary>
     public Particle P2;
+
+    /// <summary>
+    /// the natural length of the stick, which is the distance between the two particles when the stick is at rest
+    /// </summary>
     public float Length;
 
     public Stick()
@@ -29,6 +41,9 @@ class Stick
 
 class DrawableStick : Stick
 {
+    /// <summary>
+    /// the line object used for drawing the stick, which is created based on the positions of the two particles
+    /// </summary>
     private PrimitiveBatch.Line line;
     public Color Color { get; set; }
     public float Width { get; set; }

@@ -7,15 +7,42 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    /// <summary>
+    /// the fixed time step used for the physics simulation, set to 1/60th of a second for a target of 60 updates per second. The physics simulation will accumulate elapsed time and perform updates in fixed increments of this time step to ensure consistent and stable physics behavior regardless of frame rate variations. This approach allows for more accurate and deterministic physics simulations, as the same sequence of updates will occur given the same initial conditions, even if the rendering frame rate fluctuates. The use of a fixed time step is a common practice in game development to maintain stable and predictable physics interactions.
+    /// </summary>
     private const float FixedTimeStep = 1f / 60f;
+    /// <summary>
+    /// the friction coeffiecent used in collison resolution and effects how much tangential velocity is lost and thus how much a particle will slide
+    /// </summary>
     private float _frictionCoefficient = 0.2f;
+    /// <summary>
+    /// the bounce coefficient used in collison resolution and effects how much normal velocity is lost and thus how much a particle will bounce off of surfaces
+    /// </summary>
     private float _bounceCoefficient = 0.2f;
 
+    /// <summary>
+    /// how much to change the bounds compared to the window
+    /// </summary>
     private Vector2 _collisonBoundsDifference;
+    /// <summary>
+    /// the base force applied every iteration usually just gravity
+    /// </summary>
     private Vector2 _baseForce;
+    /// <summary>
+    /// the amount of time a frame is taking to calculate the physics for, used to determine how many physics updates to perform in a frame
+    /// </summary>
     private float _timeAccumulator;
+    /// <summary>
+    /// a toggle for if the constraint solver should be used to correct stick lengths after the particles have been updated, this can help with stability but can cause jitter and other unwanted behaviour if not used carefully
+    /// </summary>
     private bool _useConstraintSolver;
+    /// <summary>
+    /// how many substeps to perform in the constraint solver, more substeps can increase stability but also increase the chance of jitter and other unwanted behaviour if not used carefully
+    /// </summary>
     private int _subSteps;
+    /// <summary>
+    /// amount of steps immediately due to  a user input in the menu bar
+    /// </summary>
     private int _stepsToStep;
 
     private void InitializePhysics()

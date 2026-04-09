@@ -4,20 +4,50 @@ using Microsoft.Xna.Framework.Graphics;
 using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
+
 /// <summary>
 /// The Particle class represents a single particle in the physics simulation, containing properties such as position, mass, accumulated force, and whether it is pinned or selected. The DrawableParticle class extends Particle by adding visual properties like color and size, and includes a method to draw itself using a SpriteBatch and PrimitiveBatch. The OscillatingParticle class further extends DrawableParticle to include oscillation parameters such as amplitude, frequency, and angle, allowing it to move in a sinusoidal pattern around an anchor position. This design allows for flexible representation of particles in the simulation, supporting both static and dynamic behaviors while also providing visual feedback for rendering.
 /// </summary>
 class Particle
 {
+    /// <summary>
+    /// the position of the particle
+    /// </summary>
     public Vector2 Position;
+
+    /// <summary>
+    /// the previous position of the particle
+    /// </summary>
     public Vector2 PreviousPosition;
+
+    /// <summary>
+    /// the mass of the particle
+    /// </summary>
     public float Mass;
+
+    /// <summary>
+    /// the accumalated force due to hooks law
+    /// </summary>
     public Vector2 AccumulatedForce;
+
+    /// <summary>
+    /// the ID of the particle
+    /// </summary>
     public int ID;
 
+    /// <summary>
+    /// magnitude of of the total force applied to the particle
+    /// </summary>
     public float TotalForceMagnitude;
 
+    /// <summary>
+    /// toggle for if th eparticle is pinned used to determine if the particle should be affected by physics or not
+    /// </summary>
     public bool IsPinned;
+
+    /// <summary>
+    /// toggle for if the particle is selected used for the UI to determine if the particle should be drawn with a selection highlight and to allow the particle to be dragged with the mouse when selected
+    /// </summary>
     public bool IsSelected;
 
     public Particle()
@@ -47,8 +77,19 @@ class Particle
 
 class DrawableParticle : Particle
 {
+    /// <summary>
+    /// the rectangle used for drawing the particle, which is updated based on the particle's position and size. The rectangle is drawn in the Draw method, and its position is centered around the particle's position to ensure accurate rendering of the particle on the screen.
+    /// </summary>
     private PrimitiveBatch.Rectangle rectangle;
+
+    /// <summary>
+    /// the colour of the particle
+    /// </summary>
     public Color Color { get; set; }
+
+    /// <summary>
+    /// the size of the particle to be used in drawing
+    /// </summary>
     public Vector2 Size { get; set; }
 
     public DrawableParticle()

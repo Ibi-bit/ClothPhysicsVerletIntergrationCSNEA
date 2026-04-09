@@ -8,9 +8,18 @@ namespace PhysicsCSAlevlProject;
 
 public class Game1Database
 {
+    /// <summary>
+    /// The connection string used to connect to the PostgreSQL database,
+    /// </summary>
     private readonly string _connectionString =
         "Host=localhost;Port=5432;Database=stick_simulation;Username=dev;Password=dev123";
+
+    /// <summary>
+    /// The ImGuiLogger instance used for logging messages related to database operations
+    /// </summary>
     public ImGuiLogger logger;
+
+    
 
     public Game1Database(ImGuiLogger logger)
     {

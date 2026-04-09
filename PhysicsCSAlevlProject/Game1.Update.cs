@@ -7,16 +7,32 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    /// <summary>
+    /// the rectangle used for selecting particles
+    /// </summary>
     private VectorGraphics.PrimitiveBatch.Rectangle _selectRectangle;
 
+    /// <summary>
+    /// the current wind force being applied by the wind tool
+    /// </summary>
     private Vector2 _windForce;
+    /// <summary>
+    /// the arrow primitive used to show the direction and strength of the wind tool while dragging
+    /// </summary>
     private VectorGraphics.PrimitiveBatch.Arrow _windDirectionArrow;
+    /// <summary>
+    /// the line primitive used to show where the cut tool will cut while dragging and other tools where a line is used to show the area of effect
+    /// </summary>
     private VectorGraphics.PrimitiveBatch.Line _cutLine;
+    /// <summary>
+    /// a list of particle IDs that are currently within the area of effect of a tool that is being dragged
+    /// </summary>
     private List<int> _meshParticlesInDragArea;
+    /// <summary>
+    /// the collider that is currently being dragged by the Move Collider tool, 
+    /// </summary>
     private Collider _draggedCollider;
-    private bool _openColliderRightClickMenu;
-    private Vector2 _rightClickedPosition;
-
+  
     private void InitializeUpdate()
     {
         _selectRectangle = null;
