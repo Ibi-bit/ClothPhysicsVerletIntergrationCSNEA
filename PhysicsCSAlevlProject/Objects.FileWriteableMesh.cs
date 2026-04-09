@@ -9,13 +9,19 @@ namespace PhysicsCSAlevlProject;
 /// </summary>
 class FileWriteableMesh
 {
+    /// <summary>
+    ///stores the data for a oscilating particle in a way that can be easily serialized to json,
+    /// no anchor position as that is stored as the main position of the particle, but includes the amplitude, frequency and angle of the oscilation
+    /// </summary>
     public class OscillationData
     {
         public float Amplitude;
         public float Frequency;
         public float Angle;
     }
-
+    /// <summary>
+    /// stores the data for a particle in a way that can be easily serialized to json
+    /// </summary>
     public class particleData
     {
         public Vector2 Position;
@@ -23,24 +29,16 @@ class FileWriteableMesh
         public bool IsPinned;
         public string ParticleKind;
         public OscillationData Oscillation;
-        public float? OscillationAmplitude;
-        public float? OscillationFrequency;
-        public float? OscillationAngle;
     }
-
-    public class OscillatingParticleData : particleData
-    {
-        public float OscillationAmplitude;
-        public float OscillationFrequency;
-        public float OscillationAngle;
-    }
-
+    /// <summary>
+    /// stores the data for a stick in a way that can be easily serialized to json
+    /// </summary>
     public class stickData
     {
         public int P1Id;
         public int P2Id;
     }
-
+    
     public List<particleData> Particles = new List<particleData>();
 
     public List<stickData> Sticks = new List<stickData>();
@@ -68,13 +66,10 @@ class FileWriteableMesh
                 Particles.Add(
                     new particleData
                     {
-                        Position = p.Position,
+                        Position = op.anchorPosition,
                         Mass = p.Mass,
                         IsPinned = p.IsPinned,
                         ParticleKind = "Oscillating",
-                        OscillationAmplitude = op.OscillationAmplitude,
-                        OscillationFrequency = op.OscillationFrequency,
-                        OscillationAngle = op.OscillationAngle,
                         Oscillation = new OscillationData
                         {
                             Amplitude = op.OscillationAmplitude,
@@ -132,13 +127,7 @@ class FileWriteableMesh
                         StringComparison.OrdinalIgnoreCase
                     );
 
-                bool hasLegacyOscillationType = pData is OscillatingParticleData;
-                bool hasFlatOscillationFields =
-                    pData.OscillationAmplitude.HasValue
-                    || pData.OscillationFrequency.HasValue
-                    || pData.OscillationAngle.HasValue;
-
-                if (hasExplicitOscillation || hasLegacyOscillationType || hasFlatOscillationFields)
+                if (hasExplicitOscillation)
                 {
                     float amplitude = 20f;
                     float frequency = 1f;
@@ -149,18 +138,6 @@ class FileWriteableMesh
                         amplitude = pData.Oscillation.Amplitude;
                         frequency = pData.Oscillation.Frequency;
                         angle = pData.Oscillation.Angle;
-                    }
-                    else if (pData is OscillatingParticleData opData)
-                    {
-                        amplitude = opData.OscillationAmplitude;
-                        frequency = opData.OscillationFrequency;
-                        angle = opData.OscillationAngle;
-                    }
-                    else
-                    {
-                        amplitude = pData.OscillationAmplitude ?? amplitude;
-                        frequency = pData.OscillationFrequency ?? frequency;
-                        angle = pData.OscillationAngle ?? angle;
                     }
 
                     int particleId = mesh.AddParticle(

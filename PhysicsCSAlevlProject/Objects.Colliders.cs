@@ -7,33 +7,54 @@ using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
 
+/// <summary>
+/// The Collider class is the base class for all types of colliders
+/// this is so that they can be stored in the same list and used for collision detection
+/// </summary>
 public abstract class Collider
 {
     /// <summary>
     /// the position of the collider
     /// </summary>
     public virtual Vector2 Position { get; set; }
+
     /// <summary>
-    /// Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider's surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter.
+    /// Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point.
+    /// This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider's surface for accurate physics interactions.
+    ///  The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter.
+    /// it outputs the same point if the point is outside the collider, which is used for calculating the collision response direction and magnitude based on how far the point is from the collider's surface.
     /// </summary>
     /// <param name="point"></param>
     /// <param name="closestPoint"></param>
     /// <returns></returns>
     public abstract bool ContainsPoint(Vector2 point, out Vector2 closestPoint);
+
+    /// <summary>
+    /// Creates a deep copy of the collider,
+    /// </summary>
+    /// <returns></returns>
     public abstract Collider DeepCopy();
 
+    /// <summary>
+    /// Draws the collider
+    /// </summary>
+    /// <param name="spriteBatch"></param>
+    /// <param name="primitiveBatch"></param>
     public virtual void Draw(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch) { }
 }
 
+/// <summary>
+/// The CircleCollider class represents a circular collider with a specified radius and position.
+/// </summary>
 public class CircleCollider : Collider
 {
     /// <summary>
-    /// the radiius of the circle collider
+    /// the radius of the circle collider
     /// </summary>
     public float Radius;
 
     /// <summary>
-    /// the rectangle used for the broad phase of collision detection, which is a simple bounding box that encompasses the circle collider. 
+    /// the rectangle used for the broad phase of collision detection, which is a simple bounding box that encompasses the circle collider.
     /// </summary>
     public Rectangle BroadPhase =>
         new Rectangle(
@@ -78,6 +99,10 @@ public class CircleCollider : Collider
     }
 }
 
+/// <summary>
+/// The RectangleCollider class represents an axis-aligned rectangular collider defined by a Rectangle structure.
+/// </summary>
+/// <param name="rectangle"></param>
 public class RectangleCollider(Rectangle rectangle) : Collider
 {
     /// <summary>
@@ -87,6 +112,13 @@ public class RectangleCollider(Rectangle rectangle) : Collider
 
     public override Collider DeepCopy() => new RectangleCollider(Rectangle);
 
+
+    /// <summary>
+    /// Determines if the given point is contained within the rectangle collider and calculates the closest point on the rectangle to the given point.
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="closestPoint"></param>
+    /// <returns></returns>
     public override bool ContainsPoint(Vector2 point, out Vector2 closestPoint)
     {
         if (Rectangle.Contains(point))
@@ -127,28 +159,37 @@ public class RectangleCollider(Rectangle rectangle) : Collider
     }
 }
 
+
+/// <summary>
+/// The SeperatedAxisRectangleCollider class represents a rectangle collider that can be rotated and uses the Separating Axis Theorem (SAT) for collision detection. 
+/// </summary>
 public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
 {
     /// <summary>
     /// all of the axes of the rectangle collider, which are used for collision detection using the Separating Axis Theorem (SAT)
     /// </summary>
     public Vector2[] Axis { get; private set; } = new Vector2[4];
+
     /// <summary>
     /// the half width of the rectangle collider used for calculating the vertices and axes of the rectangle
     /// </summary>
     public float HalfWidth;
+
     /// <summary>
     /// the half height of the rectangle collider used for calculating the vertices and axes of the rectangle
     /// </summary>
     public float HalfHeight;
+
     /// <summary>
-    /// the position of the rectangle collider, which is the center point of the rectangle 
+    /// the position of the rectangle collider, which is the center point of the rectangle
     /// </summary>
     private Vector2 _position;
+
     /// <summary>
     /// the rectangle used for drawing the collider
     /// </summary>
     private PrimitiveBatch.Rectangle rectangleDraw;
+
     /// <summary>
     /// the position of the rectangle collider, which is the center point of the rectangle. When the position is set, it updates the position of the rectangle used for drawing and recalculates the vertices and axes of the rectangle based on the new position.
     /// </summary>
@@ -175,6 +216,7 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
             }
         }
     }
+
     /// <summary>
     /// the angle of the rectangle collider in radians, which determines the rotation of the rectangle. When the angle is set, it updates the rotation of the rectangle used for drawing and recalculates the vertices and axes of the rectangle based on the new angle.
     /// </summary>
@@ -202,7 +244,9 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
             ),
             angle
         );
-
+    /// <summary>
+    /// recreates the axes and vertices of the rectangle collider based on the current angle and half width and half height of the rectangle. 
+    /// </summary>
     private void SetAxis()
     {
         float cos = MathF.Cos(angle);
@@ -292,40 +336,52 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
     }
 }
 
+
+/// <summary>
+/// general polygon collider that uses the Separating Axis Theorem (SAT) for collision detection, which can represent any shape not self intersectiong such as rectangles, triangles, and more complex polygons. 
+/// </summary>
 public class PolygonSeperatedAxisCollider : Collider
 {
     /// <summary>
     /// the vertices of the polygon collider defined in local space
     /// </summary>
     public Vector2[] Vertices;
+
     /// <summary>
     /// the vertices of the polygon collider defined in world space
     /// </summary>
     public Vector2[] worldVertices;
+
     /// <summary>
     /// the triangles used for drawing the polygon collider
     /// </summary>
     private List<Vector2[]> Triangles = new();
+
     /// <summary>
     /// the axis of the polygon collider used for collision detection using the Separating Axis Theorem (SAT)
     /// </summary>
     private Vector2[] _axisPrivate;
+
     /// <summary>
     /// the position
     /// </summary>
     private Vector2 _position;
+
     /// <summary>
     /// the angle of the polygon collider in radians
     /// </summary>
     private float _angle;
+
     /// <summary>
     /// the broadphase rectangle used for a quick check to see if a point is potentially colliding with the polygon collider
     /// </summary>
     private Rectangle _localBroadPhase;
+
     /// <summary>
     /// the broadphase rectangle used for a quick check to see if a point is potentially colliding with the polygon collider
     /// </summary>
     private Rectangle _worldBroadPhase;
+
     /// <summary>
     /// a boolean flag to indicate whether the world vertices and world broadphase cache needs to be updated
     /// </summary>
@@ -346,10 +402,10 @@ public class PolygonSeperatedAxisCollider : Collider
             }
         }
     }
+
     /// <summary>
     /// the angle of the polygon collider in radians, which determines the rotation of the polygon. When the angle is set, it updates the rotation of the polygon used for drawing and recalculates the vertices and axes of the polygon based on the new angle.
     /// </summary>
-
     public float angle
     {
         get { return _angle; }

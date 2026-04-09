@@ -157,7 +157,7 @@ class OscillatingParticle(
     public float OscillationFrequency = frequency;
     public float OscillationAngle = angle;
     private float _oscillationTime = 0f;
-    private Vector2 _anchorPosition = position;
+    public Vector2 anchorPosition = position;
 
     public void UpdateOscillation(float deltaTime)
     {
@@ -167,14 +167,14 @@ class OscillatingParticle(
             * MathF.Sin(2 * MathF.PI * OscillationFrequency * _oscillationTime);
 
         Position = new Vector2(
-            _anchorPosition.X + oscillationOffset * MathF.Cos(OscillationAngle - MathF.PI / 2),
-            _anchorPosition.Y + oscillationOffset * MathF.Sin(OscillationAngle - MathF.PI / 2)
+            anchorPosition.X + oscillationOffset * MathF.Cos(OscillationAngle - MathF.PI / 2),
+            anchorPosition.Y + oscillationOffset * MathF.Sin(OscillationAngle - MathF.PI / 2)
         );
         PreviousPosition = Position;
     }
 
     public void SetAnchorPosition(Vector2 newAnchor)
     {
-        _anchorPosition = newAnchor;
+        anchorPosition = newAnchor;
     }
 }

@@ -32,7 +32,9 @@ public partial class Game1
     /// the collider that is currently being dragged by the Move Collider tool, 
     /// </summary>
     private Collider _draggedCollider;
-  
+    /// <summary>
+    /// initializes variables used in the Update method,
+    /// </summary>
     private void InitializeUpdate()
     {
         _selectRectangle = null;
@@ -41,7 +43,10 @@ public partial class Game1
         _cutLine = null;
         _meshParticlesInDragArea = new();
     }
-
+    /// <summary>
+    /// main game loop for everything not related to drawing
+    /// </summary>
+    /// <param name="gameTime"></param>
     protected override void Update(GameTime gameTime)
     {
         KeyboardState keyboardState = Keyboard.GetState();
@@ -779,7 +784,10 @@ public partial class Game1
 
         return Vector2.Zero;
     }
-
+    /// <summary>
+    /// sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect,
+    /// </summary>
+    /// <param name="center"></param>
     private void SetCursorColliderCenter(Vector2 center)
     {
         if (_cursorCollider is CircleCollider circle)
@@ -799,7 +807,11 @@ public partial class Game1
             );
         }
     }
-
+    /// <summary>
+    /// updates the size of the cursor collider based on a given radius,
+    /// which is used for tools that require a circular or square area of effect around the cursor.
+    /// </summary>
+    /// <param name="radius"></param>
     private void UpdateCursorColliderSize(float radius)
     {
         int size = Math.Max(1, (int)MathF.Round(radius * 2f));

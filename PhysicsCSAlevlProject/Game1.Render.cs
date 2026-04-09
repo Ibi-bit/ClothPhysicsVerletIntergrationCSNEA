@@ -16,7 +16,9 @@ public partial class Game1
     /// determines whether to draw constraints (sticks)
     /// </summary>
     private bool _drawConstraints;
-
+    /// <summary>
+    /// initiales rendering related variables and settings
+    /// </summary>
     private void InitializeRender()
     {
         _drawParticles = true;

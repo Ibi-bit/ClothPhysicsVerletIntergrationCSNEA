@@ -430,7 +430,11 @@ public class Game1Database
 
         return structures;
     }
-
+    /// <summary>
+    /// the class repesenting the User in the datbase matching the Users table with properties for Id, Username, RoleId and Password. 
+    /// This class is used to deserialize user information retrieved from the database and to create new users when saving to the database. 
+    /// It provides a structured way to represent user data within the application and facilitates interactions with the database for user-related operations.
+    /// </summary>
     public class User
     {
         public int Id { get; set; }
@@ -438,7 +442,10 @@ public class Game1Database
         public int RoleId { get; set; }
         public string Password { get; set; }
     }
-
+    /// <summary>
+    /// the class representing the structure information retrieved from the database,
+    ///  including properties for Id, AssignmentId, StudentId, StudentName, AssignmentTitle and SubmittedAt.
+    /// </summary>
     public class StructureInfo
     {
         public int Id { get; set; }
@@ -451,7 +458,10 @@ public class Game1Database
         public string DisplayName =>
             $"{AssignmentTitle} - {StudentName} ({SubmittedAt?.ToString("g") ?? "No date"})";
     }
-
+    /// <summary>
+    /// the class representing an assignment in the database with properties for
+    ///  Id, Title, Description and TeacherId.
+    /// </summary>
     public class Assignment
     {
         public int Id { get; set; }
@@ -459,7 +469,10 @@ public class Game1Database
         public string Description { get; set; }
         public int TeacherId { get; set; }
     }
-
+    
+    /// <summary>
+    /// the class representing user roles in the database with static readonly properties for Teacher and Student role IDs.
+    /// </summary>
     public class Roles
     {
         public static readonly int Teacher = 1;
