@@ -112,7 +112,6 @@ public class RectangleCollider(Rectangle rectangle) : Collider
 
     public override Collider DeepCopy() => new RectangleCollider(Rectangle);
 
-
     /// <summary>
     /// Determines if the given point is contained within the rectangle collider and calculates the closest point on the rectangle to the given point.
     /// </summary>
@@ -159,9 +158,8 @@ public class RectangleCollider(Rectangle rectangle) : Collider
     }
 }
 
-
 /// <summary>
-/// The SeperatedAxisRectangleCollider class represents a rectangle collider that can be rotated and uses the Separating Axis Theorem (SAT) for collision detection. 
+/// The SeperatedAxisRectangleCollider class represents a rectangle collider that can be rotated and uses the Separating Axis Theorem (SAT) for collision detection.
 /// </summary>
 public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
 {
@@ -244,8 +242,9 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
             ),
             angle
         );
+
     /// <summary>
-    /// recreates the axes and vertices of the rectangle collider based on the current angle and half width and half height of the rectangle. 
+    /// recreates the axes and vertices of the rectangle collider based on the current angle and half width and half height of the rectangle.
     /// </summary>
     private void SetAxis()
     {
@@ -336,9 +335,8 @@ public class SeperatedAxisRectangleCollider : PolygonSeperatedAxisCollider
     }
 }
 
-
 /// <summary>
-/// general polygon collider that uses the Separating Axis Theorem (SAT) for collision detection, which can represent any shape not self intersectiong such as rectangles, triangles, and more complex polygons. 
+/// general polygon collider that uses the Separating Axis Theorem (SAT) for collision detection, which can represent any shape not self intersectiong such as rectangles, triangles, and more complex polygons.
 /// </summary>
 public class PolygonSeperatedAxisCollider : Collider
 {

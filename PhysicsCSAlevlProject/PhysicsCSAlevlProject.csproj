@@ -22,6 +22,8 @@
     <Compile Include="Game1.Core.cs" />
     <Compile Include="Game1.Physics.cs" />
     <Compile Include="Game1.Update.cs" />
+    <Compile Include="Game1.Update.Input.cs" />
+    <Compile Include="Game1.Update.Physics.cs" />
     <Compile Include="Game1.Render.cs" />
     <Compile Include="Game1.ImGui.Core.cs" />
     <Compile Include="Game1.ImGui.MenuBar.cs" />

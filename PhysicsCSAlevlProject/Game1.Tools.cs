@@ -637,8 +637,9 @@ public partial class Game1
         _windForce = windDirection * (windDistance / 50f) * strength;
         _logger.AddLog($"Wind applied: force {_windForce}");
     }
+
     /// <summary>
-    /// cuts all sticks within a segment of a line 
+    /// cuts all sticks within a segment of a line
     /// </summary>
     /// <param name="lineStart"></param>
     /// <param name="lineEnd"></param>
@@ -768,8 +769,9 @@ public partial class Game1
             _activeMesh.Particles[kvp.Key] = particle;
         }
     }
+
     /// <summary>
-    /// Inspects particles within a rectangle defined by two corner points and either logs their information to the console or visually highlights them in the mesh, 
+    /// Inspects particles within a rectangle defined by two corner points and either logs their information to the console or visually highlights them in the mesh,
     /// </summary>
     /// <param name="rectStart"></param>
     /// <param name="rectEnd"></param>
@@ -803,6 +805,7 @@ public partial class Game1
             }
         }
     }
+
     /// <summary>
     /// gets all partices in a rectangle defined by two corner points used for inspection
     /// </summary>
@@ -892,8 +895,9 @@ public partial class Game1
         _meshHistory.Push(_activeMesh.DeepCopy());
         _meshRedoHistory.Clear();
     }
+
     /// <summary>
-    /// creates a recangle from two points 
+    /// creates a recangle from two points
     /// </summary>
     /// <param name="point1"></param>
     /// <param name="point2"></param>

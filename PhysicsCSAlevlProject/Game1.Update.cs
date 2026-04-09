@@ -16,22 +16,27 @@ public partial class Game1
     /// the current wind force being applied by the wind tool
     /// </summary>
     private Vector2 _windForce;
+
     /// <summary>
     /// the arrow primitive used to show the direction and strength of the wind tool while dragging
     /// </summary>
     private VectorGraphics.PrimitiveBatch.Arrow _windDirectionArrow;
+
     /// <summary>
     /// the line primitive used to show where the cut tool will cut while dragging and other tools where a line is used to show the area of effect
     /// </summary>
     private VectorGraphics.PrimitiveBatch.Line _cutLine;
+
     /// <summary>
     /// a list of particle IDs that are currently within the area of effect of a tool that is being dragged
     /// </summary>
     private List<int> _meshParticlesInDragArea;
+
     /// <summary>
-    /// the collider that is currently being dragged by the Move Collider tool, 
+    /// the collider that is currently being dragged by the Move Collider tool,
     /// </summary>
     private Collider _draggedCollider;
+
     /// <summary>
     /// initializes variables used in the Update method,
     /// </summary>
@@ -43,6 +48,7 @@ public partial class Game1
         _cutLine = null;
         _meshParticlesInDragArea = new();
     }
+
     /// <summary>
     /// main game loop for everything not related to drawing
     /// </summary>
@@ -57,79 +63,9 @@ public partial class Game1
         bool shiftHeld =
             keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
 
-        if (
-            ctrlHeld
-            && !shiftHeld
-            && keyboardState.IsKeyDown(Keys.Z)
-            && !_prevKeyboardState.IsKeyDown(Keys.Z)
-        )
-        {
-            if (_meshHistory.Count > 0)
-            {
-                _meshRedoHistory.Push(_activeMesh.DeepCopy());
-                _activeMesh = _meshHistory.Pop();
-                _logger.AddLog("Undid last action", ImGuiLogger.LogTypes.Info);
-                _paused = true;
-            }
-            else
-            {
-                _logger.AddLog("No more history to undo", ImGuiLogger.LogTypes.Warning);
-            }
-        }
-        else if (
-            ctrlHeld
-            && shiftHeld
-            && keyboardState.IsKeyDown(Keys.Z)
-            && !_prevKeyboardState.IsKeyDown(Keys.Z)
-        )
-        {
-            if (_meshRedoHistory.Count > 0)
-            {
-                _meshHistory.Push(_activeMesh.DeepCopy());
-                _activeMesh = _meshRedoHistory.Pop();
-                _logger.AddLog("Redid action", ImGuiLogger.LogTypes.Info);
-                _paused = true;
-            }
-            else
-            {
-                _logger.AddLog("No more history to redo", ImGuiLogger.LogTypes.Warning);
-            }
-        }
-
-        if (_currentToolSet.ContainsKey("Cursor Collider"))
-        {
-            var props = _currentToolSet["Cursor Collider"].Properties;
-            float radius = props.TryGetValue("Radius", out var prop) ? (float)prop : 20f;
-            string shape = props.TryGetValue("Shape", out var prop1) ? (string)prop1 : "Circle";
-            if (_cursorColliderStore.TryGetValue(shape, out var collider))
-            {
-                _cursorCollider = collider;
-            }
-            UpdateCursorColliderSize(radius);
-        }
-
-        if (keyboardState.IsKeyDown(Keys.Escape) && !_prevKeyboardState.IsKeyDown(Keys.Escape))
-        {
-            _paused = !_paused;
-            MeshHistoryPush();
-            if (_paused)
-            {
-                _logger.AddLog("Simulation paused", ImGuiLogger.LogTypes.Info);
-            }
-            else
-            {
-                _logger.AddLog("Simulation resumed", ImGuiLogger.LogTypes.Info);
-            }
-        }
-
-        if (
-            _paused
-            && keyboardState.IsKeyDown(Keys.Space)
-            && !_prevKeyboardState.IsKeyDown(Keys.Space)
-        )
-        {
-            _stepsToStep = 1;
-        }
+        HandleUndoRedoShortcuts(keyboardState, ctrlHeld, shiftHeld);
+        UpdateCursorColliderFromToolSettings();
+        HandlePauseAndStepHotkeys(keyboardState);
 
         if (!_paused)
         {
@@ -143,625 +79,15 @@ public partial class Game1
 
         bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
 
-        if (!imguiWantsMouse)
-        {
-            IsMouseVisible = false;
-            if (_leftPressed && _windowBounds.Contains(_initialMousePosWhenPressed) && IsActive)
-            {
-                var clampedPos = new Vector2(
-                    MathHelper.Clamp(currentMousePos.X, 0, _windowBounds.Width),
-                    MathHelper.Clamp(currentMousePos.Y, 0, _windowBounds.Height)
-                );
-                Mouse.SetPosition((int)clampedPos.X, (int)clampedPos.Y);
-            }
-
-            if (mouseState.LeftButton == ButtonState.Pressed && !_leftPressed)
-            {
-                _leftPressed = true;
-                _initialMousePosWhenPressed = currentMousePos;
-                _previousMousePos = currentMousePos;
-
-                float radius;
-                switch (_selectedToolName)
-                {
-                    case "Drag":
-
-                        if (_currentMode == MeshMode.Interact)
-                        {
-                            var props = _currentToolSet["Drag"].Properties;
-                            bool infiniteParticles =
-                                props.ContainsKey("InfiniteParticles")
-                                && (bool)props["InfiniteParticles"];
-                            int maxParticles = infiniteParticles
-                                ? -1
-                                : (
-                                    props.TryGetValue("MaxParticles", out var prop1)
-                                        ? (int)prop1
-                                        : -1
-                                );
-
-                            _meshParticlesInDragArea = GetMeshParticlesInRadius(
-                                _initialMousePosWhenPressed,
-                                props.TryGetValue("Radius", out var prop)
-                                    ? (float)prop
-                                    : _dragRadius,
-                                maxParticles
-                            );
-                            if (_meshParticlesInDragArea.Count == 0)
-                            {
-                                _logger.AddLog(
-                                    "Drag tool: no particles found in radius",
-                                    ImGuiLogger.LogTypes.Warning
-                                );
-                            }
-                        }
-
-                        break;
-                    case "Pin":
-                        {
-                            MeshHistoryPush();
-
-                            float pinRadius = _currentToolSet["Pin"]
-                                .Properties.ContainsKey("Radius")
-                                ? (float)_currentToolSet["Pin"].Properties["Radius"]
-                                : _dragRadius;
-
-                            PinParticleBuildable(_initialMousePosWhenPressed, pinRadius);
-                        }
-                        break;
-                    case "Cut":
-                        MeshHistoryPush();
-                        radius =
-                            _currentToolSet["Cut"].Properties["Radius"] != null
-                                ? (float)_currentToolSet["Cut"].Properties["Radius"]
-                                : 10f;
-
-                        CutAllSticksInRadiusBuildable(_initialMousePosWhenPressed, radius);
-
-                        break;
-                    case "Wind":
-                        break;
-                    case "PhysicsDrag":
-                        {
-                            float physRadius = _currentToolSet["PhysicsDrag"]
-                                .Properties.ContainsKey("Radius")
-                                ? (float)_currentToolSet["PhysicsDrag"].Properties["Radius"]
-                                : _dragRadius;
-
-                            if (_currentMode == MeshMode.Interact)
-                            {
-                                _meshParticlesInDragArea = GetMeshParticlesInRadius(
-                                    _initialMousePosWhenPressed,
-                                    physRadius
-                                );
-                                if (_meshParticlesInDragArea.Count == 0)
-                                {
-                                    _logger.AddLog(
-                                        "PhysicsDrag tool: no particles found in radius",
-                                        ImGuiLogger.LogTypes.Warning
-                                    );
-                                }
-                            }
-                        }
-                        break;
-                    case "LineCut":
-                        break;
-                    case "Add Stick Between Particles":
-                        {
-                            MeshHistoryPush();
-                            HandleAddStickBetweenParticlesClick(_initialMousePosWhenPressed);
-                        }
-                        break;
-                    case "Add Particle":
-                        {
-                            MeshHistoryPush();
-                            float particleMass = _currentToolSet["Add Particle"]
-                                .Properties.ContainsKey("Mass")
-                                ? (float)_currentToolSet["Add Particle"].Properties["Mass"]
-                                : 1f;
-                            _activeMesh.AddParticle(
-                                _initialMousePosWhenPressed,
-                                particleMass,
-                                false,
-                                Color.White
-                            );
-                            _logger.AddLog(
-                                $"Added particle at {_initialMousePosWhenPressed} (mass {particleMass}) (ID {_activeMesh.NextParticle - 1})"
-                            );
-                        }
-                        break;
-                    case "Remove Particle":
-                        {
-                            MeshHistoryPush();
-                            float removeRadius = _currentToolSet["Remove Particle"]
-                                .Properties.ContainsKey("Radius")
-                                ? (float)_currentToolSet["Remove Particle"].Properties["Radius"]
-                                : 10f;
-                            var pS = GetMeshParticlesInRadius(
-                                _initialMousePosWhenPressed,
-                                removeRadius,
-                                1
-                            );
-                            if (pS.Count > 0)
-                            {
-                                _activeMesh.RemoveParticle(pS[0]);
-                                _logger.AddLog($"Removed particle {pS[0]} (ID {pS[0]})");
-                            }
-                            else
-                            {
-                                _logger.AddLog(
-                                    "Remove Particle tool: no particle found in radius",
-                                    ImGuiLogger.LogTypes.Warning
-                                );
-                            }
-                        }
-                        break;
-                    case "Inspect Particles":
-                        {
-                            float inspectRadius = _currentToolSet["Inspect Particles"]
-                                .Properties.ContainsKey("Radius")
-                                ? (float)_currentToolSet["Inspect Particles"].Properties["Radius"]
-                                : 10f;
-                            if (
-                                _currentToolSet["Inspect Particles"].Properties.ContainsKey("IsLog")
-                                && (bool)_currentToolSet["Inspect Particles"].Properties["IsLog"]
-                            )
-                                InspectParticlesInRadiusLog(
-                                    _initialMousePosWhenPressed,
-                                    inspectRadius
-                                );
-                            else if (
-                                !_currentToolSet["Inspect Particles"]
-                                    .Properties.ContainsKey("SelectRectangle")
-                            )
-                                InspectParticlesInRadiusWindow(
-                                    _initialMousePosWhenPressed,
-                                    inspectRadius
-                                );
-                        }
-                        break;
-                    case "Oscillating Particle":
-                        {
-                            MeshHistoryPush();
-                            float mass = _currentToolSet["Oscillating Particle"]
-                                .Properties.ContainsKey("Mass")
-                                ? (float)_currentToolSet["Oscillating Particle"].Properties["Mass"]
-                                : 1f;
-                            float amplitude = _currentToolSet["Oscillating Particle"]
-                                .Properties.ContainsKey("Amplitude")
-                                ? (float)
-                                    _currentToolSet["Oscillating Particle"].Properties["Amplitude"]
-                                : 20f;
-                            float frequency = _currentToolSet["Oscillating Particle"]
-                                .Properties.ContainsKey("Frequency")
-                                ? (float)
-                                    _currentToolSet["Oscillating Particle"].Properties["Frequency"]
-                                : 1f;
-                            float angle = _currentToolSet["Oscillating Particle"]
-                                .Properties.ContainsKey("Angle")
-                                ? (float)_currentToolSet["Oscillating Particle"].Properties["Angle"]
-                                : 0f;
-
-                            var op = new OscillatingParticle(
-                                _initialMousePosWhenPressed,
-                                mass,
-                                true,
-                                Color.White,
-                                amplitude,
-                                frequency,
-                                angle
-                            );
-                            _activeMesh.AddParticle(
-                                _initialMousePosWhenPressed,
-                                mass,
-                                true,
-                                Color.White,
-                                null,
-                                op
-                            );
-                            _logger.AddLog(
-                                $"Added oscillating particle at {_initialMousePosWhenPressed} (mass {mass}, amplitude {amplitude}, frequency {frequency})"
-                            );
-                        }
-                        break;
-                    case "Place Collider":
-                        var properties = _currentToolSet["Place Collider"].Properties;
-                        if (properties["SelectedColliderType"] == null)
-                            break;
-                        if (properties["SelectedColliderType"].ToString() == "Circle")
-                        {
-                            var colliderObject = properties["Object"] as Dictionary<string, object>;
-                            colliderObject =
-                                colliderObject != null
-                                && colliderObject.TryGetValue("Circle", out var circleObj)
-                                && circleObj is Dictionary<string, object> circleDict
-                                    ? circleDict
-                                    : null;
-
-                            MeshHistoryPush();
-                            radius = colliderObject.ContainsKey("Radius")
-                                ? (float)colliderObject["Radius"]
-                                : 20f;
-                            var collider = new CircleCollider(_initialMousePosWhenPressed, radius);
-                            _activeMesh.Colliders.Add(collider);
-                            _logger.AddLog(
-                                $"Placed circle collider at {_initialMousePosWhenPressed} with radius {radius}"
-                            );
-                        }
-                        else if (properties["SelectedColliderType"].ToString() == "Rectangle")
-                        {
-                            var colliderObject = properties["Object"] as Dictionary<string, object>;
-                            var rectProps =
-                                colliderObject != null
-                                && colliderObject.TryGetValue("Rectangle", out var rectObj)
-                                && rectObj is Dictionary<string, object> rectDict
-                                    ? rectDict
-                                    : null;
-
-                            float height =
-                                rectProps != null
-                                && rectProps.TryGetValue("Height", out var heightObj)
-                                    ? Convert.ToSingle(heightObj)
-                                    : 20f;
-                            float width =
-                                rectProps != null
-                                && rectProps.TryGetValue("Width", out var widthObj)
-                                    ? Convert.ToSingle(widthObj)
-                                    : 20f;
-                            float angle =
-                                rectProps != null
-                                && rectProps.TryGetValue("Rotation", out var angleObj)
-                                    ? Convert.ToSingle(angleObj)
-                                    : 0f;
-
-                            MeshHistoryPush();
-                            var collider = new SeperatedAxisRectangleCollider(
-                                new Rectangle(
-                                    (int)(_initialMousePosWhenPressed.X - width / 2f),
-                                    (int)(_initialMousePosWhenPressed.Y - height / 2f),
-                                    (int)width,
-                                    (int)height
-                                ),
-                                angle
-                            );
-                            _activeMesh.Colliders.Add(collider);
-                            _logger.AddLog(
-                                $"Placed rectangle collider at {_initialMousePosWhenPressed} with width {width} and height {height}"
-                            );
-                        }
-
-                        break;
-                    case "Delete Collider":
-
-                        for (int i = _activeMesh.Colliders.Count - 1; i >= 0; i--)
-                        {
-                            var collider = _activeMesh.Colliders[i];
-                            if (collider.ContainsPoint(currentMousePos, out _))
-                            {
-                                MeshHistoryPush();
-                                _activeMesh.Colliders.RemoveAt(i);
-                                _logger.AddLog($"Deleted collider at {currentMousePos}");
-                                break;
-                            }
-                        }
-
-                        break;
-                    case "Move Collider":
-                        _draggedCollider = null;
-                        if (_activeMesh != null && _activeMesh.Colliders != null)
-                        {
-                            foreach (var collider in _activeMesh.Colliders)
-                            {
-                                if (collider != null)
-                                {
-                                    try
-                                    {
-                                        if (collider.ContainsPoint(currentMousePos, out _))
-                                        {
-                                            _draggedCollider = collider;
-                                            break;
-                                        }
-                                    }
-                                    catch { }
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
-            else if (mouseState.LeftButton == ButtonState.Released)
-            {
-                if (_selectedToolName == "Wind" && _leftPressed)
-                {
-                    ApplyWindForceFromDrag(
-                        _initialMousePosWhenPressed,
-                        currentMousePos,
-                        _dragRadius
-                    );
-                }
-                else if (
-                    _selectedToolName == "LineCut"
-                    && _leftPressed
-                    && _currentMode != MeshMode.Edit
-                )
-                {
-                    MeshHistoryPush();
-                    Vector2 cutDirection = currentMousePos - _initialMousePosWhenPressed;
-                    float cutDistance = cutDirection.Length();
-                    if (cutDistance > 5f)
-                    {
-                        CutSticksAlongLine(_initialMousePosWhenPressed, currentMousePos);
-                    }
-                    else
-                    {
-                        _logger.AddLog(
-                            "LineCut tool: drag too short to cut",
-                            ImGuiLogger.LogTypes.Warning
-                        );
-                    }
-                }
-                else if (
-                    _selectedToolName == "Select Particles"
-                    && _leftPressed
-                    && _currentMode != MeshMode.Edit
-                    && _currentToolSet["Select Particles"].Properties.ContainsKey("RectangleSelect")
-                    && (bool)_currentToolSet["Select Particles"].Properties["RectangleSelect"]
-                )
-                {
-                    InspectParticlesInRectangle(
-                        _initialMousePosWhenPressed,
-                        currentMousePos,
-                        _currentToolSet["Select Particles"].Properties.ContainsKey("IsLog")
-                            && (bool)_currentToolSet["Select Particles"].Properties["IsLog"],
-                        _currentToolSet["Select Particles"].Properties.ContainsKey("Clear When Use")
-                            && (bool)
-                                _currentToolSet["Select Particles"].Properties["Clear When Use"]
-                    );
-                }
-                else if (_selectedToolName == "Line Tool" && _leftPressed)
-                {
-                    MeshHistoryPush();
-                    var props = _currentToolSet["Line Tool"].Properties;
-                    int constraintsInLine = (int)props["Constraints in Line"];
-                    float naturalLengthRatio = (float)props["Natural Length Ratio"];
-
-                    _activeMesh.AddSticksAccrossLength(
-                        _initialMousePosWhenPressed,
-                        currentMousePos,
-                        constraintsInLine,
-                        naturalLengthRatio
-                    );
-                }
-
-                _leftPressed = false;
-                _initialMousePosWhenPressed = Vector2.Zero;
-                _windDirectionArrow = null;
-                _cutLine = null;
-                _selectRectangle = null;
-                _windForce = Vector2.Zero;
-                _draggedCollider = null;
-            }
-        }
-        else
-        {
-            IsMouseVisible = true;
-        }
-
-        if (_selectedToolName == "Wind" && _leftPressed)
-        {
-            Vector2 windDirection = currentMousePos - _initialMousePosWhenPressed;
-            float windDistance = windDirection.Length();
-
-            float minDist = _currentToolSet["Wind"].Properties.ContainsKey("MinDistance")
-                ? (float)_currentToolSet["Wind"].Properties["MinDistance"]
-                : 5f;
-            if (windDistance > minDist)
-            {
-                float arrowThickness = _currentToolSet["Wind"]
-                    .Properties.ContainsKey("ArrowThickness")
-                    ? (float)_currentToolSet["Wind"].Properties["ArrowThickness"]
-                    : 3f;
-                _windDirectionArrow = new VectorGraphics.PrimitiveBatch.Arrow(
-                    _initialMousePosWhenPressed,
-                    currentMousePos,
-                    Color.Cyan,
-                    arrowThickness
-                );
-
-                float strength = _currentToolSet["Wind"].Properties.ContainsKey("StrengthScale")
-                    ? (float)_currentToolSet["Wind"].Properties["StrengthScale"]
-                    : 1.0f;
-                _windForce = !_paused
-                    ? windDirection * (windDistance / 50f) * strength
-                    : Vector2.Zero;
-            }
-            else
-            {
-                _windDirectionArrow = null;
-                _windForce = Vector2.Zero;
-            }
-        }
-        else if (
-            _selectedToolName == "LineCut" && _leftPressed
-            || _selectedToolName == "Line Tool" && _leftPressed
-        )
-        {
-            Vector2 cutDirection = currentMousePos - _initialMousePosWhenPressed;
-            float cutDistance = cutDirection.Length();
-            float minDist = _currentToolSet[_selectedToolName].Properties.ContainsKey("MinDistance")
-                ? (float)_currentToolSet[_selectedToolName].Properties["MinDistance"]
-                : 5f;
-            if (cutDistance > minDist)
-            {
-                float thickness = _currentToolSet[_selectedToolName]
-                    .Properties.ContainsKey("Thickness")
-                    ? (float)_currentToolSet[_selectedToolName].Properties["Thickness"]
-                    : 3f;
-                _cutLine = new VectorGraphics.PrimitiveBatch.Line(
-                    _initialMousePosWhenPressed,
-                    currentMousePos,
-                    Color.Red,
-                    thickness
-                );
-            }
-            else
-            {
-                _cutLine = null;
-            }
-        }
-        else if (_selectedToolName == "Create Grid Mesh")
-        {
-            var props = _currentToolSet["Create Grid Mesh"].Properties;
-            float distance = (float)props["DistanceBetweenParticles"];
-            if (keyboardState.IsKeyDown(Keys.C) && !_prevKeyboardState.IsKeyDown(Keys.C))
-            {
-                MeshHistoryPush();
-                _activeMesh = Mesh.CreateGridMesh(
-                    _initialMousePosWhenPressed,
-                    currentMousePos,
-                    distance,
-                    _activeMesh
-                );
-            }
-
-            if (_leftPressed)
-                _selectRectangle = new VectorGraphics.PrimitiveBatch.Rectangle(
-                    GetRectangleFromPoints(_initialMousePosWhenPressed, currentMousePos),
-                    new Color(Color.DarkGreen, 0.05f),
-                    true,
-                    2,
-                    Color.Yellow
-                );
-            else
-            {
-                _selectRectangle = null;
-            }
-        }
-        else if (_selectedToolName == "Select Particles")
-        {
-            var props = _currentToolSet["Select Particles"].Properties;
-
-            if (props.ContainsKey("RectangleSelect") && _leftPressed)
-            {
-                _selectRectangle = new VectorGraphics.PrimitiveBatch.Rectangle(
-                    GetRectangleFromPoints(_initialMousePosWhenPressed, currentMousePos),
-                    new Color(Color.Green, 0.05f),
-                    true,
-                    2,
-                    Color.Green
-                );
-            }
-            else
-            {
-                _selectRectangle = null;
-            }
-        }
-        else if (_selectedToolName == "Add Polygon")
-        {
-            _activeMesh.BuildPolygon(
-                keyboardState,
-                _prevKeyboardState,
-                mouseState,
-                _prevMouseState,
-                imguiWantsMouse,
-                MeshHistoryPush
-            );
-        }
-        int stepsThisFrame = 0;
-        const int maxStepsPerFrame = 10000;
-        int subSteps = Math.Max(1, _subSteps);
-        Vector2 mouseDelta = currentMousePos - _previousMousePos;
-        int plannedStepsThisFrame = _paused
-            ? _stepsToStep
-            : Math.Min((int)(_timeAccumulator / FixedTimeStep), maxStepsPerFrame);
-        int totalIterations = Math.Max(1, plannedStepsThisFrame * subSteps);
-        Vector2 deltaPerIteration = mouseDelta / totalIterations;
-
-        while (
-            (_timeAccumulator >= FixedTimeStep || _stepsToStep > 0)
-            && stepsThisFrame < maxStepsPerFrame
-        )
-        {
-            float subDt = FixedTimeStep / subSteps;
-
-            for (int subStepIndex = 0; subStepIndex < subSteps; subStepIndex++)
-            {
-                foreach (var particle in _activeMesh.Particles.Values)
-                {
-                    particle.AccumulatedForce = Vector2.Zero;
-                }
-                if (!_useConstraintSolver)
-                {
-                    ApplyStickForcesDictionary(_activeMesh.Sticks, 1f);
-                }
-                float iterationLerpFactor = 1f / (stepsThisFrame + 1f);
-
-                Vector2 cursorCenter = GetCursorColliderCenter();
-                cursorCenter = Vector2.Lerp(cursorCenter, currentMousePos, iterationLerpFactor);
-                SetCursorColliderCenter(cursorCenter);
-
-                if (
-                    _leftPressed
-                    && _selectedToolName == "Drag"
-                    && _currentMode == MeshMode.Interact
-                )
-                {
-                    foreach (int particleId in _meshParticlesInDragArea)
-                    {
-                        if (
-                            _activeMesh.Particles.TryGetValue(particleId, out var particle)
-                            && !particle.IsPinned
-                        )
-                        {
-                            particle.PreviousPosition = particle.Position;
-                            particle.Position += deltaPerIteration;
-                        }
-                    }
-                }
-
-                UpdateParticles(subDt);
-            }
-
-            if (_stepsToStep > 0)
-                _stepsToStep--;
-            else
-                _timeAccumulator -= FixedTimeStep;
-
-            stepsThisFrame++;
-        }
-
-        if (stepsThisFrame == maxStepsPerFrame)
-        {
-            _timeAccumulator = Math.Min(_timeAccumulator, FixedTimeStep);
-        }
-
-        UpdateStickColorsDictionary(_activeMesh.Sticks);
-
-        if (_selectedToolName == "Drag")
-        {
-            foreach (int particleId in _meshParticlesInDragArea)
-            {
-                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
-                {
-                    particle.Color = _leftPressed ? Color.Yellow : Color.White;
-                    if (_paused)
-                        DragMeshParticles(mouseState, _leftPressed, _meshParticlesInDragArea);
-                }
-            }
-        }
-       
-        else if (_selectedToolName == "Move Collider" && _draggedCollider != null && _leftPressed)
-        {
-            Vector2 delta = currentMousePos - _previousMousePos;
-            if (delta.LengthSquared() > 0)
-            {
-                _draggedCollider.Position += delta;
-            }
-        }
-        // else if (_selectedToolName == "Move Collider" && mouseState.RightButton == ButtonState.Pressed && !_prevMouseState.RightButton.HasFlag(ButtonState.Pressed))
-        // {
-        //     ...
-        // }
+        HandleMouseAndToolInput(mouseState, currentMousePos, imguiWantsMouse);
+        UpdateActiveToolVisualsAndActions(
+            keyboardState,
+            mouseState,
+            currentMousePos,
+            imguiWantsMouse
+        );
+        RunPhysicsUpdate(currentMousePos);
+        ApplyPostPhysicsToolEffects(mouseState, currentMousePos);
 
         _previousMousePos = currentMousePos;
 
@@ -784,6 +110,7 @@ public partial class Game1
 
         return Vector2.Zero;
     }
+
     /// <summary>
     /// sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect,
     /// </summary>
@@ -807,6 +134,7 @@ public partial class Game1
             );
         }
     }
+
     /// <summary>
     /// updates the size of the cursor collider based on a given radius,
     /// which is used for tools that require a circular or square area of effect around the cursor.

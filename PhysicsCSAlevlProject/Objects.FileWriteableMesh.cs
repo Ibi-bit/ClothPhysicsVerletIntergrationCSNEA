@@ -19,6 +19,7 @@ class FileWriteableMesh
         public float Frequency;
         public float Angle;
     }
+
     /// <summary>
     /// stores the data for a particle in a way that can be easily serialized to json
     /// </summary>
@@ -30,6 +31,7 @@ class FileWriteableMesh
         public string ParticleKind;
         public OscillationData Oscillation;
     }
+
     /// <summary>
     /// stores the data for a stick in a way that can be easily serialized to json
     /// </summary>
@@ -38,7 +40,7 @@ class FileWriteableMesh
         public int P1Id;
         public int P2Id;
     }
-    
+
     public List<particleData> Particles = new List<particleData>();
 
     public List<stickData> Sticks = new List<stickData>();

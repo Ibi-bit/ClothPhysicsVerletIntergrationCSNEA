@@ -8,6 +8,10 @@ using VectorGraphics;
 
 namespace PhysicsCSAlevlProject;
 
+
+/// <summary>
+/// The Mesh class stores everything that should be loadable in and savebal for undo/redo functionality to file saving
+/// </summary>
 class Mesh
 {
     /// <summary>
