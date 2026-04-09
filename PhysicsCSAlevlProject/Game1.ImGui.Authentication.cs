@@ -9,6 +9,9 @@ namespace PhysicsCSAlevlProject;
 /// </summary>
 public partial class Game1
 {
+    /// <summary>
+    /// displays the sign in window  where all users can inout username and password to sign in
+    /// </summary>
     private void DrawSignInWindow()
     {
         if (!ImGui.Begin("Sign In", ref _showSignInWindow))
@@ -60,7 +63,9 @@ public partial class Game1
 
         ImGui.End();
     }
-
+    /// <summary>
+    /// displays all assignments for the user seperated by teacher in a menu
+    /// </summary>
     private void DrawAssignmentMenuItems()
     {
         if (_currentUser == null)
@@ -101,7 +106,9 @@ public partial class Game1
             }
         }
     }
-
+    /// <summary>
+    /// diisplayes the assignment winow where teachers can create assigments and view existing one and the students work for each assignment
+    /// </summary>
     private void DrawTeacherAssignmentsWindow()
     {
         if (
@@ -249,7 +256,10 @@ public partial class Game1
 
         ImGui.End();
     }
-
+    /// <summary>
+    /// the pop up window that appears for when a user wants to upload work for an a ssignemnt
+    /// </summary>
+    /// <param name="assignment"></param>
     private void PopUpSaveProjectToAssignment(Game1Database.Assignment assignment)
     {
         if (ImGui.BeginPopupModal("SaveToAssignmentPopup"))

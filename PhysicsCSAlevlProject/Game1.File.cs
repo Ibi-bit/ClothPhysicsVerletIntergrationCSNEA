@@ -21,7 +21,12 @@ public partial class Game1
             NullValueHandling = NullValueHandling.Ignore,
         };
     }
-
+    /// <summary>
+    /// saves the given mesh to a JSOn file at the given filepath
+    /// </summary>
+    /// <param name="mesh"></param>
+    /// <param name="Name"></param>
+    /// <param name="filePath"></param>
     private void SaveMeshToJSON(Mesh mesh, string Name, string filePath)
     {
         try
@@ -44,7 +49,11 @@ public partial class Game1
             );
         }
     }
-
+    /// <summary>
+    /// returns a json string of the mesh used to save to the database
+    /// </summary>
+    /// <param name="mesh"></param>
+    /// <returns>JSON String</returns>
     private string SaveMeshToJsonString(Mesh mesh)
     {
         try
@@ -63,6 +72,11 @@ public partial class Game1
             return string.Empty;
         }
     }
+    /// <summary>
+    /// attempts to load a Mesh from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns></returns>
 
     private Mesh LoadMeshFromJSON(string filePath)
     {
@@ -89,6 +103,11 @@ public partial class Game1
             return _activeMesh;
         }
     }
+    /// <summary>
+    /// converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh
+    /// </summary>
+    /// <param name="json"></param>
+    /// <returns></returns>
 
     private Mesh LoadMeshFromJsonString(string json)
     {
@@ -115,11 +134,11 @@ public partial class Game1
         }
     }
 
-    protected override bool BeginDraw()
-    {
-        return base.BeginDraw();
-    }
-
+    /// <summary>
+    /// loads all mesh from a a directory path and returns a dictionary  of the meshes with the key being the filename
+    /// </summary>
+    /// <param name="directoryPath"></param>
+    /// <returns>Dictionary of FileName and Mesh</returns>
     private Dictionary<string, Mesh> LoadAllMeshesFromDirectory(string directoryPath)
     {
         if (!System.IO.Directory.Exists(directoryPath))

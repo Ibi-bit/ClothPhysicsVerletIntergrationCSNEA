@@ -22,7 +22,10 @@ public partial class Game1
         _drawParticles = true;
         _drawConstraints = true;
     }
-
+    /// <summary>
+    /// the central draw loop for the application where every other draw function is called from 
+    /// </summary>
+    /// <param name="gameTime"></param>
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);

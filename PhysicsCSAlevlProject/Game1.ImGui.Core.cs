@@ -192,7 +192,9 @@ public partial class Game1
     /// stores the input field for creating a new assignment due date in the teacher assignments window
     /// </summary>
     private string _newAssignmentDueDate = "";
-
+    /// <summary>
+    /// initializes ImGui related variables and state
+    /// </summary>
     private void InitializeImGui()
     {
         _showConfigurationWindow = false;
@@ -268,7 +270,10 @@ public partial class Game1
         _commandRegistry.RegisterType(this, typeof(Game1));
         _commandRegistry.RegisterType(_activeMesh, typeof(Mesh));
     }
-
+    /// <summary>
+    /// main drawing fucntion for imgui called every frame  in the main draw loop 
+    /// </summary>
+    /// <param name="gameTime"></param>
     private void ImGuiDraw(GameTime gameTime)
     {
         _guiRenderer.BeginLayout(gameTime);
@@ -326,7 +331,9 @@ public partial class Game1
 
         _guiRenderer.EndLayout();
     }
-
+    /// <summary>
+    /// opens all pop up windows based on their respective toggles and then unset the toggles 
+    /// </summary>
     private void DrawPopUps()
     {
         if (_showConfirmNewMeshPopup)
@@ -359,7 +366,10 @@ public partial class Game1
             ImGui.EndPopup();
         }
     }
-
+    /// <summary>
+    /// handles the switching between interaction modes by using the ImGui input system over monogames and draws the overlay 
+    /// that shows the current mode and the other modes available when shift is held, this allows for quick and intuitive switching between modes without needing to navigate through menus
+    /// </summary>
     private void ModeSwitchingImGui()
     {
         bool isMac = OperatingSystem.IsMacOS();
@@ -394,7 +404,10 @@ public partial class Game1
             }
         }
     }
-
+    
+    /// <summary>
+    /// handles the switching between tools by using the ImGui input system over monogames and draws the overlay that shows the current tool and the other tools available when ctrl is held, this allows for quick and intuitive switching between tools without needing to navigate through menus
+    /// </summary>
     private void ToolSwitchingImGui()
     {
         if (!_ctrlHeld)

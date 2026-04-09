@@ -11,19 +11,21 @@ public class Game1Database
     /// <summary>
     /// The connection string used to connect to the PostgreSQL database,
     /// </summary>
-    private readonly string _connectionString =
-        "Host=localhost;Port=5432;Database=stick_simulation;Username=dev;Password=dev123";
+    private readonly string _connectionString;
 
     /// <summary>
     /// The ImGuiLogger instance used for logging messages related to database operations
     /// </summary>
     public ImGuiLogger logger;
 
-    
+
 
     public Game1Database(ImGuiLogger logger)
     {
         this.logger = logger;
+        _connectionString =
+            Environment.GetEnvironmentVariable("CLOTH_PHYSICS_DB_CONNECTION")
+            ?? "Host=localhost;Port=5432;Database=stick_simulation;Username=dev;Password=dev123";
     }
 
     /// <summary>
@@ -178,7 +180,11 @@ public class Game1Database
 
         return GetUserById(userId);
     }
-
+    /// <summary>
+    /// returns the User class using the userid from the database if fails returns null and logs the error
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     private User GetUserById(int userId)
     {
         using var conn = OpenConnection();
@@ -202,7 +208,12 @@ public class Game1Database
             Password = reader.GetString(3),
         };
     }
-
+    /// <summary>
+    /// Creates a new user in the database with the specified username and role ID.
+    /// </summary>
+    /// <param name="username"></param>
+    /// <param name="roleId"></param>
+    /// <returns></returns>
     public int CreateUser(string username, int roleId)
     {
         using var conn = OpenConnection();
@@ -215,6 +226,14 @@ public class Game1Database
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
 
+    /// <summary>
+    /// Creates a new assignment in the database with the specified title, description, due date, and teacher ID. 
+    /// </summary>
+    /// <param name="title"></param>
+    /// <param name="description"></param>
+    /// <param name="dueDate"></param>
+    /// <param name="teacherId"></param>
+    /// <returns></returns>
     public int CreateAssignment(string title, string description, DateTime? dueDate, int teacherId)
     {
         using var conn = OpenConnection();
@@ -230,7 +249,11 @@ public class Game1Database
         cmd.Parameters.AddWithValue("teacherId", teacherId);
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
-
+    /// <summary>
+    /// gets all structures owned by the given userid
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public List<StructureInfo> GetStructuresForUser(int userId)
     {
         var structures = new List<StructureInfo>();
@@ -283,7 +306,14 @@ public class Game1Database
         var result = cmd.ExecuteScalar();
         return result?.ToString();
     }
-
+    /// <summary>
+    /// saves a structure to the database with the given student ID, content JSON, title and assignment ID.
+    /// </summary>
+    /// <param name="studentId"></param>
+    /// <param name="contentJson"></param>
+    /// <param name="title"></param>
+    /// <param name="assignmentId"></param>
+    /// <returns></returns>
     public int SaveStructureWithName(
         int studentId,
         string contentJson,
@@ -328,6 +358,11 @@ public class Game1Database
 
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
+    /// <summary>
+    /// lists all assignments for a given teacher ID by querying the database and returns a list of Assignment objects 
+    /// </summary>
+    /// <param name="teacherId"></param>
+    /// <returns></returns>
 
     public List<Assignment> GetAssignmentsForTeacher(int teacherId)
     {
@@ -356,7 +391,11 @@ public class Game1Database
 
         return assignments;
     }
-
+    /// <summary>
+    /// returns a list of structures for a given assignment ID used for teachers to view all student submissions for a given assignment
+    /// </summary>
+    /// <param name="assignmentId"></param>
+    /// <returns></returns>
     public List<StructureInfo> GetStructuresForAssignment(int assignmentId)
     {
         var structures = new List<StructureInfo>();

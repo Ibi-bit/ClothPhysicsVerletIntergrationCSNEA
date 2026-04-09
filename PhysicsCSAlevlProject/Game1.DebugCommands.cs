@@ -118,6 +118,7 @@ public partial class Game1
     /// The CommandRegistry is used to store and manage console commands
     /// </summary>
     private CommandRegistry _commandRegistry;
+
     /// <summary>
     /// The mesh that is currently bound to the command registry
     /// </summary>
@@ -228,11 +229,11 @@ public partial class Game1
             );
         }
     }
+
     /// <summary>
     /// adds a particle with parameters for use in the debug console
     /// </summary>
     /// <param name="parameters"></param>
-
     [ConsoleCommand("Particle.Add")]
     private void AddParticle(string[] parameters)
     {
@@ -262,11 +263,11 @@ public partial class Game1
             );
         }
     }
+
     /// <summary>
     /// adds a stick with parameters for use in the debug console
     /// </summary>
     /// <param name="parameters"></param>/
-
     [ConsoleCommand("Stick.Add")]
     private void AddStick(string[] parameters)
     {
@@ -329,6 +330,7 @@ public partial class Game1
         }
     }
 }
+
 /// <summary>
 /// the logger class for ImGui with support for different types of logs, auto condensing for repeated messages and colouring of the logs
 /// also includes a debug console support with command history
@@ -361,21 +363,24 @@ public class ImGuiLogger
         public string ExCommand;
         public string[] Parameters;
     }
+
     /// <summary>
     /// the queue of log messages that have been added and for display  in the imgui fiole
     /// </summary>
-
     readonly Queue<MessageLog> _logs = new();
+
     /// <summary>
     /// the queue of console commands that have been added but not yet processed for execution
     /// </summary>
     readonly Queue<Command> _commands = new();
+
     /// <summary>
     /// the raw text inputed by the user in the debug console input field
     /// </summary>
     private string _commandInput = "";
+
     /// <summary>
-    /// the proccessed log messages that are ready for saving to a file 
+    /// the proccessed log messages that are ready for saving to a file
     /// </summary>
     private List<string> _logStringHistory = new();
     private readonly Dictionary<string, Func<string>> _envVars = new();
@@ -389,6 +394,7 @@ public class ImGuiLogger
     {
         _envVars[name] = resolver;
     }
+
     /// <summary>
     /// replaces the text of any environment variables in the command string with their current values by using regular expressions to find occurrences of $VariableName and replacing them with the output of the corresponding resolver function from the _envVars dictionary
     /// </summary>
@@ -413,17 +419,29 @@ public class ImGuiLogger
     /// saves the text inputed by the user for comand history if the user wants to recall it later with arrow keys
     /// </summary>/
     private readonly List<string> _commandHistory = new();
+
     /// <summary>
-    /// 
+    /// where the user is in the command history
     /// </summary>
     private int _historyIndex = -1;
+
     private string _savedInput = "";
 
+    /// <summary>
+    /// deterimines on wether it should auto scroll the logs to the bottom when a new log is added this is toggled by the user
+    /// </summary>
     public bool autoScrollLogs = true;
+
+    /// <summary>
+    /// deterimes wether the log messages should wrap in the log display
+    /// </summary>
     public bool wrapText = true;
+
+    /// <summary>
+    /// a toggle for if the debug console is supported and should be displayed
+    /// </summary>
     public bool supportDebugConsole = true;
 
-    // public bool clearLogs = false;
     /// <summary>
     /// Dictionary to track the visibility of different log types (info, warning, error) in the debug console. This allows users to filter which types of log messages they want to see by toggling the corresponding checkboxes in the UI. Each log type can be shown or hidden based on the user's preference, making it easier to focus on specific types of messages when debugging. For example, a user might choose to hide info messages and only show warnings and errors to quickly identify issues without being overwhelmed by less critical information.
     /// </summary>
@@ -509,13 +527,25 @@ public class ImGuiLogger
         );
     }
 
+    /// <summary>
+    /// attempts to dequeue a command from the command queue if the command one is avoable it is returned through out
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns></returns>
     public bool TryDequeueCommand(out Command command)
     {
         return _commands.TryDequeue(out command);
     }
 
+    /// <summary>
+    /// returns true if there are pending commands in the command queue
+    /// </summary>
     public bool HasPendingCommands => _commands.Count > 0;
 
+    /// <summary>
+    /// draws all logs in ImGui with options to filter by log type, auto scroll and wrap text.
+    /// </summary>
+    /// <param name="openWindow"></param>
     public void DrawLogs(ref bool openWindow)
     {
         if (!ImGui.Begin("Logs", ref openWindow))
@@ -628,12 +658,20 @@ public class ImGuiLogger
         ImGui.End();
     }
 
+    /// <summary>
+    /// converts all of the logs to a string to be saved to a log file
+    /// </summary>
+    /// <returns></returns>
     public string GetLogsAsString()
     {
         string historyString = string.Join(Environment.NewLine, _logStringHistory);
         return historyString;
     }
 
+    /// <summary>
+    /// saves logs to a file in the specified file path
+    /// </summary>
+    /// <param name="filePath"></param>
     public void SaveLogsToFile(string filePath)
     {
         try

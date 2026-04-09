@@ -11,6 +11,10 @@ namespace PhysicsCSAlevlProject;
 /// </summary>
 public partial class Game1
 {
+    
+    /// <summary>
+    /// draws the main menu bar at the top of the screen
+    /// </summary>
     private void DrawMainMenuBar()
     {
         if (!ImGui.BeginMainMenuBar())
@@ -166,7 +170,9 @@ public partial class Game1
 
         ImGui.EndMainMenuBar();
     }
-
+    /// <summary>
+    /// the menu for all factories that can be used to quickly create complex structures in the mesh, 
+    /// </summary>
     private void FactoryMenu()
     {
         foreach (var factory in _factories)

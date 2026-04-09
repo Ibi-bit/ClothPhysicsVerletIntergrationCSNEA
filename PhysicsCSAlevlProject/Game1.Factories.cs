@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace PhysicsCSAlevlProject;
+
 /// <summary>
 /// Base class for factories that create different types of structures in the mesh. Each factory has a name, a method to execute when the factory is invoked, and a dictionary of parameters that can be configured by the user. The Factory class serves as a template for specific factories like TireFactory and ClothFactory, which define their own parameters and methods for creating specific structures in the mesh. This design allows for easy extension by simply creating new factory classes that inherit from Factory and implement their own creation logic and parameters. The factories can then be used in the UI to allow users to quickly create complex structures with configurable parameters without needing to write custom code for each structure type.
 /// </summary>
@@ -19,6 +20,9 @@ public class Factory
     }
 }
 
+/// <summary>
+/// Factory for creating a hub-and-spoke tire structure in the mesh.
+/// </summary>
 public sealed class TireFactory : Factory
 {
     public TireFactory(Action<object[]> method)
@@ -36,6 +40,9 @@ public sealed class TireFactory : Factory
         ) { }
 }
 
+/// <summary>
+/// /// Factory for creating a rectangular cloth structure in the mesh.
+/// </summary>
 public sealed class ClothFactory : Factory
 {
     public ClothFactory(Action<object[]> method)
