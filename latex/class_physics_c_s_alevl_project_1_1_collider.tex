@@ -1,5 +1,10 @@
 \doxysection{Physics\+CSAlevl\+Project.\+Collider Class Reference}
 \hypertarget{class_physics_c_s_alevl_project_1_1_collider}{}\label{class_physics_c_s_alevl_project_1_1_collider}\index{PhysicsCSAlevlProject.Collider@{PhysicsCSAlevlProject.Collider}}
+
+
+The \doxylink{class_physics_c_s_alevl_project_1_1_collider}{Collider} class is the base class for all types of colliders this is so that they can be stored in the same list and used for collision detection.  
+
+
 Inheritance diagram for Physics\+CSAlevl\+Project.\+Collider:\+\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -10,13 +15,11 @@ Inheritance diagram for Physics\+CSAlevl\+Project.\+Collider:\+\begin{figure}[H]
 \begin{DoxyCompactItemize}
 \item 
 bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a4c9a056179110b406a5523660a52d4e7}{Contains\+Point}} (Vector2 point, out Vector2 closest\+Point)
-\begin{DoxyCompactList}\small\item\em Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_collider_a7ce51acb746fac54c2a255819579c844}\label{class_physics_c_s_alevl_project_1_1_collider_a7ce51acb746fac54c2a255819579c844} 
-\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} {\bfseries Deep\+Copy} ()
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_collider_a28bb3985d8be62dbd975570853528607}\label{class_physics_c_s_alevl_project_1_1_collider_a28bb3985d8be62dbd975570853528607} 
-virtual void {\bfseries Draw} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}} primitive\+Batch)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. it outputs the same point if the point is outside the collider, which is used for calculating the collision response direction and magnitude based on how far the point is from the collider\textquotesingle{}s surface. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a7ce51acb746fac54c2a255819579c844}{Deep\+Copy}} ()
+\begin{DoxyCompactList}\small\item\em Creates a deep copy of the collider,. \end{DoxyCompactList}\item 
+virtual void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a28bb3985d8be62dbd975570853528607}{Draw}} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}} primitive\+Batch)
+\begin{DoxyCompactList}\small\item\em Draws the collider. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Properties}
 \begin{DoxyCompactItemize}
 \item 
@@ -24,6 +27,9 @@ virtual void {\bfseries Draw} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink
 virtual Vector2 {\bfseries Position}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
 \begin{DoxyCompactList}\small\item\em the position of the collider \end{DoxyCompactList}\end{DoxyCompactItemize}
 
+
+\doxysubsection{Detailed Description}
+The \doxylink{class_physics_c_s_alevl_project_1_1_collider}{Collider} class is the base class for all types of colliders this is so that they can be stored in the same list and used for collision detection. 
 
 \label{doc-func-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_collider_doc-func-members}
@@ -36,7 +42,7 @@ bool Physics\+CSAlevl\+Project.\+Collider.\+Contains\+Point (\begin{DoxyParamCap
 
 
 
-Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. 
+Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. it outputs the same point if the point is outside the collider, which is used for calculating the collision response direction and magnitude based on how far the point is from the collider\textquotesingle{}s surface. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -48,6 +54,40 @@ Determines if the given point is contained within the collider and calculates th
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_collider_a7ce51acb746fac54c2a255819579c844}\index{PhysicsCSAlevlProject.Collider@{PhysicsCSAlevlProject.Collider}!DeepCopy@{DeepCopy}}
+\index{DeepCopy@{DeepCopy}!PhysicsCSAlevlProject.Collider@{PhysicsCSAlevlProject.Collider}}
+\doxysubsubsection{\texorpdfstring{DeepCopy()}{DeepCopy()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_collider_a7ce51acb746fac54c2a255819579c844} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} Physics\+CSAlevl\+Project.\+Collider.\+Deep\+Copy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [abstract]}}
+
+
+
+Creates a deep copy of the collider,. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_collider_a28bb3985d8be62dbd975570853528607}\index{PhysicsCSAlevlProject.Collider@{PhysicsCSAlevlProject.Collider}!Draw@{Draw}}
+\index{Draw@{Draw}!PhysicsCSAlevlProject.Collider@{PhysicsCSAlevlProject.Collider}}
+\doxysubsubsection{\texorpdfstring{Draw()}{Draw()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_collider_a28bb3985d8be62dbd975570853528607} 
+virtual void Physics\+CSAlevl\+Project.\+Collider.\+Draw (\begin{DoxyParamCaption}\item[{Sprite\+Batch}]{sprite\+Batch}{, }\item[{\doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}}}]{primitive\+Batch}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Draws the collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sprite\+Batch} & \\
+\hline
+{\em primitive\+Batch} & \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_circle_collider_a9b2a6cea6f4b983e06acba40b4d989db}{Physics\+CSAlevl\+Project.\+Circle\+Collider}}, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_polygon_seperated_axis_collider_ace4836f89bed44ea29b8cd3ee607a8c2}{Physics\+CSAlevl\+Project.\+Polygon\+Seperated\+Axis\+Collider}}, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_rectangle_collider_a3f12e403f396c03169cbdc5363af7b15}{Physics\+CSAlevl\+Project.\+Rectangle\+Collider}}, and \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider_a948092f2571a57a33bae056f98a5206a}{Physics\+CSAlevl\+Project.\+Seperated\+Axis\+Rectangle\+Collider}}.
+
 
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}

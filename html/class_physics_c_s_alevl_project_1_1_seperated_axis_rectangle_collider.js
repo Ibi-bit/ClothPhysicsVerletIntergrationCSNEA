@@ -1,5 +1,7 @@
 var class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider =
 [
+    [ "Draw", "class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a948092f2571a57a33bae056f98a5206a", null ],
+    [ "SetAxis", "class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a2831a2ea6248b426b8ecd885940b633d", null ],
     [ "_position", "class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a5f8eee5e9d204d86a4ed17f1f01072c0", null ],
     [ "HalfHeight", "class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#ad38d0cd2ee9d7c0681ea0a1e025f5c35", null ],
     [ "HalfWidth", "class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a84960ba1c76cebf7a0d16d60cfe2d1fd", null ],

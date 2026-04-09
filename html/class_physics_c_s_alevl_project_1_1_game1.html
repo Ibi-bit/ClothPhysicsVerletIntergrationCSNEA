@@ -131,10 +131,10 @@ override void&#160;</td><td class="memItemRight"><b>LoadContent</b> ()</td></tr>
 <tr class="memdesc:adc42d28d690ac7fc65eb440954e71d49"><td class="mdescLeft">&#160;</td><td class="mdescRight">loads textures and fonts <br /></td></tr>
 <tr class="memitem:adb8df048d3e206b7991232944ac60952" id="r_adb8df048d3e206b7991232944ac60952"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#adb8df048d3e206b7991232944ac60952">OnExiting</a> (object sender, ExitingEventArgs args)</td></tr>
 <tr class="memdesc:adb8df048d3e206b7991232944ac60952"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles the application exit event by performing necessary cleanup and logging before the application closes. This method is called when the user attempts to close the application, allowing for any final actions to be taken, such as saving logs or releasing resources. The base implementation is also called to ensure that any additional cleanup in the base class is performed.  <br /></td></tr>
-<tr class="memitem:a04f63b442c3bed84e594d5c25ceb74f8" id="r_a04f63b442c3bed84e594d5c25ceb74f8"><td class="memItemLeft"><a id="a04f63b442c3bed84e594d5c25ceb74f8" name="a04f63b442c3bed84e594d5c25ceb74f8"></a>
-override void&#160;</td><td class="memItemRight"><b>Draw</b> (GameTime gameTime)</td></tr>
-<tr class="memitem:a12bba18db4e17b9737e4ebf6125dbb1e" id="r_a12bba18db4e17b9737e4ebf6125dbb1e"><td class="memItemLeft"><a id="a12bba18db4e17b9737e4ebf6125dbb1e" name="a12bba18db4e17b9737e4ebf6125dbb1e"></a>
-override void&#160;</td><td class="memItemRight"><b>Update</b> (GameTime gameTime)</td></tr>
+<tr class="memitem:a04f63b442c3bed84e594d5c25ceb74f8" id="r_a04f63b442c3bed84e594d5c25ceb74f8"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#a04f63b442c3bed84e594d5c25ceb74f8">Draw</a> (GameTime gameTime)</td></tr>
+<tr class="memdesc:a04f63b442c3bed84e594d5c25ceb74f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">the central draw loop for the application where every other draw function is called from  <br /></td></tr>
+<tr class="memitem:a12bba18db4e17b9737e4ebf6125dbb1e" id="r_a12bba18db4e17b9737e4ebf6125dbb1e"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#a12bba18db4e17b9737e4ebf6125dbb1e">Update</a> (GameTime gameTime)</td></tr>
+<tr class="memdesc:a12bba18db4e17b9737e4ebf6125dbb1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">main game loop for everything not related to drawing  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
@@ -224,10 +224,13 @@ void&#160;</td><td class="memItemRight"><b>DrawStructureWindow</b> ()</td></tr>
 <tr class="memdesc:aa6f310e037f5c77c3041d80d15d93463"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the structure window for loading and managing saved meshes. <br /></td></tr>
 <tr class="memitem:ac0354b09c773d59c7dc3e9f65f8c12c0" id="r_ac0354b09c773d59c7dc3e9f65f8c12c0"><td class="memItemLeft"><a id="ac0354b09c773d59c7dc3e9f65f8c12c0" name="ac0354b09c773d59c7dc3e9f65f8c12c0"></a>
 void&#160;</td><td class="memItemRight"><b>DrawSaveWindow</b> ()</td></tr>
+<tr class="memdesc:ac0354b09c773d59c7dc3e9f65f8c12c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the save window for saving the current mesh with a specified name. <br /></td></tr>
 <tr class="memitem:ad77c6444ae4f2d8f9792445e4a41f662" id="r_ad77c6444ae4f2d8f9792445e4a41f662"><td class="memItemLeft"><a id="ad77c6444ae4f2d8f9792445e4a41f662" name="ad77c6444ae4f2d8f9792445e4a41f662"></a>
 void&#160;</td><td class="memItemRight"><b>DrawReadMeWindow</b> ()</td></tr>
+<tr class="memdesc:ad77c6444ae4f2d8f9792445e4a41f662"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the readme window with instructions and tips for using the application. <br /></td></tr>
 <tr class="memitem:a6b4ad9008f4c77b6401af6ee6c049677" id="r_a6b4ad9008f4c77b6401af6ee6c049677"><td class="memItemLeft"><a id="a6b4ad9008f4c77b6401af6ee6c049677" name="a6b4ad9008f4c77b6401af6ee6c049677"></a>
 void&#160;</td><td class="memItemRight"><b>DrawConfigurationWindow</b> ()</td></tr>
+<tr class="memdesc:a6b4ad9008f4c77b6401af6ee6c049677"><td class="mdescLeft">&#160;</td><td class="mdescRight">draws the settings menu for changing window size, physics settings and other configuration options <br /></td></tr>
 <tr class="memitem:a3f0a1ad3fa6a04dbadb95970f3dd332b" id="r_a3f0a1ad3fa6a04dbadb95970f3dd332b"><td class="memItemLeft"><a id="a3f0a1ad3fa6a04dbadb95970f3dd332b" name="a3f0a1ad3fa6a04dbadb95970f3dd332b"></a>
 void&#160;</td><td class="memItemRight"><b>InitializePhysics</b> ()</td></tr>
 <tr class="memitem:a15c4f146c64ba8b914c72c7056c7433c" id="r_a15c4f146c64ba8b914c72c7056c7433c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a15c4f146c64ba8b914c72c7056c7433c">ApplyStickForcesDictionary</a> (Dictionary&lt; int, <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick.html">Mesh.MeshStick</a> &gt; sticks, float timeRatio=1f)</td></tr>
@@ -238,58 +241,61 @@ void&#160;</td><td class="memItemRight"><b>InitializePhysics</b> ()</td></tr>
 <tr class="memdesc:a3fc377a7447727cd72a6ad872854ea39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the positions of the particles based on the accumulated forces, applying simple Verlet integration. It also handles collisions with colliders and the boundaries of the window, applying appropriate responses based on the bounce and friction coefficients. Additionally, it calculates statistics about the forces applied to the particles for potential use in visualization or debugging.  <br /></td></tr>
 <tr class="memitem:af571cbfaad1129ea6443ec33bb6236b7" id="r_af571cbfaad1129ea6443ec33bb6236b7"><td class="memItemLeft"><a id="af571cbfaad1129ea6443ec33bb6236b7" name="af571cbfaad1129ea6443ec33bb6236b7"></a>
 void&#160;</td><td class="memItemRight"><b>InitializeRender</b> ()</td></tr>
+<tr class="memdesc:af571cbfaad1129ea6443ec33bb6236b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">initiales rendering related variables and settings <br /></td></tr>
 <tr class="memitem:a200242ee39b75c9e18131c644b095488" id="r_a200242ee39b75c9e18131c644b095488"><td class="memItemLeft"><a id="a200242ee39b75c9e18131c644b095488" name="a200242ee39b75c9e18131c644b095488"></a>
 void&#160;</td><td class="memItemRight"><b>InitializeTools</b> ()</td></tr>
+<tr class="memdesc:a200242ee39b75c9e18131c644b095488"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes all tools and their settings, this is called in the Initialize method of the game and sets up the interact and build tools with their default properties and values. It also adds factories for creating complex structures like tires and cloth meshes. This method ensures that all tools are properly configured and ready for use when the application starts, allowing users to interact with and build meshes effectively using the provided toolset. <br /></td></tr>
 <tr class="memitem:aa04725ccd4cbfdc7eaec4c05afca03a2" id="r_aa04725ccd4cbfdc7eaec4c05afca03a2"><td class="memItemLeft"><a id="aa04725ccd4cbfdc7eaec4c05afca03a2" name="aa04725ccd4cbfdc7eaec4c05afca03a2"></a>
 void&#160;</td><td class="memItemRight"><b>InitializeInteractTools</b> ()</td></tr>
+<tr class="memdesc:aa04725ccd4cbfdc7eaec4c05afca03a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">initalises all tools in the Interact Mode with their default properties and values, this includes the Drag, Pin, Cut, Wind, LineCut, Select Particles and Cursor <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html" title="The Collider class is the base class for all types of colliders this is so that they can be stored in...">Collider</a> tools. Each tool is configured with specific properties such as radius, strength scale, min distance and shape options that can be adjusted by the user in the UI. This method ensures that all interact tools are properly set up and ready for use when the application starts, allowing users to effectively manipulate the mesh using these tools. <br /></td></tr>
 <tr class="memitem:a9788a672439464b37933e9aac52aeae6" id="r_a9788a672439464b37933e9aac52aeae6"><td class="memItemLeft"><a id="a9788a672439464b37933e9aac52aeae6" name="a9788a672439464b37933e9aac52aeae6"></a>
 void&#160;</td><td class="memItemRight"><b>InitializeBuildTools</b> ()</td></tr>
+<tr class="memdesc:a9788a672439464b37933e9aac52aeae6"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes all tools in the Build Mode with their default properties and values, <br /></td></tr>
 <tr class="memitem:ac75ec4fa649c5e36a197467676398a48" id="r_ac75ec4fa649c5e36a197467676398a48"><td class="memItemLeft"><a id="ac75ec4fa649c5e36a197467676398a48" name="ac75ec4fa649c5e36a197467676398a48"></a>
 void&#160;</td><td class="memItemRight"><b>DrawToolMenuItems</b> ()</td></tr>
+<tr class="memdesc:ac75ec4fa649c5e36a197467676398a48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws all tools for the selected mode. <br /></td></tr>
 <tr class="memitem:a7bfbcdbde56383699e11cf3b3f4a246d" id="r_a7bfbcdbde56383699e11cf3b3f4a246d"><td class="memItemLeft"><a id="a7bfbcdbde56383699e11cf3b3f4a246d" name="a7bfbcdbde56383699e11cf3b3f4a246d"></a>
 void&#160;</td><td class="memItemRight"><b>DrawSelectedToolSettings</b> ()</td></tr>
 <tr class="memdesc:a7bfbcdbde56383699e11cf3b3f4a246d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the settings for the currently selected tool in the UI. Depending on which tool is selected, it displays different configurable parameters such as radius, strength, or shape options. The method uses ImGui controls like sliders, checkboxes, and combo boxes to allow users to adjust these parameters in real-time. It also includes error handling to catch any exceptions that may occur while drawing the tool settings, ensuring that the application remains stable and provides feedback on any issues encountered. <br /></td></tr>
 <tr class="memitem:a94b4a26fc2a0605fb0c079b3de4e2be4" id="r_a94b4a26fc2a0605fb0c079b3de4e2be4"><td class="memItemLeft"><a id="a94b4a26fc2a0605fb0c079b3de4e2be4" name="a94b4a26fc2a0605fb0c079b3de4e2be4"></a>
 void&#160;</td><td class="memItemRight"><b>EnsureSelectedToolValid</b> ()</td></tr>
+<tr class="memdesc:a94b4a26fc2a0605fb0c079b3de4e2be4"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes sure the currently selected tool is valid for the current mode <br /></td></tr>
 <tr class="memitem:ae2679f56c96afb10b7cb99b4b0ab1dbe" id="r_ae2679f56c96afb10b7cb99b4b0ab1dbe"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ae2679f56c96afb10b7cb99b4b0ab1dbe">PinParticleBuildable</a> (Vector2 center, float radius)</td></tr>
 <tr class="memdesc:ae2679f56c96afb10b7cb99b4b0ab1dbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pins or unpins particles within a specified radius of a given center point. The method retrieves the IDs of particles that are within the radius from the center, and toggles their pinned state. If a particle is pinned, it becomes unpinned, and if it is unpinned, it becomes pinned. The method also logs the action taken for each particle, including its ID and position. If no particles are found within the radius, it logs a warning message indicating that no particles were affected by the pin tool at the specified location and radius.  <br /></td></tr>
 <tr class="memitem:af31e7047117ea04a8332a83ed06efb04" id="r_af31e7047117ea04a8332a83ed06efb04"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af31e7047117ea04a8332a83ed06efb04">CutAllSticksInRadiusBuildable</a> (Vector2 center, float radius)</td></tr>
 <tr class="memdesc:af31e7047117ea04a8332a83ed06efb04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cuts sticks that are within a specified radius of a given center point. The method iterates through all the sticks in the active mesh and calculates the center point of each stick. If the distance from the stick's center to the specified center point is less than or equal to the given radius, the stick is marked for removal. After checking all sticks, the method removes the marked sticks from the mesh and logs the action taken for each cut stick, including its ID and center position. If no sticks are found within the radius, it logs a warning message indicating that no sticks were affected by the cut tool at the specified location and radius.  <br /></td></tr>
 <tr class="memitem:a6900c4641e9558a1f91b76b5dcc18222" id="r_a6900c4641e9558a1f91b76b5dcc18222"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a6900c4641e9558a1f91b76b5dcc18222">ApplyWindForceFromDrag</a> (Vector2 startPos, Vector2 endPos, float _)</td></tr>
 <tr class="memdesc:a6900c4641e9558a1f91b76b5dcc18222"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies a wind force to particles based on the drag distance and direction between a start and end position. The method calculates the wind direction as the vector from the start position to the end position, and determines the distance of the drag. If the drag distance is below a specified minimum threshold, it logs a warning message and does not apply any force. If the drag distance is sufficient, it calculates the wind force by scaling the wind direction with the drag distance and a strength factor. The resulting wind force is stored in a variable for later application to particles in the simulation. This method allows users to interactively apply wind forces to particles by dragging across the screen, with configurable parameters for minimum drag distance and strength scaling.  <br /></td></tr>
-<tr class="memitem:a1756c73318acf111fa26b89a45fece3d" id="r_a1756c73318acf111fa26b89a45fece3d"><td class="memItemLeft"><a id="a1756c73318acf111fa26b89a45fece3d" name="a1756c73318acf111fa26b89a45fece3d"></a>
-bool&#160;</td><td class="memItemRight"><b>DoTwoLinesIntersect</b> (Vector2 line1Start, Vector2 line1End, Vector2 line2Start, Vector2 line2End)</td></tr>
-<tr class="memitem:a218d9efbefecc6b757b9bf949c6cd304" id="r_a218d9efbefecc6b757b9bf949c6cd304"><td class="memItemLeft"><a id="a218d9efbefecc6b757b9bf949c6cd304" name="a218d9efbefecc6b757b9bf949c6cd304"></a>
-<a class="el" href="class_physics_c_s_alevl_project_1_1_drawable_stick.html">DrawableStick</a>[][]&#160;</td><td class="memItemRight"><b>DoLinesIntersect</b> (<a class="el" href="class_physics_c_s_alevl_project_1_1_drawable_stick.html">DrawableStick</a>[][] sticks, Vector2 lineStart, Vector2 lineEnd)</td></tr>
-<tr class="memitem:ae47783eea3c87a64654f152bb805d62f" id="r_ae47783eea3c87a64654f152bb805d62f"><td class="memItemLeft"><a id="ae47783eea3c87a64654f152bb805d62f" name="ae47783eea3c87a64654f152bb805d62f"></a>
-void&#160;</td><td class="memItemRight"><b>CutSticksAlongLine</b> (Vector2 lineStart, Vector2 lineEnd)</td></tr>
+<tr class="memitem:ae47783eea3c87a64654f152bb805d62f" id="r_ae47783eea3c87a64654f152bb805d62f"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ae47783eea3c87a64654f152bb805d62f">CutSticksAlongLine</a> (Vector2 lineStart, Vector2 lineEnd)</td></tr>
+<tr class="memdesc:ae47783eea3c87a64654f152bb805d62f"><td class="mdescLeft">&#160;</td><td class="mdescRight">cuts all sticks within a segment of a line  <br /></td></tr>
 <tr class="memitem:ab6d74000e5c1756522d406f6e4f76e4d" id="r_ab6d74000e5c1756522d406f6e4f76e4d"><td class="memItemLeft">List&lt; int &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ab6d74000e5c1756522d406f6e4f76e4d">GetMeshParticlesInRadius</a> (Vector2 mousePosition, float radius, int maxParticles=-1)</td></tr>
 <tr class="memdesc:ab6d74000e5c1756522d406f6e4f76e4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a list of particle IDs from the active mesh that are within a specified radius of a given mouse position. The method iterates through all particles in the active mesh and calculates the distance from each particle's position to the mouse position. If the distance is less than the specified radius, the particle's ID is added to the list of nearby particles. The method also takes an optional parameter for maximum particles to return; if this limit is reached, it returns the list immediately. This function is used by various tools to identify which particles should be affected based on their proximity to the user's cursor.  <br /></td></tr>
 <tr class="memitem:a16e1592d9ac538b460f09ed789362a33" id="r_a16e1592d9ac538b460f09ed789362a33"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a16e1592d9ac538b460f09ed789362a33">DragMeshParticles</a> (MouseState mouseState, bool isDragging, List&lt; int &gt; particleIds)</td></tr>
 <tr class="memdesc:a16e1592d9ac538b460f09ed789362a33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Drags particles in the active mesh based on the current mouse state and whether the user is actively dragging. The method takes a list of particle IDs that are within the drag radius and updates their positions accordingly. If the user is dragging, it calculates the movement delta from the previous mouse position and applies this delta to each particle's current and previous positions, effectively moving them with the cursor. The particles being dragged are visually highlighted by changing their color to yellow. If the user is not dragging, it resets the color of the affected particles back to white. This method allows for interactive manipulation of particles in the mesh using a drag tool.  <br /></td></tr>
 <tr class="memitem:ab35449e4811e68faf641726734576e34" id="r_ab35449e4811e68faf641726734576e34"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab35449e4811e68faf641726734576e34">InspectParticlesInRadiusLog</a> (Vector2 center, float radius)</td></tr>
 <tr class="memdesc:ab35449e4811e68faf641726734576e34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inspects particles within a specified radius of a given center point and logs their information to the console. The method iterates through all particles in the active mesh and calculates the distance from each particle's position to the center point. If the distance is less than or equal to the specified radius, it logs the particle's ID, position, and pinned state to the console. Additionally, it visually highlights inspected particles by changing their color to cyan. If no particles are found within the radius, it logs a warning message indicating that no particles were inspected at the specified location and radius.  <br /></td></tr>
-<tr class="memitem:a8fa9415ece7075254859f52181ef6cfe" id="r_a8fa9415ece7075254859f52181ef6cfe"><td class="memItemLeft"><a id="a8fa9415ece7075254859f52181ef6cfe" name="a8fa9415ece7075254859f52181ef6cfe"></a>
-void&#160;</td><td class="memItemRight"><b>InspectParticlesInRadiusWindow</b> (Vector2 center, float radius)</td></tr>
-<tr class="memitem:ae150876c865a2acfa5b43c445abc81e8" id="r_ae150876c865a2acfa5b43c445abc81e8"><td class="memItemLeft"><a id="ae150876c865a2acfa5b43c445abc81e8" name="ae150876c865a2acfa5b43c445abc81e8"></a>
-void&#160;</td><td class="memItemRight"><b>InspectParticlesInRectangle</b> (Vector2 rectStart, Vector2 rectEnd, bool isLog, bool clearWhenUse)</td></tr>
-<tr class="memitem:a0047770ccc0e24952d01d2e216210ac0" id="r_a0047770ccc0e24952d01d2e216210ac0"><td class="memItemLeft"><a id="a0047770ccc0e24952d01d2e216210ac0" name="a0047770ccc0e24952d01d2e216210ac0"></a>
-List&lt; int &gt;&#160;</td><td class="memItemRight"><b>GetParticlesInRectangle</b> (Vector2 rectStart, Vector2 rectEnd)</td></tr>
+<tr class="memitem:a8fa9415ece7075254859f52181ef6cfe" id="r_a8fa9415ece7075254859f52181ef6cfe"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a8fa9415ece7075254859f52181ef6cfe">InspectParticlesInRadiusWindow</a> (Vector2 center, float radius)</td></tr>
+<tr class="memdesc:a8fa9415ece7075254859f52181ef6cfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inspects particles within a specified radius of a given center point and visually highlights them in the mesh.  <br /></td></tr>
+<tr class="memitem:ae150876c865a2acfa5b43c445abc81e8" id="r_ae150876c865a2acfa5b43c445abc81e8"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ae150876c865a2acfa5b43c445abc81e8">InspectParticlesInRectangle</a> (Vector2 rectStart, Vector2 rectEnd, bool isLog, bool clearWhenUse)</td></tr>
+<tr class="memdesc:ae150876c865a2acfa5b43c445abc81e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inspects particles within a rectangle defined by two corner points and either logs their information to the console or visually highlights them in the mesh,.  <br /></td></tr>
+<tr class="memitem:a0047770ccc0e24952d01d2e216210ac0" id="r_a0047770ccc0e24952d01d2e216210ac0"><td class="memItemLeft">List&lt; int &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a0047770ccc0e24952d01d2e216210ac0">GetParticlesInRectangle</a> (Vector2 rectStart, Vector2 rectEnd)</td></tr>
+<tr class="memdesc:a0047770ccc0e24952d01d2e216210ac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">gets all partices in a rectangle defined by two corner points used for inspection  <br /></td></tr>
 <tr class="memitem:a131e3c2add4094603ffd301e25d36dcd" id="r_a131e3c2add4094603ffd301e25d36dcd"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a131e3c2add4094603ffd301e25d36dcd">HandleAddStickBetweenParticlesClick</a> (Vector2 clickPos)</td></tr>
 <tr class="memdesc:a131e3c2add4094603ffd301e25d36dcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles the logic for adding a stick between two particles when the user clicks on the canvas. The method first retrieves the radius parameter from the tool settings and then gets the IDs of particles that are within this radius of the click position. If no particles are found, it logs a warning message. If one or more particles are found, it checks if there is already a first particle selected for creating a stick. If not, it sets the first particle ID and highlights it in yellow. If there is already a first particle selected and the newly clicked particle is different, it creates a stick between the two particles, logs the action, and resets their colors back to white. If the user clicks on the same particle that is already selected as the first particle, it logs a message indicating that a stick cannot be created to the same particle and prompts the user to select a different particle.  <br /></td></tr>
 <tr class="memitem:a2cee533ad606273094e92a4ffc868597" id="r_a2cee533ad606273094e92a4ffc868597"><td class="memItemLeft"><a id="a2cee533ad606273094e92a4ffc868597" name="a2cee533ad606273094e92a4ffc868597"></a>
 void&#160;</td><td class="memItemRight"><b>MeshHistoryPush</b> ()</td></tr>
 <tr class="memdesc:a2cee533ad606273094e92a4ffc868597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes the History for undo and redo functionality. When a change is made to the mesh, this method creates a deep copy of the current active mesh and pushes it onto the history stack. It also clears the redo history stack, ensuring that any new changes invalidate the previous redo states. This allows users to undo and redo their actions on the mesh effectively, maintaining a consistent state of the mesh throughout their editing process. <br /></td></tr>
-<tr class="memitem:ad1dbc6086e9ec567f02d5b4e7248c7dd" id="r_ad1dbc6086e9ec567f02d5b4e7248c7dd"><td class="memItemLeft"><a id="ad1dbc6086e9ec567f02d5b4e7248c7dd" name="ad1dbc6086e9ec567f02d5b4e7248c7dd"></a>
-Rectangle&#160;</td><td class="memItemRight"><b>GetRectangleFromPoints</b> (Vector2 point1, Vector2 point2)</td></tr>
+<tr class="memitem:ad1dbc6086e9ec567f02d5b4e7248c7dd" id="r_ad1dbc6086e9ec567f02d5b4e7248c7dd"><td class="memItemLeft">Rectangle&#160;</td><td class="memItemRight"><a class="el" href="#ad1dbc6086e9ec567f02d5b4e7248c7dd">GetRectangleFromPoints</a> (Vector2 point1, Vector2 point2)</td></tr>
+<tr class="memdesc:ad1dbc6086e9ec567f02d5b4e7248c7dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a recangle from two points  <br /></td></tr>
 <tr class="memitem:a4b6c181eb170ac9429dc5d7a9b0b6fcd" id="r_a4b6c181eb170ac9429dc5d7a9b0b6fcd"><td class="memItemLeft"><a id="a4b6c181eb170ac9429dc5d7a9b0b6fcd" name="a4b6c181eb170ac9429dc5d7a9b0b6fcd"></a>
 void&#160;</td><td class="memItemRight"><b>InitializeUpdate</b> ()</td></tr>
+<tr class="memdesc:a4b6c181eb170ac9429dc5d7a9b0b6fcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes variables used in the Update method, <br /></td></tr>
 <tr class="memitem:ae6f27fb685c576e115585f238bdf4663" id="r_ae6f27fb685c576e115585f238bdf4663"><td class="memItemLeft"><a id="ae6f27fb685c576e115585f238bdf4663" name="ae6f27fb685c576e115585f238bdf4663"></a>
 Vector2&#160;</td><td class="memItemRight"><b>GetCursorColliderCenter</b> ()</td></tr>
-<tr class="memitem:a10bb4cdb8dffb6659caecb3f76649c7f" id="r_a10bb4cdb8dffb6659caecb3f76649c7f"><td class="memItemLeft"><a id="a10bb4cdb8dffb6659caecb3f76649c7f" name="a10bb4cdb8dffb6659caecb3f76649c7f"></a>
-void&#160;</td><td class="memItemRight"><b>SetCursorColliderCenter</b> (Vector2 center)</td></tr>
-<tr class="memitem:a0b693fdd24619f9ae0082596529ca957" id="r_a0b693fdd24619f9ae0082596529ca957"><td class="memItemLeft"><a id="a0b693fdd24619f9ae0082596529ca957" name="a0b693fdd24619f9ae0082596529ca957"></a>
-void&#160;</td><td class="memItemRight"><b>UpdateCursorColliderSize</b> (float radius)</td></tr>
+<tr class="memitem:a10bb4cdb8dffb6659caecb3f76649c7f" id="r_a10bb4cdb8dffb6659caecb3f76649c7f"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a10bb4cdb8dffb6659caecb3f76649c7f">SetCursorColliderCenter</a> (Vector2 center)</td></tr>
+<tr class="memdesc:a10bb4cdb8dffb6659caecb3f76649c7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect,  <br /></td></tr>
+<tr class="memitem:a0b693fdd24619f9ae0082596529ca957" id="r_a0b693fdd24619f9ae0082596529ca957"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0b693fdd24619f9ae0082596529ca957">UpdateCursorColliderSize</a> (float radius)</td></tr>
+<tr class="memdesc:a0b693fdd24619f9ae0082596529ca957"><td class="mdescLeft">&#160;</td><td class="mdescRight">updates the size of the cursor collider based on a given radius, which is used for tools that require a circular or square area of effect around the cursor.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
@@ -523,7 +529,7 @@ List&lt; int &gt;&#160;</td><td class="memItemRight"><b>_meshParticlesInDragArea
 <tr class="memdesc:a3d15ac8dc42724e0200675570ff82f4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">a list of particle IDs that are currently within the area of effect of a tool that is being dragged <br /></td></tr>
 <tr class="memitem:ada2d4c0c175cb0516f69c9be1a12750f" id="r_ada2d4c0c175cb0516f69c9be1a12750f"><td class="memItemLeft"><a id="ada2d4c0c175cb0516f69c9be1a12750f" name="ada2d4c0c175cb0516f69c9be1a12750f"></a>
 <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">Collider</a>&#160;</td><td class="memItemRight"><b>_draggedCollider</b></td></tr>
-<tr class="memdesc:ada2d4c0c175cb0516f69c9be1a12750f"><td class="mdescLeft">&#160;</td><td class="mdescRight">the collider that is currently being dragged by the Move <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">Collider</a> tool, <br /></td></tr>
+<tr class="memdesc:ada2d4c0c175cb0516f69c9be1a12750f"><td class="mdescLeft">&#160;</td><td class="mdescRight">the collider that is currently being dragged by the Move <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html" title="The Collider class is the base class for all types of colliders this is so that they can be stored in...">Collider</a> tool, <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-attribs" class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
@@ -762,6 +768,44 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
+<a id="ae47783eea3c87a64654f152bb805d62f" name="ae47783eea3c87a64654f152bb805d62f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae47783eea3c87a64654f152bb805d62f">&#9670;&#160;</a></span>CutSticksAlongLine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.CutSticksAlongLine </td>
+          <td>(</td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>lineStart</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>lineEnd</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>cuts all sticks within a segment of a line </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lineStart</td><td></td></tr>
+    <tr><td class="paramname">lineEnd</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a16e1592d9ac538b460f09ed789362a33" name="a16e1592d9ac538b460f09ed789362a33"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a16e1592d9ac538b460f09ed789362a33">&#9670;&#160;</a></span>DragMeshParticles()</h2>
 
@@ -800,6 +844,39 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
     <tr><td class="paramname">mouseState</td><td></td></tr>
     <tr><td class="paramname">isDragging</td><td></td></tr>
     <tr><td class="paramname">particleIds</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a04f63b442c3bed84e594d5c25ceb74f8" name="a04f63b442c3bed84e594d5c25ceb74f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04f63b442c3bed84e594d5c25ceb74f8">&#9670;&#160;</a></span>Draw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void PhysicsCSAlevlProject.Game1.Draw </td>
+          <td>(</td>
+          <td class="paramtype">GameTime</td>          <td class="paramname"><span class="paramname"><em>gameTime</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>the central draw loop for the application where every other draw function is called from </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gameTime</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -847,7 +924,85 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>list of particle IDs</dd></dl>
+
+</div>
+</div>
+<a id="a0047770ccc0e24952d01d2e216210ac0" name="a0047770ccc0e24952d01d2e216210ac0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0047770ccc0e24952d01d2e216210ac0">&#9670;&#160;</a></span>GetParticlesInRectangle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt; int &gt; PhysicsCSAlevlProject.Game1.GetParticlesInRectangle </td>
+          <td>(</td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>rectStart</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>rectEnd</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>gets all partices in a rectangle defined by two corner points used for inspection </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rectStart</td><td></td></tr>
+    <tr><td class="paramname">rectEnd</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="ad1dbc6086e9ec567f02d5b4e7248c7dd" name="ad1dbc6086e9ec567f02d5b4e7248c7dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1dbc6086e9ec567f02d5b4e7248c7dd">&#9670;&#160;</a></span>GetRectangleFromPoints()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Rectangle PhysicsCSAlevlProject.Game1.GetRectangleFromPoints </td>
+          <td>(</td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>point1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>point2</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>creates a recangle from two points </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">point1</td><td></td></tr>
+    <tr><td class="paramname">point2</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>axis alignedRectangle</dd></dl>
 
 </div>
 </div>
@@ -949,6 +1104,94 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
   <table class="params">
     <tr><td class="paramname">center</td><td></td></tr>
     <tr><td class="paramname">radius</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8fa9415ece7075254859f52181ef6cfe" name="a8fa9415ece7075254859f52181ef6cfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fa9415ece7075254859f52181ef6cfe">&#9670;&#160;</a></span>InspectParticlesInRadiusWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.InspectParticlesInRadiusWindow </td>
+          <td>(</td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>center</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inspects particles within a specified radius of a given center point and visually highlights them in the mesh. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">center</td><td></td></tr>
+    <tr><td class="paramname">radius</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae150876c865a2acfa5b43c445abc81e8" name="ae150876c865a2acfa5b43c445abc81e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae150876c865a2acfa5b43c445abc81e8">&#9670;&#160;</a></span>InspectParticlesInRectangle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.InspectParticlesInRectangle </td>
+          <td>(</td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>rectStart</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>rectEnd</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>isLog</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>clearWhenUse</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inspects particles within a rectangle defined by two corner points and either logs their information to the console or visually highlights them in the mesh,. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rectStart</td><td></td></tr>
+    <tr><td class="paramname">rectEnd</td><td></td></tr>
+    <tr><td class="paramname">isLog</td><td></td></tr>
+    <tr><td class="paramname">clearWhenUse</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -1277,6 +1520,39 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
+<a id="a10bb4cdb8dffb6659caecb3f76649c7f" name="a10bb4cdb8dffb6659caecb3f76649c7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10bb4cdb8dffb6659caecb3f76649c7f">&#9670;&#160;</a></span>SetCursorColliderCenter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.SetCursorColliderCenter </td>
+          <td>(</td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>center</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect, </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">center</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="abefc313bad3f4d6e993e2c6d171f59eb" name="abefc313bad3f4d6e993e2c6d171f59eb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abefc313bad3f4d6e993e2c6d171f59eb">&#9670;&#160;</a></span>SetMode()</h2>
 
@@ -1375,6 +1651,72 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">parameters</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a12bba18db4e17b9737e4ebf6125dbb1e" name="a12bba18db4e17b9737e4ebf6125dbb1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12bba18db4e17b9737e4ebf6125dbb1e">&#9670;&#160;</a></span>Update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void PhysicsCSAlevlProject.Game1.Update </td>
+          <td>(</td>
+          <td class="paramtype">GameTime</td>          <td class="paramname"><span class="paramname"><em>gameTime</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>main game loop for everything not related to drawing </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gameTime</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0b693fdd24619f9ae0082596529ca957" name="a0b693fdd24619f9ae0082596529ca957"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b693fdd24619f9ae0082596529ca957">&#9670;&#160;</a></span>UpdateCursorColliderSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.UpdateCursorColliderSize </td>
+          <td>(</td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>radius</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>updates the size of the cursor collider based on a given radius, which is used for tools that require a circular or square area of effect around the cursor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">radius</td><td></td></tr>
   </table>
   </dd>
 </dl>

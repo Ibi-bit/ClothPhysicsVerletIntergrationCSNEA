@@ -4,13 +4,13 @@
 \begin{DoxyCompactItemize}
 \item 
 class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User}}
-\item 
+\begin{DoxyCompactList}\small\item\em the class repesenting the \doxylink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{User} in the datbase matching the Users table with properties for Id, Username, Role\+Id and Password. This class is used to deserialize user information retrieved from the database and to create new users when saving to the database. It provides a structured way to represent user data within the application and facilitates interactions with the database for user-\/related operations. \end{DoxyCompactList}\item 
 class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Structure\+Info}}
-\item 
+\begin{DoxyCompactList}\small\item\em the class representing the structure information retrieved from the database, including properties for Id, Assignment\+Id, Student\+Id, Student\+Name, Assignment\+Title and Submitted\+At. \end{DoxyCompactList}\item 
 class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Assignment}}
-\item 
+\begin{DoxyCompactList}\small\item\em the class representing an assignment in the database with properties for Id, Title, Description and Teacher\+Id. \end{DoxyCompactList}\item 
 class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_roles}{Roles}}
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em the class representing user roles in the database with static readonly properties for Teacher and Student role IDs. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -60,7 +60,8 @@ Npgsql\+Connection \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game
 \doxysubsubsection*{Private Attributes}
 \begin{DoxyCompactItemize}
 \item 
-readonly string \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_a300c01bd202f911520917d6a0721c8ce}{\+\_\+connection\+String}}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a300c01bd202f911520917d6a0721c8ce}\label{class_physics_c_s_alevl_project_1_1_game1_database_a300c01bd202f911520917d6a0721c8ce} 
+readonly string {\bfseries \+\_\+connection\+String}
 \begin{DoxyCompactList}\small\item\em The connection string used to connect to the Postgre\+SQL database,. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -313,27 +314,6 @@ saves a structure to the database with the given student ID, content JSON, title
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
-
-
-\label{doc-variable-members}
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_doc-variable-members}
-\doxysubsection{Member Data Documentation}
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_database_a300c01bd202f911520917d6a0721c8ce}\index{PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}!\_connectionString@{\_connectionString}}
-\index{\_connectionString@{\_connectionString}!PhysicsCSAlevlProject.Game1Database@{PhysicsCSAlevlProject.Game1Database}}
-\doxysubsubsection{\texorpdfstring{\_connectionString}{\_connectionString}}
-{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_database_a300c01bd202f911520917d6a0721c8ce} 
-readonly string Physics\+CSAlevl\+Project.\+Game1\+Database.\+\_\+connection\+String\hspace{0.3cm}{\ttfamily [private]}}
-
-{\bfseries Initial value:\+}
-\begin{DoxyCode}{0}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =}
-\DoxyCodeLine{\textcolor{stringliteral}{"{}Host=localhost;Port=5432;Database=stick\_simulation;Username=dev;Password=dev123"{}}}
-
-\end{DoxyCode}
-
-
-The connection string used to connect to the Postgre\+SQL database,. 
-
 
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}

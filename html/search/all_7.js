@@ -1,7 +1,21 @@
 var searchData=
 [
-  ['halfheight_0',['HalfHeight',['../class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#ad38d0cd2ee9d7c0681ea0a1e025f5c35',1,'PhysicsCSAlevlProject::SeperatedAxisRectangleCollider']]],
-  ['halfwidth_1',['HalfWidth',['../class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a84960ba1c76cebf7a0d16d60cfe2d1fd',1,'PhysicsCSAlevlProject::SeperatedAxisRectangleCollider']]],
-  ['handleaddstickbetweenparticlesclick_2',['HandleAddStickBetweenParticlesClick',['../class_physics_c_s_alevl_project_1_1_game1.html#a131e3c2add4094603ffd301e25d36dcd',1,'PhysicsCSAlevlProject::Game1']]],
-  ['haspendingcommands_3',['HasPendingCommands',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#ac2738bea87c703dd4af06c29b9e48afa',1,'PhysicsCSAlevlProject::ImGuiLogger']]]
+  ['game1_0',['Game1',['../class_physics_c_s_alevl_project_1_1_game1.html',1,'PhysicsCSAlevlProject']]],
+  ['game1database_1',['Game1Database',['../class_physics_c_s_alevl_project_1_1_game1_database.html',1,'PhysicsCSAlevlProject']]],
+  ['getassignmentsforteacher_2',['GetAssignmentsForTeacher',['../class_physics_c_s_alevl_project_1_1_game1_database.html#ab1a154d4103fc64d16ca74af7b670e6f',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getlogsasstring_3',['GetLogsAsString',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#a1f93a6d0357cea5defb6a824462b4e41',1,'PhysicsCSAlevlProject::ImGuiLogger']]],
+  ['getmeshjsonsettings_4',['GetMeshJsonSettings',['../class_physics_c_s_alevl_project_1_1_game1.html#a1e441be6ac580b9a5b3688a3d3ab305d',1,'PhysicsCSAlevlProject::Game1']]],
+  ['getmeshparticlesinradius_5',['GetMeshParticlesInRadius',['../class_physics_c_s_alevl_project_1_1_game1.html#ab6d74000e5c1756522d406f6e4f76e4d',1,'PhysicsCSAlevlProject::Game1']]],
+  ['getparticlesinrectangle_6',['GetParticlesInRectangle',['../class_physics_c_s_alevl_project_1_1_game1.html#a0047770ccc0e24952d01d2e216210ac0',1,'PhysicsCSAlevlProject::Game1']]],
+  ['getrectanglefrompoints_7',['GetRectangleFromPoints',['../class_physics_c_s_alevl_project_1_1_game1.html#ad1dbc6086e9ec567f02d5b4e7248c7dd',1,'PhysicsCSAlevlProject::Game1']]],
+  ['getregisteredcommandpaths_8',['GetRegisteredCommandPaths',['../class_physics_c_s_alevl_project_1_1_command_registry.html#a47bce1dde2fce1e82759d1f976b051c9',1,'PhysicsCSAlevlProject::CommandRegistry']]],
+  ['getstructurecontent_9',['GetStructureContent',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a9f64e4f88b35b2e13c996d2d21f34194',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getstructuresforassignment_10',['GetStructuresForAssignment',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a1b712cde3ae8d982e24c4688e4d97b07',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getstructuresforuser_11',['GetStructuresForUser',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a3d7878b3658921321c58fb5698821c1a',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getstudents_12',['GetStudents',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a8eb0da06ee29853885c6dc94c8e2241f',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getstudentstructures_13',['GetStudentStructures',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a36dc0bfdef2f7467a95c671f65382337',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getteachers_14',['GetTeachers',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a21befd9d762b68f0f4bb685bde493171',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getteacherswithinfo_15',['GetTeachersWithInfo',['../class_physics_c_s_alevl_project_1_1_game1_database.html#ae078c72c8bd2511530e75888adad9016',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getuser_16',['GetUser',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a9cfa02ca1832bcc1514ad161646620a1',1,'PhysicsCSAlevlProject::Game1Database']]],
+  ['getuserbyid_17',['GetUserById',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a4a3aa42c0eaae9375219022469f12ed9',1,'PhysicsCSAlevlProject::Game1Database']]]
 ];

@@ -1,5 +1,10 @@
 \doxysection{Physics\+CSAlevl\+Project.\+Circle\+Collider Class Reference}
 \hypertarget{class_physics_c_s_alevl_project_1_1_circle_collider}{}\label{class_physics_c_s_alevl_project_1_1_circle_collider}\index{PhysicsCSAlevlProject.CircleCollider@{PhysicsCSAlevlProject.CircleCollider}}
+
+
+The \doxylink{class_physics_c_s_alevl_project_1_1_circle_collider}{Circle\+Collider} class represents a circular collider with a specified radius and position.  
+
+
 Inheritance diagram for Physics\+CSAlevl\+Project.\+Circle\+Collider:\+\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -19,20 +24,20 @@ override \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Coll
 override bool {\bfseries Contains\+Point} (Vector2 point, out Vector2 closest\+Point)
 \item 
 override void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_circle_collider_a9b2a6cea6f4b983e06acba40b4d989db}{Draw}} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}} primitive\+Batch)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Draws the collider. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Physics\+CSAlevl\+Project.\+Collider}}}
 \begin{DoxyCompactItemize}
 \item 
 bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a4c9a056179110b406a5523660a52d4e7}{Contains\+Point}} (Vector2 point, out Vector2 closest\+Point)
-\begin{DoxyCompactList}\small\item\em Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. \end{DoxyCompactList}\item 
-\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} {\bfseries Deep\+Copy} ()
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. it outputs the same point if the point is outside the collider, which is used for calculating the collision response direction and magnitude based on how far the point is from the collider\textquotesingle{}s surface. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a7ce51acb746fac54c2a255819579c844}{Deep\+Copy}} ()
+\begin{DoxyCompactList}\small\item\em Creates a deep copy of the collider,. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_circle_collider_aecfce6a024d980b4dd3d12ef4ac06cd5}\label{class_physics_c_s_alevl_project_1_1_circle_collider_aecfce6a024d980b4dd3d12ef4ac06cd5} 
 float {\bfseries Radius}
-\begin{DoxyCompactList}\small\item\em the radiius of the circle collider \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em the radius of the circle collider \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Properties}
 \begin{DoxyCompactItemize}
 \item 
@@ -46,6 +51,9 @@ virtual Vector2 {\bfseries Position}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
 \begin{DoxyCompactList}\small\item\em the position of the collider \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
+\doxysubsection{Detailed Description}
+The \doxylink{class_physics_c_s_alevl_project_1_1_circle_collider}{Circle\+Collider} class represents a circular collider with a specified radius and position. 
+
 \label{doc-func-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_circle_collider_doc-func-members}
 \doxysubsection{Member Function Documentation}
@@ -57,7 +65,18 @@ override void Physics\+CSAlevl\+Project.\+Circle\+Collider.\+Draw (\begin{DoxyPa
 
 
 
-Reimplemented from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Physics\+CSAlevl\+Project.\+Collider}}.
+Draws the collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sprite\+Batch} & \\
+\hline
+{\em primitive\+Batch} & \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a28bb3985d8be62dbd975570853528607}{Physics\+CSAlevl\+Project.\+Collider}}.
 
 
 

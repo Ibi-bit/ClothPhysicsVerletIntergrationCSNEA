@@ -42,12 +42,10 @@ override void {\bfseries Load\+Content} ()
 \begin{DoxyCompactList}\small\item\em loads textures and fonts \end{DoxyCompactList}\item 
 override void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_adb8df048d3e206b7991232944ac60952}{On\+Exiting}} (object sender, Exiting\+Event\+Args args)
 \begin{DoxyCompactList}\small\item\em Handles the application exit event by performing necessary cleanup and logging before the application closes. This method is called when the user attempts to close the application, allowing for any final actions to be taken, such as saving logs or releasing resources. The base implementation is also called to ensure that any additional cleanup in the base class is performed. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a04f63b442c3bed84e594d5c25ceb74f8}\label{class_physics_c_s_alevl_project_1_1_game1_a04f63b442c3bed84e594d5c25ceb74f8} 
-override void {\bfseries Draw} (Game\+Time game\+Time)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a12bba18db4e17b9737e4ebf6125dbb1e}\label{class_physics_c_s_alevl_project_1_1_game1_a12bba18db4e17b9737e4ebf6125dbb1e} 
-override void {\bfseries Update} (Game\+Time game\+Time)
-\end{DoxyCompactItemize}
+override void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a04f63b442c3bed84e594d5c25ceb74f8}{Draw}} (Game\+Time game\+Time)
+\begin{DoxyCompactList}\small\item\em the central draw loop for the application where every other draw function is called from \end{DoxyCompactList}\item 
+override void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a12bba18db4e17b9737e4ebf6125dbb1e}{Update}} (Game\+Time game\+Time)
+\begin{DoxyCompactList}\small\item\em main game loop for everything not related to drawing \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Properties}
 \begin{DoxyCompactItemize}
 \item 
@@ -138,13 +136,13 @@ void {\bfseries Draw\+Structure\+Window} ()
 \begin{DoxyCompactList}\small\item\em Draws the structure window for loading and managing saved meshes. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac0354b09c773d59c7dc3e9f65f8c12c0}\label{class_physics_c_s_alevl_project_1_1_game1_ac0354b09c773d59c7dc3e9f65f8c12c0} 
 void {\bfseries Draw\+Save\+Window} ()
-\item 
+\begin{DoxyCompactList}\small\item\em Draws the save window for saving the current mesh with a specified name. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad77c6444ae4f2d8f9792445e4a41f662}\label{class_physics_c_s_alevl_project_1_1_game1_ad77c6444ae4f2d8f9792445e4a41f662} 
 void {\bfseries Draw\+Read\+Me\+Window} ()
-\item 
+\begin{DoxyCompactList}\small\item\em Draws the readme window with instructions and tips for using the application. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6b4ad9008f4c77b6401af6ee6c049677}\label{class_physics_c_s_alevl_project_1_1_game1_a6b4ad9008f4c77b6401af6ee6c049677} 
 void {\bfseries Draw\+Configuration\+Window} ()
-\item 
+\begin{DoxyCompactList}\small\item\em draws the settings menu for changing window size, physics settings and other configuration options \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a3f0a1ad3fa6a04dbadb95970f3dd332b}\label{class_physics_c_s_alevl_project_1_1_game1_a3f0a1ad3fa6a04dbadb95970f3dd332b} 
 void {\bfseries Initialize\+Physics} ()
 \item 
@@ -156,75 +154,62 @@ void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a3fc377a7447
 \begin{DoxyCompactList}\small\item\em Updates the positions of the particles based on the accumulated forces, applying simple Verlet integration. It also handles collisions with colliders and the boundaries of the window, applying appropriate responses based on the bounce and friction coefficients. Additionally, it calculates statistics about the forces applied to the particles for potential use in visualization or debugging. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_af571cbfaad1129ea6443ec33bb6236b7}\label{class_physics_c_s_alevl_project_1_1_game1_af571cbfaad1129ea6443ec33bb6236b7} 
 void {\bfseries Initialize\+Render} ()
-\item 
+\begin{DoxyCompactList}\small\item\em initiales rendering related variables and settings \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a200242ee39b75c9e18131c644b095488}\label{class_physics_c_s_alevl_project_1_1_game1_a200242ee39b75c9e18131c644b095488} 
 void {\bfseries Initialize\+Tools} ()
-\item 
+\begin{DoxyCompactList}\small\item\em initializes all tools and their settings, this is called in the Initialize method of the game and sets up the interact and build tools with their default properties and values. It also adds factories for creating complex structures like tires and cloth meshes. This method ensures that all tools are properly configured and ready for use when the application starts, allowing users to interact with and build meshes effectively using the provided toolset. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa04725ccd4cbfdc7eaec4c05afca03a2}\label{class_physics_c_s_alevl_project_1_1_game1_aa04725ccd4cbfdc7eaec4c05afca03a2} 
 void {\bfseries Initialize\+Interact\+Tools} ()
-\item 
+\begin{DoxyCompactList}\small\item\em initalises all tools in the Interact Mode with their default properties and values, this includes the Drag, Pin, Cut, Wind, Line\+Cut, Select Particles and Cursor \doxylink{class_physics_c_s_alevl_project_1_1_collider}{Collider} tools. Each tool is configured with specific properties such as radius, strength scale, min distance and shape options that can be adjusted by the user in the UI. This method ensures that all interact tools are properly set up and ready for use when the application starts, allowing users to effectively manipulate the mesh using these tools. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a9788a672439464b37933e9aac52aeae6}\label{class_physics_c_s_alevl_project_1_1_game1_a9788a672439464b37933e9aac52aeae6} 
 void {\bfseries Initialize\+Build\+Tools} ()
-\item 
+\begin{DoxyCompactList}\small\item\em initializes all tools in the Build Mode with their default properties and values, \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac75ec4fa649c5e36a197467676398a48}\label{class_physics_c_s_alevl_project_1_1_game1_ac75ec4fa649c5e36a197467676398a48} 
 void {\bfseries Draw\+Tool\+Menu\+Items} ()
-\item 
+\begin{DoxyCompactList}\small\item\em Draws all tools for the selected mode. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7bfbcdbde56383699e11cf3b3f4a246d}\label{class_physics_c_s_alevl_project_1_1_game1_a7bfbcdbde56383699e11cf3b3f4a246d} 
 void {\bfseries Draw\+Selected\+Tool\+Settings} ()
 \begin{DoxyCompactList}\small\item\em Draws the settings for the currently selected tool in the UI. Depending on which tool is selected, it displays different configurable parameters such as radius, strength, or shape options. The method uses Im\+Gui controls like sliders, checkboxes, and combo boxes to allow users to adjust these parameters in real-\/time. It also includes error handling to catch any exceptions that may occur while drawing the tool settings, ensuring that the application remains stable and provides feedback on any issues encountered. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a94b4a26fc2a0605fb0c079b3de4e2be4}\label{class_physics_c_s_alevl_project_1_1_game1_a94b4a26fc2a0605fb0c079b3de4e2be4} 
 void {\bfseries Ensure\+Selected\+Tool\+Valid} ()
-\item 
+\begin{DoxyCompactList}\small\item\em makes sure the currently selected tool is valid for the current mode \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ae2679f56c96afb10b7cb99b4b0ab1dbe}{Pin\+Particle\+Buildable}} (Vector2 center, float radius)
 \begin{DoxyCompactList}\small\item\em Pins or unpins particles within a specified radius of a given center point. The method retrieves the IDs of particles that are within the radius from the center, and toggles their pinned state. If a particle is pinned, it becomes unpinned, and if it is unpinned, it becomes pinned. The method also logs the action taken for each particle, including its ID and position. If no particles are found within the radius, it logs a warning message indicating that no particles were affected by the pin tool at the specified location and radius. \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_af31e7047117ea04a8332a83ed06efb04}{Cut\+All\+Sticks\+In\+Radius\+Buildable}} (Vector2 center, float radius)
 \begin{DoxyCompactList}\small\item\em Cuts sticks that are within a specified radius of a given center point. The method iterates through all the sticks in the active mesh and calculates the center point of each stick. If the distance from the stick\textquotesingle{}s center to the specified center point is less than or equal to the given radius, the stick is marked for removal. After checking all sticks, the method removes the marked sticks from the mesh and logs the action taken for each cut stick, including its ID and center position. If no sticks are found within the radius, it logs a warning message indicating that no sticks were affected by the cut tool at the specified location and radius. \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a6900c4641e9558a1f91b76b5dcc18222}{Apply\+Wind\+Force\+From\+Drag}} (Vector2 start\+Pos, Vector2 end\+Pos, float \+\_\+)
 \begin{DoxyCompactList}\small\item\em Applies a wind force to particles based on the drag distance and direction between a start and end position. The method calculates the wind direction as the vector from the start position to the end position, and determines the distance of the drag. If the drag distance is below a specified minimum threshold, it logs a warning message and does not apply any force. If the drag distance is sufficient, it calculates the wind force by scaling the wind direction with the drag distance and a strength factor. The resulting wind force is stored in a variable for later application to particles in the simulation. This method allows users to interactively apply wind forces to particles by dragging across the screen, with configurable parameters for minimum drag distance and strength scaling. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a1756c73318acf111fa26b89a45fece3d}\label{class_physics_c_s_alevl_project_1_1_game1_a1756c73318acf111fa26b89a45fece3d} 
-bool {\bfseries Do\+Two\+Lines\+Intersect} (Vector2 line1\+Start, Vector2 line1\+End, Vector2 line2\+Start, Vector2 line2\+End)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a218d9efbefecc6b757b9bf949c6cd304}\label{class_physics_c_s_alevl_project_1_1_game1_a218d9efbefecc6b757b9bf949c6cd304} 
-\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_stick}{Drawable\+Stick}}\+[$\,$]\+\+[$\,$]\+ {\bfseries Do\+Lines\+Intersect} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_stick}{Drawable\+Stick}}\+[$\,$]\+\+[$\,$]\+ sticks, Vector2 line\+Start, Vector2 line\+End)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae47783eea3c87a64654f152bb805d62f}\label{class_physics_c_s_alevl_project_1_1_game1_ae47783eea3c87a64654f152bb805d62f} 
-void {\bfseries Cut\+Sticks\+Along\+Line} (Vector2 line\+Start, Vector2 line\+End)
-\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ae47783eea3c87a64654f152bb805d62f}{Cut\+Sticks\+Along\+Line}} (Vector2 line\+Start, Vector2 line\+End)
+\begin{DoxyCompactList}\small\item\em cuts all sticks within a segment of a line \end{DoxyCompactList}\item 
 List$<$ int $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ab6d74000e5c1756522d406f6e4f76e4d}{Get\+Mesh\+Particles\+In\+Radius}} (Vector2 mouse\+Position, float radius, int max\+Particles=-\/1)
 \begin{DoxyCompactList}\small\item\em Retrieves a list of particle IDs from the active mesh that are within a specified radius of a given mouse position. The method iterates through all particles in the active mesh and calculates the distance from each particle\textquotesingle{}s position to the mouse position. If the distance is less than the specified radius, the particle\textquotesingle{}s ID is added to the list of nearby particles. The method also takes an optional parameter for maximum particles to return; if this limit is reached, it returns the list immediately. This function is used by various tools to identify which particles should be affected based on their proximity to the user\textquotesingle{}s cursor. \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a16e1592d9ac538b460f09ed789362a33}{Drag\+Mesh\+Particles}} (Mouse\+State mouse\+State, bool is\+Dragging, List$<$ int $>$ particle\+Ids)
 \begin{DoxyCompactList}\small\item\em Drags particles in the active mesh based on the current mouse state and whether the user is actively dragging. The method takes a list of particle IDs that are within the drag radius and updates their positions accordingly. If the user is dragging, it calculates the movement delta from the previous mouse position and applies this delta to each particle\textquotesingle{}s current and previous positions, effectively moving them with the cursor. The particles being dragged are visually highlighted by changing their color to yellow. If the user is not dragging, it resets the color of the affected particles back to white. This method allows for interactive manipulation of particles in the mesh using a drag tool. \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ab35449e4811e68faf641726734576e34}{Inspect\+Particles\+In\+Radius\+Log}} (Vector2 center, float radius)
 \begin{DoxyCompactList}\small\item\em Inspects particles within a specified radius of a given center point and logs their information to the console. The method iterates through all particles in the active mesh and calculates the distance from each particle\textquotesingle{}s position to the center point. If the distance is less than or equal to the specified radius, it logs the particle\textquotesingle{}s ID, position, and pinned state to the console. Additionally, it visually highlights inspected particles by changing their color to cyan. If no particles are found within the radius, it logs a warning message indicating that no particles were inspected at the specified location and radius. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a8fa9415ece7075254859f52181ef6cfe}\label{class_physics_c_s_alevl_project_1_1_game1_a8fa9415ece7075254859f52181ef6cfe} 
-void {\bfseries Inspect\+Particles\+In\+Radius\+Window} (Vector2 center, float radius)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae150876c865a2acfa5b43c445abc81e8}\label{class_physics_c_s_alevl_project_1_1_game1_ae150876c865a2acfa5b43c445abc81e8} 
-void {\bfseries Inspect\+Particles\+In\+Rectangle} (Vector2 rect\+Start, Vector2 rect\+End, bool is\+Log, bool clear\+When\+Use)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a0047770ccc0e24952d01d2e216210ac0}\label{class_physics_c_s_alevl_project_1_1_game1_a0047770ccc0e24952d01d2e216210ac0} 
-List$<$ int $>$ {\bfseries Get\+Particles\+In\+Rectangle} (Vector2 rect\+Start, Vector2 rect\+End)
-\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a8fa9415ece7075254859f52181ef6cfe}{Inspect\+Particles\+In\+Radius\+Window}} (Vector2 center, float radius)
+\begin{DoxyCompactList}\small\item\em Inspects particles within a specified radius of a given center point and visually highlights them in the mesh. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ae150876c865a2acfa5b43c445abc81e8}{Inspect\+Particles\+In\+Rectangle}} (Vector2 rect\+Start, Vector2 rect\+End, bool is\+Log, bool clear\+When\+Use)
+\begin{DoxyCompactList}\small\item\em Inspects particles within a rectangle defined by two corner points and either logs their information to the console or visually highlights them in the mesh,. \end{DoxyCompactList}\item 
+List$<$ int $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a0047770ccc0e24952d01d2e216210ac0}{Get\+Particles\+In\+Rectangle}} (Vector2 rect\+Start, Vector2 rect\+End)
+\begin{DoxyCompactList}\small\item\em gets all partices in a rectangle defined by two corner points used for inspection \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a131e3c2add4094603ffd301e25d36dcd}{Handle\+Add\+Stick\+Between\+Particles\+Click}} (Vector2 click\+Pos)
 \begin{DoxyCompactList}\small\item\em Handles the logic for adding a stick between two particles when the user clicks on the canvas. The method first retrieves the radius parameter from the tool settings and then gets the IDs of particles that are within this radius of the click position. If no particles are found, it logs a warning message. If one or more particles are found, it checks if there is already a first particle selected for creating a stick. If not, it sets the first particle ID and highlights it in yellow. If there is already a first particle selected and the newly clicked particle is different, it creates a stick between the two particles, logs the action, and resets their colors back to white. If the user clicks on the same particle that is already selected as the first particle, it logs a message indicating that a stick cannot be created to the same particle and prompts the user to select a different particle. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a2cee533ad606273094e92a4ffc868597}\label{class_physics_c_s_alevl_project_1_1_game1_a2cee533ad606273094e92a4ffc868597} 
 void {\bfseries Mesh\+History\+Push} ()
 \begin{DoxyCompactList}\small\item\em Pushes the History for undo and redo functionality. When a change is made to the mesh, this method creates a deep copy of the current active mesh and pushes it onto the history stack. It also clears the redo history stack, ensuring that any new changes invalidate the previous redo states. This allows users to undo and redo their actions on the mesh effectively, maintaining a consistent state of the mesh throughout their editing process. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad1dbc6086e9ec567f02d5b4e7248c7dd}\label{class_physics_c_s_alevl_project_1_1_game1_ad1dbc6086e9ec567f02d5b4e7248c7dd} 
-Rectangle {\bfseries Get\+Rectangle\+From\+Points} (Vector2 point1, Vector2 point2)
-\item 
+Rectangle \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ad1dbc6086e9ec567f02d5b4e7248c7dd}{Get\+Rectangle\+From\+Points}} (Vector2 point1, Vector2 point2)
+\begin{DoxyCompactList}\small\item\em creates a recangle from two points \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a4b6c181eb170ac9429dc5d7a9b0b6fcd}\label{class_physics_c_s_alevl_project_1_1_game1_a4b6c181eb170ac9429dc5d7a9b0b6fcd} 
 void {\bfseries Initialize\+Update} ()
-\item 
+\begin{DoxyCompactList}\small\item\em initializes variables used in the Update method, \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae6f27fb685c576e115585f238bdf4663}\label{class_physics_c_s_alevl_project_1_1_game1_ae6f27fb685c576e115585f238bdf4663} 
 Vector2 {\bfseries Get\+Cursor\+Collider\+Center} ()
 \item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a10bb4cdb8dffb6659caecb3f76649c7f}\label{class_physics_c_s_alevl_project_1_1_game1_a10bb4cdb8dffb6659caecb3f76649c7f} 
-void {\bfseries Set\+Cursor\+Collider\+Center} (Vector2 center)
-\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a0b693fdd24619f9ae0082596529ca957}\label{class_physics_c_s_alevl_project_1_1_game1_a0b693fdd24619f9ae0082596529ca957} 
-void {\bfseries Update\+Cursor\+Collider\+Size} (float radius)
-\end{DoxyCompactItemize}
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a10bb4cdb8dffb6659caecb3f76649c7f}{Set\+Cursor\+Collider\+Center}} (Vector2 center)
+\begin{DoxyCompactList}\small\item\em sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect, \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a0b693fdd24619f9ae0082596529ca957}{Update\+Cursor\+Collider\+Size}} (float radius)
+\begin{DoxyCompactList}\small\item\em updates the size of the cursor collider based on a given radius, which is used for tools that require a circular or square area of effect around the cursor. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Static Private Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -590,6 +575,23 @@ Cuts sticks that are within a specified radius of a given center point. The meth
 {\em radius} & \\
 \hline
 \end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae47783eea3c87a64654f152bb805d62f}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!CutSticksAlongLine@{CutSticksAlongLine}}
+\index{CutSticksAlongLine@{CutSticksAlongLine}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{CutSticksAlongLine()}{CutSticksAlongLine()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ae47783eea3c87a64654f152bb805d62f} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Cut\+Sticks\+Along\+Line (\begin{DoxyParamCaption}\item[{Vector2}]{line\+Start}{, }\item[{Vector2}]{line\+End}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+cuts all sticks within a segment of a line 
+
+
+\begin{DoxyParams}{Parameters}
+{\em line\+Start} & \\
+\hline
+{\em line\+End} & \\
+\hline
+\end{DoxyParams}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a16e1592d9ac538b460f09ed789362a33}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!DragMeshParticles@{DragMeshParticles}}
 \index{DragMeshParticles@{DragMeshParticles}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{DragMeshParticles()}{DragMeshParticles()}}
@@ -607,6 +609,21 @@ Drags particles in the active mesh based on the current mouse state and whether 
 {\em is\+Dragging} & \\
 \hline
 {\em particle\+Ids} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a04f63b442c3bed84e594d5c25ceb74f8}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!Draw@{Draw}}
+\index{Draw@{Draw}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{Draw()}{Draw()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a04f63b442c3bed84e594d5c25ceb74f8} 
+override void Physics\+CSAlevl\+Project.\+Game1.\+Draw (\begin{DoxyParamCaption}\item[{Game\+Time}]{game\+Time}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+the central draw loop for the application where every other draw function is called from 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+Time} & \\
 \hline
 \end{DoxyParams}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ab6d74000e5c1756522d406f6e4f76e4d}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!GetMeshParticlesInRadius@{GetMeshParticlesInRadius}}
@@ -629,7 +646,47 @@ Retrieves a list of particle IDs from the active mesh that are within a specifie
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
+list of particle IDs
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a0047770ccc0e24952d01d2e216210ac0}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!GetParticlesInRectangle@{GetParticlesInRectangle}}
+\index{GetParticlesInRectangle@{GetParticlesInRectangle}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{GetParticlesInRectangle()}{GetParticlesInRectangle()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a0047770ccc0e24952d01d2e216210ac0} 
+List$<$ int $>$ Physics\+CSAlevl\+Project.\+Game1.\+Get\+Particles\+In\+Rectangle (\begin{DoxyParamCaption}\item[{Vector2}]{rect\+Start}{, }\item[{Vector2}]{rect\+End}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
 
+
+
+gets all partices in a rectangle defined by two corner points used for inspection 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rect\+Start} & \\
+\hline
+{\em rect\+End} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad1dbc6086e9ec567f02d5b4e7248c7dd}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!GetRectangleFromPoints@{GetRectangleFromPoints}}
+\index{GetRectangleFromPoints@{GetRectangleFromPoints}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{GetRectangleFromPoints()}{GetRectangleFromPoints()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ad1dbc6086e9ec567f02d5b4e7248c7dd} 
+Rectangle Physics\+CSAlevl\+Project.\+Game1.\+Get\+Rectangle\+From\+Points (\begin{DoxyParamCaption}\item[{Vector2}]{point1}{, }\item[{Vector2}]{point2}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+creates a recangle from two points 
+
+
+\begin{DoxyParams}{Parameters}
+{\em point1} & \\
+\hline
+{\em point2} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+axis aligned\+Rectangle
 \end{DoxyReturn}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a131e3c2add4094603ffd301e25d36dcd}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!HandleAddStickBetweenParticlesClick@{HandleAddStickBetweenParticlesClick}}
 \index{HandleAddStickBetweenParticlesClick@{HandleAddStickBetweenParticlesClick}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
@@ -676,6 +733,44 @@ Inspects particles within a specified radius of a given center point and logs th
 {\em center} & \\
 \hline
 {\em radius} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a8fa9415ece7075254859f52181ef6cfe}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!InspectParticlesInRadiusWindow@{InspectParticlesInRadiusWindow}}
+\index{InspectParticlesInRadiusWindow@{InspectParticlesInRadiusWindow}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{InspectParticlesInRadiusWindow()}{InspectParticlesInRadiusWindow()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a8fa9415ece7075254859f52181ef6cfe} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Inspect\+Particles\+In\+Radius\+Window (\begin{DoxyParamCaption}\item[{Vector2}]{center}{, }\item[{float}]{radius}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+Inspects particles within a specified radius of a given center point and visually highlights them in the mesh. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em center} & \\
+\hline
+{\em radius} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae150876c865a2acfa5b43c445abc81e8}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!InspectParticlesInRectangle@{InspectParticlesInRectangle}}
+\index{InspectParticlesInRectangle@{InspectParticlesInRectangle}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{InspectParticlesInRectangle()}{InspectParticlesInRectangle()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ae150876c865a2acfa5b43c445abc81e8} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Inspect\+Particles\+In\+Rectangle (\begin{DoxyParamCaption}\item[{Vector2}]{rect\+Start}{, }\item[{Vector2}]{rect\+End}{, }\item[{bool}]{is\+Log}{, }\item[{bool}]{clear\+When\+Use}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+Inspects particles within a rectangle defined by two corner points and either logs their information to the console or visually highlights them in the mesh,. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rect\+Start} & \\
+\hline
+{\em rect\+End} & \\
+\hline
+{\em is\+Log} & \\
+\hline
+{\em clear\+When\+Use} & \\
 \hline
 \end{DoxyParams}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_add2794cfcd35c67209a9d03c8a9c3a37}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!ListCommands@{ListCommands}}
@@ -833,6 +928,21 @@ returns a json string of the mesh used to save to the database
 \begin{DoxyReturn}{Returns}
 JSON String
 \end{DoxyReturn}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a10bb4cdb8dffb6659caecb3f76649c7f}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!SetCursorColliderCenter@{SetCursorColliderCenter}}
+\index{SetCursorColliderCenter@{SetCursorColliderCenter}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{SetCursorColliderCenter()}{SetCursorColliderCenter()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a10bb4cdb8dffb6659caecb3f76649c7f} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Set\+Cursor\+Collider\+Center (\begin{DoxyParamCaption}\item[{Vector2}]{center}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect, 
+
+
+\begin{DoxyParams}{Parameters}
+{\em center} & \\
+\hline
+\end{DoxyParams}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!SetMode@{SetMode}}
 \index{SetMode@{SetMode}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{SetMode()}{SetMode()}}
@@ -878,6 +988,36 @@ Tests the database connection and logs the result. This command can be invoked f
 
 \begin{DoxyParams}{Parameters}
 {\em parameters} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a12bba18db4e17b9737e4ebf6125dbb1e}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!Update@{Update}}
+\index{Update@{Update}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a12bba18db4e17b9737e4ebf6125dbb1e} 
+override void Physics\+CSAlevl\+Project.\+Game1.\+Update (\begin{DoxyParamCaption}\item[{Game\+Time}]{game\+Time}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+main game loop for everything not related to drawing 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+Time} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a0b693fdd24619f9ae0082596529ca957}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!UpdateCursorColliderSize@{UpdateCursorColliderSize}}
+\index{UpdateCursorColliderSize@{UpdateCursorColliderSize}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{UpdateCursorColliderSize()}{UpdateCursorColliderSize()}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a0b693fdd24619f9ae0082596529ca957} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Update\+Cursor\+Collider\+Size (\begin{DoxyParamCaption}\item[{float}]{radius}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+updates the size of the cursor collider based on a given radius, which is used for tools that require a circular or square area of effect around the cursor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & \\
 \hline
 \end{DoxyParams}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a3fc377a7447727cd72a6ad872854ea39}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!UpdateParticles@{UpdateParticles}}

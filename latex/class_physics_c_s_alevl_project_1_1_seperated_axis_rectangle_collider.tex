@@ -1,5 +1,10 @@
 \doxysection{Physics\+CSAlevl\+Project.\+Seperated\+Axis\+Rectangle\+Collider Class Reference}
 \hypertarget{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider}{}\label{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider}\index{PhysicsCSAlevlProject.SeperatedAxisRectangleCollider@{PhysicsCSAlevlProject.SeperatedAxisRectangleCollider}}
+
+
+The \doxylink{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider}{Seperated\+Axis\+Rectangle\+Collider} class represents a rectangle collider that can be rotated and uses the Separating Axis Theorem (SAT) for collision detection.  
+
+
 Inheritance diagram for Physics\+CSAlevl\+Project.\+Seperated\+Axis\+Rectangle\+Collider:\+\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -19,7 +24,7 @@ override \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Coll
 override bool {\bfseries Contains\+Point} (Vector2 point, out Vector2 closest\+Point)
 \item 
 override void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider_a948092f2571a57a33bae056f98a5206a}{Draw}} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}} primitive\+Batch)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Draws the collider. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_polygon_seperated_axis_collider}{Physics\+CSAlevl\+Project.\+Polygon\+Seperated\+Axis\+Collider}}}
 \begin{DoxyCompactItemize}
 \item 
@@ -33,9 +38,9 @@ override bool {\bfseries Contains\+Point} (Vector2 point, out Vector2 closest\+P
 \begin{DoxyCompactItemize}
 \item 
 bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a4c9a056179110b406a5523660a52d4e7}{Contains\+Point}} (Vector2 point, out Vector2 closest\+Point)
-\begin{DoxyCompactList}\small\item\em Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. \end{DoxyCompactList}\item 
-\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} {\bfseries Deep\+Copy} ()
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider\textquotesingle{}s surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. it outputs the same point if the point is outside the collider, which is used for calculating the collision response direction and magnitude based on how far the point is from the collider\textquotesingle{}s surface. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider_a7ce51acb746fac54c2a255819579c844}{Deep\+Copy}} ()
+\begin{DoxyCompactList}\small\item\em Creates a deep copy of the collider,. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -81,7 +86,7 @@ virtual Vector2 {\bfseries Position}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider_a2831a2ea6248b426b8ecd885940b633d}\label{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider_a2831a2ea6248b426b8ecd885940b633d} 
 void {\bfseries Set\+Axis} ()
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em recreates the axes and vertices of the rectangle collider based on the current angle and half width and half height of the rectangle. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Private Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -92,6 +97,9 @@ Vector2 {\bfseries \+\_\+position}
 \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_rectangle}{Primitive\+Batch.\+Rectangle}} {\bfseries rectangle\+Draw}
 \begin{DoxyCompactList}\small\item\em the rectangle used for drawing the collider \end{DoxyCompactList}\end{DoxyCompactItemize}
 
+
+\doxysubsection{Detailed Description}
+The \doxylink{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider}{Seperated\+Axis\+Rectangle\+Collider} class represents a rectangle collider that can be rotated and uses the Separating Axis Theorem (SAT) for collision detection. 
 
 \label{doc-func-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider_doc-func-members}
@@ -104,7 +112,18 @@ override void Physics\+CSAlevl\+Project.\+Seperated\+Axis\+Rectangle\+Collider.\
 
 
 
-Reimplemented from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_polygon_seperated_axis_collider}{Physics\+CSAlevl\+Project.\+Polygon\+Seperated\+Axis\+Collider}}.
+Draws the collider. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sprite\+Batch} & \\
+\hline
+{\em primitive\+Batch} & \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_polygon_seperated_axis_collider_ace4836f89bed44ea29b8cd3ee607a8c2}{Physics\+CSAlevl\+Project.\+Polygon\+Seperated\+Axis\+Collider}}.
 
 
 

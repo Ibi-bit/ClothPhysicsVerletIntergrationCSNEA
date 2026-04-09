@@ -41,9 +41,7 @@ var hierarchy =
     [ "PhysicsCSAlevlProject.Particle", "class_physics_c_s_alevl_project_1_1_particle.html", [
       [ "PhysicsCSAlevlProject.DrawableParticle", "class_physics_c_s_alevl_project_1_1_drawable_particle.html", null ]
     ] ],
-    [ "PhysicsCSAlevlProject.FileWriteableMesh.particleData", "class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1particle_data.html", [
-      [ "PhysicsCSAlevlProject.FileWriteableMesh.OscillatingParticleData", "class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1_oscillating_particle_data.html", null ]
-    ] ],
+    [ "PhysicsCSAlevlProject.FileWriteableMesh.particleData", "class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1particle_data.html", null ],
     [ "VectorGraphics.PrimitiveBatch", "class_vector_graphics_1_1_primitive_batch.html", null ],
     [ "PhysicsCSAlevlProject.Program", "class_physics_c_s_alevl_project_1_1_program.html", null ],
     [ "VectorGraphics.PrimitiveBatch.RectangleTexture", "class_vector_graphics_1_1_primitive_batch_1_1_rectangle_texture.html", null ],

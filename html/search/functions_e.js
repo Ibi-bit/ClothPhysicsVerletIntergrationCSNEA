@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['savelogstofile_0',['SaveLogsToFile',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#a96e4c84827d2084c5df5aafb3237e0b1',1,'PhysicsCSAlevlProject::ImGuiLogger']]],
-  ['savemeshtojson_1',['SaveMeshToJSON',['../class_physics_c_s_alevl_project_1_1_game1.html#ad5e9b839361b313dabe585f301a71ce8',1,'PhysicsCSAlevlProject::Game1']]],
-  ['savemeshtojsonstring_2',['SaveMeshToJsonString',['../class_physics_c_s_alevl_project_1_1_game1.html#a905a45ccb5f46601cef570cd6320ddd9',1,'PhysicsCSAlevlProject::Game1']]],
-  ['savestructurewithname_3',['SaveStructureWithName',['../class_physics_c_s_alevl_project_1_1_game1_database.html#a9425f7fc0794b482161e4c7288bb6257',1,'PhysicsCSAlevlProject::Game1Database']]],
-  ['setmode_4',['SetMode',['../class_physics_c_s_alevl_project_1_1_game1.html#abefc313bad3f4d6e993e2c6d171f59eb',1,'PhysicsCSAlevlProject::Game1']]],
-  ['setwindowsize_5',['SetWindowSize',['../class_physics_c_s_alevl_project_1_1_game1.html#a1288355a1eafc2a26827e854469080da',1,'PhysicsCSAlevlProject::Game1']]]
+  ['refreshmeshcommandbindings_0',['RefreshMeshCommandBindings',['../class_physics_c_s_alevl_project_1_1_game1.html#a98d7fe01db45a6c34df29a598b769c44',1,'PhysicsCSAlevlProject::Game1']]],
+  ['registerenvvar_1',['RegisterEnvVar',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#a33cf7bcedd9cc6de7ef9de50fe480843',1,'PhysicsCSAlevlProject::ImGuiLogger']]],
+  ['registertype_2',['RegisterType',['../class_physics_c_s_alevl_project_1_1_command_registry.html#a11489b6a4f49c25bb6cf438def7e9f8c',1,'PhysicsCSAlevlProject::CommandRegistry']]],
+  ['resolveenvvars_3',['ResolveEnvVars',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#aaee857cb9f92eeecb4fb7a54f26a345d',1,'PhysicsCSAlevlProject::ImGuiLogger']]]
 ];

@@ -91,14 +91,17 @@ $(function(){initNavTree('class_physics_c_s_alevl_project_1_1_polygon_seperated_
   <div class="headertitle"><div class="title">PhysicsCSAlevlProject.PolygonSeperatedAxisCollider Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>general polygon collider that uses the Separating Axis Theorem (SAT) for collision detection, which can represent any shape not self intersectiong such as rectangles, triangles, and more complex polygons.  
+ <a href="#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for PhysicsCSAlevlProject.PolygonSeperatedAxisCollider:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_physics_c_s_alevl_project_1_1_polygon_seperated_axis_collider.png" usemap="#PhysicsCSAlevlProject_2EPolygonSeperatedAxisCollider_map" alt=""/>
   <map id="PhysicsCSAlevlProject_2EPolygonSeperatedAxisCollider_map" name="PhysicsCSAlevlProject_2EPolygonSeperatedAxisCollider_map">
-<area href="class_physics_c_s_alevl_project_1_1_collider.html" alt="PhysicsCSAlevlProject.Collider" shape="rect" coords="0,0,328,24"/>
-<area href="class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html" alt="PhysicsCSAlevlProject.SeperatedAxisRectangleCollider" shape="rect" coords="0,112,328,136"/>
+<area href="class_physics_c_s_alevl_project_1_1_collider.html" title="The Collider class is the base class for all types of colliders this is so that they can be stored in..." alt="PhysicsCSAlevlProject.Collider" shape="rect" coords="0,0,328,24"/>
+<area href="class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html" title="The SeperatedAxisRectangleCollider class represents a rectangle collider that can be rotated and uses..." alt="PhysicsCSAlevlProject.SeperatedAxisRectangleCollider" shape="rect" coords="0,112,328,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -111,11 +114,12 @@ override <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">
 <tr class="memitem:aad6d358dfb6026865264dbf721252652" id="r_aad6d358dfb6026865264dbf721252652"><td class="memItemLeft"><a id="aad6d358dfb6026865264dbf721252652" name="aad6d358dfb6026865264dbf721252652"></a>
 override bool&#160;</td><td class="memItemRight"><b>ContainsPoint</b> (Vector2 point, out Vector2 closestPoint)</td></tr>
 <tr class="memitem:ace4836f89bed44ea29b8cd3ee607a8c2" id="r_ace4836f89bed44ea29b8cd3ee607a8c2"><td class="memItemLeft">override void&#160;</td><td class="memItemRight"><a class="el" href="#ace4836f89bed44ea29b8cd3ee607a8c2">Draw</a> (SpriteBatch spriteBatch, <a class="el" href="class_vector_graphics_1_1_primitive_batch.html">PrimitiveBatch</a> primitiveBatch)</td></tr>
+<tr class="memdesc:ace4836f89bed44ea29b8cd3ee607a8c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the collider.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_physics_c_s_alevl_project_1_1_collider"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_physics_c_s_alevl_project_1_1_collider')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">PhysicsCSAlevlProject.Collider</a></td></tr>
 <tr class="memitem:a4c9a056179110b406a5523660a52d4e7 inherit pub_methods_class_physics_c_s_alevl_project_1_1_collider" id="r_a4c9a056179110b406a5523660a52d4e7"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html#a4c9a056179110b406a5523660a52d4e7">ContainsPoint</a> (Vector2 point, out Vector2 closestPoint)</td></tr>
-<tr class="memdesc:a4c9a056179110b406a5523660a52d4e7 inherit pub_methods_class_physics_c_s_alevl_project_1_1_collider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider's surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter.  <br /></td></tr>
-<tr class="memitem:a7ce51acb746fac54c2a255819579c844 inherit pub_methods_class_physics_c_s_alevl_project_1_1_collider" id="r_a7ce51acb746fac54c2a255819579c844"><td class="memItemLeft">
-<a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">Collider</a>&#160;</td><td class="memItemRight"><b>DeepCopy</b> ()</td></tr>
+<tr class="memdesc:a4c9a056179110b406a5523660a52d4e7 inherit pub_methods_class_physics_c_s_alevl_project_1_1_collider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the given point is contained within the collider and calculates the closest point on the collider to the given point. This method is used for collision detection and response, allowing the application to determine if a particle or object is colliding with the collider and to find the nearest point on the collider's surface for accurate physics interactions. The method returns true if the point is inside the collider, and false otherwise, while also providing the closest point on the collider as an output parameter. it outputs the same point if the point is outside the collider, which is used for calculating the collision response direction and magnitude based on how far the point is from the collider's surface.  <br /></td></tr>
+<tr class="memitem:a7ce51acb746fac54c2a255819579c844 inherit pub_methods_class_physics_c_s_alevl_project_1_1_collider" id="r_a7ce51acb746fac54c2a255819579c844"><td class="memItemLeft"><a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">Collider</a>&#160;</td><td class="memItemRight"><a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html#a7ce51acb746fac54c2a255819579c844">DeepCopy</a> ()</td></tr>
+<tr class="memdesc:a7ce51acb746fac54c2a255819579c844 inherit pub_methods_class_physics_c_s_alevl_project_1_1_collider"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a deep copy of the collider,.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -183,7 +187,9 @@ Rectangle&#160;</td><td class="memItemRight"><b>_worldBroadPhase</b></td></tr>
 bool&#160;</td><td class="memItemRight"><b>_worldCacheDirty</b></td></tr>
 <tr class="memdesc:a3dfb19d3c9e654c48a548ed366878683"><td class="mdescLeft">&#160;</td><td class="mdescRight">a boolean flag to indicate whether the world vertices and world broadphase cache needs to be updated <br /></td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>general polygon collider that uses the Separating Axis Theorem (SAT) for collision detection, which can represent any shape not self intersectiong such as rectangles, triangles, and more complex polygons. </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="ace4836f89bed44ea29b8cd3ee607a8c2" name="ace4836f89bed44ea29b8cd3ee607a8c2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ace4836f89bed44ea29b8cd3ee607a8c2">&#9670;&#160;</a></span>Draw()</h2>
 
@@ -211,7 +217,18 @@ bool&#160;</td><td class="memItemRight"><b>_worldCacheDirty</b></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">PhysicsCSAlevlProject.Collider</a>.</p>
+<p>Draws the collider. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">spriteBatch</td><td></td></tr>
+    <tr><td class="paramname">primitiveBatch</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html#a28bb3985d8be62dbd975570853528607">PhysicsCSAlevlProject.Collider</a>.</p>
+
+<p>Reimplemented in <a class="el" href="class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a948092f2571a57a33bae056f98a5206a">PhysicsCSAlevlProject.SeperatedAxisRectangleCollider</a>.</p>
 
 </div>
 </div>
