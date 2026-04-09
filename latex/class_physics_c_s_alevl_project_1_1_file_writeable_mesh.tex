@@ -1,0 +1,56 @@
+\doxysection{Physics\+CSAlevl\+Project.\+File\+Writeable\+Mesh Class Reference}
+\hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}\index{PhysicsCSAlevlProject.FileWriteableMesh@{PhysicsCSAlevlProject.FileWriteableMesh}}
+
+
+The \doxylink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{File\+Writeable\+Mesh} class serves as a serializable representation of the \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} class, allowing for easy saving and loading of mesh data to and from JSON format. It contains nested classes for particle and stick data, as well as collider information, and provides methods to convert between the \doxylink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{File\+Writeable\+Mesh} and the original \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} class. This design enables the application to persist mesh configurations, including particle properties, stick connections, and colliders, while also supporting oscillating particles with their specific parameters. The To\+Mesh method reconstructs a \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} instance from the stored data, ensuring that all relevant properties are correctly transferred for accurate physics simulations when loaded back into the application.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1_oscillation_data}{Oscillation\+Data}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1particle_data}{particle\+Data}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1_oscillating_particle_data}{Oscillating\+Particle\+Data}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1stick_data}{stick\+Data}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_aac884d7cab5ac2b29ef58990c355b01b}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_aac884d7cab5ac2b29ef58990c355b01b} 
+{\bfseries File\+Writeable\+Mesh} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} mesh)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_afdd896ce789ae1db8d443a87f5a32c91}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_afdd896ce789ae1db8d443a87f5a32c91} 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} {\bfseries To\+Mesh} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_ad8eccf4bd4b218feae27e993b33cf948}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_ad8eccf4bd4b218feae27e993b33cf948} 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1particle_data}{particle\+Data}} $>$ {\bfseries Particles} = new List$<$\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1particle_data}{particle\+Data}}$>$()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a4fcfd01220c30cabbaa352b5db9ed674}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a4fcfd01220c30cabbaa352b5db9ed674} 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1stick_data}{stick\+Data}} $>$ {\bfseries Sticks} = new List$<$\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_1_1stick_data}{stick\+Data}}$>$()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a90f90882a4e99d6459fed43e190425eb}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a90f90882a4e99d6459fed43e190425eb} 
+List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} $>$ {\bfseries Colliders} = new()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a22d222715862e74f917f55406c5efc5f}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a22d222715862e74f917f55406c5efc5f} 
+float {\bfseries Spring\+Constant} = 10000f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_ae2369107a117337b009c2657c202dccb}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_ae2369107a117337b009c2657c202dccb} 
+float {\bfseries Drag} = 0.\+997f
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a6dbc534619d9215e20927d14bd7931be}\label{class_physics_c_s_alevl_project_1_1_file_writeable_mesh_a6dbc534619d9215e20927d14bd7931be} 
+float {\bfseries Mass} = 1f
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The \doxylink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{File\+Writeable\+Mesh} class serves as a serializable representation of the \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} class, allowing for easy saving and loading of mesh data to and from JSON format. It contains nested classes for particle and stick data, as well as collider information, and provides methods to convert between the \doxylink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{File\+Writeable\+Mesh} and the original \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} class. This design enables the application to persist mesh configurations, including particle properties, stick connections, and colliders, while also supporting oscillating particles with their specific parameters. The To\+Mesh method reconstructs a \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} instance from the stored data, ensuring that all relevant properties are correctly transferred for accurate physics simulations when loaded back into the application. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+Physics\+CSAlevl\+Project/\+Objects.\+File\+Writeable\+Mesh.\+cs\end{DoxyCompactItemize}

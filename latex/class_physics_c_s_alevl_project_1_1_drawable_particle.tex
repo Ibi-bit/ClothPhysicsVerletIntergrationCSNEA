@@ -1,0 +1,74 @@
+\doxysection{Physics\+CSAlevl\+Project.\+Drawable\+Particle Class Reference}
+\hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle}{}\label{class_physics_c_s_alevl_project_1_1_drawable_particle}\index{PhysicsCSAlevlProject.DrawableParticle@{PhysicsCSAlevlProject.DrawableParticle}}
+Inheritance diagram for Physics\+CSAlevl\+Project.\+Drawable\+Particle:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_physics_c_s_alevl_project_1_1_drawable_particle}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_a1e55db5db1f3efceb2472ac2164e7ef9}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_a1e55db5db1f3efceb2472ac2164e7ef9} 
+{\bfseries Drawable\+Particle} (Vector2 position, float mass, Vector2 size, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle_a288f00aa01ec5c2cb2eb16fcd3341d18}{Color}} color)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_a498cc6b3aabdb92c6cba590ad0db7654}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_a498cc6b3aabdb92c6cba590ad0db7654} 
+{\bfseries Drawable\+Particle} (Vector2 position, float mass, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle_a288f00aa01ec5c2cb2eb16fcd3341d18}{Color}} color)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_a3191c78c61bcbd47e5eaf743f54103cf}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_a3191c78c61bcbd47e5eaf743f54103cf} 
+{\bfseries Drawable\+Particle} (Vector2 position, float mass, bool is\+Pinned, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle_a288f00aa01ec5c2cb2eb16fcd3341d18}{Color}} color)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_a560ca5d6f6f2e18577d2e40900fc6c79}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_a560ca5d6f6f2e18577d2e40900fc6c79} 
+void {\bfseries Draw} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}} primitive\+Batch)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Physics\+CSAlevl\+Project.\+Particle}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Particle} (Vector2 position, float mass, bool is\+Pinned)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_a288f00aa01ec5c2cb2eb16fcd3341d18}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_a288f00aa01ec5c2cb2eb16fcd3341d18} 
+Color {\bfseries Color}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
+\begin{DoxyCompactList}\small\item\em the colour of the particle \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_abb9778b490b388353f476d37a712b24d}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_abb9778b490b388353f476d37a712b24d} 
+Vector2 {\bfseries Size}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
+\begin{DoxyCompactList}\small\item\em the size of the particle to be used in drawing \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_a9729abb03cabfaa65735f40dae8aaeb3}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_a9729abb03cabfaa65735f40dae8aaeb3} 
+void {\bfseries Update\+Rectangle} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_drawable_particle_a5a3f430f77b01664b42c9a00ed5bf1d4}\label{class_physics_c_s_alevl_project_1_1_drawable_particle_a5a3f430f77b01664b42c9a00ed5bf1d4} 
+\doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_rectangle}{Primitive\+Batch.\+Rectangle}} {\bfseries rectangle}
+\begin{DoxyCompactList}\small\item\em the rectangle used for drawing the particle, which is updated based on the particle\textquotesingle{}s position and size. The rectangle is drawn in the Draw method, and its position is centered around the particle\textquotesingle{}s position to ensure accurate rendering of the particle on the screen. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Attributes inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Physics\+CSAlevl\+Project.\+Particle}}}
+\begin{DoxyCompactItemize}
+\item 
+Vector2 {\bfseries Position}
+\begin{DoxyCompactList}\small\item\em the position of the particle \end{DoxyCompactList}\item 
+Vector2 {\bfseries Previous\+Position}
+\begin{DoxyCompactList}\small\item\em the previous position of the particle \end{DoxyCompactList}\item 
+float {\bfseries Mass}
+\begin{DoxyCompactList}\small\item\em the mass of the particle \end{DoxyCompactList}\item 
+Vector2 {\bfseries Accumulated\+Force}
+\begin{DoxyCompactList}\small\item\em the accumalated force due to hooks law \end{DoxyCompactList}\item 
+int {\bfseries ID}
+\begin{DoxyCompactList}\small\item\em the ID of the particle \end{DoxyCompactList}\item 
+float {\bfseries Total\+Force\+Magnitude}
+\begin{DoxyCompactList}\small\item\em magnitude of of the total force applied to the particle \end{DoxyCompactList}\item 
+bool {\bfseries Is\+Pinned}
+\begin{DoxyCompactList}\small\item\em toggle for if th eparticle is pinned used to determine if the particle should be affected by physics or not \end{DoxyCompactList}\item 
+bool {\bfseries Is\+Selected}
+\begin{DoxyCompactList}\small\item\em toggle for if the particle is selected used for the UI to determine if the particle should be drawn with a selection highlight and to allow the particle to be dragged with the mouse when selected \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+Physics\+CSAlevl\+Project/\+Objects.\+Particles.\+cs\end{DoxyCompactItemize}

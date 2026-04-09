@@ -1,0 +1,49 @@
+\doxysection{Physics\+CSAlevl\+Project Namespace Reference}
+\hypertarget{namespace_physics_c_s_alevl_project}{}\label{namespace_physics_c_s_alevl_project}\index{PhysicsCSAlevlProject@{PhysicsCSAlevlProject}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1}{Game1}}
+\begin{DoxyCompactList}\small\item\em Sign-\/in, authentication, and assignment/\+teacher window functionality. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_console_command_attribute}{Console\+Command\+Attribute}}
+\begin{DoxyCompactList}\small\item\em Attribute to mark methods as console commands. The Command\+Path property specifies the command path that will be used to invoke the method from the debug console. For example, a method marked with \+[Console\+Command("{}\+Mesh.\+Add\+Tire"{})]\+ can be invoked by entering "{}\+Mesh.\+Add\+Tire"{} in the debug console, along with any required parameters. This attribute allows for easy registration and organization of debug commands within the application. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_command_registry}{Command\+Registry}}
+\begin{DoxyCompactList}\small\item\em Registry for console commands that can be invoked from the debug console. This class allows for registering methods as console commands using the \doxylink{class_physics_c_s_alevl_project_1_1_console_command_attribute}{Console\+Command\+Attribute}, and provides functionality to invoke these commands based on user input. The commands are stored in a dictionary for efficient lookup, and the registry supports invoking commands with parameters as well as listing all registered commands. This system enables a flexible and extensible way to add debug functionality to the application without hardcoding command handling logic in the main game loop. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_factory}{Factory}}
+\begin{DoxyCompactList}\small\item\em Base class for factories that create different types of structures in the mesh. Each factory has a name, a method to execute when the factory is invoked, and a dictionary of parameters that can be configured by the user. The \doxylink{class_physics_c_s_alevl_project_1_1_factory}{Factory} class serves as a template for specific factories like \doxylink{class_physics_c_s_alevl_project_1_1_tire_factory}{Tire\+Factory} and \doxylink{class_physics_c_s_alevl_project_1_1_cloth_factory}{Cloth\+Factory}, which define their own parameters and methods for creating specific structures in the mesh. This design allows for easy extension by simply creating new factory classes that inherit from \doxylink{class_physics_c_s_alevl_project_1_1_factory}{Factory} and implement their own creation logic and parameters. The factories can then be used in the UI to allow users to quickly create complex structures with configurable parameters without needing to write custom code for each structure type. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_tire_factory}{Tire\+Factory}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_cloth_factory}{Cloth\+Factory}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database}{Game1\+Database}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_circle_collider}{Circle\+Collider}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_rectangle_collider}{Rectangle\+Collider}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider}{Seperated\+Axis\+Rectangle\+Collider}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_polygon_seperated_axis_collider}{Polygon\+Seperated\+Axis\+Collider}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{File\+Writeable\+Mesh}}
+\begin{DoxyCompactList}\small\item\em The \doxylink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{File\+Writeable\+Mesh} class serves as a serializable representation of the \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} class, allowing for easy saving and loading of mesh data to and from JSON format. It contains nested classes for particle and stick data, as well as collider information, and provides methods to convert between the \doxylink{class_physics_c_s_alevl_project_1_1_file_writeable_mesh}{File\+Writeable\+Mesh} and the original \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} class. This design enables the application to persist mesh configurations, including particle properties, stick connections, and colliders, while also supporting oscillating particles with their specific parameters. The To\+Mesh method reconstructs a \doxylink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh} instance from the stored data, ensuring that all relevant properties are correctly transferred for accurate physics simulations when loaded back into the application. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}}
+\begin{DoxyCompactList}\small\item\em The \doxylink{class_physics_c_s_alevl_project_1_1_particle}{Particle} class represents a single particle in the physics simulation, containing properties such as position, mass, accumulated force, and whether it is pinned or selected. The \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} class extends \doxylink{class_physics_c_s_alevl_project_1_1_particle}{Particle} by adding visual properties like color and size, and includes a method to draw itself using a Sprite\+Batch and \doxylink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}. The \doxylink{class_physics_c_s_alevl_project_1_1_oscillating_particle}{Oscillating\+Particle} class further extends \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} to include oscillation parameters such as amplitude, frequency, and angle, allowing it to move in a sinusoidal pattern around an anchor position. This design allows for flexible representation of particles in the simulation, supporting both static and dynamic behaviors while also providing visual feedback for rendering. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_oscillating_particle}{Oscillating\+Particle}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_stick}{Stick}}
+\begin{DoxyCompactList}\small\item\em The \doxylink{class_physics_c_s_alevl_project_1_1_stick}{Stick} class represents a connection between two particles in the physics simulation, defined by its endpoints (P1 and P2) and its natural length. The \doxylink{class_physics_c_s_alevl_project_1_1_drawable_stick}{Drawable\+Stick} class extends \doxylink{class_physics_c_s_alevl_project_1_1_stick}{Stick} by adding visual properties such as color and width, and includes a method to draw itself using a Sprite\+Batch and \doxylink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}. The Is\+Cut property allows for simulating stick breakage, where a stick can be marked as cut to prevent it from being drawn or participating in physics interactions. This design allows for flexible representation of connections between particles, supporting both intact and broken sticks while also providing visual feedback for rendering the mesh structure. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_stick}{Drawable\+Stick}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_tool}{Tool}}
+\item 
+class \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_program}{Program}}
+\end{DoxyCompactItemize}

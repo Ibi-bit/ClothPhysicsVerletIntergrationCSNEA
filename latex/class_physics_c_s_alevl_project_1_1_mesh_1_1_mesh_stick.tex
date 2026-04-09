@@ -1,0 +1,64 @@
+\doxysection{Physics\+CSAlevl\+Project.\+Mesh.\+Mesh\+Stick Class Reference}
+\hypertarget{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick}{}\label{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick}\index{PhysicsCSAlevlProject.Mesh.MeshStick@{PhysicsCSAlevlProject.Mesh.MeshStick}}
+Inheritance diagram for Physics\+CSAlevl\+Project.\+Mesh.\+Mesh\+Stick:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_ad9deb2e54e51f360582e4de1bf23307c}\label{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_ad9deb2e54e51f360582e4de1bf23307c} 
+{\bfseries Mesh\+Stick} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle}} p1, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle}} p2, Color color, float width=2.\+0f)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_stick}{Physics\+CSAlevl\+Project.\+Drawable\+Stick}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Drawable\+Stick} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} p1, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} p2, Color color, float width=2.\+0f)
+\item 
+{\bfseries Drawable\+Stick} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} p1, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} p2, Color color)
+\item 
+void {\bfseries Draw} (Sprite\+Batch sprite\+Batch, \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}} primitive\+Batch, float stick\+Draw\+Thickness=-\/1)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_stick}{Physics\+CSAlevl\+Project.\+Stick}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Stick} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} p1, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} p2)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_a23a414de277c1b8f90491ad857fea829}\label{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_a23a414de277c1b8f90491ad857fea829} 
+int {\bfseries Id}
+\begin{DoxyCompactList}\small\item\em the id of the stick \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_a7b626389bad07637d43755a83ecbf623}\label{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_a7b626389bad07637d43755a83ecbf623} 
+int {\bfseries P1\+Id}
+\begin{DoxyCompactList}\small\item\em the id of the first particle the stick is connected too \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_a813f2aa28b1d3b827b03806679c6da6b}\label{class_physics_c_s_alevl_project_1_1_mesh_1_1_mesh_stick_a813f2aa28b1d3b827b03806679c6da6b} 
+int {\bfseries P2\+Id}
+\begin{DoxyCompactList}\small\item\em the id of the second particle the stick is connected too \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_stick}{Physics\+CSAlevl\+Project.\+Stick}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} {\bfseries P1}
+\begin{DoxyCompactList}\small\item\em the inital particle the stick is connected to \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_particle}{Particle}} {\bfseries P2}
+\begin{DoxyCompactList}\small\item\em the final particle the stick is connected to \end{DoxyCompactList}\item 
+float {\bfseries Length}
+\begin{DoxyCompactList}\small\item\em the natural length of the stick, which is the distance between the two particles when the stick is at rest \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Properties inherited from \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_drawable_stick}{Physics\+CSAlevl\+Project.\+Drawable\+Stick}}}
+\begin{DoxyCompactItemize}
+\item 
+Color {\bfseries Color}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
+\item 
+float {\bfseries Width}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
+\item 
+bool {\bfseries Is\+Cut}\hspace{0.3cm}{\ttfamily  \+[get, set]\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+Physics\+CSAlevl\+Project/\+Objects.\+Mesh.\+cs\end{DoxyCompactItemize}
