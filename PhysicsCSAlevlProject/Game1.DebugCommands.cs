@@ -228,6 +228,10 @@ public partial class Game1
             );
         }
     }
+    /// <summary>
+    /// adds a particle with parameters for use in the debug console
+    /// </summary>
+    /// <param name="parameters"></param>
 
     [ConsoleCommand("Particle.Add")]
     private void AddParticle(string[] parameters)
@@ -258,6 +262,10 @@ public partial class Game1
             );
         }
     }
+    /// <summary>
+    /// adds a stick with parameters for use in the debug console
+    /// </summary>
+    /// <param name="parameters"></param>/
 
     [ConsoleCommand("Stick.Add")]
     private void AddStick(string[] parameters)
@@ -321,7 +329,10 @@ public partial class Game1
         }
     }
 }
-
+/// <summary>
+/// the logger class for ImGui with support for different types of logs, auto condensing for repeated messages and colouring of the logs
+/// also includes a debug console support with command history
+/// </summary>
 public class ImGuiLogger
 {
     public enum LogTypes
@@ -350,10 +361,22 @@ public class ImGuiLogger
         public string ExCommand;
         public string[] Parameters;
     }
+    /// <summary>
+    /// the queue of log messages that have been added and for display  in the imgui fiole
+    /// </summary>
 
     readonly Queue<MessageLog> _logs = new();
+    /// <summary>
+    /// the queue of console commands that have been added but not yet processed for execution
+    /// </summary>
     readonly Queue<Command> _commands = new();
+    /// <summary>
+    /// the raw text inputed by the user in the debug console input field
+    /// </summary>
     private string _commandInput = "";
+    /// <summary>
+    /// the proccessed log messages that are ready for saving to a file 
+    /// </summary>
     private List<string> _logStringHistory = new();
     private readonly Dictionary<string, Func<string>> _envVars = new();
 
@@ -366,7 +389,11 @@ public class ImGuiLogger
     {
         _envVars[name] = resolver;
     }
-
+    /// <summary>
+    /// replaces the text of any environment variables in the command string with their current values by using regular expressions to find occurrences of $VariableName and replacing them with the output of the corresponding resolver function from the _envVars dictionary
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns></returns>
     private string ResolveEnvVars(string command)
     {
         return Regex.Replace(
@@ -382,7 +409,13 @@ public class ImGuiLogger
         );
     }
 
+    /// <summary>
+    /// saves the text inputed by the user for comand history if the user wants to recall it later with arrow keys
+    /// </summary>/
     private readonly List<string> _commandHistory = new();
+    /// <summary>
+    /// 
+    /// </summary>
     private int _historyIndex = -1;
     private string _savedInput = "";
 
