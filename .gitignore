@@ -14,3 +14,5 @@ PhysicsCSAlevlProject/imgui.ini
 PhysicsCSAlevlProject/logs.log
 .gitignore
 .gitignore
+html/
+latex/
