@@ -7,7 +7,7 @@ var searchData=
   ['seperatedaxisrectanglecollider_4',['SeperatedAxisRectangleCollider',['../class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html',1,'PhysicsCSAlevlProject']]],
   ['setaxis_5',['SetAxis',['../class_physics_c_s_alevl_project_1_1_seperated_axis_rectangle_collider.html#a2831a2ea6248b426b8ecd885940b633d',1,'PhysicsCSAlevlProject::SeperatedAxisRectangleCollider']]],
   ['setcursorcollidercenter_6',['SetCursorColliderCenter',['../class_physics_c_s_alevl_project_1_1_game1.html#a10bb4cdb8dffb6659caecb3f76649c7f',1,'PhysicsCSAlevlProject::Game1']]],
-  ['setmode_7',['SetMode',['../class_physics_c_s_alevl_project_1_1_game1.html#abefc313bad3f4d6e993e2c6d171f59eb',1,'PhysicsCSAlevlProject::Game1']]],
+  ['setmode_7',['SetMode',['../class_physics_c_s_alevl_project_1_1_game1.html#abefc313bad3f4d6e993e2c6d171f59eb',1,'PhysicsCSAlevlProject.Game1.SetMode(MeshMode mode)'],['../class_physics_c_s_alevl_project_1_1_game1.html#abefc313bad3f4d6e993e2c6d171f59eb',1,'PhysicsCSAlevlProject.Game1.SetMode(MeshMode mode)']]],
   ['setwindowsize_8',['SetWindowSize',['../class_physics_c_s_alevl_project_1_1_game1.html#a1288355a1eafc2a26827e854469080da',1,'PhysicsCSAlevlProject::Game1']]],
   ['shape_9',['Shape',['../class_vector_graphics_1_1_primitive_batch_1_1_shape.html',1,'VectorGraphics::PrimitiveBatch']]],
   ['size_10',['Size',['../class_physics_c_s_alevl_project_1_1_drawable_particle.html#abb9778b490b388353f476d37a712b24d',1,'PhysicsCSAlevlProject::DrawableParticle']]],

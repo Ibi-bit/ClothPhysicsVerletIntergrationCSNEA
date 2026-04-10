@@ -1,5 +1,10 @@
 \doxysection{Physics\+CSAlevl\+Project.\+Oscillating\+Particle(Vector2 position, float mass, bool is\+Pinned, Color color, float amplitude, float frequency, float angle) Class Reference}
 \hypertarget{class_physics_c_s_alevl_project_1_1_oscillating_particle}{}\label{class_physics_c_s_alevl_project_1_1_oscillating_particle}\index{PhysicsCSAlevlProject.OscillatingParticle@{PhysicsCSAlevlProject.OscillatingParticle}}
+
+
+the \doxylink{class_physics_c_s_alevl_project_1_1_oscillating_particle}{Oscillating\+Particle} class extends \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} to include oscillation parameters such as amplitude, frequency, and angle, allowing it to move in a sinusoidal pattern around an anchor position. The Update\+Oscillation method updates the particle\textquotesingle{}s position based on the oscillation parameters and the elapsed time, creating a dynamic movement effect. The Set\+Anchor\+Position method allows changing the anchor point around which the particle oscillates, providing flexibility in how the particle behaves within the simulation.  
+
+
 Inheritance diagram for Physics\+CSAlevl\+Project.\+Oscillating\+Particle:\+\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -20,10 +25,10 @@ void {\bfseries Set\+Anchor\+Position} (Vector2 new\+Anchor)
 \item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_oscillating_particle_aa217dc7f04a4fd8c1d90007c65b636ac}\label{class_physics_c_s_alevl_project_1_1_oscillating_particle_aa217dc7f04a4fd8c1d90007c65b636ac} 
 float {\bfseries Oscillation\+Amplitude} = amplitude
-\item 
+\begin{DoxyCompactList}\small\item\em the amplitude of the oscillation, \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_oscillating_particle_a84f0a0ea3640b087778e08fc75d9642e}\label{class_physics_c_s_alevl_project_1_1_oscillating_particle_a84f0a0ea3640b087778e08fc75d9642e} 
 float {\bfseries Oscillation\+Frequency} = frequency
-\item 
+\begin{DoxyCompactList}\small\item\em the frequency of the oscillation, which determines how fast the particle oscillates around its anchor position. \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_oscillating_particle_a7687262245e7a1810c6f45033f65cf24}\label{class_physics_c_s_alevl_project_1_1_oscillating_particle_a7687262245e7a1810c6f45033f65cf24} 
 float {\bfseries Oscillation\+Angle} = angle
 \item 
@@ -36,6 +41,28 @@ Vector2 {\bfseries anchor\+Position} = position
 \Hypertarget{class_physics_c_s_alevl_project_1_1_oscillating_particle_a4bef45802296fc103323cde004022f7b}\label{class_physics_c_s_alevl_project_1_1_oscillating_particle_a4bef45802296fc103323cde004022f7b} 
 float {\bfseries \+\_\+oscillation\+Time} = 0f
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+the \doxylink{class_physics_c_s_alevl_project_1_1_oscillating_particle}{Oscillating\+Particle} class extends \doxylink{class_physics_c_s_alevl_project_1_1_drawable_particle}{Drawable\+Particle} to include oscillation parameters such as amplitude, frequency, and angle, allowing it to move in a sinusoidal pattern around an anchor position. The Update\+Oscillation method updates the particle\textquotesingle{}s position based on the oscillation parameters and the elapsed time, creating a dynamic movement effect. The Set\+Anchor\+Position method allows changing the anchor point around which the particle oscillates, providing flexibility in how the particle behaves within the simulation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & \\
+\hline
+{\em mass} & \\
+\hline
+{\em is\+Pinned} & \\
+\hline
+{\em color} & \\
+\hline
+{\em amplitude} & \\
+\hline
+{\em frequency} & \\
+\hline
+{\em angle} & \\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}

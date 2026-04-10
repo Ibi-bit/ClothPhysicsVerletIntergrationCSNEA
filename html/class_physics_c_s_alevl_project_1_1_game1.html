@@ -175,7 +175,7 @@ void&#160;</td><td class="memItemRight"><b>ProcessDebugCommands</b> ()</td></tr>
 <tr class="memitem:a905a45ccb5f46601cef570cd6320ddd9" id="r_a905a45ccb5f46601cef570cd6320ddd9"><td class="memItemLeft">string&#160;</td><td class="memItemRight"><a class="el" href="#a905a45ccb5f46601cef570cd6320ddd9">SaveMeshToJsonString</a> (<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> mesh)</td></tr>
 <tr class="memdesc:a905a45ccb5f46601cef570cd6320ddd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns a json string of the mesh used to save to the database  <br /></td></tr>
 <tr class="memitem:ab254c0d8c467ce3d89c2e02aeb2aafd2" id="r_ab254c0d8c467ce3d89c2e02aeb2aafd2"><td class="memItemLeft"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab254c0d8c467ce3d89c2e02aeb2aafd2">LoadMeshFromJSON</a> (string filePath)</td></tr>
-<tr class="memdesc:ab254c0d8c467ce3d89c2e02aeb2aafd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">attempts to load a <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh  <br /></td></tr>
+<tr class="memdesc:ab254c0d8c467ce3d89c2e02aeb2aafd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">attempts to load a <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html" title="The Mesh class stores everything that should be loadable in and savebal for undo/redo functionality t...">Mesh</a> from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh  <br /></td></tr>
 <tr class="memitem:afa7c1dc7b567ebdde0fc9469e4b46d28" id="r_afa7c1dc7b567ebdde0fc9469e4b46d28"><td class="memItemLeft"><a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&#160;</td><td class="memItemRight"><a class="el" href="#afa7c1dc7b567ebdde0fc9469e4b46d28">LoadMeshFromJsonString</a> (string json)</td></tr>
 <tr class="memdesc:afa7c1dc7b567ebdde0fc9469e4b46d28"><td class="mdescLeft">&#160;</td><td class="mdescRight">converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh  <br /></td></tr>
 <tr class="memitem:ac1325617d8f8b316c77730a148b33156" id="r_ac1325617d8f8b316c77730a148b33156"><td class="memItemLeft">Dictionary&lt; string, <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac1325617d8f8b316c77730a148b33156">LoadAllMeshesFromDirectory</a> (string directoryPath)</td></tr>
@@ -207,6 +207,44 @@ void&#160;</td><td class="memItemRight"><b>ToolSwitchingImGui</b> ()</td></tr>
 <tr class="memdesc:a0289892a9e14a720efd42e94c0914ffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">handles the switching between tools by using the ImGui input system over monogames and draws the overlay that shows the current tool and the other tools available when ctrl is held, this allows for quick and intuitive switching between tools without needing to navigate through menus <br /></td></tr>
 <tr class="memitem:abefc313bad3f4d6e993e2c6d171f59eb" id="r_abefc313bad3f4d6e993e2c6d171f59eb"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#abefc313bad3f4d6e993e2c6d171f59eb">SetMode</a> (<a class="el" href="#a9b5c75158025b372213fd6df913224cf">MeshMode</a> mode)</td></tr>
 <tr class="memdesc:abefc313bad3f4d6e993e2c6d171f59eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user's work and providing a consistent experience when switching between interacting with the mesh and editing it.  <br /></td></tr>
+<tr class="memitem:a703ebca9ea27d36de8924fe2dd1e37e2" id="r_a703ebca9ea27d36de8924fe2dd1e37e2"><td class="memItemLeft"><a id="a703ebca9ea27d36de8924fe2dd1e37e2" name="a703ebca9ea27d36de8924fe2dd1e37e2"></a>
+void&#160;</td><td class="memItemRight"><b>InitializeImGui</b> ()</td></tr>
+<tr class="memitem:aa912e243752022dd4d1e2917d5ff8a81" id="r_aa912e243752022dd4d1e2917d5ff8a81"><td class="memItemLeft"><a id="aa912e243752022dd4d1e2917d5ff8a81" name="aa912e243752022dd4d1e2917d5ff8a81"></a>
+void&#160;</td><td class="memItemRight"><b>ImGuiDraw</b> (GameTime gameTime)</td></tr>
+<tr class="memitem:adff21c4f55246d3d0ea42aa36dfebd89" id="r_adff21c4f55246d3d0ea42aa36dfebd89"><td class="memItemLeft"><a id="adff21c4f55246d3d0ea42aa36dfebd89" name="adff21c4f55246d3d0ea42aa36dfebd89"></a>
+void&#160;</td><td class="memItemRight"><b>DrawPopUps</b> ()</td></tr>
+<tr class="memitem:a7819d974eafd83724e29610a3e086f21" id="r_a7819d974eafd83724e29610a3e086f21"><td class="memItemLeft"><a id="a7819d974eafd83724e29610a3e086f21" name="a7819d974eafd83724e29610a3e086f21"></a>
+void&#160;</td><td class="memItemRight"><b>DrawInspectParticleWindow</b> ()</td></tr>
+<tr class="memdesc:a7819d974eafd83724e29610a3e086f21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the particle inspection window, allowing users to view and manage particles that they have selected for inspection. The window displays a list of inspected particles with checkboxes to toggle their detailed information display. Users can clear all inspected particles, delete them along with their connected sticks, or close the window. For each inspected particle, detailed information such as position, previous position, and pinned status is shown, along with options to pin/unpin the particle or remove it from inspection. This feature provides an in-depth look at specific particles in the mesh for debugging and analysis purposes. <br /></td></tr>
+<tr class="memitem:a800fd1a0017d131511ccc9b9ee4fac9d" id="r_a800fd1a0017d131511ccc9b9ee4fac9d"><td class="memItemLeft"><a id="a800fd1a0017d131511ccc9b9ee4fac9d" name="a800fd1a0017d131511ccc9b9ee4fac9d"></a>
+void&#160;</td><td class="memItemRight"><b>DrawSignInWindow</b> ()</td></tr>
+<tr class="memitem:ae7ebba639b79e44d2598d28a1a6eb599" id="r_ae7ebba639b79e44d2598d28a1a6eb599"><td class="memItemLeft"><a id="ae7ebba639b79e44d2598d28a1a6eb599" name="ae7ebba639b79e44d2598d28a1a6eb599"></a>
+void&#160;</td><td class="memItemRight"><b>ModeSwitchingImGui</b> ()</td></tr>
+<tr class="memitem:a0289892a9e14a720efd42e94c0914ffc" id="r_a0289892a9e14a720efd42e94c0914ffc"><td class="memItemLeft"><a id="a0289892a9e14a720efd42e94c0914ffc" name="a0289892a9e14a720efd42e94c0914ffc"></a>
+void&#160;</td><td class="memItemRight"><b>ToolSwitchingImGui</b> ()</td></tr>
+<tr class="memitem:abefc313bad3f4d6e993e2c6d171f59eb" id="r_abefc313bad3f4d6e993e2c6d171f59eb"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#abefc313bad3f4d6e993e2c6d171f59eb">SetMode</a> (<a class="el" href="#a9b5c75158025b372213fd6df913224cf">MeshMode</a> mode)</td></tr>
+<tr class="memdesc:abefc313bad3f4d6e993e2c6d171f59eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user's work and providing a consistent experience when switching between interacting with the mesh and editing it.  <br /></td></tr>
+<tr class="memitem:a34e6253e76eac836e7bfe2662450aa90" id="r_a34e6253e76eac836e7bfe2662450aa90"><td class="memItemLeft"><a id="a34e6253e76eac836e7bfe2662450aa90" name="a34e6253e76eac836e7bfe2662450aa90"></a>
+void&#160;</td><td class="memItemRight"><b>DrawMainMenuBar</b> ()</td></tr>
+<tr class="memitem:a186b90dd692f039bcac3725b8277555b" id="r_a186b90dd692f039bcac3725b8277555b"><td class="memItemLeft"><a id="a186b90dd692f039bcac3725b8277555b" name="a186b90dd692f039bcac3725b8277555b"></a>
+void&#160;</td><td class="memItemRight"><b>FactoryMenu</b> ()</td></tr>
+<tr class="memitem:ace0e8ab92277e5ab7eef9802cd1acd7b" id="r_ace0e8ab92277e5ab7eef9802cd1acd7b"><td class="memItemLeft"><a id="ace0e8ab92277e5ab7eef9802cd1acd7b" name="ace0e8ab92277e5ab7eef9802cd1acd7b"></a>
+void&#160;</td><td class="memItemRight"><b>QuickStructureMenu</b> ()</td></tr>
+<tr class="memdesc:ace0e8ab92277e5ab7eef9802cd1acd7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a user interface for managing quick access to both local and remote structures. Users can toggle between viewing locally saved structures and structures stored in a remote database. The local structures tab allows users to refresh the list of available meshes, save the current mesh with a specified name, and load existing meshes from a designated directory. The remote structures tab enables signed-in users to save their current mesh to the database with a custom name, refresh the list of their saved structures, and load any of their previously saved structures into the application. This menu streamlines the process of managing and accessing different mesh configurations for users, enhancing their workflow and organization. <br /></td></tr>
+<tr class="memitem:aa6f310e037f5c77c3041d80d15d93463" id="r_aa6f310e037f5c77c3041d80d15d93463"><td class="memItemLeft"><a id="aa6f310e037f5c77c3041d80d15d93463" name="aa6f310e037f5c77c3041d80d15d93463"></a>
+void&#160;</td><td class="memItemRight"><b>DrawStructureWindow</b> ()</td></tr>
+<tr class="memitem:ac0354b09c773d59c7dc3e9f65f8c12c0" id="r_ac0354b09c773d59c7dc3e9f65f8c12c0"><td class="memItemLeft"><a id="ac0354b09c773d59c7dc3e9f65f8c12c0" name="ac0354b09c773d59c7dc3e9f65f8c12c0"></a>
+void&#160;</td><td class="memItemRight"><b>DrawSaveWindow</b> ()</td></tr>
+<tr class="memitem:ad77c6444ae4f2d8f9792445e4a41f662" id="r_ad77c6444ae4f2d8f9792445e4a41f662"><td class="memItemLeft"><a id="ad77c6444ae4f2d8f9792445e4a41f662" name="ad77c6444ae4f2d8f9792445e4a41f662"></a>
+void&#160;</td><td class="memItemRight"><b>DrawReadMeWindow</b> ()</td></tr>
+<tr class="memitem:a04aa845fe839edd1b89c4845a8eff0c1" id="r_a04aa845fe839edd1b89c4845a8eff0c1"><td class="memItemLeft"><a id="a04aa845fe839edd1b89c4845a8eff0c1" name="a04aa845fe839edd1b89c4845a8eff0c1"></a>
+void&#160;</td><td class="memItemRight"><b>DrawAssignmentMenuItems</b> ()</td></tr>
+<tr class="memitem:aab6106fbabae1de39c2e97cc8b2fcea8" id="r_aab6106fbabae1de39c2e97cc8b2fcea8"><td class="memItemLeft"><a id="aab6106fbabae1de39c2e97cc8b2fcea8" name="aab6106fbabae1de39c2e97cc8b2fcea8"></a>
+void&#160;</td><td class="memItemRight"><b>DrawTeacherAssignmentsWindow</b> ()</td></tr>
+<tr class="memitem:a6fc4add468575c1ee8285156faf8a8cf" id="r_a6fc4add468575c1ee8285156faf8a8cf"><td class="memItemLeft"><a id="a6fc4add468575c1ee8285156faf8a8cf" name="a6fc4add468575c1ee8285156faf8a8cf"></a>
+void&#160;</td><td class="memItemRight"><b>PopUpSaveProjectToAssignment</b> (<a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment.html">Game1Database.Assignment</a> assignment)</td></tr>
+<tr class="memitem:a6b4ad9008f4c77b6401af6ee6c049677" id="r_a6b4ad9008f4c77b6401af6ee6c049677"><td class="memItemLeft"><a id="a6b4ad9008f4c77b6401af6ee6c049677" name="a6b4ad9008f4c77b6401af6ee6c049677"></a>
+void&#160;</td><td class="memItemRight"><b>DrawConfigurationWindow</b> ()</td></tr>
 <tr class="memitem:a7819d974eafd83724e29610a3e086f21" id="r_a7819d974eafd83724e29610a3e086f21"><td class="memItemLeft"><a id="a7819d974eafd83724e29610a3e086f21" name="a7819d974eafd83724e29610a3e086f21"></a>
 void&#160;</td><td class="memItemRight"><b>DrawInspectParticleWindow</b> ()</td></tr>
 <tr class="memdesc:a7819d974eafd83724e29610a3e086f21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the particle inspection window, allowing users to view and manage particles that they have selected for inspection. The window displays a list of inspected particles with checkboxes to toggle their detailed information display. Users can clear all inspected particles, delete them along with their connected sticks, or close the window. For each inspected particle, detailed information such as position, previous position, and pinned status is shown, along with options to pin/unpin the particle or remove it from inspection. This feature provides an in-depth look at specific particles in the mesh for debugging and analysis purposes. <br /></td></tr>
@@ -296,6 +334,22 @@ Vector2&#160;</td><td class="memItemRight"><b>GetCursorColliderCenter</b> ()</td
 <tr class="memdesc:a10bb4cdb8dffb6659caecb3f76649c7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect,  <br /></td></tr>
 <tr class="memitem:a0b693fdd24619f9ae0082596529ca957" id="r_a0b693fdd24619f9ae0082596529ca957"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0b693fdd24619f9ae0082596529ca957">UpdateCursorColliderSize</a> (float radius)</td></tr>
 <tr class="memdesc:a0b693fdd24619f9ae0082596529ca957"><td class="mdescLeft">&#160;</td><td class="mdescRight">updates the size of the cursor collider based on a given radius, which is used for tools that require a circular or square area of effect around the cursor.  <br /></td></tr>
+<tr class="memitem:a02cca95c646927e7234b4f4a314c3741" id="r_a02cca95c646927e7234b4f4a314c3741"><td class="memItemLeft"><a id="a02cca95c646927e7234b4f4a314c3741" name="a02cca95c646927e7234b4f4a314c3741"></a>
+void&#160;</td><td class="memItemRight"><b>HandleUndoRedoShortcuts</b> (KeyboardState keyboardState, bool ctrlHeld, bool shiftHeld)</td></tr>
+<tr class="memitem:a99ffa0825719ec4e1f2d14e8f5f6ffd4" id="r_a99ffa0825719ec4e1f2d14e8f5f6ffd4"><td class="memItemLeft"><a id="a99ffa0825719ec4e1f2d14e8f5f6ffd4" name="a99ffa0825719ec4e1f2d14e8f5f6ffd4"></a>
+void&#160;</td><td class="memItemRight"><b>UpdateCursorColliderFromToolSettings</b> ()</td></tr>
+<tr class="memitem:ae69be18afefedf88777622aff7f5d53f" id="r_ae69be18afefedf88777622aff7f5d53f"><td class="memItemLeft"><a id="ae69be18afefedf88777622aff7f5d53f" name="ae69be18afefedf88777622aff7f5d53f"></a>
+void&#160;</td><td class="memItemRight"><b>HandlePauseAndStepHotkeys</b> (KeyboardState keyboardState)</td></tr>
+<tr class="memitem:aa107855b6f5cdc5a812e60894a8aa8bb" id="r_aa107855b6f5cdc5a812e60894a8aa8bb"><td class="memItemLeft"><a id="aa107855b6f5cdc5a812e60894a8aa8bb" name="aa107855b6f5cdc5a812e60894a8aa8bb"></a>
+void&#160;</td><td class="memItemRight"><b>HandleDirectToolSelection</b> (KeyboardState keyboardState)</td></tr>
+<tr class="memitem:a3e39bdbdc5eabfd355f3b4a8dae7b406" id="r_a3e39bdbdc5eabfd355f3b4a8dae7b406"><td class="memItemLeft"><a id="a3e39bdbdc5eabfd355f3b4a8dae7b406" name="a3e39bdbdc5eabfd355f3b4a8dae7b406"></a>
+void&#160;</td><td class="memItemRight"><b>HandleMouseAndToolInput</b> (MouseState mouseState, Vector2 currentMousePos, bool imguiWantsMouse)</td></tr>
+<tr class="memitem:af2180e9915afeb96e21f3fcdeca18189" id="r_af2180e9915afeb96e21f3fcdeca18189"><td class="memItemLeft"><a id="af2180e9915afeb96e21f3fcdeca18189" name="af2180e9915afeb96e21f3fcdeca18189"></a>
+void&#160;</td><td class="memItemRight"><b>UpdateActiveToolVisualsAndActions</b> (KeyboardState keyboardState, MouseState mouseState, Vector2 currentMousePos, bool imguiWantsMouse)</td></tr>
+<tr class="memitem:a0a4ede2d833c78466375b5fa6a8aedeb" id="r_a0a4ede2d833c78466375b5fa6a8aedeb"><td class="memItemLeft"><a id="a0a4ede2d833c78466375b5fa6a8aedeb" name="a0a4ede2d833c78466375b5fa6a8aedeb"></a>
+void&#160;</td><td class="memItemRight"><b>RunPhysicsUpdate</b> (Vector2 currentMousePos)</td></tr>
+<tr class="memitem:af7a5d8bd818a9012932f660085ee70e8" id="r_af7a5d8bd818a9012932f660085ee70e8"><td class="memItemLeft"><a id="af7a5d8bd818a9012932f660085ee70e8" name="af7a5d8bd818a9012932f660085ee70e8"></a>
+void&#160;</td><td class="memItemRight"><b>ApplyPostPhysicsToolEffects</b> (MouseState mouseState, Vector2 currentMousePos)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
@@ -362,102 +416,102 @@ Stack&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mes
 <tr class="memitem:a7afdbddfbab0bfbf30c69cac1ca1fd85" id="r_a7afdbddfbab0bfbf30c69cac1ca1fd85"><td class="memItemLeft"><a id="a7afdbddfbab0bfbf30c69cac1ca1fd85" name="a7afdbddfbab0bfbf30c69cac1ca1fd85"></a>
 <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&#160;</td><td class="memItemRight"><b>_commandRegistryMeshBinding</b></td></tr>
 <tr class="memdesc:a7afdbddfbab0bfbf30c69cac1ca1fd85"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mesh that is currently bound to the command registry. <br /></td></tr>
-<tr class="memitem:ab53223c129f30e1f2bf15a34de89799c" id="r_ab53223c129f30e1f2bf15a34de89799c"><td class="memItemLeft"><a id="ab53223c129f30e1f2bf15a34de89799c" name="ab53223c129f30e1f2bf15a34de89799c"></a>
+<tr class="memitem:a6c4377586b47dcf29af0c5fbaeaa02da" id="r_a6c4377586b47dcf29af0c5fbaeaa02da"><td class="memItemLeft"><a id="a6c4377586b47dcf29af0c5fbaeaa02da" name="a6c4377586b47dcf29af0c5fbaeaa02da"></a>
 bool&#160;</td><td class="memItemRight"><b>_showConfigurationWindow</b></td></tr>
-<tr class="memdesc:ab53223c129f30e1f2bf15a34de89799c"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the config window is open <br /></td></tr>
-<tr class="memitem:a97a3491ef0faf108033f73e70078f54a" id="r_a97a3491ef0faf108033f73e70078f54a"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a97a3491ef0faf108033f73e70078f54a">_showReadMeWindow</a></td></tr>
-<tr class="memdesc:a97a3491ef0faf108033f73e70078f54a"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the readme window is open  <br /></td></tr>
-<tr class="memitem:aa25aaf586fca10cba0ad86675b5f64c0" id="r_aa25aaf586fca10cba0ad86675b5f64c0"><td class="memItemLeft"><a id="aa25aaf586fca10cba0ad86675b5f64c0" name="aa25aaf586fca10cba0ad86675b5f64c0"></a>
+<tr class="memdesc:a6c4377586b47dcf29af0c5fbaeaa02da"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the config window is open <br /></td></tr>
+<tr class="memitem:afc7b83a990be8af41f39aabe103e2eb0" id="r_afc7b83a990be8af41f39aabe103e2eb0"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#afc7b83a990be8af41f39aabe103e2eb0">_showReadMeWindow</a></td></tr>
+<tr class="memdesc:afc7b83a990be8af41f39aabe103e2eb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the readme window is open  <br /></td></tr>
+<tr class="memitem:a202bf9ebe5d80440e7d9e0ad3592d18b" id="r_a202bf9ebe5d80440e7d9e0ad3592d18b"><td class="memItemLeft"><a id="a202bf9ebe5d80440e7d9e0ad3592d18b" name="a202bf9ebe5d80440e7d9e0ad3592d18b"></a>
 bool&#160;</td><td class="memItemRight"><b>_showStructureWindow</b></td></tr>
-<tr class="memitem:ab08dad47ef4cfd4de13933228decd085" id="r_ab08dad47ef4cfd4de13933228decd085"><td class="memItemLeft"><a id="ab08dad47ef4cfd4de13933228decd085" name="ab08dad47ef4cfd4de13933228decd085"></a>
+<tr class="memitem:a1d973bcd7ed34253977b1e1966f639a8" id="r_a1d973bcd7ed34253977b1e1966f639a8"><td class="memItemLeft"><a id="a1d973bcd7ed34253977b1e1966f639a8" name="a1d973bcd7ed34253977b1e1966f639a8"></a>
 bool&#160;</td><td class="memItemRight"><b>_showSaveWindow</b></td></tr>
-<tr class="memdesc:ab08dad47ef4cfd4de13933228decd085"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the save window is open <br /></td></tr>
-<tr class="memitem:a7da66ddcb8b6a4211c8d691a668455ae" id="r_a7da66ddcb8b6a4211c8d691a668455ae"><td class="memItemLeft"><a id="a7da66ddcb8b6a4211c8d691a668455ae" name="a7da66ddcb8b6a4211c8d691a668455ae"></a>
+<tr class="memdesc:a1d973bcd7ed34253977b1e1966f639a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the save window is open <br /></td></tr>
+<tr class="memitem:a3ecd800fdec90ea0f974e8415d432438" id="r_a3ecd800fdec90ea0f974e8415d432438"><td class="memItemLeft"><a id="a3ecd800fdec90ea0f974e8415d432438" name="a3ecd800fdec90ea0f974e8415d432438"></a>
 bool&#160;</td><td class="memItemRight"><b>_showSignInWindow</b></td></tr>
-<tr class="memdesc:a7da66ddcb8b6a4211c8d691a668455ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the sign-in window is open <br /></td></tr>
-<tr class="memitem:a63525a23d98ca88d2eb6877f0b978f71" id="r_a63525a23d98ca88d2eb6877f0b978f71"><td class="memItemLeft"><a id="a63525a23d98ca88d2eb6877f0b978f71" name="a63525a23d98ca88d2eb6877f0b978f71"></a>
+<tr class="memdesc:a3ecd800fdec90ea0f974e8415d432438"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the sign-in window is open <br /></td></tr>
+<tr class="memitem:a33ecb3948d02f4823dc84073fe44c321" id="r_a33ecb3948d02f4823dc84073fe44c321"><td class="memItemLeft"><a id="a33ecb3948d02f4823dc84073fe44c321" name="a33ecb3948d02f4823dc84073fe44c321"></a>
 bool&#160;</td><td class="memItemRight"><b>_showLoggerWindow</b></td></tr>
-<tr class="memdesc:a63525a23d98ca88d2eb6877f0b978f71"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the logger window is open <br /></td></tr>
-<tr class="memitem:aaac65ab04ed6dec195546c7fff7da0c3" id="r_aaac65ab04ed6dec195546c7fff7da0c3"><td class="memItemLeft"><a id="aaac65ab04ed6dec195546c7fff7da0c3" name="aaac65ab04ed6dec195546c7fff7da0c3"></a>
+<tr class="memdesc:a33ecb3948d02f4823dc84073fe44c321"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the logger window is open <br /></td></tr>
+<tr class="memitem:a94735dcc8f1d4680c0e7f8f815d3d540" id="r_a94735dcc8f1d4680c0e7f8f815d3d540"><td class="memItemLeft"><a id="a94735dcc8f1d4680c0e7f8f815d3d540" name="a94735dcc8f1d4680c0e7f8f815d3d540"></a>
 bool&#160;</td><td class="memItemRight"><b>_showConfirmNewMeshPopup</b></td></tr>
-<tr class="memdesc:aaac65ab04ed6dec195546c7fff7da0c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the confirm new mesh popup is open <br /></td></tr>
-<tr class="memitem:a7f39ae0a0615ecd9417b2898ca7382b4" id="r_a7f39ae0a0615ecd9417b2898ca7382b4"><td class="memItemLeft"><a id="a7f39ae0a0615ecd9417b2898ca7382b4" name="a7f39ae0a0615ecd9417b2898ca7382b4"></a>
+<tr class="memdesc:a94735dcc8f1d4680c0e7f8f815d3d540"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the confirm new mesh popup is open <br /></td></tr>
+<tr class="memitem:a5571788783ac26d0b20dbd53c9c77037" id="r_a5571788783ac26d0b20dbd53c9c77037"><td class="memItemLeft"><a id="a5571788783ac26d0b20dbd53c9c77037" name="a5571788783ac26d0b20dbd53c9c77037"></a>
 bool&#160;</td><td class="memItemRight"><b>_showSaveAssignmentPopup</b></td></tr>
-<tr class="memdesc:a7f39ae0a0615ecd9417b2898ca7382b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the save assignment popup is open <br /></td></tr>
-<tr class="memitem:a677a565d2d279821ee822ae450d4492a" id="r_a677a565d2d279821ee822ae450d4492a"><td class="memItemLeft"><a id="a677a565d2d279821ee822ae450d4492a" name="a677a565d2d279821ee822ae450d4492a"></a>
+<tr class="memdesc:a5571788783ac26d0b20dbd53c9c77037"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the save assignment popup is open <br /></td></tr>
+<tr class="memitem:a453d5d5e78e51fddca8263d742f8ca4a" id="r_a453d5d5e78e51fddca8263d742f8ca4a"><td class="memItemLeft"><a id="a453d5d5e78e51fddca8263d742f8ca4a" name="a453d5d5e78e51fddca8263d742f8ca4a"></a>
 bool&#160;</td><td class="memItemRight"><b>_showTeacherAssignmentsWindow</b></td></tr>
-<tr class="memdesc:a677a565d2d279821ee822ae450d4492a"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the teacher assignments window is open <br /></td></tr>
-<tr class="memitem:ad458f782923bdc3e515f188fb023eeaf" id="r_ad458f782923bdc3e515f188fb023eeaf"><td class="memItemLeft"><a id="ad458f782923bdc3e515f188fb023eeaf" name="ad458f782923bdc3e515f188fb023eeaf"></a>
+<tr class="memdesc:a453d5d5e78e51fddca8263d742f8ca4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle for if the teacher assignments window is open <br /></td></tr>
+<tr class="memitem:a309b16972dd1a765ab71e7afb92feb19" id="r_a309b16972dd1a765ab71e7afb92feb19"><td class="memItemLeft"><a id="a309b16972dd1a765ab71e7afb92feb19" name="a309b16972dd1a765ab71e7afb92feb19"></a>
 <a class="el" href="class_physics_c_s_alevl_project_1_1_im_gui_logger.html">ImGuiLogger</a>&#160;</td><td class="memItemRight"><b>_logger</b></td></tr>
-<tr class="memdesc:ad458f782923bdc3e515f188fb023eeaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">the logger used for logging messages to the ImGui logger window <br /></td></tr>
-<tr class="memitem:a31b169df56b65880cc08483353be4fdf" id="r_a31b169df56b65880cc08483353be4fdf"><td class="memItemLeft"><a id="a31b169df56b65880cc08483353be4fdf" name="a31b169df56b65880cc08483353be4fdf"></a>
+<tr class="memdesc:a309b16972dd1a765ab71e7afb92feb19"><td class="mdescLeft">&#160;</td><td class="mdescRight">the logger used for logging messages to the ImGui logger window <br /></td></tr>
+<tr class="memitem:a5af29d1cbe7ed39ccb16462fd56e6547" id="r_a5af29d1cbe7ed39ccb16462fd56e6547"><td class="memItemLeft"><a id="a5af29d1cbe7ed39ccb16462fd56e6547" name="a5af29d1cbe7ed39ccb16462fd56e6547"></a>
 string&#160;</td><td class="memItemRight"><b>_meshName</b></td></tr>
-<tr class="memdesc:a31b169df56b65880cc08483353be4fdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">the name of the current mesh, used for saving and loading <br /></td></tr>
-<tr class="memitem:ae86d722e522a2943507cc534c66b2d21" id="r_ae86d722e522a2943507cc534c66b2d21"><td class="memItemLeft"><a id="ae86d722e522a2943507cc534c66b2d21" name="ae86d722e522a2943507cc534c66b2d21"></a>
+<tr class="memdesc:a5af29d1cbe7ed39ccb16462fd56e6547"><td class="mdescLeft">&#160;</td><td class="mdescRight">the name of the current mesh, used for saving and loading <br /></td></tr>
+<tr class="memitem:a172f90296846842254f47629bc3f95e2" id="r_a172f90296846842254f47629bc3f95e2"><td class="memItemLeft"><a id="a172f90296846842254f47629bc3f95e2" name="a172f90296846842254f47629bc3f95e2"></a>
 string&#160;</td><td class="memItemRight"><b>_structurePath</b></td></tr>
-<tr class="memdesc:ae86d722e522a2943507cc534c66b2d21"><td class="mdescLeft">&#160;</td><td class="mdescRight">the path to the directory where structures are saved and loaded from <br /></td></tr>
-<tr class="memitem:abdb2fd647102b690de1430b8dedfa383" id="r_abdb2fd647102b690de1430b8dedfa383"><td class="memItemLeft"><a id="abdb2fd647102b690de1430b8dedfa383" name="abdb2fd647102b690de1430b8dedfa383"></a>
+<tr class="memdesc:a172f90296846842254f47629bc3f95e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">the path to the directory where structures are saved and loaded from <br /></td></tr>
+<tr class="memitem:ac8c793a8f9bbfc24de886108751155b4" id="r_ac8c793a8f9bbfc24de886108751155b4"><td class="memItemLeft"><a id="ac8c793a8f9bbfc24de886108751155b4" name="ac8c793a8f9bbfc24de886108751155b4"></a>
 string&#160;</td><td class="memItemRight"><b>_quickStructureName</b></td></tr>
-<tr class="memdesc:abdb2fd647102b690de1430b8dedfa383"><td class="mdescLeft">&#160;</td><td class="mdescRight">the name of the quick structure, used for saving and loading quick structures <br /></td></tr>
-<tr class="memitem:ad85bdaee70e4b7aea5af0cce77cc8a69" id="r_ad85bdaee70e4b7aea5af0cce77cc8a69"><td class="memItemLeft"><a id="ad85bdaee70e4b7aea5af0cce77cc8a69" name="ad85bdaee70e4b7aea5af0cce77cc8a69"></a>
+<tr class="memdesc:ac8c793a8f9bbfc24de886108751155b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">the name of the quick structure, used for saving and loading quick structures <br /></td></tr>
+<tr class="memitem:a95e7f8929d0a1d560a782c0bc80f3a52" id="r_a95e7f8929d0a1d560a782c0bc80f3a52"><td class="memItemLeft"><a id="a95e7f8929d0a1d560a782c0bc80f3a52" name="a95e7f8929d0a1d560a782c0bc80f3a52"></a>
 <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">Collider</a>&#160;</td><td class="memItemRight"><b>_cursorCollider</b></td></tr>
-<tr class="memdesc:ad85bdaee70e4b7aea5af0cce77cc8a69"><td class="mdescLeft">&#160;</td><td class="mdescRight">the collider currently being used for cursor interaction <br /></td></tr>
-<tr class="memitem:a834f5281b50a16d7d45483a00fd8cc21" id="r_a834f5281b50a16d7d45483a00fd8cc21"><td class="memItemLeft"><a id="a834f5281b50a16d7d45483a00fd8cc21" name="a834f5281b50a16d7d45483a00fd8cc21"></a>
+<tr class="memdesc:a95e7f8929d0a1d560a782c0bc80f3a52"><td class="mdescLeft">&#160;</td><td class="mdescRight">the collider currently being used for cursor interaction <br /></td></tr>
+<tr class="memitem:afb57d355fda3d2829b11e6b38b10c997" id="r_afb57d355fda3d2829b11e6b38b10c997"><td class="memItemLeft"><a id="afb57d355fda3d2829b11e6b38b10c997" name="afb57d355fda3d2829b11e6b38b10c997"></a>
 Dictionary&lt; string, <a class="el" href="class_physics_c_s_alevl_project_1_1_collider.html">Collider</a> &gt;&#160;</td><td class="memItemRight"><b>_cursorColliderStore</b></td></tr>
-<tr class="memdesc:a834f5281b50a16d7d45483a00fd8cc21"><td class="mdescLeft">&#160;</td><td class="mdescRight">a store of colliders that can be used for cursor interaction, indexed by name <br /></td></tr>
-<tr class="memitem:add23148b72f7713b1b1b313b709980b7" id="r_add23148b72f7713b1b1b313b709980b7"><td class="memItemLeft"><a id="add23148b72f7713b1b1b313b709980b7" name="add23148b72f7713b1b1b313b709980b7"></a>
+<tr class="memdesc:afb57d355fda3d2829b11e6b38b10c997"><td class="mdescLeft">&#160;</td><td class="mdescRight">a store of colliders that can be used for cursor interaction, indexed by name <br /></td></tr>
+<tr class="memitem:a4cfffbc40e54905d750644cb569c7d96" id="r_a4cfffbc40e54905d750644cb569c7d96"><td class="memItemLeft"><a id="a4cfffbc40e54905d750644cb569c7d96" name="a4cfffbc40e54905d750644cb569c7d96"></a>
 Dictionary&lt; string, <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt;&#160;</td><td class="memItemRight"><b>_quickMeshes</b></td></tr>
-<tr class="memdesc:add23148b72f7713b1b1b313b709980b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">a dictionary of meshes that can be quickly loaded, indexed by name <br /></td></tr>
-<tr class="memitem:a8180e98222e09302fa6a02b7e134234f" id="r_a8180e98222e09302fa6a02b7e134234f"><td class="memItemLeft">Dictionary&lt; string, Func&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a8180e98222e09302fa6a02b7e134234f">_template</a></td></tr>
-<tr class="memdesc:a8180e98222e09302fa6a02b7e134234f"><td class="mdescLeft">&#160;</td><td class="mdescRight">a dictionary of template functions for creating new meshes based on predefined configurations, indexed by name  <br /></td></tr>
-<tr class="memitem:a6c5756f8a9034e82d359faa2179ee9da" id="r_a6c5756f8a9034e82d359faa2179ee9da"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a6c5756f8a9034e82d359faa2179ee9da">_buttonSteps</a></td></tr>
-<tr class="memitem:aec3e01a3a93c36d5646363d61e3835f0" id="r_aec3e01a3a93c36d5646363d61e3835f0"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#aec3e01a3a93c36d5646363d61e3835f0">_ctrlHeld</a></td></tr>
-<tr class="memitem:a327b5f90d636cba904333a48409e6762" id="r_a327b5f90d636cba904333a48409e6762"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a327b5f90d636cba904333a48409e6762">_shiftHeld</a></td></tr>
-<tr class="memitem:ac28c9377e421760ea70ac3b399dd127a" id="r_ac28c9377e421760ea70ac3b399dd127a"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ac28c9377e421760ea70ac3b399dd127a">_capsActive</a></td></tr>
-<tr class="memitem:aebf556f98fcc7090a739902bfe950f0f" id="r_aebf556f98fcc7090a739902bfe950f0f"><td class="memItemLeft"><a id="aebf556f98fcc7090a739902bfe950f0f" name="aebf556f98fcc7090a739902bfe950f0f"></a>
+<tr class="memdesc:a4cfffbc40e54905d750644cb569c7d96"><td class="mdescLeft">&#160;</td><td class="mdescRight">a dictionary of meshes that can be quickly loaded, indexed by name <br /></td></tr>
+<tr class="memitem:ada19c18c2498807bed22c6b9e75f86af" id="r_ada19c18c2498807bed22c6b9e75f86af"><td class="memItemLeft">Dictionary&lt; string, Func&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ada19c18c2498807bed22c6b9e75f86af">_template</a></td></tr>
+<tr class="memdesc:ada19c18c2498807bed22c6b9e75f86af"><td class="mdescLeft">&#160;</td><td class="mdescRight">a dictionary of template functions for creating new meshes based on predefined configurations, indexed by name  <br /></td></tr>
+<tr class="memitem:a325d52fc483019a44519384bd2b91c25" id="r_a325d52fc483019a44519384bd2b91c25"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a325d52fc483019a44519384bd2b91c25">_buttonSteps</a></td></tr>
+<tr class="memitem:a05e4fb26776b7e6f47590eb28428fe7b" id="r_a05e4fb26776b7e6f47590eb28428fe7b"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a05e4fb26776b7e6f47590eb28428fe7b">_ctrlHeld</a></td></tr>
+<tr class="memitem:a9a8dd1af7919d12d29bde6eb71032033" id="r_a9a8dd1af7919d12d29bde6eb71032033"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a9a8dd1af7919d12d29bde6eb71032033">_shiftHeld</a></td></tr>
+<tr class="memitem:ae77d0498c9cafa11b563888fb5783f20" id="r_ae77d0498c9cafa11b563888fb5783f20"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ae77d0498c9cafa11b563888fb5783f20">_capsActive</a></td></tr>
+<tr class="memitem:aa8ed02fe1c07da025443616754015b74" id="r_aa8ed02fe1c07da025443616754015b74"><td class="memItemLeft"><a id="aa8ed02fe1c07da025443616754015b74" name="aa8ed02fe1c07da025443616754015b74"></a>
 bool&#160;</td><td class="memItemRight"><b>_altHeld</b></td></tr>
-<tr class="memitem:a6767ca8d897c9766818cac2ea61c5ab2" id="r_a6767ca8d897c9766818cac2ea61c5ab2"><td class="memItemLeft"><a id="a6767ca8d897c9766818cac2ea61c5ab2" name="a6767ca8d897c9766818cac2ea61c5ab2"></a>
+<tr class="memitem:a02e3feebe304eb713f22916200c70813" id="r_a02e3feebe304eb713f22916200c70813"><td class="memItemLeft"><a id="a02e3feebe304eb713f22916200c70813" name="a02e3feebe304eb713f22916200c70813"></a>
 <a class="el" href="class_physics_c_s_alevl_project_1_1_factory.html">Factory</a>&#160;</td><td class="memItemRight"><b>_selectedFactoryAction</b></td></tr>
-<tr class="memdesc:a6767ca8d897c9766818cac2ea61c5ab2"><td class="mdescLeft">&#160;</td><td class="mdescRight">the currently selected factory action, used for quick structure creation <br /></td></tr>
-<tr class="memitem:af29b1d8c1b074e2ca6b10e307f713c65" id="r_af29b1d8c1b074e2ca6b10e307f713c65"><td class="memItemLeft"><a id="af29b1d8c1b074e2ca6b10e307f713c65" name="af29b1d8c1b074e2ca6b10e307f713c65"></a>
+<tr class="memdesc:a02e3feebe304eb713f22916200c70813"><td class="mdescLeft">&#160;</td><td class="mdescRight">the currently selected factory action, used for quick structure creation <br /></td></tr>
+<tr class="memitem:a596c0a6d34ba88192078e2e0da7a4aa0" id="r_a596c0a6d34ba88192078e2e0da7a4aa0"><td class="memItemLeft"><a id="a596c0a6d34ba88192078e2e0da7a4aa0" name="a596c0a6d34ba88192078e2e0da7a4aa0"></a>
 bool&#160;</td><td class="memItemRight"><b>_LocalorRemoteStructureTab</b></td></tr>
-<tr class="memdesc:af29b1d8c1b074e2ca6b10e307f713c65"><td class="mdescLeft">&#160;</td><td class="mdescRight">wether to show the local or remote structures in the quick structure menu <br /></td></tr>
-<tr class="memitem:a2d31ede0506faed39a4a2956c93d97d3" id="r_a2d31ede0506faed39a4a2956c93d97d3"><td class="memItemLeft"><a id="a2d31ede0506faed39a4a2956c93d97d3" name="a2d31ede0506faed39a4a2956c93d97d3"></a>
+<tr class="memdesc:a596c0a6d34ba88192078e2e0da7a4aa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">wether to show the local or remote structures in the quick structure menu <br /></td></tr>
+<tr class="memitem:ac93fbcfaaea6acaeb40e2578ad157c7a" id="r_ac93fbcfaaea6acaeb40e2578ad157c7a"><td class="memItemLeft"><a id="ac93fbcfaaea6acaeb40e2578ad157c7a" name="ac93fbcfaaea6acaeb40e2578ad157c7a"></a>
 <a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_user.html">Game1Database.User</a>&#160;</td><td class="memItemRight"><b>_currentUser</b></td></tr>
-<tr class="memdesc:a2d31ede0506faed39a4a2956c93d97d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">the current user signed in, null if no user is signed in <br /></td></tr>
-<tr class="memitem:ab810d2f646704b52cc21c3f9611a72ac" id="r_ab810d2f646704b52cc21c3f9611a72ac"><td class="memItemLeft"><a id="ab810d2f646704b52cc21c3f9611a72ac" name="ab810d2f646704b52cc21c3f9611a72ac"></a>
+<tr class="memdesc:ac93fbcfaaea6acaeb40e2578ad157c7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the current user signed in, null if no user is signed in <br /></td></tr>
+<tr class="memitem:a1f677617dcf7d611c10f2b8c85b8648f" id="r_a1f677617dcf7d611c10f2b8c85b8648f"><td class="memItemLeft"><a id="a1f677617dcf7d611c10f2b8c85b8648f" name="a1f677617dcf7d611c10f2b8c85b8648f"></a>
 string&#160;</td><td class="memItemRight"><b>_userInputUserId</b></td></tr>
-<tr class="memdesc:ab810d2f646704b52cc21c3f9611a72ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">whats in the user id input field in the sign-in window <br /></td></tr>
-<tr class="memitem:ac32fed819e40bcc2d587f2f516887599" id="r_ac32fed819e40bcc2d587f2f516887599"><td class="memItemLeft"><a id="ac32fed819e40bcc2d587f2f516887599" name="ac32fed819e40bcc2d587f2f516887599"></a>
+<tr class="memdesc:a1f677617dcf7d611c10f2b8c85b8648f"><td class="mdescLeft">&#160;</td><td class="mdescRight">whats in the user id input field in the sign-in window <br /></td></tr>
+<tr class="memitem:a495c1242d869db18fb113f60bb733732" id="r_a495c1242d869db18fb113f60bb733732"><td class="memItemLeft"><a id="a495c1242d869db18fb113f60bb733732" name="a495c1242d869db18fb113f60bb733732"></a>
 string&#160;</td><td class="memItemRight"><b>_password</b></td></tr>
-<tr class="memdesc:ac32fed819e40bcc2d587f2f516887599"><td class="mdescLeft">&#160;</td><td class="mdescRight">whats in the password input field in the sign-in window <br /></td></tr>
-<tr class="memitem:a799c4e9415c0e3f81e5ef33254e41845" id="r_a799c4e9415c0e3f81e5ef33254e41845"><td class="memItemLeft"><a id="a799c4e9415c0e3f81e5ef33254e41845" name="a799c4e9415c0e3f81e5ef33254e41845"></a>
+<tr class="memdesc:a495c1242d869db18fb113f60bb733732"><td class="mdescLeft">&#160;</td><td class="mdescRight">whats in the password input field in the sign-in window <br /></td></tr>
+<tr class="memitem:a11d75a0cd01ea3c0942a920a64347eb3" id="r_a11d75a0cd01ea3c0942a920a64347eb3"><td class="memItemLeft"><a id="a11d75a0cd01ea3c0942a920a64347eb3" name="a11d75a0cd01ea3c0942a920a64347eb3"></a>
 <a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment.html">Game1Database.Assignment</a>&#160;</td><td class="memItemRight"><b>_selectedAssignment</b></td></tr>
-<tr class="memdesc:a799c4e9415c0e3f81e5ef33254e41845"><td class="mdescLeft">&#160;</td><td class="mdescRight">the currently selected assignment in the teacher assignments window, null if no assignment is selected <br /></td></tr>
-<tr class="memitem:aef65875c17b99428c8e1dc7e2696cd83" id="r_aef65875c17b99428c8e1dc7e2696cd83"><td class="memItemLeft"><a id="aef65875c17b99428c8e1dc7e2696cd83" name="aef65875c17b99428c8e1dc7e2696cd83"></a>
+<tr class="memdesc:a11d75a0cd01ea3c0942a920a64347eb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">the currently selected assignment in the teacher assignments window, null if no assignment is selected <br /></td></tr>
+<tr class="memitem:a5b7931acf9fd38e80bcd641446e61d4c" id="r_a5b7931acf9fd38e80bcd641446e61d4c"><td class="memItemLeft"><a id="a5b7931acf9fd38e80bcd641446e61d4c" name="a5b7931acf9fd38e80bcd641446e61d4c"></a>
 List&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info.html">Game1Database.StructureInfo</a> &gt;&#160;</td><td class="memItemRight"><b>_remoteStructures</b> = new()</td></tr>
-<tr class="memdesc:aef65875c17b99428c8e1dc7e2696cd83"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores all remote structures for the user, loaded from the database when the user signs in <br /></td></tr>
-<tr class="memitem:a69b545f8baf51e536bea1dea546c5069" id="r_a69b545f8baf51e536bea1dea546c5069"><td class="memItemLeft"><a id="a69b545f8baf51e536bea1dea546c5069" name="a69b545f8baf51e536bea1dea546c5069"></a>
+<tr class="memdesc:a5b7931acf9fd38e80bcd641446e61d4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores all remote structures for the user, loaded from the database when the user signs in <br /></td></tr>
+<tr class="memitem:a55de8670ca77e586ff697e5a9605dd58" id="r_a55de8670ca77e586ff697e5a9605dd58"><td class="memItemLeft"><a id="a55de8670ca77e586ff697e5a9605dd58" name="a55de8670ca77e586ff697e5a9605dd58"></a>
 string&#160;</td><td class="memItemRight"><b>_remoteSaveName</b> = &quot;MyStructure&quot;</td></tr>
-<tr class="memdesc:a69b545f8baf51e536bea1dea546c5069"><td class="mdescLeft">&#160;</td><td class="mdescRight">the name of the structure to save to the database when saving, taken from the input field in the teacher assignments window <br /></td></tr>
-<tr class="memitem:a36cb06b2c86801bb18f6463054272cc8" id="r_a36cb06b2c86801bb18f6463054272cc8"><td class="memItemLeft"><a id="a36cb06b2c86801bb18f6463054272cc8" name="a36cb06b2c86801bb18f6463054272cc8"></a>
+<tr class="memdesc:a55de8670ca77e586ff697e5a9605dd58"><td class="mdescLeft">&#160;</td><td class="mdescRight">the name of the structure to save to the database when saving, taken from the input field in the teacher assignments window <br /></td></tr>
+<tr class="memitem:a269371b31a8fa06bdc9cad431896c98c" id="r_a269371b31a8fa06bdc9cad431896c98c"><td class="memItemLeft"><a id="a269371b31a8fa06bdc9cad431896c98c" name="a269371b31a8fa06bdc9cad431896c98c"></a>
 List&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_user.html">Game1Database.User</a> &gt;&#160;</td><td class="memItemRight"><b>_allTeachers</b> = new()</td></tr>
-<tr class="memdesc:a36cb06b2c86801bb18f6463054272cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">lists all teachers in the database <br /></td></tr>
-<tr class="memitem:a562fe6b64620400c28142f33d8837852" id="r_a562fe6b64620400c28142f33d8837852"><td class="memItemLeft"><a id="a562fe6b64620400c28142f33d8837852" name="a562fe6b64620400c28142f33d8837852"></a>
+<tr class="memdesc:a269371b31a8fa06bdc9cad431896c98c"><td class="mdescLeft">&#160;</td><td class="mdescRight">lists all teachers in the database <br /></td></tr>
+<tr class="memitem:a24f7ac5a7d15a682c728c2455dd6c58f" id="r_a24f7ac5a7d15a682c728c2455dd6c58f"><td class="memItemLeft"><a id="a24f7ac5a7d15a682c728c2455dd6c58f" name="a24f7ac5a7d15a682c728c2455dd6c58f"></a>
 Dictionary&lt; int, List&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment.html">Game1Database.Assignment</a> &gt; &gt;&#160;</td><td class="memItemRight"><b>_teacherAssignments</b> = new()</td></tr>
-<tr class="memdesc:a562fe6b64620400c28142f33d8837852"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the assignments for each teacher, loaded from the database when the user opens the teacher assignments window <br /></td></tr>
-<tr class="memitem:aff261dc24297d6c78205480df606408e" id="r_aff261dc24297d6c78205480df606408e"><td class="memItemLeft"><a id="aff261dc24297d6c78205480df606408e" name="aff261dc24297d6c78205480df606408e"></a>
+<tr class="memdesc:a24f7ac5a7d15a682c728c2455dd6c58f"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the assignments for each teacher, loaded from the database when the user opens the teacher assignments window <br /></td></tr>
+<tr class="memitem:a53f53ab2d813183b0faefff894d79899" id="r_a53f53ab2d813183b0faefff894d79899"><td class="memItemLeft"><a id="a53f53ab2d813183b0faefff894d79899" name="a53f53ab2d813183b0faefff894d79899"></a>
 int&#160;</td><td class="memItemRight"><b>_selectedTeacherTabIndex</b> = 0</td></tr>
-<tr class="memdesc:aff261dc24297d6c78205480df606408e"><td class="mdescLeft">&#160;</td><td class="mdescRight">the index of the currently selected teacher tab in the teacher assignments window, used for displaying the correct assignments when the user has multiple teachers <br /></td></tr>
-<tr class="memitem:ae95c1d8a41626abd46928de33cc141de" id="r_ae95c1d8a41626abd46928de33cc141de"><td class="memItemLeft"><a id="ae95c1d8a41626abd46928de33cc141de" name="ae95c1d8a41626abd46928de33cc141de"></a>
+<tr class="memdesc:a53f53ab2d813183b0faefff894d79899"><td class="mdescLeft">&#160;</td><td class="mdescRight">the index of the currently selected teacher tab in the teacher assignments window, used for displaying the correct assignments when the user has multiple teachers <br /></td></tr>
+<tr class="memitem:a4c31af4c76e661f8b3364eb06d1d548c" id="r_a4c31af4c76e661f8b3364eb06d1d548c"><td class="memItemLeft"><a id="a4c31af4c76e661f8b3364eb06d1d548c" name="a4c31af4c76e661f8b3364eb06d1d548c"></a>
 string&#160;</td><td class="memItemRight"><b>_newAssignmentTitle</b> = &quot;&quot;</td></tr>
-<tr class="memdesc:ae95c1d8a41626abd46928de33cc141de"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the input field for creating a new assigmnment in the teacher assignments window <br /></td></tr>
-<tr class="memitem:a3d95df0e6e8dc0fcdb813761e244dcf0" id="r_a3d95df0e6e8dc0fcdb813761e244dcf0"><td class="memItemLeft"><a id="a3d95df0e6e8dc0fcdb813761e244dcf0" name="a3d95df0e6e8dc0fcdb813761e244dcf0"></a>
+<tr class="memdesc:a4c31af4c76e661f8b3364eb06d1d548c"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the input field for creating a new assigmnment in the teacher assignments window <br /></td></tr>
+<tr class="memitem:a915e6a0ef29a01986b4889ff1a5c9398" id="r_a915e6a0ef29a01986b4889ff1a5c9398"><td class="memItemLeft"><a id="a915e6a0ef29a01986b4889ff1a5c9398" name="a915e6a0ef29a01986b4889ff1a5c9398"></a>
 string&#160;</td><td class="memItemRight"><b>_newAssignmentDescription</b> = &quot;&quot;</td></tr>
-<tr class="memdesc:a3d95df0e6e8dc0fcdb813761e244dcf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the input field for creating a new assignment description in the teacher assignments window <br /></td></tr>
-<tr class="memitem:a68f2a706776563cde794e6f2a2b0b740" id="r_a68f2a706776563cde794e6f2a2b0b740"><td class="memItemLeft"><a id="a68f2a706776563cde794e6f2a2b0b740" name="a68f2a706776563cde794e6f2a2b0b740"></a>
+<tr class="memdesc:a915e6a0ef29a01986b4889ff1a5c9398"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the input field for creating a new assignment description in the teacher assignments window <br /></td></tr>
+<tr class="memitem:ac12cac59116813a40fe53392336ad7ef" id="r_ac12cac59116813a40fe53392336ad7ef"><td class="memItemLeft"><a id="ac12cac59116813a40fe53392336ad7ef" name="ac12cac59116813a40fe53392336ad7ef"></a>
 string&#160;</td><td class="memItemRight"><b>_newAssignmentDueDate</b> = &quot;&quot;</td></tr>
-<tr class="memdesc:a68f2a706776563cde794e6f2a2b0b740"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the input field for creating a new assignment due date in the teacher assignments window <br /></td></tr>
+<tr class="memdesc:ac12cac59116813a40fe53392336ad7ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores the input field for creating a new assignment due date in the teacher assignments window <br /></td></tr>
 <tr class="memitem:a6022732706d7d94ac22689aaeebf8916" id="r_a6022732706d7d94ac22689aaeebf8916"><td class="memItemLeft"><a id="a6022732706d7d94ac22689aaeebf8916" name="a6022732706d7d94ac22689aaeebf8916"></a>
 float&#160;</td><td class="memItemRight"><b>_frictionCoefficient</b> = 0.2f</td></tr>
 <tr class="memdesc:a6022732706d7d94ac22689aaeebf8916"><td class="mdescLeft">&#160;</td><td class="mdescRight">the friction coeffiecent used in collison resolution and effects how much tangential velocity is lost and thus how much a particle will slide <br /></td></tr>
@@ -1261,7 +1315,7 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Dictionary of FileName and <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Dictionary of FileName and <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html" title="The Mesh class stores everything that should be loadable in and savebal for undo/redo functionality t...">Mesh</a></dd></dl>
 
 </div>
 </div>
@@ -1288,7 +1342,7 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 </table>
 </div><div class="memdoc">
 
-<p>attempts to load a <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh </p>
+<p>attempts to load a <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html" title="The Mesh class stores everything that should be loadable in and savebal for undo/redo functionality t...">Mesh</a> from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filePath</td><td></td></tr>
@@ -1554,7 +1608,40 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 </div>
 </div>
 <a id="abefc313bad3f4d6e993e2c6d171f59eb" name="abefc313bad3f4d6e993e2c6d171f59eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abefc313bad3f4d6e993e2c6d171f59eb">&#9670;&#160;</a></span>SetMode()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abefc313bad3f4d6e993e2c6d171f59eb">&#9670;&#160;</a></span>SetMode() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PhysicsCSAlevlProject.Game1.SetMode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#a9b5c75158025b372213fd6df913224cf">MeshMode</a></td>          <td class="paramname"><span class="paramname"><em>mode</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user's work and providing a consistent experience when switching between interacting with the mesh and editing it. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mode</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abefc313bad3f4d6e993e2c6d171f59eb" name="abefc313bad3f4d6e993e2c6d171f59eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abefc313bad3f4d6e993e2c6d171f59eb">&#9670;&#160;</a></span>SetMode() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1790,8 +1877,8 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
-<a id="a6c5756f8a9034e82d359faa2179ee9da" name="a6c5756f8a9034e82d359faa2179ee9da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c5756f8a9034e82d359faa2179ee9da">&#9670;&#160;</a></span>_buttonSteps</h2>
+<a id="a325d52fc483019a44519384bd2b91c25" name="a325d52fc483019a44519384bd2b91c25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a325d52fc483019a44519384bd2b91c25">&#9670;&#160;</a></span>_buttonSteps</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1813,8 +1900,8 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
-<a id="ac28c9377e421760ea70ac3b399dd127a" name="ac28c9377e421760ea70ac3b399dd127a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac28c9377e421760ea70ac3b399dd127a">&#9670;&#160;</a></span>_capsActive</h2>
+<a id="ae77d0498c9cafa11b563888fb5783f20" name="ae77d0498c9cafa11b563888fb5783f20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae77d0498c9cafa11b563888fb5783f20">&#9670;&#160;</a></span>_capsActive</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1836,8 +1923,8 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
-<a id="aec3e01a3a93c36d5646363d61e3835f0" name="aec3e01a3a93c36d5646363d61e3835f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec3e01a3a93c36d5646363d61e3835f0">&#9670;&#160;</a></span>_ctrlHeld</h2>
+<a id="a05e4fb26776b7e6f47590eb28428fe7b" name="a05e4fb26776b7e6f47590eb28428fe7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05e4fb26776b7e6f47590eb28428fe7b">&#9670;&#160;</a></span>_ctrlHeld</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1859,8 +1946,8 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
-<a id="a327b5f90d636cba904333a48409e6762" name="a327b5f90d636cba904333a48409e6762"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a327b5f90d636cba904333a48409e6762">&#9670;&#160;</a></span>_shiftHeld</h2>
+<a id="a9a8dd1af7919d12d29bde6eb71032033" name="a9a8dd1af7919d12d29bde6eb71032033"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a8dd1af7919d12d29bde6eb71032033">&#9670;&#160;</a></span>_shiftHeld</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1882,8 +1969,8 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
-<a id="a97a3491ef0faf108033f73e70078f54a" name="a97a3491ef0faf108033f73e70078f54a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97a3491ef0faf108033f73e70078f54a">&#9670;&#160;</a></span>_showReadMeWindow</h2>
+<a id="afc7b83a990be8af41f39aabe103e2eb0" name="afc7b83a990be8af41f39aabe103e2eb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc7b83a990be8af41f39aabe103e2eb0">&#9670;&#160;</a></span>_showReadMeWindow</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1907,8 +1994,8 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 
 </div>
 </div>
-<a id="a8180e98222e09302fa6a02b7e134234f" name="a8180e98222e09302fa6a02b7e134234f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8180e98222e09302fa6a02b7e134234f">&#9670;&#160;</a></span>_template</h2>
+<a id="ada19c18c2498807bed22c6b9e75f86af" name="ada19c18c2498807bed22c6b9e75f86af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada19c18c2498807bed22c6b9e75f86af">&#9670;&#160;</a></span>_template</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1917,7 +2004,7 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Dictionary&lt;string, Func&lt;<a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a>&gt; &gt; PhysicsCSAlevlProject.Game1._template</td>
+          <td class="memname">Dictionary&lt; string, Func&lt; <a class="el" href="class_physics_c_s_alevl_project_1_1_mesh.html">Mesh</a> &gt; &gt; PhysicsCSAlevlProject.Game1._template</td>
         </tr>
       </table>
   </td>
@@ -1936,6 +2023,7 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 <li>PhysicsCSAlevlProject/<b>Game1.Core.cs</b></li>
 <li>PhysicsCSAlevlProject/<b>Game1.DebugCommands.cs</b></li>
 <li>PhysicsCSAlevlProject/<b>Game1.ImGui.Core.cs</b></li>
+<li>PhysicsCSAlevlProject/<b>Game1.ImGui.cs</b></li>
 <li>PhysicsCSAlevlProject/<b>Game1.Physics.cs</b></li>
 <li>PhysicsCSAlevlProject/<b>Game1.Render.cs</b></li>
 <li>PhysicsCSAlevlProject/<b>Game1.Tools.cs</b></li>
@@ -1946,6 +2034,8 @@ const float&#160;</td><td class="memItemRight"><b>FixedTimeStep</b> = 1f / 60f</
 <li>PhysicsCSAlevlProject/<b>Game1.ImGui.MenuBar.cs</b></li>
 <li>PhysicsCSAlevlProject/<b>Game1.ImGui.Structures.cs</b></li>
 <li>PhysicsCSAlevlProject/<b>Game1.ImGui.Windows.cs</b></li>
+<li>PhysicsCSAlevlProject/<b>Game1.Update.Input.cs</b></li>
+<li>PhysicsCSAlevlProject/<b>Game1.Update.Physics.cs</b></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

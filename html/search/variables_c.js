@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['totalforcemagnitude_0',['TotalForceMagnitude',['../class_physics_c_s_alevl_project_1_1_particle.html#af7ff36a54cf3aaac4b6d98b2c5a5015a',1,'PhysicsCSAlevlProject::Particle']]],
-  ['triangles_1',['Triangles',['../class_physics_c_s_alevl_project_1_1_polygon_seperated_axis_collider.html#a8cdae3fe839a3e1136e571eb7f7fe7c3',1,'PhysicsCSAlevlProject::PolygonSeperatedAxisCollider']]]
+  ['springconstant_0',['springConstant',['../class_physics_c_s_alevl_project_1_1_mesh.html#aeab185d6275df2a7db4b59a9a77dea94',1,'PhysicsCSAlevlProject::Mesh']]],
+  ['stickdrawthickness_1',['stickDrawThickness',['../class_physics_c_s_alevl_project_1_1_mesh.html#ab2ff007c59ec22373ea789bc34cfadc8',1,'PhysicsCSAlevlProject::Mesh']]],
+  ['supportdebugconsole_2',['supportDebugConsole',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#aca548454f049f26ab1df32e7fc44ef2e',1,'PhysicsCSAlevlProject::ImGuiLogger']]]
 ];

@@ -91,12 +91,18 @@ $(function(){initNavTree('class_vector_graphics_1_1_primitive_batch.html','','cl
   <div class="headertitle"><div class="title">VectorGraphics.PrimitiveBatch Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The <a class="el" href="class_vector_graphics_1_1_primitive_batch.html" title="The PrimitiveBatch class is responsible for drawing basic shapes such as lines, circles,...">PrimitiveBatch</a> class is responsible for drawing basic shapes such as lines, circles, rectangles, and triangles using a SpriteBatch. It creates textures for a white pixel and a filled circle, which are used to draw the shapes. T.  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:Shape" id="r_Shape"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_shape.html">Shape</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">the base class for all shapes that can be drawn using the <a class="el" href="class_vector_graphics_1_1_primitive_batch.html" title="The PrimitiveBatch class is responsible for drawing basic shapes such as lines, circles,...">PrimitiveBatch</a>. Each shape has a position, color and a filled property to determine if the shape should be filled or just an outline.  <a href="class_vector_graphics_1_1_primitive_batch_1_1_shape.html#details">More...</a><br /></td></tr>
 <tr class="memitem:Line" id="r_Line"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_line.html">Line</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a line shape defined by a start position, an end position, a color, and a width. The line can be drawn using the Draw method, which calculates the angle and length of the line to properly render it using the white pixel texture. The ConstrainToSide method is used to constrain a point to one side of the line, which can be useful for collision detection or ensuring that particles do not cross the line.  <a href="class_vector_graphics_1_1_primitive_batch_1_1_line.html#details">More...</a><br /></td></tr>
 <tr class="memitem:Circle" id="r_Circle"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_circle.html">Circle</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a circle shape defined by a center position, a radius, a color, and a filled property.  <a href="class_vector_graphics_1_1_primitive_batch_1_1_circle.html#details">More...</a><br /></td></tr>
 <tr class="memitem:Rectangle" id="r_Rectangle"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_rectangle.html">Rectangle</a></td></tr>
 <tr class="memitem:RoundedRectangle" id="r_RoundedRectangle"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_rounded_rectangle.html">RoundedRectangle</a></td></tr>
 <tr class="memitem:RectangleTexture" id="r_RectangleTexture"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_rectangle_texture.html">RectangleTexture</a></td></tr>
@@ -108,18 +114,56 @@ Classes</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6f55d993dd5362bb1da5228c4f449697" id="r_a6f55d993dd5362bb1da5228c4f449697"><td class="memItemLeft"><a id="a6f55d993dd5362bb1da5228c4f449697" name="a6f55d993dd5362bb1da5228c4f449697"></a>
 &#160;</td><td class="memItemRight"><b>PrimitiveBatch</b> (GraphicsDevice graphicsDevice, float circleRadius=75f)</td></tr>
-<tr class="memitem:addf59c1634c8e1b3e10685c2e9585535" id="r_addf59c1634c8e1b3e10685c2e9585535"><td class="memItemLeft"><a id="addf59c1634c8e1b3e10685c2e9585535" name="addf59c1634c8e1b3e10685c2e9585535"></a>
-void&#160;</td><td class="memItemRight"><b>CreateTextures</b> (float circleRadius=75f)</td></tr>
+<tr class="memitem:addf59c1634c8e1b3e10685c2e9585535" id="r_addf59c1634c8e1b3e10685c2e9585535"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#addf59c1634c8e1b3e10685c2e9585535">CreateTextures</a> (float circleRadius=75f)</td></tr>
+<tr class="memdesc:addf59c1634c8e1b3e10685c2e9585535"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the necessary textures for drawing primitives.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a6a76fe0b93315e1a2962e3667a636ee3" id="r_a6a76fe0b93315e1a2962e3667a636ee3"><td class="memItemLeft"><a id="a6a76fe0b93315e1a2962e3667a636ee3" name="a6a76fe0b93315e1a2962e3667a636ee3"></a>
 Texture2D&#160;</td><td class="memItemRight"><b>whitePixel</b></td></tr>
+<tr class="memdesc:a6a76fe0b93315e1a2962e3667a636ee3"><td class="mdescLeft">&#160;</td><td class="mdescRight">A 1x1 white pixel texture used for drawing lines and rectangles. This texture is stretched and rotated to create the desired shapes. <br /></td></tr>
 <tr class="memitem:a8b90bd5ee694f74f16a54f8d9c43acdf" id="r_a8b90bd5ee694f74f16a54f8d9c43acdf"><td class="memItemLeft"><a id="a8b90bd5ee694f74f16a54f8d9c43acdf" name="a8b90bd5ee694f74f16a54f8d9c43acdf"></a>
 Texture2D&#160;</td><td class="memItemRight"><b>circleTextureFilled</b></td></tr>
+<tr class="memdesc:a8b90bd5ee694f74f16a54f8d9c43acdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">A texture used for drawing filled circles. It is generated using the CreateCircleTexture method and is scaled to the desired radius when drawn. This allows for efficient rendering of circles without needing to calculate individual points for each circle every frame. <br /></td></tr>
 <tr class="memitem:a4a242d87e0998a6ae65fc1c84ee1b05f" id="r_a4a242d87e0998a6ae65fc1c84ee1b05f"><td class="memItemLeft"><a id="a4a242d87e0998a6ae65fc1c84ee1b05f" name="a4a242d87e0998a6ae65fc1c84ee1b05f"></a>
 GraphicsDevice&#160;</td><td class="memItemRight"><b>graphicsDevice</b></td></tr>
 </table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="class_vector_graphics_1_1_primitive_batch.html" title="The PrimitiveBatch class is responsible for drawing basic shapes such as lines, circles,...">PrimitiveBatch</a> class is responsible for drawing basic shapes such as lines, circles, rectangles, and triangles using a SpriteBatch. It creates textures for a white pixel and a filled circle, which are used to draw the shapes. T. </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="addf59c1634c8e1b3e10685c2e9585535" name="addf59c1634c8e1b3e10685c2e9585535"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addf59c1634c8e1b3e10685c2e9585535">&#9670;&#160;</a></span>CreateTextures()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VectorGraphics.PrimitiveBatch.CreateTextures </td>
+          <td>(</td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>circleRadius</em></span><span class="paramdefsep"> = </span><span class="paramdefval">75f</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates the necessary textures for drawing primitives. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">circleRadius</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>PhysicsCSAlevlProject/libs/MonoGame2DVectorGraphics/<b>Vector.cs</b></li>
 </ul>

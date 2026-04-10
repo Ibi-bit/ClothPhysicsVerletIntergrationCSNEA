@@ -119,6 +119,59 @@ void {\bfseries Tool\+Switching\+Im\+Gui} ()
 \begin{DoxyCompactList}\small\item\em handles the switching between tools by using the Im\+Gui input system over monogames and draws the overlay that shows the current tool and the other tools available when ctrl is held, this allows for quick and intuitive switching between tools without needing to navigate through menus \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb}{Set\+Mode}} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a9b5c75158025b372213fd6df913224cf}{Mesh\+Mode}} mode)
 \begin{DoxyCompactList}\small\item\em Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user\textquotesingle{}s work and providing a consistent experience when switching between interacting with the mesh and editing it. \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a703ebca9ea27d36de8924fe2dd1e37e2}\label{class_physics_c_s_alevl_project_1_1_game1_a703ebca9ea27d36de8924fe2dd1e37e2} 
+void {\bfseries Initialize\+Im\+Gui} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa912e243752022dd4d1e2917d5ff8a81}\label{class_physics_c_s_alevl_project_1_1_game1_aa912e243752022dd4d1e2917d5ff8a81} 
+void {\bfseries Im\+Gui\+Draw} (Game\+Time game\+Time)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_adff21c4f55246d3d0ea42aa36dfebd89}\label{class_physics_c_s_alevl_project_1_1_game1_adff21c4f55246d3d0ea42aa36dfebd89} 
+void {\bfseries Draw\+Pop\+Ups} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7819d974eafd83724e29610a3e086f21}\label{class_physics_c_s_alevl_project_1_1_game1_a7819d974eafd83724e29610a3e086f21} 
+void {\bfseries Draw\+Inspect\+Particle\+Window} ()
+\begin{DoxyCompactList}\small\item\em Draws the particle inspection window, allowing users to view and manage particles that they have selected for inspection. The window displays a list of inspected particles with checkboxes to toggle their detailed information display. Users can clear all inspected particles, delete them along with their connected sticks, or close the window. For each inspected particle, detailed information such as position, previous position, and pinned status is shown, along with options to pin/\+unpin the particle or remove it from inspection. This feature provides an in-\/depth look at specific particles in the mesh for debugging and analysis purposes. \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a800fd1a0017d131511ccc9b9ee4fac9d}\label{class_physics_c_s_alevl_project_1_1_game1_a800fd1a0017d131511ccc9b9ee4fac9d} 
+void {\bfseries Draw\+Sign\+In\+Window} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae7ebba639b79e44d2598d28a1a6eb599}\label{class_physics_c_s_alevl_project_1_1_game1_ae7ebba639b79e44d2598d28a1a6eb599} 
+void {\bfseries Mode\+Switching\+Im\+Gui} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a0289892a9e14a720efd42e94c0914ffc}\label{class_physics_c_s_alevl_project_1_1_game1_a0289892a9e14a720efd42e94c0914ffc} 
+void {\bfseries Tool\+Switching\+Im\+Gui} ()
+\item 
+void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb}{Set\+Mode}} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a9b5c75158025b372213fd6df913224cf}{Mesh\+Mode}} mode)
+\begin{DoxyCompactList}\small\item\em Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user\textquotesingle{}s work and providing a consistent experience when switching between interacting with the mesh and editing it. \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a34e6253e76eac836e7bfe2662450aa90}\label{class_physics_c_s_alevl_project_1_1_game1_a34e6253e76eac836e7bfe2662450aa90} 
+void {\bfseries Draw\+Main\+Menu\+Bar} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a186b90dd692f039bcac3725b8277555b}\label{class_physics_c_s_alevl_project_1_1_game1_a186b90dd692f039bcac3725b8277555b} 
+void {\bfseries Factory\+Menu} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ace0e8ab92277e5ab7eef9802cd1acd7b}\label{class_physics_c_s_alevl_project_1_1_game1_ace0e8ab92277e5ab7eef9802cd1acd7b} 
+void {\bfseries Quick\+Structure\+Menu} ()
+\begin{DoxyCompactList}\small\item\em Provides a user interface for managing quick access to both local and remote structures. Users can toggle between viewing locally saved structures and structures stored in a remote database. The local structures tab allows users to refresh the list of available meshes, save the current mesh with a specified name, and load existing meshes from a designated directory. The remote structures tab enables signed-\/in users to save their current mesh to the database with a custom name, refresh the list of their saved structures, and load any of their previously saved structures into the application. This menu streamlines the process of managing and accessing different mesh configurations for users, enhancing their workflow and organization. \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa6f310e037f5c77c3041d80d15d93463}\label{class_physics_c_s_alevl_project_1_1_game1_aa6f310e037f5c77c3041d80d15d93463} 
+void {\bfseries Draw\+Structure\+Window} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac0354b09c773d59c7dc3e9f65f8c12c0}\label{class_physics_c_s_alevl_project_1_1_game1_ac0354b09c773d59c7dc3e9f65f8c12c0} 
+void {\bfseries Draw\+Save\+Window} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad77c6444ae4f2d8f9792445e4a41f662}\label{class_physics_c_s_alevl_project_1_1_game1_ad77c6444ae4f2d8f9792445e4a41f662} 
+void {\bfseries Draw\+Read\+Me\+Window} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a04aa845fe839edd1b89c4845a8eff0c1}\label{class_physics_c_s_alevl_project_1_1_game1_a04aa845fe839edd1b89c4845a8eff0c1} 
+void {\bfseries Draw\+Assignment\+Menu\+Items} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aab6106fbabae1de39c2e97cc8b2fcea8}\label{class_physics_c_s_alevl_project_1_1_game1_aab6106fbabae1de39c2e97cc8b2fcea8} 
+void {\bfseries Draw\+Teacher\+Assignments\+Window} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6fc4add468575c1ee8285156faf8a8cf}\label{class_physics_c_s_alevl_project_1_1_game1_a6fc4add468575c1ee8285156faf8a8cf} 
+void {\bfseries Pop\+Up\+Save\+Project\+To\+Assignment} (\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Game1\+Database.\+Assignment}} assignment)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6b4ad9008f4c77b6401af6ee6c049677}\label{class_physics_c_s_alevl_project_1_1_game1_a6b4ad9008f4c77b6401af6ee6c049677} 
+void {\bfseries Draw\+Configuration\+Window} ()
+\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7819d974eafd83724e29610a3e086f21}\label{class_physics_c_s_alevl_project_1_1_game1_a7819d974eafd83724e29610a3e086f21} 
 void {\bfseries Draw\+Inspect\+Particle\+Window} ()
 \begin{DoxyCompactList}\small\item\em Draws the particle inspection window, allowing users to view and manage particles that they have selected for inspection. The window displays a list of inspected particles with checkboxes to toggle their detailed information display. Users can clear all inspected particles, delete them along with their connected sticks, or close the window. For each inspected particle, detailed information such as position, previous position, and pinned status is shown, along with options to pin/\+unpin the particle or remove it from inspection. This feature provides an in-\/depth look at specific particles in the mesh for debugging and analysis purposes. \end{DoxyCompactList}\item 
@@ -209,7 +262,31 @@ Vector2 {\bfseries Get\+Cursor\+Collider\+Center} ()
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a10bb4cdb8dffb6659caecb3f76649c7f}{Set\+Cursor\+Collider\+Center}} (Vector2 center)
 \begin{DoxyCompactList}\small\item\em sets the center of the cursor collider to a given position, which is used for tools that require a cursor area of effect, \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a0b693fdd24619f9ae0082596529ca957}{Update\+Cursor\+Collider\+Size}} (float radius)
-\begin{DoxyCompactList}\small\item\em updates the size of the cursor collider based on a given radius, which is used for tools that require a circular or square area of effect around the cursor. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em updates the size of the cursor collider based on a given radius, which is used for tools that require a circular or square area of effect around the cursor. \end{DoxyCompactList}\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a02cca95c646927e7234b4f4a314c3741}\label{class_physics_c_s_alevl_project_1_1_game1_a02cca95c646927e7234b4f4a314c3741} 
+void {\bfseries Handle\+Undo\+Redo\+Shortcuts} (Keyboard\+State keyboard\+State, bool ctrl\+Held, bool shift\+Held)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a99ffa0825719ec4e1f2d14e8f5f6ffd4}\label{class_physics_c_s_alevl_project_1_1_game1_a99ffa0825719ec4e1f2d14e8f5f6ffd4} 
+void {\bfseries Update\+Cursor\+Collider\+From\+Tool\+Settings} ()
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae69be18afefedf88777622aff7f5d53f}\label{class_physics_c_s_alevl_project_1_1_game1_ae69be18afefedf88777622aff7f5d53f} 
+void {\bfseries Handle\+Pause\+And\+Step\+Hotkeys} (Keyboard\+State keyboard\+State)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa107855b6f5cdc5a812e60894a8aa8bb}\label{class_physics_c_s_alevl_project_1_1_game1_aa107855b6f5cdc5a812e60894a8aa8bb} 
+void {\bfseries Handle\+Direct\+Tool\+Selection} (Keyboard\+State keyboard\+State)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a3e39bdbdc5eabfd355f3b4a8dae7b406}\label{class_physics_c_s_alevl_project_1_1_game1_a3e39bdbdc5eabfd355f3b4a8dae7b406} 
+void {\bfseries Handle\+Mouse\+And\+Tool\+Input} (Mouse\+State mouse\+State, Vector2 current\+Mouse\+Pos, bool imgui\+Wants\+Mouse)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_af2180e9915afeb96e21f3fcdeca18189}\label{class_physics_c_s_alevl_project_1_1_game1_af2180e9915afeb96e21f3fcdeca18189} 
+void {\bfseries Update\+Active\+Tool\+Visuals\+And\+Actions} (Keyboard\+State keyboard\+State, Mouse\+State mouse\+State, Vector2 current\+Mouse\+Pos, bool imgui\+Wants\+Mouse)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a0a4ede2d833c78466375b5fa6a8aedeb}\label{class_physics_c_s_alevl_project_1_1_game1_a0a4ede2d833c78466375b5fa6a8aedeb} 
+void {\bfseries Run\+Physics\+Update} (Vector2 current\+Mouse\+Pos)
+\item 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_af7a5d8bd818a9012932f660085ee70e8}\label{class_physics_c_s_alevl_project_1_1_game1_af7a5d8bd818a9012932f660085ee70e8} 
+void {\bfseries Apply\+Post\+Physics\+Tool\+Effects} (Mouse\+State mouse\+State, Vector2 current\+Mouse\+Pos)
+\end{DoxyCompactItemize}
 \doxysubsubsection*{Static Private Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -276,106 +353,106 @@ Stack$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7afdbddfbab0bfbf30c69cac1ca1fd85}\label{class_physics_c_s_alevl_project_1_1_game1_a7afdbddfbab0bfbf30c69cac1ca1fd85} 
 \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} {\bfseries \+\_\+command\+Registry\+Mesh\+Binding}
 \begin{DoxyCompactList}\small\item\em The mesh that is currently bound to the command registry. \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ab53223c129f30e1f2bf15a34de89799c}\label{class_physics_c_s_alevl_project_1_1_game1_ab53223c129f30e1f2bf15a34de89799c} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6c4377586b47dcf29af0c5fbaeaa02da}\label{class_physics_c_s_alevl_project_1_1_game1_a6c4377586b47dcf29af0c5fbaeaa02da} 
 bool {\bfseries \+\_\+show\+Configuration\+Window}
 \begin{DoxyCompactList}\small\item\em toggle for if the config window is open \end{DoxyCompactList}\item 
-bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a97a3491ef0faf108033f73e70078f54a}{\+\_\+show\+Read\+Me\+Window}}
+bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_afc7b83a990be8af41f39aabe103e2eb0}{\+\_\+show\+Read\+Me\+Window}}
 \begin{DoxyCompactList}\small\item\em toggle for if the readme window is open \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa25aaf586fca10cba0ad86675b5f64c0}\label{class_physics_c_s_alevl_project_1_1_game1_aa25aaf586fca10cba0ad86675b5f64c0} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a202bf9ebe5d80440e7d9e0ad3592d18b}\label{class_physics_c_s_alevl_project_1_1_game1_a202bf9ebe5d80440e7d9e0ad3592d18b} 
 bool {\bfseries \+\_\+show\+Structure\+Window}
 \item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ab08dad47ef4cfd4de13933228decd085}\label{class_physics_c_s_alevl_project_1_1_game1_ab08dad47ef4cfd4de13933228decd085} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a1d973bcd7ed34253977b1e1966f639a8}\label{class_physics_c_s_alevl_project_1_1_game1_a1d973bcd7ed34253977b1e1966f639a8} 
 bool {\bfseries \+\_\+show\+Save\+Window}
 \begin{DoxyCompactList}\small\item\em toggle for if the save window is open \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7da66ddcb8b6a4211c8d691a668455ae}\label{class_physics_c_s_alevl_project_1_1_game1_a7da66ddcb8b6a4211c8d691a668455ae} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a3ecd800fdec90ea0f974e8415d432438}\label{class_physics_c_s_alevl_project_1_1_game1_a3ecd800fdec90ea0f974e8415d432438} 
 bool {\bfseries \+\_\+show\+Sign\+In\+Window}
 \begin{DoxyCompactList}\small\item\em toggle for if the sign-\/in window is open \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a63525a23d98ca88d2eb6877f0b978f71}\label{class_physics_c_s_alevl_project_1_1_game1_a63525a23d98ca88d2eb6877f0b978f71} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a33ecb3948d02f4823dc84073fe44c321}\label{class_physics_c_s_alevl_project_1_1_game1_a33ecb3948d02f4823dc84073fe44c321} 
 bool {\bfseries \+\_\+show\+Logger\+Window}
 \begin{DoxyCompactList}\small\item\em toggle for if the logger window is open \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aaac65ab04ed6dec195546c7fff7da0c3}\label{class_physics_c_s_alevl_project_1_1_game1_aaac65ab04ed6dec195546c7fff7da0c3} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a94735dcc8f1d4680c0e7f8f815d3d540}\label{class_physics_c_s_alevl_project_1_1_game1_a94735dcc8f1d4680c0e7f8f815d3d540} 
 bool {\bfseries \+\_\+show\+Confirm\+New\+Mesh\+Popup}
 \begin{DoxyCompactList}\small\item\em toggle for if the confirm new mesh popup is open \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a7f39ae0a0615ecd9417b2898ca7382b4}\label{class_physics_c_s_alevl_project_1_1_game1_a7f39ae0a0615ecd9417b2898ca7382b4} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a5571788783ac26d0b20dbd53c9c77037}\label{class_physics_c_s_alevl_project_1_1_game1_a5571788783ac26d0b20dbd53c9c77037} 
 bool {\bfseries \+\_\+show\+Save\+Assignment\+Popup}
 \begin{DoxyCompactList}\small\item\em toggle for if the save assignment popup is open \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a677a565d2d279821ee822ae450d4492a}\label{class_physics_c_s_alevl_project_1_1_game1_a677a565d2d279821ee822ae450d4492a} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a453d5d5e78e51fddca8263d742f8ca4a}\label{class_physics_c_s_alevl_project_1_1_game1_a453d5d5e78e51fddca8263d742f8ca4a} 
 bool {\bfseries \+\_\+show\+Teacher\+Assignments\+Window}
 \begin{DoxyCompactList}\small\item\em toggle for if the teacher assignments window is open \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad458f782923bdc3e515f188fb023eeaf}\label{class_physics_c_s_alevl_project_1_1_game1_ad458f782923bdc3e515f188fb023eeaf} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a309b16972dd1a765ab71e7afb92feb19}\label{class_physics_c_s_alevl_project_1_1_game1_a309b16972dd1a765ab71e7afb92feb19} 
 \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_im_gui_logger}{Im\+Gui\+Logger}} {\bfseries \+\_\+logger}
 \begin{DoxyCompactList}\small\item\em the logger used for logging messages to the Im\+Gui logger window \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a31b169df56b65880cc08483353be4fdf}\label{class_physics_c_s_alevl_project_1_1_game1_a31b169df56b65880cc08483353be4fdf} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a5af29d1cbe7ed39ccb16462fd56e6547}\label{class_physics_c_s_alevl_project_1_1_game1_a5af29d1cbe7ed39ccb16462fd56e6547} 
 string {\bfseries \+\_\+mesh\+Name}
 \begin{DoxyCompactList}\small\item\em the name of the current mesh, used for saving and loading \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae86d722e522a2943507cc534c66b2d21}\label{class_physics_c_s_alevl_project_1_1_game1_ae86d722e522a2943507cc534c66b2d21} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a172f90296846842254f47629bc3f95e2}\label{class_physics_c_s_alevl_project_1_1_game1_a172f90296846842254f47629bc3f95e2} 
 string {\bfseries \+\_\+structure\+Path}
 \begin{DoxyCompactList}\small\item\em the path to the directory where structures are saved and loaded from \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_abdb2fd647102b690de1430b8dedfa383}\label{class_physics_c_s_alevl_project_1_1_game1_abdb2fd647102b690de1430b8dedfa383} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac8c793a8f9bbfc24de886108751155b4}\label{class_physics_c_s_alevl_project_1_1_game1_ac8c793a8f9bbfc24de886108751155b4} 
 string {\bfseries \+\_\+quick\+Structure\+Name}
 \begin{DoxyCompactList}\small\item\em the name of the quick structure, used for saving and loading quick structures \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ad85bdaee70e4b7aea5af0cce77cc8a69}\label{class_physics_c_s_alevl_project_1_1_game1_ad85bdaee70e4b7aea5af0cce77cc8a69} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a95e7f8929d0a1d560a782c0bc80f3a52}\label{class_physics_c_s_alevl_project_1_1_game1_a95e7f8929d0a1d560a782c0bc80f3a52} 
 \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} {\bfseries \+\_\+cursor\+Collider}
 \begin{DoxyCompactList}\small\item\em the collider currently being used for cursor interaction \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a834f5281b50a16d7d45483a00fd8cc21}\label{class_physics_c_s_alevl_project_1_1_game1_a834f5281b50a16d7d45483a00fd8cc21} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_afb57d355fda3d2829b11e6b38b10c997}\label{class_physics_c_s_alevl_project_1_1_game1_afb57d355fda3d2829b11e6b38b10c997} 
 Dictionary$<$ string, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_collider}{Collider}} $>$ {\bfseries \+\_\+cursor\+Collider\+Store}
 \begin{DoxyCompactList}\small\item\em a store of colliders that can be used for cursor interaction, indexed by name \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_add23148b72f7713b1b1b313b709980b7}\label{class_physics_c_s_alevl_project_1_1_game1_add23148b72f7713b1b1b313b709980b7} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a4cfffbc40e54905d750644cb569c7d96}\label{class_physics_c_s_alevl_project_1_1_game1_a4cfffbc40e54905d750644cb569c7d96} 
 Dictionary$<$ string, \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $>$ {\bfseries \+\_\+quick\+Meshes}
 \begin{DoxyCompactList}\small\item\em a dictionary of meshes that can be quickly loaded, indexed by name \end{DoxyCompactList}\item 
-Dictionary$<$ string, Func$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $>$ $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a8180e98222e09302fa6a02b7e134234f}{\+\_\+template}}
+Dictionary$<$ string, Func$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $>$ $>$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ada19c18c2498807bed22c6b9e75f86af}{\+\_\+template}}
 \begin{DoxyCompactList}\small\item\em a dictionary of template functions for creating new meshes based on predefined configurations, indexed by name \end{DoxyCompactList}\item 
-int \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a6c5756f8a9034e82d359faa2179ee9da}{\+\_\+button\+Steps}}
+int \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a325d52fc483019a44519384bd2b91c25}{\+\_\+button\+Steps}}
 \item 
-bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_aec3e01a3a93c36d5646363d61e3835f0}{\+\_\+ctrl\+Held}}
+bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a05e4fb26776b7e6f47590eb28428fe7b}{\+\_\+ctrl\+Held}}
 \item 
-bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a327b5f90d636cba904333a48409e6762}{\+\_\+shift\+Held}}
+bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a9a8dd1af7919d12d29bde6eb71032033}{\+\_\+shift\+Held}}
 \item 
-bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ac28c9377e421760ea70ac3b399dd127a}{\+\_\+caps\+Active}}
+bool \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_ae77d0498c9cafa11b563888fb5783f20}{\+\_\+caps\+Active}}
 \item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aebf556f98fcc7090a739902bfe950f0f}\label{class_physics_c_s_alevl_project_1_1_game1_aebf556f98fcc7090a739902bfe950f0f} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aa8ed02fe1c07da025443616754015b74}\label{class_physics_c_s_alevl_project_1_1_game1_aa8ed02fe1c07da025443616754015b74} 
 bool {\bfseries \+\_\+alt\+Held}
 \item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6767ca8d897c9766818cac2ea61c5ab2}\label{class_physics_c_s_alevl_project_1_1_game1_a6767ca8d897c9766818cac2ea61c5ab2} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a02e3feebe304eb713f22916200c70813}\label{class_physics_c_s_alevl_project_1_1_game1_a02e3feebe304eb713f22916200c70813} 
 \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_factory}{Factory}} {\bfseries \+\_\+selected\+Factory\+Action}
 \begin{DoxyCompactList}\small\item\em the currently selected factory action, used for quick structure creation \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_af29b1d8c1b074e2ca6b10e307f713c65}\label{class_physics_c_s_alevl_project_1_1_game1_af29b1d8c1b074e2ca6b10e307f713c65} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a596c0a6d34ba88192078e2e0da7a4aa0}\label{class_physics_c_s_alevl_project_1_1_game1_a596c0a6d34ba88192078e2e0da7a4aa0} 
 bool {\bfseries \+\_\+\+Localor\+Remote\+Structure\+Tab}
 \begin{DoxyCompactList}\small\item\em wether to show the local or remote structures in the quick structure menu \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a2d31ede0506faed39a4a2956c93d97d3}\label{class_physics_c_s_alevl_project_1_1_game1_a2d31ede0506faed39a4a2956c93d97d3} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac93fbcfaaea6acaeb40e2578ad157c7a}\label{class_physics_c_s_alevl_project_1_1_game1_ac93fbcfaaea6acaeb40e2578ad157c7a} 
 \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{Game1\+Database.\+User}} {\bfseries \+\_\+current\+User}
 \begin{DoxyCompactList}\small\item\em the current user signed in, null if no user is signed in \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ab810d2f646704b52cc21c3f9611a72ac}\label{class_physics_c_s_alevl_project_1_1_game1_ab810d2f646704b52cc21c3f9611a72ac} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a1f677617dcf7d611c10f2b8c85b8648f}\label{class_physics_c_s_alevl_project_1_1_game1_a1f677617dcf7d611c10f2b8c85b8648f} 
 string {\bfseries \+\_\+user\+Input\+User\+Id}
 \begin{DoxyCompactList}\small\item\em whats in the user id input field in the sign-\/in window \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac32fed819e40bcc2d587f2f516887599}\label{class_physics_c_s_alevl_project_1_1_game1_ac32fed819e40bcc2d587f2f516887599} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a495c1242d869db18fb113f60bb733732}\label{class_physics_c_s_alevl_project_1_1_game1_a495c1242d869db18fb113f60bb733732} 
 string {\bfseries \+\_\+password}
 \begin{DoxyCompactList}\small\item\em whats in the password input field in the sign-\/in window \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a799c4e9415c0e3f81e5ef33254e41845}\label{class_physics_c_s_alevl_project_1_1_game1_a799c4e9415c0e3f81e5ef33254e41845} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a11d75a0cd01ea3c0942a920a64347eb3}\label{class_physics_c_s_alevl_project_1_1_game1_a11d75a0cd01ea3c0942a920a64347eb3} 
 \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Game1\+Database.\+Assignment}} {\bfseries \+\_\+selected\+Assignment}
 \begin{DoxyCompactList}\small\item\em the currently selected assignment in the teacher assignments window, null if no assignment is selected \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aef65875c17b99428c8e1dc7e2696cd83}\label{class_physics_c_s_alevl_project_1_1_game1_aef65875c17b99428c8e1dc7e2696cd83} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a5b7931acf9fd38e80bcd641446e61d4c}\label{class_physics_c_s_alevl_project_1_1_game1_a5b7931acf9fd38e80bcd641446e61d4c} 
 List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_structure_info}{Game1\+Database.\+Structure\+Info}} $>$ {\bfseries \+\_\+remote\+Structures} = new()
 \begin{DoxyCompactList}\small\item\em stores all remote structures for the user, loaded from the database when the user signs in \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a69b545f8baf51e536bea1dea546c5069}\label{class_physics_c_s_alevl_project_1_1_game1_a69b545f8baf51e536bea1dea546c5069} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a55de8670ca77e586ff697e5a9605dd58}\label{class_physics_c_s_alevl_project_1_1_game1_a55de8670ca77e586ff697e5a9605dd58} 
 string {\bfseries \+\_\+remote\+Save\+Name} = "{}My\+Structure"{}
 \begin{DoxyCompactList}\small\item\em the name of the structure to save to the database when saving, taken from the input field in the teacher assignments window \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a36cb06b2c86801bb18f6463054272cc8}\label{class_physics_c_s_alevl_project_1_1_game1_a36cb06b2c86801bb18f6463054272cc8} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a269371b31a8fa06bdc9cad431896c98c}\label{class_physics_c_s_alevl_project_1_1_game1_a269371b31a8fa06bdc9cad431896c98c} 
 List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_user}{Game1\+Database.\+User}} $>$ {\bfseries \+\_\+all\+Teachers} = new()
 \begin{DoxyCompactList}\small\item\em lists all teachers in the database \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a562fe6b64620400c28142f33d8837852}\label{class_physics_c_s_alevl_project_1_1_game1_a562fe6b64620400c28142f33d8837852} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a24f7ac5a7d15a682c728c2455dd6c58f}\label{class_physics_c_s_alevl_project_1_1_game1_a24f7ac5a7d15a682c728c2455dd6c58f} 
 Dictionary$<$ int, List$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_database_1_1_assignment}{Game1\+Database.\+Assignment}} $>$ $>$ {\bfseries \+\_\+teacher\+Assignments} = new()
 \begin{DoxyCompactList}\small\item\em stores the assignments for each teacher, loaded from the database when the user opens the teacher assignments window \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aff261dc24297d6c78205480df606408e}\label{class_physics_c_s_alevl_project_1_1_game1_aff261dc24297d6c78205480df606408e} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a53f53ab2d813183b0faefff894d79899}\label{class_physics_c_s_alevl_project_1_1_game1_a53f53ab2d813183b0faefff894d79899} 
 int {\bfseries \+\_\+selected\+Teacher\+Tab\+Index} = 0
 \begin{DoxyCompactList}\small\item\em the index of the currently selected teacher tab in the teacher assignments window, used for displaying the correct assignments when the user has multiple teachers \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae95c1d8a41626abd46928de33cc141de}\label{class_physics_c_s_alevl_project_1_1_game1_ae95c1d8a41626abd46928de33cc141de} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a4c31af4c76e661f8b3364eb06d1d548c}\label{class_physics_c_s_alevl_project_1_1_game1_a4c31af4c76e661f8b3364eb06d1d548c} 
 string {\bfseries \+\_\+new\+Assignment\+Title} = "{}"{}
 \begin{DoxyCompactList}\small\item\em stores the input field for creating a new assigmnment in the teacher assignments window \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a3d95df0e6e8dc0fcdb813761e244dcf0}\label{class_physics_c_s_alevl_project_1_1_game1_a3d95df0e6e8dc0fcdb813761e244dcf0} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a915e6a0ef29a01986b4889ff1a5c9398}\label{class_physics_c_s_alevl_project_1_1_game1_a915e6a0ef29a01986b4889ff1a5c9398} 
 string {\bfseries \+\_\+new\+Assignment\+Description} = "{}"{}
 \begin{DoxyCompactList}\small\item\em stores the input field for creating a new assignment description in the teacher assignments window \end{DoxyCompactList}\item 
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a68f2a706776563cde794e6f2a2b0b740}\label{class_physics_c_s_alevl_project_1_1_game1_a68f2a706776563cde794e6f2a2b0b740} 
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac12cac59116813a40fe53392336ad7ef}\label{class_physics_c_s_alevl_project_1_1_game1_ac12cac59116813a40fe53392336ad7ef} 
 string {\bfseries \+\_\+new\+Assignment\+Due\+Date} = "{}"{}
 \begin{DoxyCompactList}\small\item\em stores the input field for creating a new assignment due date in the teacher assignments window \end{DoxyCompactList}\item 
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6022732706d7d94ac22689aaeebf8916}\label{class_physics_c_s_alevl_project_1_1_game1_a6022732706d7d94ac22689aaeebf8916} 
@@ -945,7 +1022,22 @@ sets the center of the cursor collider to a given position, which is used for to
 \end{DoxyParams}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!SetMode@{SetMode}}
 \index{SetMode@{SetMode}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
-\doxysubsubsection{\texorpdfstring{SetMode()}{SetMode()}}
+\doxysubsubsection{\texorpdfstring{SetMode()}{SetMode()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb} 
+void Physics\+CSAlevl\+Project.\+Game1.\+Set\+Mode (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a9b5c75158025b372213fd6df913224cf}{Mesh\+Mode}}}]{mode}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+Sets the current mode of the application (Interact or Edit) and updates the state accordingly. When switching to Edit mode, the simulation is paused to allow for editing without physics interference. The method also pushes the current mesh state to the history stack for undo functionality, resets input states related to mouse interactions, and clears any temporary data used for tools like wind or cutting. This ensures a smooth transition between modes while preserving the user\textquotesingle{}s work and providing a consistent experience when switching between interacting with the mesh and editing it. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mode} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!SetMode@{SetMode}}
+\index{SetMode@{SetMode}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
+\doxysubsubsection{\texorpdfstring{SetMode()}{SetMode()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
 {\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_abefc313bad3f4d6e993e2c6d171f59eb} 
 void Physics\+CSAlevl\+Project.\+Game1.\+Set\+Mode (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_game1_a9b5c75158025b372213fd6df913224cf}{Mesh\+Mode}}}]{mode}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
 
@@ -1055,45 +1147,45 @@ Updates the colors of the sticks based on their stretch relative to their rest l
 \label{doc-variable-members}
 \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_doc-variable-members}
 \doxysubsection{Member Data Documentation}
-\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a6c5756f8a9034e82d359faa2179ee9da}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_buttonSteps@{\_buttonSteps}}
+\Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a325d52fc483019a44519384bd2b91c25}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_buttonSteps@{\_buttonSteps}}
 \index{\_buttonSteps@{\_buttonSteps}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{\_buttonSteps}{\_buttonSteps}}
-{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a6c5756f8a9034e82d359faa2179ee9da} 
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a325d52fc483019a44519384bd2b91c25} 
 int Physics\+CSAlevl\+Project.\+Game1.\+\_\+button\+Steps\hspace{0.3cm}{\ttfamily [private]}}
 
-summary\texorpdfstring{$>$}{>} if ctrl is currently held, used for tool switching \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ac28c9377e421760ea70ac3b399dd127a}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_capsActive@{\_capsActive}}
+summary\texorpdfstring{$>$}{>} if ctrl is currently held, used for tool switching \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ae77d0498c9cafa11b563888fb5783f20}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_capsActive@{\_capsActive}}
 \index{\_capsActive@{\_capsActive}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{\_capsActive}{\_capsActive}}
-{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ac28c9377e421760ea70ac3b399dd127a} 
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ae77d0498c9cafa11b563888fb5783f20} 
 bool Physics\+CSAlevl\+Project.\+Game1.\+\_\+caps\+Active\hspace{0.3cm}{\ttfamily [private]}}
 
-summary\texorpdfstring{$>$}{>} if alt is currently held, used for mode switching on Mac \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_aec3e01a3a93c36d5646363d61e3835f0}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_ctrlHeld@{\_ctrlHeld}}
+summary\texorpdfstring{$>$}{>} if alt is currently held, used for mode switching on Mac \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a05e4fb26776b7e6f47590eb28428fe7b}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_ctrlHeld@{\_ctrlHeld}}
 \index{\_ctrlHeld@{\_ctrlHeld}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{\_ctrlHeld}{\_ctrlHeld}}
-{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_aec3e01a3a93c36d5646363d61e3835f0} 
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a05e4fb26776b7e6f47590eb28428fe7b} 
 bool Physics\+CSAlevl\+Project.\+Game1.\+\_\+ctrl\+Held\hspace{0.3cm}{\ttfamily [private]}}
 
-summary\texorpdfstring{$>$}{>} if shift is currently held, used for mode and tool switching \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a327b5f90d636cba904333a48409e6762}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_shiftHeld@{\_shiftHeld}}
+summary\texorpdfstring{$>$}{>} if shift is currently held, used for mode and tool switching \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a9a8dd1af7919d12d29bde6eb71032033}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_shiftHeld@{\_shiftHeld}}
 \index{\_shiftHeld@{\_shiftHeld}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{\_shiftHeld}{\_shiftHeld}}
-{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a327b5f90d636cba904333a48409e6762} 
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a9a8dd1af7919d12d29bde6eb71032033} 
 bool Physics\+CSAlevl\+Project.\+Game1.\+\_\+shift\+Held\hspace{0.3cm}{\ttfamily [private]}}
 
-summary\texorpdfstring{$>$}{>} if caps lock is currently active, used for mode switching \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a97a3491ef0faf108033f73e70078f54a}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_showReadMeWindow@{\_showReadMeWindow}}
+summary\texorpdfstring{$>$}{>} if caps lock is currently active, used for mode switching \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_afc7b83a990be8af41f39aabe103e2eb0}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_showReadMeWindow@{\_showReadMeWindow}}
 \index{\_showReadMeWindow@{\_showReadMeWindow}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{\_showReadMeWindow}{\_showReadMeWindow}}
-{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a97a3491ef0faf108033f73e70078f54a} 
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_afc7b83a990be8af41f39aabe103e2eb0} 
 bool Physics\+CSAlevl\+Project.\+Game1.\+\_\+show\+Read\+Me\+Window\hspace{0.3cm}{\ttfamily [private]}}
 
 
 
 toggle for if the readme window is open 
 
-summary\texorpdfstring{$>$}{>} toggle for if the structure window is open \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_a8180e98222e09302fa6a02b7e134234f}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_template@{\_template}}
+summary\texorpdfstring{$>$}{>} toggle for if the structure window is open \Hypertarget{class_physics_c_s_alevl_project_1_1_game1_ada19c18c2498807bed22c6b9e75f86af}\index{PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}!\_template@{\_template}}
 \index{\_template@{\_template}!PhysicsCSAlevlProject.Game1@{PhysicsCSAlevlProject.Game1}}
 \doxysubsubsection{\texorpdfstring{\_template}{\_template}}
-{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_a8180e98222e09302fa6a02b7e134234f} 
-Dictionary$<$string, Func$<$\doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}}$>$ $>$ Physics\+CSAlevl\+Project.\+Game1.\+\_\+template\hspace{0.3cm}{\ttfamily [private]}}
+{\footnotesize\ttfamily \label{class_physics_c_s_alevl_project_1_1_game1_ada19c18c2498807bed22c6b9e75f86af} 
+Dictionary$<$ string, Func$<$ \doxymbox{\hyperlink{class_physics_c_s_alevl_project_1_1_mesh}{Mesh}} $>$ $>$ Physics\+CSAlevl\+Project.\+Game1.\+\_\+template\hspace{0.3cm}{\ttfamily [private]}}
 
 
 
@@ -1106,6 +1198,7 @@ The documentation for this class was generated from the following files:\+\begin
 Physics\+CSAlevl\+Project/\+Game1.\+Core.\+cs\item 
 Physics\+CSAlevl\+Project/\+Game1.\+Debug\+Commands.\+cs\item 
 Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+Core.\+cs\item 
+Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+cs\item 
 Physics\+CSAlevl\+Project/\+Game1.\+Physics.\+cs\item 
 Physics\+CSAlevl\+Project/\+Game1.\+Render.\+cs\item 
 Physics\+CSAlevl\+Project/\+Game1.\+Tools.\+cs\item 
@@ -1115,4 +1208,6 @@ Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+Authentication.\+cs\item
 Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+Inspection.\+cs\item 
 Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+Menu\+Bar.\+cs\item 
 Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+Structures.\+cs\item 
-Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+Windows.\+cs\end{DoxyCompactItemize}
+Physics\+CSAlevl\+Project/\+Game1.\+Im\+Gui.\+Windows.\+cs\item 
+Physics\+CSAlevl\+Project/\+Game1.\+Update.\+Input.\+cs\item 
+Physics\+CSAlevl\+Project/\+Game1.\+Update.\+Physics.\+cs\end{DoxyCompactItemize}

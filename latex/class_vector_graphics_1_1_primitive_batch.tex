@@ -1,14 +1,19 @@
 \doxysection{Vector\+Graphics.\+Primitive\+Batch Class Reference}
 \hypertarget{class_vector_graphics_1_1_primitive_batch}{}\label{class_vector_graphics_1_1_primitive_batch}\index{VectorGraphics.PrimitiveBatch@{VectorGraphics.PrimitiveBatch}}
+
+
+The \doxylink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch} class is responsible for drawing basic shapes such as lines, circles, rectangles, and triangles using a Sprite\+Batch. It creates textures for a white pixel and a filled circle, which are used to draw the shapes. T.  
+
+
 \doxysubsubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
 class \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_shape}{Shape}}
-\item 
+\begin{DoxyCompactList}\small\item\em the base class for all shapes that can be drawn using the \doxylink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch}. Each shape has a position, color and a filled property to determine if the shape should be filled or just an outline. \end{DoxyCompactList}\item 
 class \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_line}{Line}}
-\item 
+\begin{DoxyCompactList}\small\item\em Represents a line shape defined by a start position, an end position, a color, and a width. The line can be drawn using the Draw method, which calculates the angle and length of the line to properly render it using the white pixel texture. The Constrain\+To\+Side method is used to constrain a point to one side of the line, which can be useful for collision detection or ensuring that particles do not cross the line. \end{DoxyCompactList}\item 
 class \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_circle}{Circle}}
-\item 
+\begin{DoxyCompactList}\small\item\em Represents a circle shape defined by a center position, a radius, a color, and a filled property. \end{DoxyCompactList}\item 
 class \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_rectangle}{Rectangle}}
 \item 
 class \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_rounded_rectangle}{Rounded\+Rectangle}}
@@ -27,21 +32,43 @@ class \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_arrow}{
 \Hypertarget{class_vector_graphics_1_1_primitive_batch_a6f55d993dd5362bb1da5228c4f449697}\label{class_vector_graphics_1_1_primitive_batch_a6f55d993dd5362bb1da5228c4f449697} 
 {\bfseries Primitive\+Batch} (Graphics\+Device graphics\+Device, float circle\+Radius=75f)
 \item 
-\Hypertarget{class_vector_graphics_1_1_primitive_batch_addf59c1634c8e1b3e10685c2e9585535}\label{class_vector_graphics_1_1_primitive_batch_addf59c1634c8e1b3e10685c2e9585535} 
-void {\bfseries Create\+Textures} (float circle\+Radius=75f)
-\end{DoxyCompactItemize}
+void \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_addf59c1634c8e1b3e10685c2e9585535}{Create\+Textures}} (float circle\+Radius=75f)
+\begin{DoxyCompactList}\small\item\em Creates the necessary textures for drawing primitives. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{class_vector_graphics_1_1_primitive_batch_a6a76fe0b93315e1a2962e3667a636ee3}\label{class_vector_graphics_1_1_primitive_batch_a6a76fe0b93315e1a2962e3667a636ee3} 
 Texture2D {\bfseries white\+Pixel}
-\item 
+\begin{DoxyCompactList}\small\item\em A 1x1 white pixel texture used for drawing lines and rectangles. This texture is stretched and rotated to create the desired shapes. \end{DoxyCompactList}\item 
 \Hypertarget{class_vector_graphics_1_1_primitive_batch_a8b90bd5ee694f74f16a54f8d9c43acdf}\label{class_vector_graphics_1_1_primitive_batch_a8b90bd5ee694f74f16a54f8d9c43acdf} 
 Texture2D {\bfseries circle\+Texture\+Filled}
-\item 
+\begin{DoxyCompactList}\small\item\em A texture used for drawing filled circles. It is generated using the Create\+Circle\+Texture method and is scaled to the desired radius when drawn. This allows for efficient rendering of circles without needing to calculate individual points for each circle every frame. \end{DoxyCompactList}\item 
 \Hypertarget{class_vector_graphics_1_1_primitive_batch_a4a242d87e0998a6ae65fc1c84ee1b05f}\label{class_vector_graphics_1_1_primitive_batch_a4a242d87e0998a6ae65fc1c84ee1b05f} 
 Graphics\+Device {\bfseries graphics\+Device}
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The \doxylink{class_vector_graphics_1_1_primitive_batch}{Primitive\+Batch} class is responsible for drawing basic shapes such as lines, circles, rectangles, and triangles using a Sprite\+Batch. It creates textures for a white pixel and a filled circle, which are used to draw the shapes. T. 
+
+\label{doc-func-members}
+\Hypertarget{class_vector_graphics_1_1_primitive_batch_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_vector_graphics_1_1_primitive_batch_addf59c1634c8e1b3e10685c2e9585535}\index{VectorGraphics.PrimitiveBatch@{VectorGraphics.PrimitiveBatch}!CreateTextures@{CreateTextures}}
+\index{CreateTextures@{CreateTextures}!VectorGraphics.PrimitiveBatch@{VectorGraphics.PrimitiveBatch}}
+\doxysubsubsection{\texorpdfstring{CreateTextures()}{CreateTextures()}}
+{\footnotesize\ttfamily \label{class_vector_graphics_1_1_primitive_batch_addf59c1634c8e1b3e10685c2e9585535} 
+void Vector\+Graphics.\+Primitive\+Batch.\+Create\+Textures (\begin{DoxyParamCaption}\item[{float}]{circle\+Radius}{ = {\ttfamily 75f}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates the necessary textures for drawing primitives. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em circle\+Radius} & \\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}

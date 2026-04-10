@@ -9,7 +9,7 @@ var searchData=
   ['drawablestick_6',['DrawableStick',['../class_physics_c_s_alevl_project_1_1_drawable_stick.html',1,'PhysicsCSAlevlProject']]],
   ['drawassignmentmenuitems_7',['DrawAssignmentMenuItems',['../class_physics_c_s_alevl_project_1_1_game1.html#a04aa845fe839edd1b89c4845a8eff0c1',1,'PhysicsCSAlevlProject::Game1']]],
   ['drawconfigurationwindow_8',['DrawConfigurationWindow',['../class_physics_c_s_alevl_project_1_1_game1.html#a6b4ad9008f4c77b6401af6ee6c049677',1,'PhysicsCSAlevlProject::Game1']]],
-  ['drawinspectparticlewindow_9',['DrawInspectParticleWindow',['../class_physics_c_s_alevl_project_1_1_game1.html#a7819d974eafd83724e29610a3e086f21',1,'PhysicsCSAlevlProject::Game1']]],
+  ['drawinspectparticlewindow_9',['DrawInspectParticleWindow',['../class_physics_c_s_alevl_project_1_1_game1.html#a7819d974eafd83724e29610a3e086f21',1,'PhysicsCSAlevlProject.Game1.DrawInspectParticleWindow()'],['../class_physics_c_s_alevl_project_1_1_game1.html#a7819d974eafd83724e29610a3e086f21',1,'PhysicsCSAlevlProject.Game1.DrawInspectParticleWindow()']]],
   ['drawlogs_10',['DrawLogs',['../class_physics_c_s_alevl_project_1_1_im_gui_logger.html#a5a549254e99677f249d62bd02c7f2494',1,'PhysicsCSAlevlProject::ImGuiLogger']]],
   ['drawmainmenubar_11',['DrawMainMenuBar',['../class_physics_c_s_alevl_project_1_1_game1.html#a34e6253e76eac836e7bfe2662450aa90',1,'PhysicsCSAlevlProject::Game1']]],
   ['drawpopups_12',['DrawPopUps',['../class_physics_c_s_alevl_project_1_1_game1.html#adff21c4f55246d3d0ea42aa36dfebd89',1,'PhysicsCSAlevlProject::Game1']]],

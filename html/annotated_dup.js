@@ -18,7 +18,7 @@ var annotated_dup =
       [ "Mesh", "class_physics_c_s_alevl_project_1_1_mesh.html", "class_physics_c_s_alevl_project_1_1_mesh" ],
       [ "Particle", "class_physics_c_s_alevl_project_1_1_particle.html", "class_physics_c_s_alevl_project_1_1_particle" ],
       [ "DrawableParticle", "class_physics_c_s_alevl_project_1_1_drawable_particle.html", "class_physics_c_s_alevl_project_1_1_drawable_particle" ],
-      [ "OscillatingParticle", "class_physics_c_s_alevl_project_1_1_oscillating_particle.html", null ],
+      [ "OscillatingParticle", "class_physics_c_s_alevl_project_1_1_oscillating_particle.html", "class_physics_c_s_alevl_project_1_1_oscillating_particle" ],
       [ "Stick", "class_physics_c_s_alevl_project_1_1_stick.html", "class_physics_c_s_alevl_project_1_1_stick" ],
       [ "DrawableStick", "class_physics_c_s_alevl_project_1_1_drawable_stick.html", "class_physics_c_s_alevl_project_1_1_drawable_stick" ],
       [ "Tool", "class_physics_c_s_alevl_project_1_1_tool.html", null ],

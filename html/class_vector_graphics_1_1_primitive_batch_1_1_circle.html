@@ -91,13 +91,16 @@ $(function(){initNavTree('class_vector_graphics_1_1_primitive_batch_1_1_circle.h
   <div class="headertitle"><div class="title">VectorGraphics.PrimitiveBatch.Circle Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Represents a circle shape defined by a center position, a radius, a color, and a filled property.  
+ <a href="#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for VectorGraphics.PrimitiveBatch.Circle:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_vector_graphics_1_1_primitive_batch_1_1_circle.png" usemap="#VectorGraphics_2EPrimitiveBatch_2ECircle_map" alt=""/>
   <map id="VectorGraphics_2EPrimitiveBatch_2ECircle_map" name="VectorGraphics_2EPrimitiveBatch_2ECircle_map">
-<area href="class_vector_graphics_1_1_primitive_batch_1_1_shape.html" alt="VectorGraphics.PrimitiveBatch.Shape" shape="rect" coords="0,0,225,24"/>
+<area href="class_vector_graphics_1_1_primitive_batch_1_1_shape.html" title="the base class for all shapes that can be drawn using the PrimitiveBatch. Each shape has a position,..." alt="VectorGraphics.PrimitiveBatch.Shape" shape="rect" coords="0,0,225,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -115,8 +118,8 @@ void&#160;</td><td class="memItemRight"><b>Draw</b> (SpriteBatch spriteBatch, Pr
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a02c619d376edb47d9a8355b378c3ad24" id="r_a02c619d376edb47d9a8355b378c3ad24"><td class="memItemLeft"><a id="a02c619d376edb47d9a8355b378c3ad24" name="a02c619d376edb47d9a8355b378c3ad24"></a>
-static Texture2D&#160;</td><td class="memItemRight"><b>CreateCircleTexture</b> (Vector2 position, float radius, Color color, bool filled=true, PrimitiveBatch primitiveBatch=null)</td></tr>
+<tr class="memitem:a02c619d376edb47d9a8355b378c3ad24" id="r_a02c619d376edb47d9a8355b378c3ad24"><td class="memItemLeft">static Texture2D&#160;</td><td class="memItemRight"><a class="el" href="#a02c619d376edb47d9a8355b378c3ad24">CreateCircleTexture</a> (Vector2 position, float radius, Color color, bool filled=true, PrimitiveBatch primitiveBatch=null)</td></tr>
+<tr class="memdesc:a02c619d376edb47d9a8355b378c3ad24"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates the <a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_circle.html" title="Represents a circle shape defined by a center position, a radius, a color, and a filled property.">Circle</a> texture by using the Midpoint <a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_circle.html" title="Represents a circle shape defined by a center position, a radius, a color, and a filled property.">Circle</a> Algorithm to calculate the points of the circle and fill them in a texture. The method takes in the position, radius, color, and whether the circle should be filled or just an outline.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -130,6 +133,66 @@ Color&#160;</td><td class="memItemRight"><b>color</b></td></tr>
 <tr class="memitem:a0d5637b994f3340e5362b9d87c7cb6f7 inherit pub_attribs_class_vector_graphics_1_1_primitive_batch_1_1_shape" id="r_a0d5637b994f3340e5362b9d87c7cb6f7"><td class="memItemLeft">
 bool&#160;</td><td class="memItemRight"><b>filled</b></td></tr>
 </table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents a circle shape defined by a center position, a radius, a color, and a filled property. </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a02c619d376edb47d9a8355b378c3ad24" name="a02c619d376edb47d9a8355b378c3ad24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02c619d376edb47d9a8355b378c3ad24">&#9670;&#160;</a></span>CreateCircleTexture()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Texture2D VectorGraphics.PrimitiveBatch.Circle.CreateCircleTexture </td>
+          <td>(</td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>position</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Color</td>          <td class="paramname"><span class="paramname"><em>color</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>filled</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PrimitiveBatch</td>          <td class="paramname"><span class="paramname"><em>primitiveBatch</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>creates the <a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_circle.html" title="Represents a circle shape defined by a center position, a radius, a color, and a filled property.">Circle</a> texture by using the Midpoint <a class="el" href="class_vector_graphics_1_1_primitive_batch_1_1_circle.html" title="Represents a circle shape defined by a center position, a radius, a color, and a filled property.">Circle</a> Algorithm to calculate the points of the circle and fill them in a texture. The method takes in the position, radius, color, and whether the circle should be filled or just an outline. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td></td></tr>
+    <tr><td class="paramname">radius</td><td></td></tr>
+    <tr><td class="paramname">color</td><td></td></tr>
+    <tr><td class="paramname">filled</td><td></td></tr>
+    <tr><td class="paramname">primitiveBatch</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>PhysicsCSAlevlProject/libs/MonoGame2DVectorGraphics/<b>Vector.cs</b></li>
 </ul>

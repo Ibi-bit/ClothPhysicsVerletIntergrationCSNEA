@@ -1,5 +1,10 @@
 \doxysection{Vector\+Graphics.\+Primitive\+Batch.\+Line Class Reference}
 \hypertarget{class_vector_graphics_1_1_primitive_batch_1_1_line}{}\label{class_vector_graphics_1_1_primitive_batch_1_1_line}\index{VectorGraphics.PrimitiveBatch.Line@{VectorGraphics.PrimitiveBatch.Line}}
+
+
+Represents a line shape defined by a start position, an end position, a color, and a width. The line can be drawn using the Draw method, which calculates the angle and length of the line to properly render it using the white pixel texture. The Constrain\+To\+Side method is used to constrain a point to one side of the line, which can be useful for collision detection or ensuring that particles do not cross the line.  
+
+
 Inheritance diagram for Vector\+Graphics.\+Primitive\+Batch.\+Line:\+\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -53,6 +58,9 @@ Color {\bfseries color}
 bool {\bfseries filled}
 \end{DoxyCompactItemize}
 
+
+\doxysubsection{Detailed Description}
+Represents a line shape defined by a start position, an end position, a color, and a width. The line can be drawn using the Draw method, which calculates the angle and length of the line to properly render it using the white pixel texture. The Constrain\+To\+Side method is used to constrain a point to one side of the line, which can be useful for collision detection or ensuring that particles do not cross the line. 
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
 \item 

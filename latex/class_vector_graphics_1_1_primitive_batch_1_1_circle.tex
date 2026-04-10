@@ -1,5 +1,10 @@
 \doxysection{Vector\+Graphics.\+Primitive\+Batch.\+Circle Class Reference}
 \hypertarget{class_vector_graphics_1_1_primitive_batch_1_1_circle}{}\label{class_vector_graphics_1_1_primitive_batch_1_1_circle}\index{VectorGraphics.PrimitiveBatch.Circle@{VectorGraphics.PrimitiveBatch.Circle}}
+
+
+Represents a circle shape defined by a center position, a radius, a color, and a filled property.  
+
+
 Inheritance diagram for Vector\+Graphics.\+Primitive\+Batch.\+Circle:\+\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -25,9 +30,8 @@ void {\bfseries Draw} (Sprite\+Batch sprite\+Batch, Primitive\+Batch primitive\+
 \doxysubsubsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\Hypertarget{class_vector_graphics_1_1_primitive_batch_1_1_circle_a02c619d376edb47d9a8355b378c3ad24}\label{class_vector_graphics_1_1_primitive_batch_1_1_circle_a02c619d376edb47d9a8355b378c3ad24} 
-static Texture2D {\bfseries Create\+Circle\+Texture} (Vector2 position, float radius, Color color, bool filled=true, Primitive\+Batch primitive\+Batch=null)
-\end{DoxyCompactItemize}
+static Texture2D \doxymbox{\hyperlink{class_vector_graphics_1_1_primitive_batch_1_1_circle_a02c619d376edb47d9a8355b378c3ad24}{Create\+Circle\+Texture}} (Vector2 position, float radius, Color color, bool filled=true, Primitive\+Batch primitive\+Batch=null)
+\begin{DoxyCompactList}\small\item\em creates the \doxylink{class_vector_graphics_1_1_primitive_batch_1_1_circle}{Circle} texture by using the Midpoint \doxylink{class_vector_graphics_1_1_primitive_batch_1_1_circle}{Circle} Algorithm to calculate the points of the circle and fill them in a texture. The method takes in the position, radius, color, and whether the circle should be filled or just an outline. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -43,6 +47,40 @@ Color {\bfseries color}
 \item 
 bool {\bfseries filled}
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a circle shape defined by a center position, a radius, a color, and a filled property. 
+
+\label{doc-func-members}
+\Hypertarget{class_vector_graphics_1_1_primitive_batch_1_1_circle_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_vector_graphics_1_1_primitive_batch_1_1_circle_a02c619d376edb47d9a8355b378c3ad24}\index{VectorGraphics.PrimitiveBatch.Circle@{VectorGraphics.PrimitiveBatch.Circle}!CreateCircleTexture@{CreateCircleTexture}}
+\index{CreateCircleTexture@{CreateCircleTexture}!VectorGraphics.PrimitiveBatch.Circle@{VectorGraphics.PrimitiveBatch.Circle}}
+\doxysubsubsection{\texorpdfstring{CreateCircleTexture()}{CreateCircleTexture()}}
+{\footnotesize\ttfamily \label{class_vector_graphics_1_1_primitive_batch_1_1_circle_a02c619d376edb47d9a8355b378c3ad24} 
+Texture2D Vector\+Graphics.\+Primitive\+Batch.\+Circle.\+Create\+Circle\+Texture (\begin{DoxyParamCaption}\item[{Vector2}]{position}{, }\item[{float}]{radius}{, }\item[{Color}]{color}{, }\item[{bool}]{filled}{ = {\ttfamily true}, }\item[{Primitive\+Batch}]{primitive\+Batch}{ = {\ttfamily null}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+creates the \doxylink{class_vector_graphics_1_1_primitive_batch_1_1_circle}{Circle} texture by using the Midpoint \doxylink{class_vector_graphics_1_1_primitive_batch_1_1_circle}{Circle} Algorithm to calculate the points of the circle and fill them in a texture. The method takes in the position, radius, color, and whether the circle should be filled or just an outline. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & \\
+\hline
+{\em radius} & \\
+\hline
+{\em color} & \\
+\hline
+{\em filled} & \\
+\hline
+{\em primitive\+Batch} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
