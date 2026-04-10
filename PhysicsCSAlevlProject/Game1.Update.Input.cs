@@ -79,14 +79,33 @@ public partial class Game1
                 _logger.AddLog("Simulation resumed", ImGuiLogger.LogTypes.Info);
             }
         }
-
-        if (
-            _paused
+        else if (
+            !_paused
             && keyboardState.IsKeyDown(Keys.Space)
             && !_prevKeyboardState.IsKeyDown(Keys.Space)
         )
         {
-            _stepsToStep = 1;
+            _paused = true;
+            _paused = false;
+            _logger.AddLog("Stepped 1 physics tick", ImGuiLogger.LogTypes.Info);
+        }
+    }
+
+    private void HandleDirectToolSelection(KeyboardState keyboardState)
+    {
+        if (keyboardState.IsKeyDown(Keys.D) && !_prevKeyboardState.IsKeyDown(Keys.D))
+        {
+            bool ctrlHeld =
+                keyboardState.IsKeyDown(Keys.LeftControl)
+                || keyboardState.IsKeyDown(Keys.RightControl);
+            bool shiftHeld =
+                keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
+
+            if (!ctrlHeld && !shiftHeld && _currentToolSet.ContainsKey("Drag"))
+            {
+                _selectedToolName = "Drag";
+                _logger.AddLog("Switched to tool: Drag");
+            }
         }
     }
 
@@ -420,11 +439,7 @@ public partial class Game1
                         _dragRadius
                     );
                 }
-                else if (
-                    _selectedToolName == "LineCut"
-                    && _leftPressed
-                    && _currentMode != MeshMode.Edit
-                )
+                else if (_selectedToolName == "LineCut" && _leftPressed)
                 {
                     MeshHistoryPush();
                     Vector2 cutDirection = currentMousePos - _initialMousePosWhenPressed;

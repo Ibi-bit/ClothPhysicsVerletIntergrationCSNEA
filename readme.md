@@ -87,3 +87,21 @@ You switched branches and submodules look “wrong”:
 git submodule sync --recursive
 git submodule update --init --recursive
 ```
+Keyboard Shortcuts
+
+**Controls:**
+- `Esc`: Pause / Resume simulation
+- `Space` (while paused): Step 1 physics tick
+- `Ctrl + Z`: Undo
+- `Ctrl + Shift + Z`: Redo
+- `Shift + Tab`: Next mode
+- `Shift + Alt/Ctrl + Tab`: Previous mode (Alt on macOS, Ctrl on Windows/Linux)
+
+**Tool & Mode Switching:**
+- `Ctrl + T`: Next tool
+- `Ctrl + Shift + T`: Previous tool
+- `D`: Switch to Drag tool
+
+**Tool-Specific:**
+- `C` (Create Grid Mesh tool): Build grid in selected rectangle
+- `LineCut`: Works in both Interact and Edit modes—click and drag to draw a cut line

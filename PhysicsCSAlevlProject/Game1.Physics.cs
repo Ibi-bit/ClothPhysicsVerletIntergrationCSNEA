@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using VectorGraphics;
 
@@ -214,7 +215,13 @@ public partial class Game1
             Vector2 beforeCorrection = particle.Position;
             bool collisionOccurred = false;
             Vector2 collisionNormal = Vector2.Zero;
-            foreach (var collider in _activeMesh.Colliders)
+            IEnumerable<Collider> collidersToCheck = _activeMesh.Colliders;
+            if (_selectedToolName == "Cursor Collider" && _cursorCollider != null)
+            {
+                collidersToCheck = _activeMesh.Colliders.Concat(new[] { _cursorCollider });
+            }
+
+            foreach (var collider in collidersToCheck)
             {
                 Vector2 clampedPosition;
                 if (collider.ContainsPoint(particle.Position, out clampedPosition))

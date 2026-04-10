@@ -93,6 +93,7 @@ public partial class Game1
         ImGui.BulletText($"Shift + {modeBackCycleModifier} + Tab: Previous mode");
         ImGui.BulletText("Ctrl + T: Next tool");
         ImGui.BulletText("Ctrl + Shift + T: Previous tool");
+        ImGui.BulletText("D: Switch to Drag tool");
         ImGui.BulletText("C (Create Grid Mesh tool): Build grid in selected rectangle");
 
         ImGui.Separator();
@@ -100,6 +101,7 @@ public partial class Game1
         ImGui.BulletText("Left click / drag applies the currently selected tool action");
         ImGui.BulletText("Drag and PhysicsDrag: drag particles in the selected radius");
         ImGui.BulletText("Wind and LineCut: click-drag to draw effect direction/line");
+        ImGui.BulletText("LineCut: Works in both Interact and Edit modes");
 
         ImGui.Separator();
         ImGui.Text("Helpful Tips");

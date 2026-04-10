@@ -66,6 +66,7 @@ public partial class Game1
         HandleUndoRedoShortcuts(keyboardState, ctrlHeld, shiftHeld);
         UpdateCursorColliderFromToolSettings();
         HandlePauseAndStepHotkeys(keyboardState);
+        HandleDirectToolSelection(keyboardState);
 
         if (!_paused)
         {
