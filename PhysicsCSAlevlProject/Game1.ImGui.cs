@@ -59,6 +59,7 @@ public partial class Game1
     /// the logger used for logging messages to the ImGui logger window
     /// </summary>
     private ImGuiLogger _logger;
+
     ///
     private string _meshName;
     private string _structurePath;

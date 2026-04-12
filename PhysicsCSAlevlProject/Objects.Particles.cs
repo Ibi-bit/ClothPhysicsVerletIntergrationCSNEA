@@ -143,11 +143,10 @@ class DrawableParticle : Particle
     }
 }
 
-
 /// <summary>
-/// the OscillatingParticle class extends DrawableParticle to include oscillation parameters such as amplitude, frequency, and angle, 
+/// the OscillatingParticle class extends DrawableParticle to include oscillation parameters such as amplitude, frequency, and angle,
 /// allowing it to move in a sinusoidal pattern around an anchor position.
-///  The UpdateOscillation method updates the particle's position based on the oscillation parameters and the elapsed time, creating a dynamic movement effect. 
+///  The UpdateOscillation method updates the particle's position based on the oscillation parameters and the elapsed time, creating a dynamic movement effect.
 /// The SetAnchorPosition method allows changing the anchor point around which the particle oscillates, providing flexibility in how the particle behaves within the simulation.
 /// </summary>
 /// <param name="position"></param>
@@ -168,9 +167,10 @@ class OscillatingParticle(
 ) : DrawableParticle(position, mass, isPinned, color)
 {
     /// <summary>
-    /// the amplitude of the oscillation, 
+    /// the amplitude of the oscillation,
     /// </summary>
     public float OscillationAmplitude = amplitude;
+
     /// <summary>
     /// the frequency of the oscillation, which determines how fast the particle oscillates around its anchor position.
     /// </summary>

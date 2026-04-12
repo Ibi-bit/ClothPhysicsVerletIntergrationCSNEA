@@ -46,26 +46,6 @@ public partial class Game1 : Game
     private bool _leftPressed;
 
     /// <summary>
-    /// stores the position at the start of a left mouse drag
-    /// </summary>
-    private Vector2 _initialMousePosWhenPressed;
-
-    /// <summary>
-    /// used to make sure that a keyboard press is only the inital press and not repeated while the key is held down
-    /// </summary>
-    private KeyboardState _prevKeyboardState;
-
-    /// <summary>
-    /// used to make sure that a mouse click is only the inital click and not repeated while the button is held down, also stores the previous mouse position for use in dragging calculation
-    /// </summary>
-    private MouseState _prevMouseState;
-
-    /// <summary>
-    /// stores the position of the previous frames mouse pos to interpolate drags as the physics update multiple times per frame
-    /// </summary>
-    private Vector2 _previousMousePos;
-
-    /// <summary>
     /// just a toggle for if the simulating is paused or not
     /// </summary>
     private bool _paused;

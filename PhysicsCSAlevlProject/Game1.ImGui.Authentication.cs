@@ -10,6 +10,16 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     /// <summary>
+    /// the current user signed in, null if no user is signed in
+    /// </summary>
+    private Game1Database.User _currentUser;
+
+    /// <summary>
+    /// the currently selected assignment in the teacher assignments window, null if no assignment is selected
+    /// </summary>
+    private Game1Database.Assignment _selectedAssignment;
+
+    /// <summary>
     /// displays the sign in window  where all users can inout username and password to sign in
     /// </summary>
     private void DrawSignInWindow()
@@ -63,6 +73,7 @@ public partial class Game1
 
         ImGui.End();
     }
+
     /// <summary>
     /// displays all assignments for the user seperated by teacher in a menu
     /// </summary>
@@ -106,6 +117,7 @@ public partial class Game1
             }
         }
     }
+
     /// <summary>
     /// diisplayes the assignment winow where teachers can create assigments and view existing one and the students work for each assignment
     /// </summary>
@@ -256,6 +268,7 @@ public partial class Game1
 
         ImGui.End();
     }
+
     /// <summary>
     /// the pop up window that appears for when a user wants to upload work for an a ssignemnt
     /// </summary>

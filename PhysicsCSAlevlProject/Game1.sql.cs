@@ -18,8 +18,6 @@ public class Game1Database
     /// </summary>
     public ImGuiLogger logger;
 
-
-
     public Game1Database(ImGuiLogger logger)
     {
         this.logger = logger;
@@ -180,6 +178,7 @@ public class Game1Database
 
         return GetUserById(userId);
     }
+
     /// <summary>
     /// returns the User class using the userid from the database if fails returns null and logs the error
     /// </summary>
@@ -208,6 +207,7 @@ public class Game1Database
             Password = reader.GetString(3),
         };
     }
+
     /// <summary>
     /// Creates a new user in the database with the specified username and role ID.
     /// </summary>
@@ -227,7 +227,7 @@ public class Game1Database
     }
 
     /// <summary>
-    /// Creates a new assignment in the database with the specified title, description, due date, and teacher ID. 
+    /// Creates a new assignment in the database with the specified title, description, due date, and teacher ID.
     /// </summary>
     /// <param name="title"></param>
     /// <param name="description"></param>
@@ -249,6 +249,7 @@ public class Game1Database
         cmd.Parameters.AddWithValue("teacherId", teacherId);
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
+
     /// <summary>
     /// gets all structures owned by the given userid
     /// </summary>
@@ -288,12 +289,12 @@ public class Game1Database
 
         return structures;
     }
+
     /// <summary>
     /// Retrieves the content of a structure from the database based on the provided structure ID. The method opens a connection to the database, executes a SQL query to select the content of the structure with the specified ID, and returns the content as a string. If there are any issues during the database connection or query execution, it logs the error message using the ImGuiLogger and rethrows the exception for further handling. This method provides a way to programmatically access the content of a specific structure from the database for use in the application.
     /// </summary>
     /// <param name="structureId"></param>
     /// <returns>StructureJson</returns>
-
     public string GetStructureContent(int structureId)
     {
         using var conn = OpenConnection();
@@ -306,6 +307,7 @@ public class Game1Database
         var result = cmd.ExecuteScalar();
         return result?.ToString();
     }
+
     /// <summary>
     /// saves a structure to the database with the given student ID, content JSON, title and assignment ID.
     /// </summary>
@@ -358,12 +360,12 @@ public class Game1Database
 
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
+
     /// <summary>
-    /// lists all assignments for a given teacher ID by querying the database and returns a list of Assignment objects 
+    /// lists all assignments for a given teacher ID by querying the database and returns a list of Assignment objects
     /// </summary>
     /// <param name="teacherId"></param>
     /// <returns></returns>
-
     public List<Assignment> GetAssignmentsForTeacher(int teacherId)
     {
         var assignments = new List<Assignment>();
@@ -391,6 +393,7 @@ public class Game1Database
 
         return assignments;
     }
+
     /// <summary>
     /// returns a list of structures for a given assignment ID used for teachers to view all student submissions for a given assignment
     /// </summary>
@@ -430,9 +433,10 @@ public class Game1Database
 
         return structures;
     }
+
     /// <summary>
-    /// the class repesenting the User in the datbase matching the Users table with properties for Id, Username, RoleId and Password. 
-    /// This class is used to deserialize user information retrieved from the database and to create new users when saving to the database. 
+    /// the class repesenting the User in the datbase matching the Users table with properties for Id, Username, RoleId and Password.
+    /// This class is used to deserialize user information retrieved from the database and to create new users when saving to the database.
     /// It provides a structured way to represent user data within the application and facilitates interactions with the database for user-related operations.
     /// </summary>
     public class User
@@ -442,6 +446,7 @@ public class Game1Database
         public int RoleId { get; set; }
         public string Password { get; set; }
     }
+
     /// <summary>
     /// the class representing the structure information retrieved from the database,
     ///  including properties for Id, AssignmentId, StudentId, StudentName, AssignmentTitle and SubmittedAt.
@@ -458,6 +463,7 @@ public class Game1Database
         public string DisplayName =>
             $"{AssignmentTitle} - {StudentName} ({SubmittedAt?.ToString("g") ?? "No date"})";
     }
+
     /// <summary>
     /// the class representing an assignment in the database with properties for
     ///  Id, Title, Description and TeacherId.
@@ -469,7 +475,7 @@ public class Game1Database
         public string Description { get; set; }
         public int TeacherId { get; set; }
     }
-    
+
     /// <summary>
     /// the class representing user roles in the database with static readonly properties for Teacher and Student role IDs.
     /// </summary>

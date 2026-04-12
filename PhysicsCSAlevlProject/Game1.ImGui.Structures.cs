@@ -10,6 +10,11 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     /// <summary>
+    /// wether to show the local or remote structures in the quick structure menu
+    /// </summary>
+    private bool _LocalorRemoteStructureTab;
+
+    /// <summary>
     /// Provides a user interface for managing quick access to both local and remote structures. Users can toggle between viewing
     /// locally saved structures and structures stored in a remote database. The local structures tab allows users to refresh the list of available meshes, save the current mesh with a specified name, and load existing meshes from a designated directory. The remote structures tab enables signed-in users to save their current mesh to the database with a custom name, refresh the list of their saved structures, and load any of their previously saved structures into the application. This menu streamlines the process of managing and accessing different mesh configurations for users, enhancing their workflow and organization.
     /// </summary>

@@ -124,21 +124,6 @@ public partial class Game1
     private bool _altHeld;
 
     /// <summary>
-    /// the currently selected factory action, used for quick structure creation
-    /// </summary>
-    private Factory _selectedFactoryAction;
-
-    /// <summary>
-    /// wether to show the local or remote structures in the quick structure menu
-    /// </summary>
-    private bool _LocalorRemoteStructureTab;
-
-    /// <summary>
-    /// the current user signed in, null if no user is signed in
-    /// </summary>
-    private Game1Database.User _currentUser;
-
-    /// <summary>
     /// whats in the user id input field in the sign-in window
     /// </summary>
     private string _userInputUserId;
@@ -147,11 +132,6 @@ public partial class Game1
     /// whats in the password input field in the sign-in window
     /// </summary>
     private string _password;
-
-    /// <summary>
-    /// the currently selected assignment in the teacher assignments window, null if no assignment is selected
-    /// </summary>
-    private Game1Database.Assignment _selectedAssignment;
 
     /// <summary>
     /// stores all remote structures for the user, loaded from the database when the user signs in
@@ -192,6 +172,7 @@ public partial class Game1
     /// stores the input field for creating a new assignment due date in the teacher assignments window
     /// </summary>
     private string _newAssignmentDueDate = "";
+
     /// <summary>
     /// initializes ImGui related variables and state
     /// </summary>
@@ -270,8 +251,9 @@ public partial class Game1
         _commandRegistry.RegisterType(this, typeof(Game1));
         _commandRegistry.RegisterType(_activeMesh, typeof(Mesh));
     }
+
     /// <summary>
-    /// main drawing fucntion for imgui called every frame  in the main draw loop 
+    /// main drawing fucntion for imgui called every frame  in the main draw loop
     /// </summary>
     /// <param name="gameTime"></param>
     private void ImGuiDraw(GameTime gameTime)
@@ -331,8 +313,9 @@ public partial class Game1
 
         _guiRenderer.EndLayout();
     }
+
     /// <summary>
-    /// opens all pop up windows based on their respective toggles and then unset the toggles 
+    /// opens all pop up windows based on their respective toggles and then unset the toggles
     /// </summary>
     private void DrawPopUps()
     {
@@ -366,8 +349,9 @@ public partial class Game1
             ImGui.EndPopup();
         }
     }
+
     /// <summary>
-    /// handles the switching between interaction modes by using the ImGui input system over monogames and draws the overlay 
+    /// handles the switching between interaction modes by using the ImGui input system over monogames and draws the overlay
     /// that shows the current mode and the other modes available when shift is held, this allows for quick and intuitive switching between modes without needing to navigate through menus
     /// </summary>
     private void ModeSwitchingImGui()
@@ -404,7 +388,7 @@ public partial class Game1
             }
         }
     }
-    
+
     /// <summary>
     /// handles the switching between tools by using the ImGui input system over monogames and draws the overlay that shows the current tool and the other tools available when ctrl is held, this allows for quick and intuitive switching between tools without needing to navigate through menus
     /// </summary>

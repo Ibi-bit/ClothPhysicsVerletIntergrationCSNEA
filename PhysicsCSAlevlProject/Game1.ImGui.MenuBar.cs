@@ -12,6 +12,11 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     /// <summary>
+    /// the currently selected factory action, used for quick structure creation
+    /// </summary>
+    private Factory _selectedFactoryAction;
+
+    /// <summary>
     /// draws the main menu bar at the top of the screen
     /// </summary>
     private void DrawMainMenuBar()
@@ -124,7 +129,7 @@ public partial class Game1
         if (ImGui.BeginMenu("Quick Settings"))
         {
             ImGui.SliderFloat("Global Mass", ref _activeMesh.mass, 0.1f, 100f);
-            ImGui.SliderFloat("Spring Constant", ref _activeMesh.springConstant, 100f, 10000f);
+            ImGui.SliderFloat("Spring Constant", ref _activeMesh.springConstant, 100f, 100000f);
 
             ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
             ImGui.SliderFloat("Collision Friction Coefficient", ref _frictionCoefficient, 0f, 1f);

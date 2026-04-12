@@ -1,0 +1,81 @@
+Variable	Type	InitialValue	Description	File
+_activeMesh	Mesh	(not explicitly initialized)	stores the current mesh that physics is itterated on and the user is interacts with	PhysicsCSAlevlProject/Game1.Core.cs
+_changedBounds	Rectangle	(not explicitly initialized)	The bounds of the window that have been changed, used for updating the window size and position.	PhysicsCSAlevlProject/Game1.Core.cs
+_currentAssignmentTitle	string	(not explicitly initialized)	stores the current assignment being worked on for use in the UI	PhysicsCSAlevlProject/Game1.Core.cs
+_currentMode	MeshMode	MeshMode.Interact	stores the current mode the program is in	PhysicsCSAlevlProject/Game1.Core.cs
+_database	Game1Database	(not explicitly initialized)	the database class is an interface for the postgress sql	PhysicsCSAlevlProject/Game1.Core.cs
+_defaultMesh	Mesh	(not explicitly initialized)	a fallback for if the _activeMesh is null for any reason, this should never be used but it prevents the application from crashing if something goes wrong with the mesh loading or creation process. This mesh is a simple default mesh with no particles or sticks, and default physics parameters.	PhysicsCSAlevlProject/Game1.Core.cs
+_graphics	GraphicsDeviceManager	(not explicitly initialized)	Used for everything related to the window	PhysicsCSAlevlProject/Game1.Core.cs
+_guiRenderer	ImGuiRenderer	(not explicitly initialized)	The ImGuiRenderer is used to render the ImGui UI elements in the application. It is initialized in the Initialize method and is responsible for drawing the ImGui interface on top of the game content. This allows for creating interactive UI elements such as buttons, sliders, and windows that can be used for debugging, tool selection, and other user interactions within the application.	PhysicsCSAlevlProject/Game1.Core.cs
+_keepAspectRatio	bool	(not explicitly initialized)	a toggle if the iniital aspect ratio is to be respected	PhysicsCSAlevlProject/Game1.Core.cs
+_leftPressed	bool	(not explicitly initialized)	just a bool for if the left mouse is pressed	PhysicsCSAlevlProject/Game1.Core.cs
+_lockedAspectRatio	float	(not explicitly initialized)	the aspect ratio of the window used for if _keepAspectRatio is true	PhysicsCSAlevlProject/Game1.Core.cs
+_meshHistory	Stack<Mesh>	(not explicitly initialized)	stores the state of the mesh before any changes are made to it for undo functionality, also stores the state of the mesh before any changes are made for redo functionality	PhysicsCSAlevlProject/Game1.Core.cs
+_meshRedoHistory	Stack<Mesh>	(not explicitly initialized)	stores the state of the mesh before any changes are made for redo functionality, this is cleared whenever a new change is made to the mesh to prevent redoing changes that are no longer relevant. This allows for a linear undo/redo history where the user can only redo actions that were undone, and any new action will clear the redo history to maintain consistency in the state of the mesh.	PhysicsCSAlevlProject/Game1.Core.cs
+_paused	bool	(not explicitly initialized)	just a toggle for if the simulating is paused or not	PhysicsCSAlevlProject/Game1.Core.cs
+_primitiveBatch	PrimitiveBatch	(not explicitly initialized)	The main class that is used to generate and maniplulate primitive shapes like lines, rectangles and circles. This is used to draw the particles, sticks and colliders in the mesh.	PhysicsCSAlevlProject/Game1.Core.cs
+_spriteBatch	SpriteBatch	(not explicitly initialized)	Used to Draw Everything with Texture or a generated texture	PhysicsCSAlevlProject/Game1.Core.cs
+_windowBounds	Rectangle	(not explicitly initialized)	the bounds of the physics window stored as a rectangle for easy collision checking and clamping of mouse position	PhysicsCSAlevlProject/Game1.Core.cs
+_baseForce	Vector2	(not explicitly initialized)	the base force applied every iteration usually just gravity	PhysicsCSAlevlProject/Game1.Physics.cs
+_bounceCoefficient	float	0.2f	the bounce coefficient used in collison resolution and effects how much normal velocity is lost and thus how much a particle will bounce off of surfaces	PhysicsCSAlevlProject/Game1.Physics.cs
+_collisonBoundsDifference	Vector2	(not explicitly initialized)	how much to change the bounds compared to the window	PhysicsCSAlevlProject/Game1.Physics.cs
+_frictionCoefficient	float	0.2f	the friction coeffiecent used in collison resolution and effects how much tangential velocity is lost and thus how much a particle will slide	PhysicsCSAlevlProject/Game1.Physics.cs
+_stepsToStep	int	(not explicitly initialized)	amount of steps immediately due to a user input in the menu bar	PhysicsCSAlevlProject/Game1.Physics.cs
+_subSteps	int	(not explicitly initialized)	how many substeps to perform in the constraint solver, more substeps can increase stability but also increase the chance of jitter and other unwanted behaviour if not used carefully	PhysicsCSAlevlProject/Game1.Physics.cs
+_timeAccumulator	float	(not explicitly initialized)	the amount of time a frame is taking to calculate the physics for, used to determine how many physics updates to perform in a frame	PhysicsCSAlevlProject/Game1.Physics.cs
+_useConstraintSolver	bool	(not explicitly initialized)	a toggle for if the constraint solver should be used to correct stick lengths after the particles have been updated, this can help with stability but can cause jitter and other unwanted behaviour if not used carefully	PhysicsCSAlevlProject/Game1.Physics.cs
+FixedTimeStep	float	1f / 60f	the fixed time step used for the physics simulation, set to 1/60th of a second for a target of 60 updates per second. The physics simulation will accumulate elapsed time and perform updates in fixed increments of this time step to ensure consistent and stable physics behavior regardless of frame rate variations. This approach allows for more accurate and deterministic physics simulations, as the same sequence of updates will occur given the same initial conditions, even if the rendering frame rate fluctuates. The use of a fixed time step is a common practice in game development to maintain stable and predictable physics interactions.	PhysicsCSAlevlProject/Game1.Physics.cs
+_buildTools	Dictionary<string, Tool>	(not explicitly initialized)	a store of all tools used in the edit mode	PhysicsCSAlevlProject/Game1.Tools.cs
+_dragRadius	float	(not explicitly initialized)	the radius used for the drag tool,	PhysicsCSAlevlProject/Game1.Tools.cs
+_inspectedParticles	List<int>	(not explicitly initialized)	lists the ID of all particles selected but the select tool	PhysicsCSAlevlProject/Game1.Tools.cs
+_interactTools	Dictionary<string, Tool>	(not explicitly initialized)	a store of all tools used in the interact mode	PhysicsCSAlevlProject/Game1.Tools.cs
+_openedInspectedParticles	List<int>	(not explicitly initialized)	the list if the ID of all particles opened in the select window	PhysicsCSAlevlProject/Game1.Tools.cs
+_selectedToolName	string	(not explicitly initialized)	the selected tool name	PhysicsCSAlevlProject/Game1.Tools.cs
+_stickToolFirstParticleId	int?	(not explicitly initialized)	the first particle ID to be paired with another to create a stick when using the add stick between particles tool, this is set to null when no particle has been selected yet or the pairing has been completed	PhysicsCSAlevlProject/Game1.Tools.cs
+_cutLine	VectorGraphics.PrimitiveBatch.Line	(not explicitly initialized)	the line primitive used to show where the cut tool will cut while dragging and other tools where a line is used to show the area of effect	PhysicsCSAlevlProject/Game1.Update.cs
+_meshParticlesInDragArea	List<int>	(not explicitly initialized)	a list of particle IDs that are currently within the area of effect of a tool that is being dragged	PhysicsCSAlevlProject/Game1.Update.cs
+_previousMousePos	Vector2	(not explicitly initialized)	stores the position of the previous frames mouse pos to interpolate drags as the physics update multiple times per frame	PhysicsCSAlevlProject/Game1.Update.cs
+_prevKeyboardState	KeyboardState	(not explicitly initialized)	used to make sure that a keyboard press is only the inital press and not repeated while the key is held down	PhysicsCSAlevlProject/Game1.Update.cs
+_prevMouseState	MouseState	(not explicitly initialized)	used to make sure that a mouse click is only the inital click and not repeated while the button is held down, also stores the previous mouse position for use in dragging calculation	PhysicsCSAlevlProject/Game1.Update.cs
+_selectRectangle	VectorGraphics.PrimitiveBatch.Rectangle	(not explicitly initialized)	the rectangle used for selecting particles	PhysicsCSAlevlProject/Game1.Update.cs
+_windDirectionArrow	VectorGraphics.PrimitiveBatch.Arrow	(not explicitly initialized)	the arrow primitive used to show the direction and strength of the wind tool while dragging	PhysicsCSAlevlProject/Game1.Update.cs
+_windForce	Vector2	(not explicitly initialized)	the current wind force being applied by the wind tool	PhysicsCSAlevlProject/Game1.Update.cs
+_isPolygonBuilding	bool	false	if the polygon is currently being built	PhysicsCSAlevlProject/Objects.Mesh.cs
+_nextParticleId	int	1	the id for the next particle to be added to the mesh, which is used to ensure that each particle has a unique identifier.	PhysicsCSAlevlProject/Objects.Mesh.cs
+_nextStickId	int	1	the id for the next stick to be added to the mesh, which is used to ensure that each stick has a unique identifier.	PhysicsCSAlevlProject/Objects.Mesh.cs
+_polygonFinalParticle	int	-1	the final particle id when building a polygon, used to connect the new particle to the last one created	PhysicsCSAlevlProject/Objects.Mesh.cs
+_polygonInitialParticle	int	-1	the particle id for the first particle when building a polygon to connect the first and last part together	PhysicsCSAlevlProject/Objects.Mesh.cs
+drag	float	0.997f	the amount constant to multiply the velocity of the particles to simulate drag and icnrease stabilty	PhysicsCSAlevlProject/Objects.Mesh.cs
+forceStdDeviation	float	0f	the standert deviation of the force used for colouring the sticks	PhysicsCSAlevlProject/Objects.Mesh.cs
+Id	int	(not explicitly initialized)	the id of the stick	PhysicsCSAlevlProject/Objects.Mesh.cs
+mass	float	1f	the mass of all the particles in the mesh	PhysicsCSAlevlProject/Objects.Mesh.cs
+maxForceMagnitude	float	0f	the max force magnitude experienced by any stick in the mesh, used for normalizing stick colours based on force. This value is updated during the physics simulation to reflect the current maximum force magnitude, allowing for dynamic coloring of sticks based on their stress levels.	PhysicsCSAlevlProject/Objects.Mesh.cs
+meanForceMagnitude	float	0f	the mean force used for colouring the sticks	PhysicsCSAlevlProject/Objects.Mesh.cs
+P1Id	int	(not explicitly initialized)	the id of the first particle the stick is connected too	PhysicsCSAlevlProject/Objects.Mesh.cs
+P2Id	int	(not explicitly initialized)	the id of the second particle the stick is connected too	PhysicsCSAlevlProject/Objects.Mesh.cs
+springConstant	float	10000f	the spring constant used for the sticks in the physics simulation, which determines how stiff the sticks are	PhysicsCSAlevlProject/Objects.Mesh.cs
+stickDrawThickness	float	-1	the thickness to use when drawing the sticks in the mesh. If set to a negative value, it will use the default thickness defined in the DrawableStick class	PhysicsCSAlevlProject/Objects.Mesh.cs
+AccumulatedForce	Vector2	(not explicitly initialized)	the accumalated force due to hooks law	PhysicsCSAlevlProject/Objects.Particles.cs
+ID	int	(not explicitly initialized)	the ID of the particle	PhysicsCSAlevlProject/Objects.Particles.cs
+IsPinned	bool	(not explicitly initialized)	toggle for if th eparticle is pinned used to determine if the particle should be affected by physics or not	PhysicsCSAlevlProject/Objects.Particles.cs
+IsSelected	bool	(not explicitly initialized)	toggle for if the particle is selected used for the UI to determine if the particle should be drawn with a selection highlight and to allow the particle to be dragged with the mouse when selected	PhysicsCSAlevlProject/Objects.Particles.cs
+Mass	float	(not explicitly initialized)	the mass of the particle	PhysicsCSAlevlProject/Objects.Particles.cs
+OscillationAmplitude	float	amplitude	the amplitude of the oscillation,	PhysicsCSAlevlProject/Objects.Particles.cs
+OscillationFrequency	float	frequency	the frequency of the oscillation, which determines how fast the particle oscillates around its anchor position.	PhysicsCSAlevlProject/Objects.Particles.cs
+Position	Vector2	(not explicitly initialized)	the position of the particle	PhysicsCSAlevlProject/Objects.Particles.cs
+PreviousPosition	Vector2	(not explicitly initialized)	the previous position of the particle	PhysicsCSAlevlProject/Objects.Particles.cs
+rectangle	PrimitiveBatch.Rectangle	(not explicitly initialized)	the rectangle used for drawing the particle, which is updated based on the particle's position and size. The rectangle is drawn in the Draw method, and its position is centered around the particle's position to ensure accurate rendering of the particle on the screen.	PhysicsCSAlevlProject/Objects.Particles.cs
+TotalForceMagnitude	float	(not explicitly initialized)	magnitude of of the total force applied to the particle	PhysicsCSAlevlProject/Objects.Particles.cs
+Length	float	(not explicitly initialized)	the natural length of the stick, which is the distance between the two particles when the stick is at rest	PhysicsCSAlevlProject/Objects.Sticks.cs
+line	PrimitiveBatch.Line	(not explicitly initialized)	the line object used for drawing the stick, which is created based on the positions of the two particles	PhysicsCSAlevlProject/Objects.Sticks.cs
+P1	Particle	(not explicitly initialized)	the inital particle the stick is connected to	PhysicsCSAlevlProject/Objects.Sticks.cs
+P2	Particle	(not explicitly initialized)	the final particle the stick is connected to	PhysicsCSAlevlProject/Objects.Sticks.cs
+_angle	float	(not explicitly initialized)	the angle of the polygon collider in radians	PhysicsCSAlevlProject/Objects.Colliders.cs
+_axisPrivate	Vector2[]	(not explicitly initialized)	the axis of the polygon collider used for collision detection using the Separating Axis Theorem (SAT)	PhysicsCSAlevlProject/Objects.Colliders.cs
+_localBroadPhase	Rectangle	(not explicitly initialized)	the broadphase rectangle used for a quick check to see if a point is potentially colliding with the polygon collider	PhysicsCSAlevlProject/Objects.Colliders.cs
+_position	Vector2	(not explicitly initialized)	the position of the rectangle collider, which is the center point of the rectangle	PhysicsCSAlevlProject/Objects.Colliders.cs
+_position	Vector2	(not explicitly initialized)	the position	PhysicsCSAlevlProject/Objects.Colliders.cs
+_worldBroadPhase	Rectangle	(not explicitly initialized)	the broadphase rectangle used for a quick check to see if a point is potentially colliding with the polygon collider	PhysicsCSAlevlProject/Objects.Colliders.cs
+_worldCacheDirty	bool	(not explicitly initialized)	a boolean flag to indicate whether the world vertices and world broadphase cache needs to be updated	PhysicsCSAlevlProject/Objects.Colliders.cs
+HalfHeight	float	(not explicitly initialized)	the half height of the rectangle collider used for calculating the vertices and axes of the rectangle	PhysicsCSAlevlProject/Objects.Colliders.cs
+HalfWidth	float	(not explicitly initialized)	the half width of the rectangle collider used for calculating the vertices and axes of the rectangle	PhysicsCSAlevlProject/Objects.Colliders.cs

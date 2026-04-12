@@ -8,6 +8,21 @@ namespace PhysicsCSAlevlProject;
 public partial class Game1
 {
     /// <summary>
+    /// used to make sure that a keyboard press is only the inital press and not repeated while the key is held down
+    /// </summary>
+    private KeyboardState _prevKeyboardState;
+
+    /// <summary>
+    /// used to make sure that a mouse click is only the inital click and not repeated while the button is held down, also stores the previous mouse position for use in dragging calculation
+    /// </summary>
+    private MouseState _prevMouseState;
+
+    /// <summary>
+    /// stores the position of the previous frames mouse pos to interpolate drags as the physics update multiple times per frame
+    /// </summary>
+    private Vector2 _previousMousePos;
+
+    /// <summary>
     /// the rectangle used for selecting particles
     /// </summary>
     private VectorGraphics.PrimitiveBatch.Rectangle _selectRectangle;
@@ -31,11 +46,6 @@ public partial class Game1
     /// a list of particle IDs that are currently within the area of effect of a tool that is being dragged
     /// </summary>
     private List<int> _meshParticlesInDragArea;
-
-    /// <summary>
-    /// the collider that is currently being dragged by the Move Collider tool,
-    /// </summary>
-    private Collider _draggedCollider;
 
     /// <summary>
     /// initializes variables used in the Update method,

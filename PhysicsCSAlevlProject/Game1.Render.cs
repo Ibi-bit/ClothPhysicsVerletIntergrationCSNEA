@@ -12,10 +12,12 @@ public partial class Game1
     /// determines whether to draw particles
     /// </summary>
     private bool _drawParticles;
+
     /// <summary>
     /// determines whether to draw constraints (sticks)
     /// </summary>
     private bool _drawConstraints;
+
     /// <summary>
     /// initiales rendering related variables and settings
     /// </summary>
@@ -24,8 +26,9 @@ public partial class Game1
         _drawParticles = true;
         _drawConstraints = true;
     }
+
     /// <summary>
-    /// the central draw loop for the application where every other draw function is called from 
+    /// the central draw loop for the application where every other draw function is called from
     /// </summary>
     /// <param name="gameTime"></param>
     protected override void Draw(GameTime gameTime)

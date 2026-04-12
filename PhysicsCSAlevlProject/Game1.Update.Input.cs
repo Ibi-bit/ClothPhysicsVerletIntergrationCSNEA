@@ -7,6 +7,16 @@ namespace PhysicsCSAlevlProject;
 
 public partial class Game1
 {
+    /// <summary>
+    /// stores the position at the start of a left mouse drag
+    /// </summary>
+    private Vector2 _initialMousePosWhenPressed;
+
+    /// <summary>
+    /// the collider that is currently being dragged by the Move Collider tool,
+    /// </summary>
+    private Collider _draggedCollider;
+
     private void HandleUndoRedoShortcuts(KeyboardState keyboardState, bool ctrlHeld, bool shiftHeld)
     {
         if (

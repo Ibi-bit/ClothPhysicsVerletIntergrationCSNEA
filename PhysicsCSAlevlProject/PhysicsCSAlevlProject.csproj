@@ -1,4 +1,4 @@
- <Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -34,8 +34,8 @@
     <Compile Include="Game1.Tools.cs" />
     <Compile Include="Game1.sql.cs" />
     <Compile Include="Game1.File.cs" />
-    <Compile Include="Game1.DebugCommands.cs"/>
-    <Compile Include="Game1.Factories.cs"/>
+    <Compile Include="Game1.DebugCommands.cs" />
+    <Compile Include="Game1.Factories.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Objects.Colliders.cs" />
     <Compile Include="Objects.Particles.cs" />
