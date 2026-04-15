@@ -190,6 +190,8 @@ public partial class Game1
         _buttonSteps = 10;
 
         _logger = new ImGuiLogger();
+        _database = new Game1Database(ref _logger);
+
         _logger.RegisterEnvVar("mouseX", () => _prevMouseState.X.ToString());
         _logger.RegisterEnvVar("mouseY", () => _prevMouseState.Y.ToString());
         _logger.RegisterEnvVar("windowW", () => _windowBounds.Width.ToString());

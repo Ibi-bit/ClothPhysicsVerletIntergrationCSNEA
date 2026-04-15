@@ -39,25 +39,36 @@ public partial class Game1
 
             if (ImGui.Button("Sign In"))
             {
-                _currentUser = _database.GetUser(_userInputUserId);
-                if (_currentUser != null)
+                try
                 {
-                    if (_currentUser.Password == _password)
+                    _currentUser = _database.GetUser(_userInputUserId);
+                    if (_currentUser != null)
                     {
-                        _logger.AddLog(
-                            $"Signed in {_currentUser.RoleId}: {_currentUser.Username} with the ID:{_currentUser.Id}"
-                        );
+                        if (_currentUser.Password == _password)
+                        {
+                            _logger.AddLog(
+                                $"Signed in {_currentUser.RoleId}: {_currentUser.Username} with the ID:{_currentUser.Id}"
+                            );
+                        }
+                        else
+                        {
+                            _logger.AddLog("Incorrect password", ImGuiLogger.LogTypes.Error);
+                            _currentUser = null;
+                            _password = "";
+                        }
                     }
                     else
                     {
-                        _logger.AddLog("Incorrect password", ImGuiLogger.LogTypes.Error);
-                        _currentUser = null;
-                        _password = "";
+                        _logger.AddLog("Failed to Sign in", ImGuiLogger.LogTypes.Error);
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    _logger.AddLog("Failed to Sign in", ImGuiLogger.LogTypes.Error);
+                    _currentUser = null;
+                    _logger.AddLog(
+                        $"Database connection failed during sign in: {ex.Message}",
+                        ImGuiLogger.LogTypes.Error
+                    );
                 }
             }
         }
@@ -85,15 +96,27 @@ public partial class Game1
             return;
         }
 
-        var teachers = _database.GetTeachers();
         var assignments = new Dictionary<int, List<Game1Database.Assignment>>();
-        foreach (var teacher in teachers)
+        try
         {
-            var teacherAssignments = _database.GetAssignmentsForTeacher(teacher);
-            if (teacherAssignments.Count > 0)
+            var teachers = _database.GetTeachers();
+            foreach (var teacher in teachers)
             {
-                assignments[teacher] = teacherAssignments;
+                var teacherAssignments = _database.GetAssignmentsForTeacher(teacher);
+                if (teacherAssignments.Count > 0)
+                {
+                    assignments[teacher] = teacherAssignments;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            ImGui.TextDisabled("Database unavailable.");
+            _logger.AddLog(
+                $"Could not load assignments: {ex.Message}",
+                ImGuiLogger.LogTypes.Error
+            );
+            return;
         }
         if (assignments.Count == 0)
         {

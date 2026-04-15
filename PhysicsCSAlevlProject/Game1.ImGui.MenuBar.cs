@@ -104,11 +104,21 @@ public partial class Game1
                 _showTeacherAssignmentsWindow = true;
                 if (_allTeachers.Count == 0)
                 {
-                    _allTeachers = _database.GetTeachersWithInfo();
-                    foreach (var teacher in _allTeachers)
+                    try
                     {
-                        _teacherAssignments[teacher.Id] = _database.GetAssignmentsForTeacher(
-                            teacher.Id
+                        _allTeachers = _database.GetTeachersWithInfo();
+                        foreach (var teacher in _allTeachers)
+                        {
+                            _teacherAssignments[teacher.Id] = _database.GetAssignmentsForTeacher(
+                                teacher.Id
+                            );
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.AddLog(
+                            $"Could not load teacher assignments: {ex.Message}",
+                            ImGuiLogger.LogTypes.Error
                         );
                     }
                 }

@@ -18,7 +18,7 @@ public class Game1Database
     /// </summary>
     public ImGuiLogger logger;
 
-    public Game1Database(ImGuiLogger logger)
+    public Game1Database(ref ImGuiLogger logger)
     {
         this.logger = logger;
         _connectionString =
