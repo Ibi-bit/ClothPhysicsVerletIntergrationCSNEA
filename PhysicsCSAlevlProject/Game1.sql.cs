@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
@@ -21,9 +22,112 @@ public class Game1Database
     public Game1Database(ref ImGuiLogger logger)
     {
         this.logger = logger;
+        string envConnection = Environment.GetEnvironmentVariable("CLOTH_PHYSICS_DB_CONNECTION");
+        bool usingProcessEnvConnection = !string.IsNullOrWhiteSpace(envConnection);
+
+        if (string.IsNullOrWhiteSpace(envConnection))
+        {
+            envConnection = TryReadConnectionStringFromCloudSqlEnvFile();
+        }
+
+        bool usingAnyConfiguredConnection = !string.IsNullOrWhiteSpace(envConnection);
+
         _connectionString =
-            Environment.GetEnvironmentVariable("CLOTH_PHYSICS_DB_CONNECTION")
+            envConnection
             ?? "Host=localhost;Port=5432;Database=stick_simulation;Username=dev;Password=dev123";
+
+        if (this.logger != null)
+        {
+            this.logger.AddLog(
+                usingProcessEnvConnection
+                        ? "Database connection source: CLOTH_PHYSICS_DB_CONNECTION environment variable"
+                    : usingAnyConfiguredConnection
+                        ? "Database connection source: infrastructure/database/cloudsql.env"
+                    : "Database connection source: localhost fallback (CLOTH_PHYSICS_DB_CONNECTION not set)",
+                usingAnyConfiguredConnection
+                    ? ImGuiLogger.LogTypes.Info
+                    : ImGuiLogger.LogTypes.Warning
+            );
+        }
+        else
+        {
+            Debug.WriteLine(
+                usingProcessEnvConnection
+                    ? "Database connection source: CLOTH_PHYSICS_DB_CONNECTION environment variable"
+                : usingAnyConfiguredConnection
+                    ? "Database connection source: infrastructure/database/cloudsql.env"
+                : "Database connection source: localhost fallback (CLOTH_PHYSICS_DB_CONNECTION not set)"
+            );
+        }
+    }
+
+    private static string TryReadConnectionStringFromCloudSqlEnvFile()
+    {
+        string[] candidates =
+        {
+            Path.Combine(
+                AppContext.BaseDirectory,
+                "..",
+                "..",
+                "..",
+                "..",
+                "infrastructure",
+                "database",
+                "cloudsql.env"
+            ),
+            Path.Combine(AppContext.BaseDirectory, "infrastructure", "database", "cloudsql.env"),
+            Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "infrastructure",
+                "database",
+                "cloudsql.env"
+            ),
+        };
+
+        foreach (var path in candidates)
+        {
+            try
+            {
+                string fullPath = Path.GetFullPath(path);
+                if (!File.Exists(fullPath))
+                {
+                    continue;
+                }
+
+                foreach (var rawLine in File.ReadAllLines(fullPath))
+                {
+                    var line = rawLine.Trim();
+                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    const string key = "CLOTH_PHYSICS_DB_CONNECTION=";
+                    if (!line.StartsWith(key, StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    var value = line.Substring(key.Length).Trim();
+                    if (
+                        value.Length >= 2
+                        && value.StartsWith("\"", StringComparison.Ordinal)
+                        && value.EndsWith("\"", StringComparison.Ordinal)
+                    )
+                    {
+                        value = value.Substring(1, value.Length - 2);
+                    }
+
+                    return string.IsNullOrWhiteSpace(value) ? null : value;
+                }
+            }
+            catch
+            {
+                // Ignore parse/read failures and continue trying other locations.
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

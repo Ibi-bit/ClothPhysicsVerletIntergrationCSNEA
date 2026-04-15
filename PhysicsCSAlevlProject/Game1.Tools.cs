@@ -102,6 +102,7 @@ public partial class Game1
         _interactTools["Drag"].Properties["Radius"] = 20f;
         _interactTools["Drag"].Properties["MaxParticles"] = 20;
         _interactTools["Drag"].Properties["InfiniteParticles"] = true;
+        _interactTools["Drag"].Properties["CollideWithColliders"] = true;
 
         _interactTools["PhysicsDrag"].Properties["Radius"] = 20f;
         _interactTools["PhysicsDrag"].Properties["MaxParticles"] = 20;
@@ -269,6 +270,13 @@ public partial class Game1
                     }
 
                     ImGui.EndDisabled();
+
+                    bool collideWithColliders = props.ContainsKey("CollideWithColliders")
+                        && (bool)props["CollideWithColliders"];
+                    if (ImGui.Checkbox("Collide With Colliders", ref collideWithColliders))
+                    {
+                        props["CollideWithColliders"] = collideWithColliders;
+                    }
                     break;
                 }
                 case "Pin":

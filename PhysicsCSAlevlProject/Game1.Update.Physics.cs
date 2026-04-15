@@ -144,9 +144,12 @@ public partial class Game1
                 if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
                 {
                     particle.Color = _leftPressed ? Color.Yellow : Color.White;
-                    if (_paused)
-                        DragMeshParticles(mouseState, _leftPressed, _meshParticlesInDragArea);
                 }
+            }
+
+            if (_paused)
+            {
+                DragMeshParticles(mouseState, _leftPressed, _meshParticlesInDragArea);
             }
         }
         else if (_selectedToolName == "Move Collider" && _draggedCollider != null && _leftPressed)

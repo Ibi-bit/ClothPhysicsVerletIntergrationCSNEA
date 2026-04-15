@@ -92,11 +92,10 @@ public partial class Game1
         MouseState mouseState = Mouse.GetState();
         Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
 
-        SetCursorColliderCenter(currentMousePos);
-
         bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
 
-        HandleMouseAndToolInput(mouseState, currentMousePos, imguiWantsMouse);
+        currentMousePos = HandleMouseAndToolInput(mouseState, currentMousePos, imguiWantsMouse);
+        SetCursorColliderCenter(currentMousePos);
         UpdateActiveToolVisualsAndActions(
             keyboardState,
             mouseState,

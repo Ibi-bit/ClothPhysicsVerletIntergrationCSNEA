@@ -119,7 +119,7 @@ public partial class Game1
         }
     }
 
-    private void HandleMouseAndToolInput(
+    private Vector2 HandleMouseAndToolInput(
         MouseState mouseState,
         Vector2 currentMousePos,
         bool imguiWantsMouse
@@ -134,6 +134,20 @@ public partial class Game1
                     MathHelper.Clamp(currentMousePos.X, 0, _windowBounds.Width),
                     MathHelper.Clamp(currentMousePos.Y, 0, _windowBounds.Height)
                 );
+
+                if (_selectedToolName == "Drag" && _currentMode == MeshMode.Interact)
+                {
+                    bool collideWithColliders = _currentToolSet["Drag"].Properties.ContainsKey(
+                            "CollideWithColliders"
+                        )
+                        && (bool)_currentToolSet["Drag"].Properties["CollideWithColliders"];
+                    if (collideWithColliders)
+                    {
+                        clampedPos = ResolveDragMousePositionAgainstColliders(clampedPos);
+                    }
+                }
+
+                currentMousePos = clampedPos;
                 Mouse.SetPosition((int)clampedPos.X, (int)clampedPos.Y);
             }
 
@@ -562,6 +576,47 @@ public partial class Game1
         {
             IsMouseVisible = true;
         }
+
+        return currentMousePos;
+    }
+
+    private Vector2 ResolveDragMousePositionAgainstColliders(Vector2 position)
+    {
+        if (_activeMesh?.Colliders == null || _activeMesh.Colliders.Count == 0)
+        {
+            return position;
+        }
+
+        Vector2 resolved = position;
+
+        // Iterate a few times in case the cursor overlaps multiple colliders.
+        for (int i = 0; i < 4; i++)
+        {
+            bool adjusted = false;
+            foreach (var collider in _activeMesh.Colliders)
+            {
+                if (collider != null && collider.ContainsPoint(resolved, out var closestPoint))
+                {
+                    resolved = closestPoint;
+                    adjusted = true;
+                }
+            }
+
+            if (!adjusted)
+            {
+                break;
+            }
+        }
+
+        if (float.IsNaN(resolved.X) || float.IsNaN(resolved.Y))
+        {
+            return position;
+        }
+
+        return new Vector2(
+            MathHelper.Clamp(resolved.X, 0, _windowBounds.Width),
+            MathHelper.Clamp(resolved.Y, 0, _windowBounds.Height)
+        );
     }
 
     private void UpdateActiveToolVisualsAndActions(
