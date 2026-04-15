@@ -201,17 +201,46 @@ public partial class Game1
                         break;
                     case "PhysicsDrag":
                     {
-                        float physRadius = _currentToolSet["PhysicsDrag"]
-                            .Properties.ContainsKey("Radius")
-                            ? (float)_currentToolSet["PhysicsDrag"].Properties["Radius"]
+                        var physProps = _currentToolSet["PhysicsDrag"].Properties;
+                        float physRadius = physProps.ContainsKey("Radius")
+                            ? (float)physProps["Radius"]
                             : _dragRadius;
+                        bool infiniteParticles =
+                            physProps.ContainsKey("InfiniteParticles")
+                            && (bool)physProps["InfiniteParticles"];
+                        int maxParticles = infiniteParticles
+                            ? -1
+                            : (
+                                physProps.TryGetValue("MaxParticles", out var maxParticlesProp)
+                                    ? (int)maxParticlesProp
+                                    : -1
+                            );
+                        float strength = physProps.ContainsKey("Strength")
+                            ? (float)physProps["Strength"]
+                            : 3500f;
+                        float damping = physProps.ContainsKey("Damping")
+                            ? (float)physProps["Damping"]
+                            : 90f;
+                        float maxForce = physProps.ContainsKey("MaxForce")
+                            ? (float)physProps["MaxForce"]
+                            : 30000f;
 
                         if (_currentMode == MeshMode.Interact)
                         {
                             _meshParticlesInDragArea = GetMeshParticlesInRadius(
                                 _initialMousePosWhenPressed,
-                                physRadius
+                                physRadius,
+                                maxParticles
                             );
+                            _physicsDragParticleOffsets.Clear();
+                            foreach (int particleId in _meshParticlesInDragArea)
+                            {
+                                if (_activeMesh.Particles.TryGetValue(particleId, out var particle))
+                                {
+                                    _physicsDragParticleOffsets[particleId] =
+                                        particle.Position - _initialMousePosWhenPressed;
+                                }
+                            }
                             if (_meshParticlesInDragArea.Count == 0)
                             {
                                 _logger.AddLog(
@@ -219,6 +248,19 @@ public partial class Game1
                                     ImGuiLogger.LogTypes.Warning
                                 );
                             }
+                            else
+                            {
+                                _logger.AddLog(
+                                    $"PhysicsDrag started: {_meshParticlesInDragArea.Count} particles (radius {physRadius:0.##}, k {strength:0.##}, c {damping:0.##}, maxF {maxForce:0.##})"
+                                );
+                            }
+                        }
+                        else
+                        {
+                            _logger.AddLog(
+                                "PhysicsDrag can only be used in Interact mode",
+                                ImGuiLogger.LogTypes.Warning
+                            );
                         }
                         break;
                     }
@@ -499,6 +541,13 @@ public partial class Game1
                     );
                 }
 
+                if (_selectedToolName == "PhysicsDrag" && _leftPressed)
+                {
+                    _logger.AddLog(
+                        $"PhysicsDrag released: {_meshParticlesInDragArea.Count} particles affected"
+                    );
+                }
+
                 _leftPressed = false;
                 _initialMousePosWhenPressed = Vector2.Zero;
                 _windDirectionArrow = null;
@@ -506,6 +555,7 @@ public partial class Game1
                 _selectRectangle = null;
                 _windForce = Vector2.Zero;
                 _draggedCollider = null;
+                _physicsDragParticleOffsets.Clear();
             }
         }
         else

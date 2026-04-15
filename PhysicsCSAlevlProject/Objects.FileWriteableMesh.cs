@@ -49,6 +49,8 @@ class FileWriteableMesh
     public float SpringConstant = 10000f;
     public float Drag = 0.997f;
     public float Mass = 1f;
+    public float CollisionFrictionCoefficient = 0.2f;
+    public float CollisionBounceCoefficient = 0.2f;
 
     public FileWriteableMesh() { }
 
@@ -57,6 +59,8 @@ class FileWriteableMesh
         SpringConstant = mesh.springConstant;
         Drag = mesh.drag;
         Mass = mesh.mass;
+        CollisionFrictionCoefficient = mesh.collisionFrictionCoefficient;
+        CollisionBounceCoefficient = mesh.collisionBounceCoefficient;
 
         var particleIdMap = new Dictionary<int, int>();
         foreach (var kvp in mesh.Particles)
@@ -112,6 +116,8 @@ class FileWriteableMesh
         mesh.springConstant = SpringConstant;
         mesh.drag = Drag;
         mesh.mass = Mass;
+        mesh.collisionFrictionCoefficient = CollisionFrictionCoefficient;
+        mesh.collisionBounceCoefficient = CollisionBounceCoefficient;
 
         var indexToParticleId = new Dictionary<int, int>();
 

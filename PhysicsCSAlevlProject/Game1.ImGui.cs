@@ -501,6 +501,7 @@ public partial class Game1
         _windDirectionArrow = null;
         _cutLine = null;
         _meshParticlesInDragArea.Clear();
+        _physicsDragParticleOffsets.Clear();
         _stickToolFirstParticleId = null;
     }
 
@@ -617,8 +618,18 @@ public partial class Game1
             ImGui.SliderFloat("Spring Constant", ref _activeMesh.springConstant, 100f, 10000f);
 
             ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
-            ImGui.SliderFloat("Collision Friction Coefficient", ref _frictionCoefficient, 0f, 1f);
-            ImGui.SliderFloat("Collision Bounce Coefficient", ref _bounceCoefficient, 0f, 1f);
+            ImGui.SliderFloat(
+                "Collision Friction Coefficient",
+                ref _activeMesh.collisionFrictionCoefficient,
+                0f,
+                1f
+            );
+            ImGui.SliderFloat(
+                "Collision Bounce Coefficient",
+                ref _activeMesh.collisionBounceCoefficient,
+                0f,
+                1f
+            );
 
             float drag = _activeMesh.drag;
             if (ImGui.SliderFloat("Drag (1.0 = no friction)", ref drag, 0.9f, 1.0f))

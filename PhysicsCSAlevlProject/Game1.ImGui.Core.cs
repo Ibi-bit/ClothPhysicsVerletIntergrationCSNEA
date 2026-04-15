@@ -442,6 +442,7 @@ public partial class Game1
         _windDirectionArrow = null;
         _cutLine = null;
         _meshParticlesInDragArea.Clear();
+        _physicsDragParticleOffsets.Clear();
         _stickToolFirstParticleId = null;
     }
 }

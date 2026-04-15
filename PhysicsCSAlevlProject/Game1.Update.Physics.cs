@@ -60,6 +60,15 @@ public partial class Game1
                     }
                 }
 
+                if (
+                    _leftPressed
+                    && _selectedToolName == "PhysicsDrag"
+                    && _currentMode == MeshMode.Interact
+                )
+                {
+                    ApplyPhysicsDragForces(currentMousePos, subDt);
+                }
+
                 UpdateParticles(subDt);
             }
 
@@ -77,6 +86,53 @@ public partial class Game1
         }
 
         UpdateStickColorsDictionary(_activeMesh.Sticks);
+    }
+
+    private void ApplyPhysicsDragForces(Vector2 targetPosition, float deltaTime)
+    {
+        if (!_currentToolSet.ContainsKey("PhysicsDrag"))
+        {
+            return;
+        }
+
+        var props = _currentToolSet["PhysicsDrag"].Properties;
+        float strength = props.ContainsKey("Strength") ? (float)props["Strength"] : 3500f;
+        float damping = props.ContainsKey("Damping") ? (float)props["Damping"] : 90f;
+        float maxForce = props.ContainsKey("MaxForce") ? (float)props["MaxForce"] : 30000f;
+
+        if (deltaTime <= 0f)
+        {
+            return;
+        }
+
+        foreach (int particleId in _meshParticlesInDragArea)
+        {
+            if (
+                !_activeMesh.Particles.TryGetValue(particleId, out var particle)
+                || particle.IsPinned
+            )
+            {
+                continue;
+            }
+
+            Vector2 target = targetPosition;
+            if (_physicsDragParticleOffsets.TryGetValue(particleId, out var particleOffset))
+            {
+                target += particleOffset;
+            }
+
+            Vector2 displacement = target - particle.Position;
+            Vector2 velocity = (particle.Position - particle.PreviousPosition) / deltaTime;
+            Vector2 force = (strength * displacement) - (damping * velocity);
+
+            float forceLengthSquared = force.LengthSquared();
+            if (forceLengthSquared > maxForce * maxForce)
+            {
+                force = Vector2.Normalize(force) * maxForce;
+            }
+
+            particle.AccumulatedForce += force;
+        }
     }
 
     private void ApplyPostPhysicsToolEffects(MouseState mouseState, Vector2 currentMousePos)

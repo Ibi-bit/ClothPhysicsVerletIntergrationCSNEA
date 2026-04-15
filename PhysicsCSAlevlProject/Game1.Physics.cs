@@ -14,16 +14,6 @@ public partial class Game1
     private const float FixedTimeStep = 1f / 60f;
 
     /// <summary>
-    /// the friction coeffiecent used in collison resolution and effects how much tangential velocity is lost and thus how much a particle will slide
-    /// </summary>
-    private float _frictionCoefficient = 0.2f;
-
-    /// <summary>
-    /// the bounce coefficient used in collison resolution and effects how much normal velocity is lost and thus how much a particle will bounce off of surfaces
-    /// </summary>
-    private float _bounceCoefficient = 0.2f;
-
-    /// <summary>
     /// how much to change the bounds compared to the window
     /// </summary>
     private Vector2 _collisonBoundsDifference;
@@ -187,7 +177,7 @@ public partial class Game1
             }
 
             bool isBeingDragged = false;
-            if (_leftPressed && (_selectedToolName == "Drag" || _selectedToolName == "PhysicsDrag"))
+            if (_leftPressed && _selectedToolName == "Drag")
             {
                 if (_meshParticlesInDragArea.Contains(particle.ID))
                 {
@@ -309,8 +299,8 @@ public partial class Game1
                 float normalVel = Vector2.Dot(velocity, collisionNormal);
                 Vector2 normalComponent = collisionNormal * normalVel;
                 Vector2 tangentComponent = velocity - normalComponent;
-                normalComponent *= -_bounceCoefficient;
-                tangentComponent *= 1f - _frictionCoefficient;
+                normalComponent *= -_activeMesh.collisionBounceCoefficient;
+                tangentComponent *= 1f - _activeMesh.collisionFrictionCoefficient;
                 Vector2 newVelocity = normalComponent + tangentComponent;
                 particle.PreviousPosition = particle.Position - newVelocity;
             }

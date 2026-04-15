@@ -86,6 +86,7 @@ public partial class Game1
         _interactTools = new Dictionary<string, Tool>
         {
             { "Drag", new Tool("Drag", null, true) },
+            { "PhysicsDrag", new Tool("PhysicsDrag", null, true) },
             { "Pin", new Tool("Pin", null, false) },
             { "Cut", new Tool("Cut", null, false) },
             { "Wind", new Tool("Wind", null, false) },
@@ -101,6 +102,13 @@ public partial class Game1
         _interactTools["Drag"].Properties["Radius"] = 20f;
         _interactTools["Drag"].Properties["MaxParticles"] = 20;
         _interactTools["Drag"].Properties["InfiniteParticles"] = true;
+
+        _interactTools["PhysicsDrag"].Properties["Radius"] = 20f;
+        _interactTools["PhysicsDrag"].Properties["MaxParticles"] = 20;
+        _interactTools["PhysicsDrag"].Properties["InfiniteParticles"] = true;
+        _interactTools["PhysicsDrag"].Properties["Strength"] = 3500f;
+        _interactTools["PhysicsDrag"].Properties["Damping"] = 90f;
+        _interactTools["PhysicsDrag"].Properties["MaxForce"] = 30000f;
 
         _interactTools["Pin"].Properties["Radius"] = 20f;
 
@@ -312,6 +320,42 @@ public partial class Game1
                     if (ImGui.SliderFloat("Radius", ref radius, 5f, 100f))
                     {
                         props["Radius"] = radius;
+                    }
+
+                    bool infiniteParticles = (bool)props["InfiniteParticles"];
+                    if (ImGui.Checkbox("Infinite Particles", ref infiniteParticles))
+                    {
+                        props["InfiniteParticles"] = infiniteParticles;
+                    }
+
+                    int maxParticles = (int)props["MaxParticles"];
+                    string maxParticlesLabel = infiniteParticles
+                        ? "Max Particles: ∞"
+                        : "Max Particles";
+
+                    ImGui.BeginDisabled(infiniteParticles);
+                    if (ImGui.SliderInt(maxParticlesLabel, ref maxParticles, 1, 100))
+                    {
+                        props["MaxParticles"] = maxParticles;
+                    }
+                    ImGui.EndDisabled();
+
+                    float strength = (float)props["Strength"];
+                    if (ImGui.SliderFloat("Strength", ref strength, 100f, 10000f))
+                    {
+                        props["Strength"] = strength;
+                    }
+
+                    float damping = (float)props["Damping"];
+                    if (ImGui.SliderFloat("Damping", ref damping, 0f, 300f))
+                    {
+                        props["Damping"] = damping;
+                    }
+
+                    float maxForce = (float)props["MaxForce"];
+                    if (ImGui.SliderFloat("Max Force", ref maxForce, 100f, 100000f))
+                    {
+                        props["MaxForce"] = maxForce;
                     }
                     break;
                 }

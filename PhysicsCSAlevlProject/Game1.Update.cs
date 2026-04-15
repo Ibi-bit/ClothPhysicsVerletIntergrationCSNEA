@@ -48,6 +48,11 @@ public partial class Game1
     private List<int> _meshParticlesInDragArea;
 
     /// <summary>
+    /// stores initial per-particle offsets from the PhysicsDrag cursor anchor so dragged particles move relatively as a group
+    /// </summary>
+    private Dictionary<int, Vector2> _physicsDragParticleOffsets;
+
+    /// <summary>
     /// initializes variables used in the Update method,
     /// </summary>
     private void InitializeUpdate()
@@ -57,6 +62,7 @@ public partial class Game1
         _windDirectionArrow = null;
         _cutLine = null;
         _meshParticlesInDragArea = new();
+        _physicsDragParticleOffsets = new();
     }
 
     /// <summary>

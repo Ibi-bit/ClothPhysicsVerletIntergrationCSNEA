@@ -64,6 +64,16 @@ class Mesh
     public float mass = 1f;
 
     /// <summary>
+    /// the collision friction coefficient used during collision response
+    /// </summary>
+    public float collisionFrictionCoefficient = 0.2f;
+
+    /// <summary>
+    /// the collision bounce coefficient used during collision response
+    /// </summary>
+    public float collisionBounceCoefficient = 0.2f;
+
+    /// <summary>
     /// the particle id for the first particle when building a polygon to connect the first and last part together
     /// </summary>
     private int _polygonInitialParticle = -1;
@@ -160,6 +170,8 @@ class Mesh
             springConstant = springConstant,
             drag = drag,
             mass = mass,
+            collisionFrictionCoefficient = collisionFrictionCoefficient,
+            collisionBounceCoefficient = collisionBounceCoefficient,
             _nextParticleId = _nextParticleId,
             _nextStickId = _nextStickId,
             _polygonInitialParticle = _polygonInitialParticle,
