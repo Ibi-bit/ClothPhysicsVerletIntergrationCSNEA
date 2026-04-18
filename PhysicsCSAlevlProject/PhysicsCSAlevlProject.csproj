@@ -41,6 +41,7 @@
     <Compile Include="Objects.Particles.cs" />
     <Compile Include="Objects.Sticks.cs" />
     <Compile Include="Objects.Mesh.cs" />
+    <Compile Include="Objects.Mesh.Component.cs" />
     <Compile Include="Objects.FileWriteableMesh.cs" />
     <Compile Include="Objects.Tool.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />

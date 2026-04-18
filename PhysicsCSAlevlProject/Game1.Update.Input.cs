@@ -493,6 +493,18 @@ public partial class Game1
                             }
                         }
                         break;
+                    case "Draw Hull Polygon":
+                        if (_activeMesh != null)
+                        {
+                            foreach (var component in _activeMesh._components)
+                            {
+                                if (component.DrawPolygonMouse(currentMousePos))
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        break;
                 }
             }
             else if (mouseState.LeftButton == ButtonState.Released)

@@ -26,6 +26,11 @@ public partial class Game1 : Game
     private PrimitiveBatch _primitiveBatch;
 
     /// <summary>
+    /// The effect used to draw mesh component geometry with vertex colors.
+    /// </summary>
+    private BasicEffect _basicEffect;
+
+    /// <summary>
     /// The ImGuiRenderer is used to render the ImGui UI elements in the application. It is initialized in the Initialize method and is responsible for drawing the ImGui interface on top of the game content. This allows for creating interactive UI elements such as buttons, sliders, and windows that can be used for debugging, tool selection, and other user interactions within the application.
     /// </summary>
     public static ImGuiRenderer _guiRenderer;
@@ -187,6 +192,21 @@ public partial class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        _basicEffect = new BasicEffect(GraphicsDevice)
+        {
+            VertexColorEnabled = true,
+            World = Matrix.Identity,
+            View = Matrix.Identity,
+            Projection = Matrix.CreateOrthographicOffCenter(
+                0,
+                GraphicsDevice.Viewport.Width,
+                GraphicsDevice.Viewport.Height,
+                0,
+                0,
+                1
+            ),
+        };
 
         // _font = Content.Load<SpriteFont>("Font");
         _guiRenderer.RebuildFontAtlas();

@@ -131,6 +131,84 @@ class Mesh
     /// </summary>
     private readonly Dictionary<int, HashSet<int>> _particleToStickIds = new();
 
+    private bool _topologyDirty = false;
+
+    public List<MeshComponent> _components { get; private set; } = new();
+
+    public bool IsTopologyDirty => _topologyDirty;
+
+    public void CleanTopology(IReadOnlyDictionary<int, DrawableParticle> particles)
+    {
+        var comp = GetConnectedComponents();
+        _components.Clear();
+        int componentIndex = 0;
+        foreach (var c in comp)
+        {
+            var componentParticles = c.ToHashSet();
+            var stickIds = new HashSet<int>();
+
+            foreach (var stick in Sticks.Values)
+            {
+                if (
+                    componentParticles.Contains(stick.P1Id)
+                    && componentParticles.Contains(stick.P2Id)
+                )
+                {
+                    stickIds.Add(stick.Id);
+                }
+            }
+
+            var component = new MeshComponent(stickIds);
+            component._color = ComponentColor(componentIndex);
+            component.UpdateMesh(particles, Sticks);
+            _components.Add(component);
+            componentIndex++;
+        }
+
+        _topologyDirty = false;
+    }
+
+    public void RefreshComponentMeshes(IReadOnlyDictionary<int, DrawableParticle> particles)
+    {
+        foreach (var component in _components)
+        {
+            component.UpdateMesh(particles, Sticks);
+        }
+    }
+
+    private void MarkTopologyDirty()
+    {
+        _topologyDirty = true;
+    }
+
+    private static Vector3 ComponentColor(int index)
+    {
+        float hue = (index * 0.61803398875f) % 1f;
+        float saturation = 0.65f;
+        float value = 0.95f;
+
+        float h6 = hue * 6f;
+        float c = value * saturation;
+        float x = c * (1f - MathF.Abs((h6 % 2f) - 1f));
+        float m = value - c;
+
+        float r, g, b;
+        if (h6 < 1f)
+            (r, g, b) = (c, x, 0f);
+        else if (h6 < 2f)
+            (r, g, b) = (x, c, 0f);
+        else if (h6 < 3f)
+            (r, g, b) = (0f, c, x);
+        else if (h6 < 4f)
+            (r, g, b) = (0f, x, c);
+        else if (h6 < 5f)
+            (r, g, b) = (x, 0f, c);
+        else
+            (r, g, b) = (c, 0f, x);
+
+        return new Vector3(r + m, g + m, b + m);
+    }
+
     public void RestoreStickReferences()
     {
         foreach (var stick in Sticks.Values)
@@ -157,6 +235,7 @@ class Mesh
             if (_particleToStickIds.TryGetValue(stick.P2Id, out var id2))
                 id2.Add(stick.Id);
         }
+        MarkTopologyDirty();
     }
 
     public Mesh DeepCopy()
@@ -264,6 +343,7 @@ class Mesh
         particle.ID = id;
         Particles[id] = particle;
         _particleToStickIds[id] = new HashSet<int>();
+        MarkTopologyDirty();
         return id;
     }
 
@@ -285,6 +365,7 @@ class Mesh
         particle.ID = id;
         Particles[id] = particle;
         _particleToStickIds[id] = new HashSet<int>();
+        MarkTopologyDirty();
         return id;
     }
 
@@ -298,6 +379,7 @@ class Mesh
         _nextStickId = 1;
         _particleToStickIds.Clear();
         ResetPolygonBuilder();
+        MarkTopologyDirty();
     }
 
     /// <summary>
@@ -410,7 +492,12 @@ class Mesh
         }
 
         _particleToStickIds.Remove(particleId);
-        return Particles.Remove(particleId);
+        bool removed = Particles.Remove(particleId);
+        if (removed)
+        {
+            MarkTopologyDirty();
+        }
+        return removed;
     }
 
     public void CutSticksAlongLine(Vector2 lineStart, Vector2 lineEnd)
@@ -479,6 +566,7 @@ class Mesh
             _particleToStickIds[p2Id] = new HashSet<int>();
         _particleToStickIds[p1Id].Add(s.Id);
         _particleToStickIds[p2Id].Add(s.Id);
+        MarkTopologyDirty();
         return s.Id;
     }
 
@@ -519,7 +607,12 @@ class Mesh
             set1.Remove(stickId);
         if (_particleToStickIds.TryGetValue(s.P2Id, out var set2))
             set2.Remove(stickId);
-        return Sticks.Remove(stickId);
+        bool removed = Sticks.Remove(stickId);
+        if (removed)
+        {
+            MarkTopologyDirty();
+        }
+        return removed;
     }
 
     public int RemoveSticksBetween(int p1Id, int p2Id)
@@ -653,6 +746,43 @@ class Mesh
             }
         }
         return mesh;
+    }
+
+    public List<List<int>> GetConnectedComponents()
+    {
+        var visited = new HashSet<int>();
+        var components = new List<List<int>>();
+
+        foreach (var particleId in Particles.Keys)
+        {
+            if (!visited.Contains(particleId))
+            {
+                var component = new List<int>();
+                var queue = new Queue<int>();
+                queue.Enqueue(particleId);
+                visited.Add(particleId);
+
+                while (queue.Count > 0)
+                {
+                    int currentId = queue.Dequeue();
+                    component.Add(currentId);
+
+                    foreach (var stick in GetSticksForParticle(currentId))
+                    {
+                        int neighborId = stick.P1Id == currentId ? stick.P2Id : stick.P1Id;
+                        if (!visited.Contains(neighborId))
+                        {
+                            visited.Add(neighborId);
+                            queue.Enqueue(neighborId);
+                        }
+                    }
+                }
+
+                components.Add(component);
+            }
+        }
+
+        return components;
     }
 
     [ConsoleCommand("Mesh.ResetSimulation")]

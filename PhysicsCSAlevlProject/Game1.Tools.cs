@@ -93,6 +93,7 @@ public partial class Game1
             { "LineCut", new Tool("LineCut", null, false) },
             { "Select Particles", new Tool("Select Particles", null, false) },
             { "Cursor Collider", new Tool("Cursor Collider", null, false) },
+            {"Draw Hull Polygon", new Tool("Draw Hull Polygon", null, false) },
         };
         foreach (var tool in _interactTools.Values)
         {
@@ -572,6 +573,9 @@ public partial class Game1
                 case "Move Collider":
                     ImGui.Text("Left-click to select and drag colliders");
                     ImGui.Text("(Right-click menu temporarily disabled)");
+                    break;
+                default:
+                    ImGui.Text("No settings available for this tool");
                     break;
             }
         }

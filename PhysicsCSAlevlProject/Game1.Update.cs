@@ -106,7 +106,10 @@ public partial class Game1
         ApplyPostPhysicsToolEffects(mouseState, currentMousePos);
 
         _previousMousePos = currentMousePos;
-
+        if(_activeMesh.IsTopologyDirty || _activeMesh._components.Count == 0)
+        {
+            _activeMesh.CleanTopology(_activeMesh.Particles);
+        }
         base.Update(gameTime);
         _prevKeyboardState = keyboardState;
         _prevMouseState = mouseState;
