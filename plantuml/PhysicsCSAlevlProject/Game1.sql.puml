@@ -1,0 +1,48 @@
+@startuml
+class Game1Database {
+    + Game1Database(logger:ImGuiLogger)
+    + TestConnection() : void
+    + GetStudents() : List<int>
+    + GetTeachers() : List<int>
+    + GetTeachersWithInfo() : List<User>
+    + GetStudentStructures(studentId:int) : Dictionary<string, string>
+    + GetUser(user:string) : User
+    + CreateUser(username:string, roleId:int) : int
+    + CreateAssignment(title:string, description:string, dueDate:DateTime?, teacherId:int) : int
+    + GetStructuresForUser(userId:int) : List<StructureInfo>
+    + GetStructureContent(structureId:int) : string
+    + SaveStructureWithName(studentId:int, contentJson:string, title:string, assignmentId:int?) : int
+    + GetAssignmentsForTeacher(teacherId:int) : List<Assignment>
+    + GetStructuresForAssignment(assignmentId:int) : List<StructureInfo>
+}
+class User {
+    + Id : int <<get>> <<set>>
+    + Username : string <<get>> <<set>>
+    + RoleId : int <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+}
+class StructureInfo {
+    + Id : int <<get>> <<set>>
+    + AssignmentId : int? <<get>> <<set>>
+    + StudentId : int <<get>> <<set>>
+    + StudentName : string <<get>> <<set>>
+    + AssignmentTitle : string <<get>> <<set>>
+    + DisplayName : string <<get>>
+}
+class Assignment {
+    + Id : int <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + TeacherId : int <<get>> <<set>>
+}
+class Roles {
+    + {static} <<readonly>> Teacher : int = 1
+    + {static} <<readonly>> Student : int = 2
+}
+Game1Database --> "logger" ImGuiLogger
+Game1Database +-- User
+Game1Database +-- StructureInfo
+StructureInfo --> "SubmittedAt" DateTime
+Game1Database +-- Assignment
+Game1Database +-- Roles
+@enduml

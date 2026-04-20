@@ -1,5 +1,16 @@
 
 https://ibi-bit.github.io/ClothPhysicsVerletIntergrationCSNEA/
+
+Project Objectives
+
+- Develop a real-time 2D cloth simulation using Verlet integration that is stable, responsive, and suitable for experimentation.
+- Create an interactive workspace where users can build, edit, and inspect mesh-based physics structures.
+- Implement believable physical behaviour using constraints, external forces, and collision handling in a controllable environment.
+- Support iterative testing by allowing users to pause, step, and adjust simulation behaviour while observing visual feedback.
+- Provide a way to save, load, and manage simulation structures so progress can be continued and compared over time.
+- Design a clear, usable interface that brings together simulation controls, editing tools, and diagnostics in one application.
+- Maintain a modular codebase with documentation and a reproducible setup process to support development and evaluation.
+
 Prerequisites
 
 Git (with submodule support)

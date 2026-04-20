@@ -1,0 +1,22 @@
+@startuml
+class Game1 {
+    + Game1()
+}
+struct ImGuiDebugLog {
+    + DebugLog() : void
+    + Clear() : void
+    + AddLog(text:string) : void
+    + Destroy() : void
+    + Draw(title:string) : void
+}
+struct ImGuiExampleAppConsole {
+    + ExampleAppConsole() : void
+    + ClearLog() : void
+    + AddLog(text:string) : void
+    + Destroy() : void
+    + Draw(title:string) : void
+}
+Game <|-- Game1
+Game1 +-- ImGuiDebugLog
+Game1 +-- ImGuiExampleAppConsole
+@enduml

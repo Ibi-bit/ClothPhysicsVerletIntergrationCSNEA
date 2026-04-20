@@ -1,0 +1,27 @@
+@startuml 
+!include ./PhysicsCSAlevlProject/Game1.Factories.puml
+!include ./PhysicsCSAlevlProject/Objects.Particles.puml
+!include ./PhysicsCSAlevlProject/Objects.Sticks.puml
+!include ./PhysicsCSAlevlProject/Game1.ImGui.Inspection.puml
+!include ./PhysicsCSAlevlProject/Game1.Update.puml
+!include ./PhysicsCSAlevlProject/Game1.Render.puml
+!include ./PhysicsCSAlevlProject/Objects.Tool.puml
+!include ./PhysicsCSAlevlProject/Game1.ImGui.MenuBar.puml
+!include ./PhysicsCSAlevlProject/Game1.ImGui.Core.puml
+!include ./PhysicsCSAlevlProject/Game1.ImGui.Structures.puml
+!include ./PhysicsCSAlevlProject/Game1.Core.puml
+!include ./PhysicsCSAlevlProject/Game1.File.puml
+!include ./PhysicsCSAlevlProject/Game1.ImGui.Authentication.puml
+!include ./PhysicsCSAlevlProject/Game1.DebugCommands.puml
+!include ./PhysicsCSAlevlProject/Game1.ImGui.Windows.puml
+!include ./PhysicsCSAlevlProject/Game1.Update.Input.puml
+!include ./PhysicsCSAlevlProject/Game1.Physics.puml
+!include ./PhysicsCSAlevlProject/Game1.Update.Physics.puml
+!include ./PhysicsCSAlevlProject/Game1.sql.puml
+!include ./PhysicsCSAlevlProject/Objects.Colliders.puml
+!include ./PhysicsCSAlevlProject/Objects.FileWriteableMesh.puml
+!include ./PhysicsCSAlevlProject/Objects.Mesh.puml
+!include ./PhysicsCSAlevlProject/Game1.Tools.puml
+!include ./PhysicsCSAlevlProject/libs/MonoGame2DVectorGraphics/Vector.puml
+
+@enduml

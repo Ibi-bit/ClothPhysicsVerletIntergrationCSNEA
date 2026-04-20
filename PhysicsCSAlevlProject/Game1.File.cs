@@ -21,6 +21,7 @@ public partial class Game1
             NullValueHandling = NullValueHandling.Ignore,
         };
     }
+
     /// <summary>
     /// saves the given mesh to a JSOn file at the given filepath
     /// </summary>
@@ -49,6 +50,7 @@ public partial class Game1
             );
         }
     }
+
     /// <summary>
     /// returns a json string of the mesh used to save to the database
     /// </summary>
@@ -72,12 +74,12 @@ public partial class Game1
             return string.Empty;
         }
     }
+
     /// <summary>
     /// attempts to load a Mesh from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh
     /// </summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
-
     private Mesh LoadMeshFromJSON(string filePath)
     {
         try
@@ -103,12 +105,12 @@ public partial class Game1
             return _activeMesh;
         }
     }
+
     /// <summary>
     /// converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh
     /// </summary>
     /// <param name="json"></param>
     /// <returns></returns>
-
     private Mesh LoadMeshFromJsonString(string json)
     {
         try

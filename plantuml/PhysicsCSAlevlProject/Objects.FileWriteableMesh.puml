@@ -1,0 +1,36 @@
+@startuml
+class FileWriteableMesh {
+    + SpringConstant : float = 10000f
+    + Drag : float = 0.997f
+    + Mass : float = 1f
+    + CollisionFrictionCoefficient : float = 0.2f
+    + CollisionBounceCoefficient : float = 0.2f
+    + FileWriteableMesh()
+    + FileWriteableMesh(mesh:Mesh)
+    + ToMesh() : Mesh
+}
+class OscillationData {
+    + Amplitude : float
+    + Frequency : float
+    + Angle : float
+}
+class particleData {
+    + Mass : float
+    + IsPinned : bool
+    + ParticleKind : string
+}
+class stickData {
+    + P1Id : int
+    + P2Id : int
+}
+class "List`1"<T> {
+}
+FileWriteableMesh o-> "Particles<particleData>" "List`1"
+FileWriteableMesh o-> "Sticks<stickData>" "List`1"
+FileWriteableMesh o-> "Colliders<Collider>" "List`1"
+FileWriteableMesh +-- OscillationData
+FileWriteableMesh +-- particleData
+particleData --> "Position" Vector2
+particleData --> "Oscillation" OscillationData
+FileWriteableMesh +-- stickData
+@enduml

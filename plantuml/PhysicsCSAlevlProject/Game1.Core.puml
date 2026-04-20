@@ -1,0 +1,15 @@
+@startuml
+class Game1 <<partial>> {
+    + _currentAssignmentTitle : string
+    + SetWindowSize(width:int, height:int) : void
+    + Game1()
+}
+enum MeshMode {
+    Interact,
+    Edit,
+}
+Game <|-- Game1
+Game1 --> "_guiRenderer" ImGuiRenderer
+Game1 --> "_database" Game1Database
+Game1 +-- MeshMode
+@enduml

@@ -271,7 +271,8 @@ public partial class Game1
 
                     ImGui.EndDisabled();
 
-                    bool collideWithColliders = props.ContainsKey("CollideWithColliders")
+                    bool collideWithColliders =
+                        props.ContainsKey("CollideWithColliders")
                         && (bool)props["CollideWithColliders"];
                     if (ImGui.Checkbox("Collide With Colliders", ref collideWithColliders))
                     {

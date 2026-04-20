@@ -137,9 +137,8 @@ public partial class Game1
 
                 if (_selectedToolName == "Drag" && _currentMode == MeshMode.Interact)
                 {
-                    bool collideWithColliders = _currentToolSet["Drag"].Properties.ContainsKey(
-                            "CollideWithColliders"
-                        )
+                    bool collideWithColliders =
+                        _currentToolSet["Drag"].Properties.ContainsKey("CollideWithColliders")
                         && (bool)_currentToolSet["Drag"].Properties["CollideWithColliders"];
                     if (collideWithColliders)
                     {

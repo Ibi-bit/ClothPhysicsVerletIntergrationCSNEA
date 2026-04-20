@@ -1,0 +1,20 @@
+@startuml
+class Factory {
+    + Name : string <<get>>
+    + Factory(name:string, method:Action<object[]>, parameters:Dictionary<string, string>)
+}
+class TireFactory <<sealed>> {
+    + TireFactory(method:Action<object[]>)
+}
+class ClothFactory <<sealed>> {
+    + ClothFactory(method:Action<object[]>)
+}
+class "Action`1"<T> {
+}
+class "Dictionary`2"<T1,T2> {
+}
+Factory --> "Method<object[]>" "Action`1"
+Factory --> "Parameters<string,string>" "Dictionary`2"
+Factory <|-- TireFactory
+Factory <|-- ClothFactory
+@enduml
