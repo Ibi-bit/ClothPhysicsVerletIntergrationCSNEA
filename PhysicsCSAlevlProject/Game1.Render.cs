@@ -27,15 +27,8 @@ public partial class Game1
         _drawConstraints = true;
     }
 
-    /// <summary>
-    /// the central draw loop for the application where every other draw function is called from
-    /// </summary>
-    /// <param name="gameTime"></param>
-    protected override void Draw(GameTime gameTime)
+    private void DrawCollisionBounds()
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
-        _spriteBatch.Begin();
-
         var rect = new Rectangle(
             new Point(_windowBounds.X, _windowBounds.Y),
             new Point(
@@ -45,11 +38,10 @@ public partial class Game1
         );
         var collisionBounds = new PrimitiveBatch.Rectangle(rect, Color.Black, false, 2);
         collisionBounds.Draw(_spriteBatch, _primitiveBatch);
+    }
 
-        MouseState mouseState = Mouse.GetState();
-        Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
-        bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
-
+    private void DrawSceneContent()
+    {
         if (_activeMesh?.Colliders != null)
         {
             foreach (var collider in _activeMesh.Colliders)
@@ -69,224 +61,251 @@ public partial class Game1
         {
             _cutLine.Draw(_spriteBatch, _primitiveBatch);
         }
+
         if (_selectRectangle != null)
         {
             _selectRectangle.Draw(_spriteBatch, _primitiveBatch);
         }
-        if (!imguiWantsMouse)
+    }
+
+    private void DrawCursorOverlay(Vector2 currentMousePos, bool imguiWantsMouse)
+    {
+        if (imguiWantsMouse)
         {
-            const float cursorAlpha = 0.4f;
-            float radius = 0f;
-            Color cursorColor = Color.White * cursorAlpha;
-            bool shouldDrawCursor = false;
+            return;
+        }
 
-            if (
-                !string.IsNullOrEmpty(_selectedToolName)
-                && _currentToolSet != null
-                && _currentToolSet.ContainsKey(_selectedToolName)
-            )
+        const float cursorAlpha = 0.4f;
+        float radius = 0f;
+        Color cursorColor = Color.White * cursorAlpha;
+        bool shouldDrawCursor = false;
+
+        if (
+            !string.IsNullOrEmpty(_selectedToolName)
+            && _currentToolSet != null
+            && _currentToolSet.ContainsKey(_selectedToolName)
+        )
+        {
+            var props = _currentToolSet[_selectedToolName].Properties;
+
+            switch (_selectedToolName)
             {
-                var props = _currentToolSet[_selectedToolName].Properties;
+                case "Drag":
+                    radius = props.TryGetValue("Radius", out var dragRadius)
+                        ? (float)dragRadius
+                        : 20f;
+                    cursorColor = Color.Yellow * cursorAlpha;
+                    shouldDrawCursor = true;
+                    break;
 
-                switch (_selectedToolName)
-                {
-                    case "Drag":
-                        radius = props.TryGetValue("Radius", out var dragRadius)
-                            ? (float)dragRadius
-                            : 20f;
-                        cursorColor = Color.Yellow * cursorAlpha;
-                        shouldDrawCursor = true;
-                        break;
+                case "Pin":
+                    radius = props.TryGetValue("Radius", out var pinRadius)
+                        ? (float)pinRadius
+                        : 20f;
+                    cursorColor = Color.BlueViolet * cursorAlpha;
+                    shouldDrawCursor = true;
+                    break;
 
-                    case "Pin":
-                        radius = props.TryGetValue("Radius", out var pinRadius)
-                            ? (float)pinRadius
-                            : 20f;
-                        cursorColor = Color.BlueViolet * cursorAlpha;
-                        shouldDrawCursor = true;
-                        break;
+                case "Cut":
+                    radius = props.TryGetValue("Radius", out var cutRadius)
+                        ? (float)cutRadius
+                        : 10f;
+                    cursorColor = Color.Red * cursorAlpha;
+                    shouldDrawCursor = true;
+                    break;
 
-                    case "Cut":
-                        radius = props.TryGetValue("Radius", out var cutRadius)
-                            ? (float)cutRadius
-                            : 10f;
-                        cursorColor = Color.Red * cursorAlpha;
-                        shouldDrawCursor = true;
-                        break;
+                case "PhysicsDrag":
+                    radius = props.TryGetValue("Radius", out var physRadius)
+                        ? (float)physRadius
+                        : 20f;
+                    cursorColor = Color.Orange * cursorAlpha;
+                    shouldDrawCursor = true;
+                    break;
 
-                    case "PhysicsDrag":
-                        radius = props.TryGetValue("Radius", out var physRadius)
-                            ? (float)physRadius
-                            : 20f;
-                        cursorColor = Color.Orange * cursorAlpha;
-                        shouldDrawCursor = true;
-                        break;
+                case "Inspect Particles":
+                    radius = props.TryGetValue("Radius", out var inspectRadius)
+                        ? (float)inspectRadius
+                        : 10f;
+                    cursorColor = Color.Cyan * cursorAlpha;
+                    shouldDrawCursor = true;
+                    break;
 
-                    case "Inspect Particles":
-                        radius = props.TryGetValue("Radius", out var inspectRadius)
-                            ? (float)inspectRadius
-                            : 10f;
-                        cursorColor = Color.Cyan * cursorAlpha;
-                        shouldDrawCursor = true;
-                        break;
+                case "Cursor Collider":
+                    radius = props.TryGetValue("Radius", out var colliderRadius)
+                        ? (float)colliderRadius
+                        : 50f;
+                    string shape = props.TryGetValue("Shape", out var shapeObj)
+                        ? (string)shapeObj
+                        : "Circle";
 
-                    case "Cursor Collider":
-                        radius = props.TryGetValue("Radius", out var colliderRadius)
-                            ? (float)colliderRadius
-                            : 50f;
-                        string shape = props.TryGetValue("Shape", out var shapeObj)
-                            ? (string)shapeObj
-                            : "Circle";
+                    if (shape == "Circle")
+                    {
+                        var cursorCollider = new PrimitiveBatch.Circle(
+                            currentMousePos,
+                            radius,
+                            Color.Red * cursorAlpha,
+                            true
+                        );
+                        cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+                    }
+                    else if (shape == "Rectangle")
+                    {
+                        int size = (int)(radius * 2f);
+                        var cursorRect = new Rectangle(
+                            (int)(currentMousePos.X - size / 2f),
+                            (int)(currentMousePos.Y - size / 2f),
+                            size,
+                            size
+                        );
+                        var cursorCollider = new PrimitiveBatch.Rectangle(
+                            cursorRect,
+                            Color.Red * cursorAlpha,
+                            true
+                        );
+                        cursorCollider.Draw(_spriteBatch, _primitiveBatch);
+                    }
 
-                        if (shape == "Circle")
-                        {
-                            var cursorCollider = new PrimitiveBatch.Circle(
-                                currentMousePos,
-                                radius,
-                                Color.Red * cursorAlpha,
-                                true
-                            );
-                            cursorCollider.Draw(_spriteBatch, _primitiveBatch);
-                        }
-                        else if (shape == "Rectangle")
-                        {
-                            int size = (int)(radius * 2f);
-                            var cursorRect = new Rectangle(
-                                (int)(currentMousePos.X - size / 2f),
-                                (int)(currentMousePos.Y - size / 2f),
-                                size,
-                                size
-                            );
-                            var cursorCollider = new PrimitiveBatch.Rectangle(
-                                cursorRect,
-                                Color.Red * cursorAlpha,
-                                true
-                            );
-                            cursorCollider.Draw(_spriteBatch, _primitiveBatch);
-                        }
-                        break;
+                    break;
 
-                    case "Add Stick Between Particles":
-                        radius = props.TryGetValue("Radius", out var stickRadius)
-                            ? (float)stickRadius
-                            : 15f;
-                        cursorColor = Color.Green * cursorAlpha;
-                        shouldDrawCursor = true;
-                        break;
+                case "Add Stick Between Particles":
+                    radius = props.TryGetValue("Radius", out var stickRadius)
+                        ? (float)stickRadius
+                        : 15f;
+                    cursorColor = Color.Green * cursorAlpha;
+                    shouldDrawCursor = true;
+                    break;
 
-                    case "Remove Particle":
-                        radius = props.TryGetValue("Radius", out var removeRadius)
-                            ? (float)removeRadius
-                            : 10f;
-                        cursorColor = Color.Red * cursorAlpha;
-                        shouldDrawCursor = true;
-                        break;
-                    case "Place Collider":
-                        string selectedType = props.TryGetValue(
-                            "SelectedColliderType",
-                            out var selectedColliderType
+                case "Remove Particle":
+                    radius = props.TryGetValue("Radius", out var removeRadius)
+                        ? (float)removeRadius
+                        : 10f;
+                    cursorColor = Color.Red * cursorAlpha;
+                    shouldDrawCursor = true;
+                    break;
+                case "Place Collider":
+                    string selectedType = props.TryGetValue(
+                        "SelectedColliderType",
+                        out var selectedColliderType
+                    )
+                        ? selectedColliderType?.ToString() ?? "Circle"
+                        : "Circle";
+
+                    props.TryGetValue("Object", out var objectValue);
+                    var objectDict = objectValue as Dictionary<string, object>;
+
+                    if (selectedType == "Rectangle")
+                    {
+                        object rectangleObj = null;
+                        if (objectDict != null)
+                            objectDict.TryGetValue("Rectangle", out rectangleObj);
+
+                        var rectangleDict = rectangleObj as Dictionary<string, object>;
+                        float width =
+                            rectangleDict != null
+                            && rectangleDict.TryGetValue("Width", out var widthObj)
+                                ? Convert.ToSingle(widthObj)
+                                : 40f;
+                        float height =
+                            rectangleDict != null
+                            && rectangleDict.TryGetValue("Height", out var heightObj)
+                                ? Convert.ToSingle(heightObj)
+                                : 20f;
+                        float rotation =
+                            rectangleDict != null
+                            && rectangleDict.TryGetValue("Rotation", out var rotationObj)
+                                ? Convert.ToSingle(rotationObj)
+                                : 0f;
+
+                        var cursorRect = new PrimitiveBatch.Rectangle(
+                            currentMousePos - new Vector2(width, height) / 2f,
+                            new Vector2(width, height),
+                            Color.Red * cursorAlpha,
+                            true
+                        );
+                        cursorRect.rotation = rotation;
+                        cursorRect.Draw(_spriteBatch, _primitiveBatch);
+                    }
+                    else
+                    {
+                        object circleObj = null;
+                        if (objectDict != null)
+                            objectDict.TryGetValue("Circle", out circleObj);
+                        var circleDict = circleObj as Dictionary<string, object>;
+                        float placeRadius = 20f;
+                        if (
+                            circleDict != null
+                            && circleDict.TryGetValue("Radius", out var radiusObj)
                         )
-                            ? selectedColliderType?.ToString() ?? "Circle"
-                            : "Circle";
+                            placeRadius = Convert.ToSingle(radiusObj);
+                        radius = placeRadius;
+                        cursorColor = Color.Red * cursorAlpha;
+                        shouldDrawCursor = true;
+                    }
 
-                        props.TryGetValue("Object", out var objectValue);
-                        var objectDict = objectValue as Dictionary<string, object>;
+                    break;
 
-                        if (selectedType == "Rectangle")
-                        {
-                            object rectangleObj = null;
-                            if (objectDict != null)
-                                objectDict.TryGetValue("Rectangle", out rectangleObj);
+                default:
+                    shouldDrawCursor = false;
+                    break;
+            }
 
-                            var rectangleDict = rectangleObj as Dictionary<string, object>;
-                            float width =
-                                rectangleDict != null
-                                && rectangleDict.TryGetValue("Width", out var widthObj)
-                                    ? Convert.ToSingle(widthObj)
-                                    : 40f;
-                            float height =
-                                rectangleDict != null
-                                && rectangleDict.TryGetValue("Height", out var heightObj)
-                                    ? Convert.ToSingle(heightObj)
-                                    : 20f;
-                            float rotation =
-                                rectangleDict != null
-                                && rectangleDict.TryGetValue("Rotation", out var rotationObj)
-                                    ? Convert.ToSingle(rotationObj)
-                                    : 0f;
+            if (shouldDrawCursor && radius > 0)
+            {
+                var cursorCircleFilled = new PrimitiveBatch.Circle(
+                    currentMousePos,
+                    radius,
+                    cursorColor,
+                    true
+                );
+                cursorCircleFilled.Draw(_spriteBatch, _primitiveBatch);
 
-                            var cursorRect = new PrimitiveBatch.Rectangle(
-                                currentMousePos - new Vector2(width, height) / 2f,
-                                new Vector2(width, height),
-                                Color.Red * cursorAlpha,
-                                true
-                            );
-                            cursorRect.rotation = rotation;
-                            cursorRect.Draw(_spriteBatch, _primitiveBatch);
-                            shouldDrawCursor = false;
-                        }
-                        else
-                        {
-                            object circleObj = null;
-                            if (objectDict != null)
-                                objectDict.TryGetValue("Circle", out circleObj);
-                            var circleDict = circleObj as Dictionary<string, object>;
-                            float placeRadius = 20f;
-                            if (
-                                circleDict != null
-                                && circleDict.TryGetValue("Radius", out var radiusObj)
-                            )
-                                placeRadius = Convert.ToSingle(radiusObj);
-                            radius = placeRadius;
-                            cursorColor = Color.Red * cursorAlpha;
-                            shouldDrawCursor = true;
-                        }
-                        break;
+                var cursorCircleOutline = new PrimitiveBatch.Circle(
+                    currentMousePos,
+                    radius,
+                    cursorColor,
+                    false
+                );
 
-                    default:
-                        shouldDrawCursor = false;
-                        break;
-                }
-
-                if (shouldDrawCursor && radius > 0)
-                {
-                    var cursorCircleFilled = new PrimitiveBatch.Circle(
-                        currentMousePos,
-                        radius,
-                        cursorColor,
-                        true
-                    );
-                    cursorCircleFilled.Draw(_spriteBatch, _primitiveBatch);
-
-                    var cursorCircleOutline = new PrimitiveBatch.Circle(
-                        currentMousePos,
-                        radius,
-                        cursorColor,
-                        false
-                    );
-
-                    cursorCircleOutline.Draw(_spriteBatch, _primitiveBatch);
-                }
-                else
-                {
-                    var crosshairSize = 10;
-                    var horizontalLine = new PrimitiveBatch.Line(
-                        currentMousePos - new Vector2(crosshairSize, 0),
-                        currentMousePos + new Vector2(crosshairSize, 0),
-                        cursorColor,
-                        2
-                    );
-                    var verticalLine = new PrimitiveBatch.Line(
-                        currentMousePos - new Vector2(0, crosshairSize),
-                        currentMousePos + new Vector2(0, crosshairSize),
-                        cursorColor,
-                        2
-                    );
-                    horizontalLine.Draw(_spriteBatch, _primitiveBatch);
-                    verticalLine.Draw(_spriteBatch, _primitiveBatch);
-                }
+                cursorCircleOutline.Draw(_spriteBatch, _primitiveBatch);
+            }
+            else
+            {
+                var crosshairSize = 10;
+                var horizontalLine = new PrimitiveBatch.Line(
+                    currentMousePos - new Vector2(crosshairSize, 0),
+                    currentMousePos + new Vector2(crosshairSize, 0),
+                    cursorColor,
+                    2
+                );
+                var verticalLine = new PrimitiveBatch.Line(
+                    currentMousePos - new Vector2(0, crosshairSize),
+                    currentMousePos + new Vector2(0, crosshairSize),
+                    cursorColor,
+                    2
+                );
+                horizontalLine.Draw(_spriteBatch, _primitiveBatch);
+                verticalLine.Draw(_spriteBatch, _primitiveBatch);
             }
         }
+    }
+
+    /// <summary>
+    /// the central draw loop for the application where every other draw function is called from
+    /// </summary>
+    /// <param name="gameTime"></param>
+    protected override void Draw(GameTime gameTime)
+    {
+        GraphicsDevice.Clear(Color.CornflowerBlue);
+        _spriteBatch.Begin();
+
+        DrawCollisionBounds();
+
+        MouseState mouseState = Mouse.GetState();
+        Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+        bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
+
+        DrawSceneContent();
+        DrawCursorOverlay(currentMousePos, imguiWantsMouse);
 
         _spriteBatch.End();
         ImGuiDraw(gameTime);

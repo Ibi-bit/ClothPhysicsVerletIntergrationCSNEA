@@ -1,0 +1,44 @@
+flowchart TD
+    %% Core Loop
+        Start((Start)) 
+        Initialise[Initialise all of the Variables]
+        
+        IsClosed{Is the Window Closed?}
+
+        Start --> Initialise
+        Initialise --> UpdateBreakdown
+    %% Update Loop
+
+        subgraph UpdateBreakdown[Update Breakdown]
+            UpdateInput[Read mouse and keyboard input]
+            ToolState[Update selected tool and mode]
+            PhysicsStep[Apply Verlet physics steps]
+            Constraints[Resolve constraints]
+            Collisions[Handle collisions]
+            SyncDraw[Prepare data for drawing]
+
+            UpdateInput --> ToolState --> PhysicsStep --> Constraints --> Collisions --> SyncDraw
+        end
+
+        UpdateBreakdown --> DrawBreakdown
+        subgraph DrawBreakdown[Draw Breakdown]
+            DrawBounds[Draw bounding box and grid]
+            DrawParticles[Draw particles]
+            DrawConstraints[Draw constraints]
+            DrawTools[Draw tool indicators]
+            DrawImGui[Draw ImGui interface]
+
+            DrawBounds --> DrawParticles --> DrawConstraints --> DrawTools --> DrawImGui
+        end
+         DrawBreakdown --> IsClosed
+         IsClosed -- No --> UpdateBreakdown
+         IsClosed -- Yes --> End((End))
+
+
+    %% Edge connections between nodes
+        
+
+    %% Individual node styling. Try the visual editor toolbar for easier styling!
+       
+
+    %% You can add notes with two "%" signs in a row!

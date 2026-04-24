@@ -1,0 +1,20 @@
+flowchart TD
+
+    Start((Apply Verlet physics steps to the Particles))
+    Initialise(Initialise all of the Variables that frame by frame in the Physics Iteration)
+    CalculateItterations(Calculate the Number of Iterations for the Physics Update)
+    Loop(Loop through the Physics Iterations)
+    Update(Update the Particles and Constraints)
+    CheckIfItterationsDone{Have we done enough Iterations?}
+    UpdateConstraintColours(Update the Colours of the Constraints based on how much they are stretched)
+    End((End))
+
+
+    Start --> Initialise
+    Initialise --> CalculateItterations
+    CalculateItterations --> Loop
+    Loop --> Update
+    Update --> CheckIfItterationsDone
+    CheckIfItterationsDone -- No --> Loop
+    CheckIfItterationsDone -- Yes --> UpdateConstraintColours
+    UpdateConstraintColours --> End((Return to the Main Loop))
