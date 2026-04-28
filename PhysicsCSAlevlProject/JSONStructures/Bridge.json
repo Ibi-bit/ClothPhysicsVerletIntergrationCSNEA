@@ -1,0 +1,204 @@
+{
+  "$type": "PhysicsCSAlevlProject.FileWriteableMesh, PhysicsCSAlevlProject",
+  "Particles": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "138, 442",
+      "Mass": 0.1,
+      "IsPinned": true,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "247.00333, 445.15445",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "365.99893, 449.78964",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "466.95355, 454.0292",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "547.0189, 451.90414",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "648, 455",
+      "Mass": 0.1,
+      "IsPinned": true,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "587.11005, 373.8397",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "512.029, 370.8406",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "421.02634, 367.7909",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "309.98773, 363.03418",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "209.05742, 358.15536",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    }
+  ],
+  "Sticks": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 0,
+      "P2Id": 1,
+      "NaturalLength": 109.041275
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 1,
+      "P2Id": 2,
+      "NaturalLength": 119.104996
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 2,
+      "P2Id": 3,
+      "NaturalLength": 101.07918
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 3,
+      "P2Id": 4,
+      "NaturalLength": 80.024994
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 4,
+      "P2Id": 5,
+      "NaturalLength": 101.04455
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 5,
+      "P2Id": 6,
+      "NaturalLength": 101.4002
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 6,
+      "P2Id": 7,
+      "NaturalLength": 75.059975
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 7,
+      "P2Id": 8,
+      "NaturalLength": 91.04944
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 8,
+      "P2Id": 9,
+      "NaturalLength": 111.11256
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 9,
+      "P2Id": 10,
+      "NaturalLength": 101.12369
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 10,
+      "P2Id": 0,
+      "NaturalLength": 109.98637
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 10,
+      "P2Id": 1,
+      "NaturalLength": 94.93682
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 1,
+      "P2Id": 9,
+      "NaturalLength": 103.40696
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 9,
+      "P2Id": 2,
+      "NaturalLength": 103.46497
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 2,
+      "P2Id": 8,
+      "NaturalLength": 98.73702
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 8,
+      "P2Id": 3,
+      "NaturalLength": 97.52948
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 3,
+      "P2Id": 7,
+      "NaturalLength": 94.41398
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 7,
+      "P2Id": 4,
+      "NaturalLength": 88.23831
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 4,
+      "P2Id": 6,
+      "NaturalLength": 87.658424
+    }
+  ],
+  "Colliders": [],
+  "SpringConstant": 100000.0,
+  "Drag": 0.998,
+  "Mass": 0.1,
+  "CollisionFrictionCoefficient": 0.2,
+  "CollisionBounceCoefficient": 0.2
+}

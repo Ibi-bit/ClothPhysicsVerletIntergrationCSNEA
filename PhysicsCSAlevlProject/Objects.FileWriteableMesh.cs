@@ -39,6 +39,7 @@ class FileWriteableMesh
     {
         public int P1Id;
         public int P2Id;
+        public float NaturalLength;
     }
 
     public List<particleData> Particles = new List<particleData>();
@@ -100,7 +101,12 @@ class FileWriteableMesh
         {
             var s = kvp.Value;
             Sticks.Add(
-                new stickData { P1Id = particleIdMap[s.P1Id], P2Id = particleIdMap[s.P2Id] }
+                new stickData
+                {
+                    P1Id = particleIdMap[s.P1Id],
+                    P2Id = particleIdMap[s.P2Id],
+                    NaturalLength = s.Length,
+                }
             );
         }
         foreach (var c in mesh.Colliders)
@@ -182,7 +188,7 @@ class FileWriteableMesh
                     && indexToParticleId.TryGetValue(sData.P2Id, out int p2Id)
                 )
                 {
-                    mesh.AddStick(p1Id, p2Id, Color.White);
+                    mesh.AddStick(p1Id, p2Id, Color.White, 2, sData.NaturalLength);
                 }
             }
         }
