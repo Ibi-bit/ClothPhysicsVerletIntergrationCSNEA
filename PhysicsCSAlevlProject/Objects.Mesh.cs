@@ -142,7 +142,6 @@ class Mesh
             {
                 stick.P1 = Particles[stick.P1Id];
                 stick.P2 = particle;
-                stick.Length = Vector2.Distance(stick.P1.Position, stick.P2.Position);
             }
         }
         _particleToStickIds.Clear();
