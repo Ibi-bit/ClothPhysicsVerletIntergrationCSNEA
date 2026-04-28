@@ -609,7 +609,9 @@ class Mesh
         Vector2 Start,
         Vector2 End,
         float DistanceBetweenParticles,
-        Mesh mesh
+        Mesh mesh,
+        bool pinExteriorEdgeParticles = false,
+        bool connectDiagonalsBothWays = false
     )
     {
         if (DistanceBetweenParticles <= 0)
@@ -649,6 +651,36 @@ class Mesh
                 {
                     int p2Id = particleIds[x, y + 1];
                     mesh.AddStickBetween(p1Id, p2Id);
+                }
+
+                if (connectDiagonalsBothWays && x < width - 1 && y < height - 1)
+                {
+                    int bottomRightId = particleIds[x + 1, y + 1];
+                    int rightId = particleIds[x + 1, y];
+                    int bottomId = particleIds[x, y + 1];
+                    float diagonalStickLength = DistanceBetweenParticles * MathF.Sqrt(2f);
+                    mesh.AddStickBetween(p1Id, bottomRightId, diagonalStickLength);
+                    mesh.AddStickBetween(rightId, bottomId, diagonalStickLength);
+                }
+            }
+        }
+
+        if (pinExteriorEdgeParticles)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    bool isExteriorEdge = x == 0 || y == 0 || x == width - 1 || y == height - 1;
+                    if (!isExteriorEdge)
+                        continue;
+
+                    int particleId = particleIds[x, y];
+                    if (mesh.Particles.ContainsKey(particleId))
+                    {
+                        mesh.Particles[particleId].IsPinned = true;
+                        mesh.Particles[particleId].Mass = 0f;
+                    }
                 }
             }
         }

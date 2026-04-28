@@ -163,6 +163,8 @@ public partial class Game1
         _buildTools["LineCut"].Properties["Thickness"] = 3f;
         _buildTools["Pin"].Properties["Radius"] = 20f;
         _buildTools["Create Grid Mesh"].Properties["DistanceBetweenParticles"] = 10f;
+        _buildTools["Create Grid Mesh"].Properties["PinExteriorEdgeParticles"] = false;
+        _buildTools["Create Grid Mesh"].Properties["ConnectDiagonalsBothWays"] = false;
         _buildTools["Line Tool"].Properties["Constraints in Line"] = 100;
         _buildTools["Line Tool"].Properties["Natural Length Ratio"] = 1.0f;
         _buildTools["Oscillating Particle"].Properties["Amplitude"] = 20f;
@@ -449,6 +451,18 @@ public partial class Game1
                     if (ImGui.SliderFloat("Distance Between Particles", ref distance, 5f, 100f))
                     {
                         props["DistanceBetweenParticles"] = distance;
+                    }
+
+                    bool pinExteriorEdgeParticles = (bool)props["PinExteriorEdgeParticles"];
+                    if (ImGui.Checkbox("Pin Exterior Edge Particles", ref pinExteriorEdgeParticles))
+                    {
+                        props["PinExteriorEdgeParticles"] = pinExteriorEdgeParticles;
+                    }
+
+                    bool connectDiagonalsBothWays = (bool)props["ConnectDiagonalsBothWays"];
+                    if (ImGui.Checkbox("Connect Diagonals Both Ways", ref connectDiagonalsBothWays))
+                    {
+                        props["ConnectDiagonalsBothWays"] = connectDiagonalsBothWays;
                     }
                     break;
                 }
