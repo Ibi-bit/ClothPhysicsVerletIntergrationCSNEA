@@ -43,6 +43,7 @@
     <Compile Include="Objects.Mesh.cs" />
     <Compile Include="Objects.FileWriteableMesh.cs" />
     <Compile Include="Objects.Tool.cs" />
+    <Compile Include="DataStructures.Stack.cs" />
     <Compile Include="libs\MonoGame2DVectorGraphics\Vector.cs" />
   </ItemGroup>
   <ItemGroup>

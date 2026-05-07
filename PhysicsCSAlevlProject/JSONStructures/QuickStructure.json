@@ -1,0 +1,11 @@
+{
+  "$type": "PhysicsCSAlevlProject.FileWriteableMesh, PhysicsCSAlevlProject",
+  "Particles": [],
+  "Sticks": [],
+  "Colliders": [],
+  "SpringConstant": 5000.0,
+  "Drag": 0.997,
+  "Mass": 0.1,
+  "CollisionFrictionCoefficient": 0.073,
+  "CollisionBounceCoefficient": 0.2
+}

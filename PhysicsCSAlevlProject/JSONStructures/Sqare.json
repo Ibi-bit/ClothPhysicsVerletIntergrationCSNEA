@@ -1,0 +1,85 @@
+{
+  "$type": "PhysicsCSAlevlProject.FileWriteableMesh, PhysicsCSAlevlProject",
+  "Particles": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "242.91313, 575.89886",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "119.324715, 682.65857",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "226.46915, 698.8759",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "385.60043, 716.9855",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "568.75525, 632.6308",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "385, 68",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    }
+  ],
+  "Sticks": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 0,
+      "P2Id": 1,
+      "NaturalLength": 169.0
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 1,
+      "P2Id": 2,
+      "NaturalLength": 108.903625
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 2,
+      "P2Id": 3,
+      "NaturalLength": 159.53056
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 3,
+      "P2Id": 4,
+      "NaturalLength": 201.69531
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 4,
+      "P2Id": 0,
+      "NaturalLength": 330.44214
+    }
+  ],
+  "Colliders": [],
+  "SpringConstant": 10000.0,
+  "Drag": 0.997,
+  "Mass": 1.0,
+  "CollisionFrictionCoefficient": 0.2,
+  "CollisionBounceCoefficient": 0.2
+}
