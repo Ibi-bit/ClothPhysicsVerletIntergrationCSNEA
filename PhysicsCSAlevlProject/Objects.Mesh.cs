@@ -122,7 +122,7 @@ class Mesh
     }
 
     /// <summary>
-    /// the dictionary store of all sticks
+    /// the dictionary store of all sticks and maps stick IDs to their corresponding MeshStick instances in the mesh.
     /// </summary>
     public Dictionary<int, MeshStick> Sticks { get; } = new();
 
