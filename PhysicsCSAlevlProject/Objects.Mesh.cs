@@ -122,7 +122,7 @@ class Mesh
     }
 
     /// <summary>
-    /// the dictionary store of all sticks
+    /// the dictionary store of all sticks and maps stick IDs to their corresponding MeshStick instances in the mesh.
     /// </summary>
     public Dictionary<int, MeshStick> Sticks { get; } = new();
 
@@ -220,7 +220,6 @@ class Mesh
             {
                 stick.P1 = Particles[stick.P1Id];
                 stick.P2 = particle;
-                stick.Length = Vector2.Distance(stick.P1.Position, stick.P2.Position);
             }
         }
         _particleToStickIds.Clear();
@@ -702,7 +701,9 @@ class Mesh
         Vector2 Start,
         Vector2 End,
         float DistanceBetweenParticles,
-        Mesh mesh
+        Mesh mesh,
+        bool pinExteriorEdgeParticles = false,
+        bool connectDiagonalsBothWays = false
     )
     {
         if (DistanceBetweenParticles <= 0)
@@ -742,6 +743,36 @@ class Mesh
                 {
                     int p2Id = particleIds[x, y + 1];
                     mesh.AddStickBetween(p1Id, p2Id);
+                }
+
+                if (connectDiagonalsBothWays && x < width - 1 && y < height - 1)
+                {
+                    int bottomRightId = particleIds[x + 1, y + 1];
+                    int rightId = particleIds[x + 1, y];
+                    int bottomId = particleIds[x, y + 1];
+                    float diagonalStickLength = DistanceBetweenParticles * MathF.Sqrt(2f);
+                    mesh.AddStickBetween(p1Id, bottomRightId, diagonalStickLength);
+                    mesh.AddStickBetween(rightId, bottomId, diagonalStickLength);
+                }
+            }
+        }
+
+        if (pinExteriorEdgeParticles)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    bool isExteriorEdge = x == 0 || y == 0 || x == width - 1 || y == height - 1;
+                    if (!isExteriorEdge)
+                        continue;
+
+                    int particleId = particleIds[x, y];
+                    if (mesh.Particles.ContainsKey(particleId))
+                    {
+                        mesh.Particles[particleId].IsPinned = true;
+                        mesh.Particles[particleId].Mass = 0f;
+                    }
                 }
             }
         }

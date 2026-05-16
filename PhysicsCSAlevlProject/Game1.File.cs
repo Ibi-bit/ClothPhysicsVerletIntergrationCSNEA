@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -21,25 +23,24 @@ public partial class Game1
             NullValueHandling = NullValueHandling.Ignore,
         };
     }
+
     /// <summary>
     /// saves the given mesh to a JSOn file at the given filepath
     /// </summary>
     /// <param name="mesh"></param>
     /// <param name="Name"></param>
     /// <param name="filePath"></param>
-    private void SaveMeshToJSON(Mesh mesh, string Name, string filePath)
+    private Task SaveMeshToJSON(Mesh mesh, string Name, string filePath)
     {
         try
         {
+            var snapshot = mesh.DeepCopy();
             var settings = GetMeshJsonSettings();
-            var fileWriteableMesh = new FileWriteableMesh(mesh);
-            System.IO.Directory.CreateDirectory(filePath);
-            filePath = System.IO.Path.Combine(filePath, Name + ".json");
+            var fileWriteableMesh = new FileWriteableMesh(snapshot);
+            Directory.CreateDirectory(filePath);
+            filePath = Path.Combine(filePath, Name + ".json");
             string json = JsonConvert.SerializeObject(fileWriteableMesh, settings);
-            System.IO.File.WriteAllText(filePath, json);
-            _logger.AddLog(
-                $"Saved mesh '{Name}' with {mesh.Particles.Count} particles and {mesh.Sticks.Count} sticks"
-            );
+            return File.WriteAllTextAsync(filePath, json);
         }
         catch (Exception ex)
         {
@@ -47,8 +48,10 @@ public partial class Game1
                 $"Failed to save mesh '{Name}' to {filePath}: {ex.Message}",
                 ImGuiLogger.LogTypes.Error
             );
+            return Task.CompletedTask;
         }
     }
+
     /// <summary>
     /// returns a json string of the mesh used to save to the database
     /// </summary>
@@ -72,18 +75,18 @@ public partial class Game1
             return string.Empty;
         }
     }
+
     /// <summary>
     /// attempts to load a Mesh from the file path provided and converts the file writable mesh to a regular mesh if it fails it returns active mesh
     /// </summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
-
     private Mesh LoadMeshFromJSON(string filePath)
     {
         try
         {
             var settings = GetMeshJsonSettings();
-            string json = System.IO.File.ReadAllText(filePath);
+            string json = File.ReadAllText(filePath);
             FileWriteableMesh fileWriteableMesh = JsonConvert.DeserializeObject<FileWriteableMesh>(
                 json,
                 settings
@@ -103,12 +106,12 @@ public partial class Game1
             return _activeMesh;
         }
     }
+
     /// <summary>
     /// converts a json string intoo a mesh used to laod from the database if it fails it returns active mesh
     /// </summary>
     /// <param name="json"></param>
     /// <returns></returns>
-
     private Mesh LoadMeshFromJsonString(string json)
     {
         try
@@ -141,7 +144,7 @@ public partial class Game1
     /// <returns>Dictionary of FileName and Mesh</returns>
     private Dictionary<string, Mesh> LoadAllMeshesFromDirectory(string directoryPath)
     {
-        if (!System.IO.Directory.Exists(directoryPath))
+        if (!Directory.Exists(directoryPath))
         {
             _logger.AddLog(
                 $"Mesh directory not found: {directoryPath}",
@@ -150,7 +153,7 @@ public partial class Game1
             return new Dictionary<string, Mesh>();
         }
 
-        string[] jsonFiles = System.IO.Directory.GetFiles(directoryPath, "*.json");
+        string[] jsonFiles = Directory.GetFiles(directoryPath, "*.json");
         Dictionary<string, Mesh> meshes = new Dictionary<string, Mesh>();
 
         foreach (string filePath in jsonFiles)
@@ -158,9 +161,7 @@ public partial class Game1
             try
             {
                 Mesh mesh = LoadMeshFromJSON(filePath);
-                string fileName = System.IO.Path.GetFileNameWithoutExtension(
-                    System.IO.Path.GetFileName(filePath)
-                );
+                string fileName = Path.GetFileNameWithoutExtension(Path.GetFileName(filePath));
                 meshes[fileName] = mesh;
             }
             catch (Exception ex)

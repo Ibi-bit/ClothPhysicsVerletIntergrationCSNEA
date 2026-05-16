@@ -1,0 +1,10 @@
+@startuml
+class ImGuiRenderer {
+    + ImGuiRenderer(game:Game)
+    + <<virtual>> <<unsafe>> RebuildFontAtlas() : void
+    + <<virtual>> BindTexture(texture:Texture2D) : IntPtr
+    + <<virtual>> UnbindTexture(textureId:IntPtr) : void
+    + <<virtual>> BeginLayout(gameTime:GameTime) : void
+    + <<virtual>> EndLayout() : void
+}
+@enduml

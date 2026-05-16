@@ -137,9 +137,8 @@ public partial class Game1
 
                 if (_selectedToolName == "Drag" && _currentMode == MeshMode.Interact)
                 {
-                    bool collideWithColliders = _currentToolSet["Drag"].Properties.ContainsKey(
-                            "CollideWithColliders"
-                        )
+                    bool collideWithColliders =
+                        _currentToolSet["Drag"].Properties.ContainsKey("CollideWithColliders")
                         && (bool)_currentToolSet["Drag"].Properties["CollideWithColliders"];
                     if (collideWithColliders)
                     {
@@ -704,6 +703,8 @@ public partial class Game1
         {
             var props = _currentToolSet["Create Grid Mesh"].Properties;
             float distance = (float)props["DistanceBetweenParticles"];
+            bool pinExteriorEdgeParticles = (bool)props["PinExteriorEdgeParticles"];
+            bool connectDiagonalsBothWays = (bool)props["ConnectDiagonalsBothWays"];
             if (keyboardState.IsKeyDown(Keys.C) && !_prevKeyboardState.IsKeyDown(Keys.C))
             {
                 MeshHistoryPush();
@@ -711,7 +712,9 @@ public partial class Game1
                     _initialMousePosWhenPressed,
                     currentMousePos,
                     distance,
-                    _activeMesh
+                    _activeMesh,
+                    pinExteriorEdgeParticles,
+                    connectDiagonalsBothWays
                 );
             }
 

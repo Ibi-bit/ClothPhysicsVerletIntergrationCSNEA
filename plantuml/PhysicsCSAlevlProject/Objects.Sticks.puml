@@ -1,0 +1,19 @@
+@startuml
+class Stick {
+    + Length : float
+    + Stick()
+    + Stick(p1:Particle, p2:Particle)
+}
+class DrawableStick {
+    + Width : float <<get>> <<set>>
+    + IsCut : bool <<get>> <<set>>
+    + DrawableStick()
+    + DrawableStick(p1:Particle, p2:Particle, color:Color, width:float)
+    + DrawableStick(p1:Particle, p2:Particle, color:Color)
+    + Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch, stickDrawThickness:float) : void
+}
+Stick --> "P1" Particle
+Stick --> "P2" Particle
+Stick <|-- DrawableStick
+DrawableStick --> "Color" Color
+@enduml

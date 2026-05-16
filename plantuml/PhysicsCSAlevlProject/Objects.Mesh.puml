@@ -1,0 +1,52 @@
+@startuml
+class Mesh {
+    + stickDrawThickness : float
+    + meanForceMagnitude : float = 0f
+    + forceStdDeviation : float = 0f
+    + maxForceMagnitude : float = 0f
+    + springConstant : float = 10000f
+    + drag : float = 0.997f
+    + mass : float = 1f
+    + collisionFrictionCoefficient : float = 0.2f
+    + collisionBounceCoefficient : float = 0.2f
+    + RestoreStickReferences() : void
+    + DeepCopy() : Mesh
+    + AddParticle(position:Vector2, mass:float, isPinned:bool, color:Color, size:Vector2?, oscillatingProps:OscillatingParticle) : int
+    + NextParticle : int <<get>>
+    + ResetMesh() : void
+    + BuildPolygon(keyboardState:KeyboardState, previousKeyboardState:KeyboardState, mouseState:MouseState, previousMouseState:MouseState, imguiWantsMouse:bool, beforeChange:Action) : void
+    + ResetPolygonBuilder() : void
+    + RemoveParticle(particleId:int) : bool
+    + CutSticksAlongLine(lineStart:Vector2, lineEnd:Vector2) : void
+    + AddStick(p1Id:int, p2Id:int, color:Color, width:float, naturalLength:float) : int?
+    + AddSticksAccrossLength(Start:Vector2, End:Vector2, numberOfSticks:int, naturalLengthRatio:float) : void
+    + RemoveStick(stickId:int) : bool
+    + RemoveSticksBetween(p1Id:int, p2Id:int) : int
+    + GetSticksForParticle(particleId:int) : IEnumerable<MeshStick>
+    + Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch, drawParticles:bool, drawConstraints:bool) : void
+    + AddParticleAt(position:Vector2, isPinned:bool) : int
+    + AddStickBetween(p1Id:int, p2Id:int, naturalLength:float) : int?
+    + FindClosestParticle(position:Vector2, radius:float) : int?
+    + {static} CreateGridMesh(Start:Vector2, End:Vector2, DistanceBetweenParticles:float, mesh:Mesh) : Mesh
+    + ResetSimulation(parameters:string[]) : void
+    + CreateHubSpokeTire(args:object[]) : void
+    + {static} CreateClothMesh(Start:Vector2, End:Vector2, naturalLength:float, mesh:Mesh, springConstant:float, drag:float, mass:float) : Mesh
+    + ArgClothMeshFactory(args:object[]) : void
+}
+class "Dictionary`2"<T1,T2> {
+}
+class "List`1"<T> {
+}
+class MeshStick {
+    + Id : int
+    + P1Id : int
+    + P2Id : int
+    + MeshStick()
+    + MeshStick(p1:DrawableParticle, p2:DrawableParticle, color:Color, width:float)
+}
+Mesh o-> "Particles<int,DrawableParticle>" "Dictionary`2"
+Mesh o-> "Colliders<Collider>" "List`1"
+Mesh o-> "Sticks<int,MeshStick>" "Dictionary`2"
+Mesh +-- MeshStick
+DrawableStick <|-- MeshStick
+@enduml

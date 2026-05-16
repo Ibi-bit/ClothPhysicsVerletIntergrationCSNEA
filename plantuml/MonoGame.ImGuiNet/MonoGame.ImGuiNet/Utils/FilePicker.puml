@@ -1,0 +1,8 @@
+@startuml
+class FilePicker {
+    + {static} DefaultPath_Windows : string = "C:\\"
+    + {static} ImagePath : string
+    + {static} BeginFilePicker() : void
+    + {static} BeginFolderPicker() : void
+}
+@enduml

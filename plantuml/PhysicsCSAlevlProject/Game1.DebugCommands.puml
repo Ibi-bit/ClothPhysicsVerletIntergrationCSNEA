@@ -1,0 +1,44 @@
+@startuml
+class ConsoleCommandAttribute {
+    + CommandPath : string <<get>>
+    + ConsoleCommandAttribute(commandPath:string)
+}
+class CommandRegistry {
+    + CommandRegistry(logger:ImGuiLogger)
+    + RegisterType(instance:object, type:Type, logRegistration:bool) : void
+    + GetRegisteredCommandPaths() : IEnumerable<string>
+    + TryInvokeCommand(command:ImGuiLogger.Command) : bool
+}
+class Game1 <<partial>> {
+}
+class ImGuiLogger {
+    + RegisterEnvVar(name:string, resolver:Func<string>) : void
+    + autoScrollLogs : bool = true
+    + wrapText : bool = true
+    + supportDebugConsole : bool = true
+    + AddLog(message:string, type:LogTypes) : void
+    + AddCommand(command:string) : void
+    + TryDequeueCommand(command:Command) : bool
+    + HasPendingCommands : bool <<get>>
+    + DrawLogs(openWindow:bool) : void
+    + GetLogsAsString() : string
+    + SaveLogsToFile(filePath:string) : void
+}
+enum LogTypes {
+    Info,
+    Warning,
+    Error,
+}
+class MessageLog {
+    + Message : string
+    + Count : int
+}
+class Command {
+    + ExCommand : string
+}
+Attribute <|-- ConsoleCommandAttribute
+ImGuiLogger +-- LogTypes
+ImGuiLogger +-- MessageLog
+MessageLog --> "Type" LogTypes
+ImGuiLogger +-- Command
+@enduml

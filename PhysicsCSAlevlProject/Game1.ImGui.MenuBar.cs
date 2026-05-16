@@ -141,7 +141,7 @@ public partial class Game1
             ImGui.SliderFloat("Global Mass", ref _activeMesh.mass, 0.1f, 100f);
             ImGui.SliderFloat("Spring Constant", ref _activeMesh.springConstant, 100f, 100000f);
 
-            ImGui.SliderInt("Physics Substeps", ref _subSteps, 1, 600);
+            ImGui.SliderInt("Physics Substeps", ref _subSteps, 10, 120);
             ImGui.SliderFloat(
                 "Collision Friction Coefficient",
                 ref _activeMesh.collisionFrictionCoefficient,

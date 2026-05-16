@@ -1,0 +1,33 @@
+{
+  "$type": "PhysicsCSAlevlProject.FileWriteableMesh, PhysicsCSAlevlProject",
+  "Particles": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "458, 119",
+      "Mass": 0.1,
+      "IsPinned": true,
+      "ParticleKind": "Default"
+    },
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+particleData, PhysicsCSAlevlProject",
+      "Position": "459.8247, 414.975",
+      "Mass": 0.1,
+      "IsPinned": false,
+      "ParticleKind": "Default"
+    }
+  ],
+  "Sticks": [
+    {
+      "$type": "PhysicsCSAlevlProject.FileWriteableMesh+stickData, PhysicsCSAlevlProject",
+      "P1Id": 0,
+      "P2Id": 1,
+      "NaturalLength": 316.6765
+    }
+  ],
+  "Colliders": [],
+  "SpringConstant": 5000.0,
+  "Drag": 0.997,
+  "Mass": 0.1,
+  "CollisionFrictionCoefficient": 0.2,
+  "CollisionBounceCoefficient": 0.2
+}

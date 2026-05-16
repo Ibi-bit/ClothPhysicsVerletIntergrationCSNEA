@@ -1,0 +1,83 @@
+@startuml
+class PrimitiveBatch {
+    + PrimitiveBatch(graphicsDevice:GraphicsDevice, circleRadius:float)
+    + CreateTextures(circleRadius:float) : void
+}
+abstract class Shape {
+    + filled : bool
+    + Shape(position:Vector2, color:Color, filled:bool)
+    + {abstract} Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class Line {
+    + width : float
+    + Line(start:Vector2, end:Vector2, color:Color, width:float)
+    + Line(start:Vector2, angle:float, distance:float, color:Color, width:float)
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+    + {static} Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch, start:Vector2, end:Vector2, color:Color, width:float) : void
+    + {static} ConstrainToSide(position:Vector2, start:Vector2, end:Vector2, particleRadius:float) : Vector2
+}
+class Circle {
+    + radius : float
+    + Circle(position:Vector2, radius:float, color:Color, filled:bool)
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+    + {static} CreateCircleTexture(position:Vector2, radius:float, color:Color, filled:bool, primitiveBatch:PrimitiveBatch) : Texture2D
+}
+class Rectangle {
+    + edgeWidth : float
+    + rotation : float
+    + Rectangle(position:Vector2, size:Vector2, color:Color, filled:bool)
+    + Rectangle(rectangle:Microsoft.Xna.Framework.Rectangle, color:Color, filled:bool, edgeWidth:float, edgeColor:Color?)
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class RoundedRectangle {
+    + cornerRadius : float
+    + RoundedRectangle(position:Vector2, size:Vector2, cornerRadius:float, color:Color)
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class RectangleTexture {
+    + CreateTexture(size:Vector2, primitiveBatch:PrimitiveBatch) : Texture2D
+}
+class Pixel {
+    + Pixel(position:Vector2, color:Color)
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class Triangle {
+    + Triangle(point1:Vector2, point2:Vector2, point3:Vector2, color:Color, filled:bool)
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class Arrow {
+    + Width : float
+    + Arrow(start:Vector2, end:Vector2, color:Color, width:float)
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+PrimitiveBatch --> "whitePixel" Texture2D
+PrimitiveBatch --> "circleTextureFilled" Texture2D
+PrimitiveBatch --> "graphicsDevice" GraphicsDevice
+PrimitiveBatch +-- Shape
+Shape --> "position" Vector2
+Shape --> "color" Color
+PrimitiveBatch +-- Line
+Shape <|-- Line
+Line --> "end" Vector2
+PrimitiveBatch +-- Circle
+Shape <|-- Circle
+PrimitiveBatch +-- Rectangle
+Shape <|-- Rectangle
+Rectangle --> "size" Vector2
+Rectangle --> "edgeColor" Color
+PrimitiveBatch +-- RoundedRectangle
+Rectangle <|-- RoundedRectangle
+PrimitiveBatch +-- RectangleTexture
+RectangleTexture --> "size" Vector2
+PrimitiveBatch +-- Pixel
+Shape <|-- Pixel
+PrimitiveBatch +-- Triangle
+Shape <|-- Triangle
+Triangle --> "point1" Vector2
+Triangle --> "point2" Vector2
+Triangle --> "point3" Vector2
+PrimitiveBatch +-- Arrow
+Shape <|-- Arrow
+Arrow --> "Start" Vector2
+Arrow --> "End" Vector2
+@enduml

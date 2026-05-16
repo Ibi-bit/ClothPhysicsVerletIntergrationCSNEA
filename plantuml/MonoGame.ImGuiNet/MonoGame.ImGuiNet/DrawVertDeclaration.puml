@@ -1,0 +1,6 @@
+@startuml
+class DrawVertDeclaration <<static>> {
+    + {static} <<readonly>> Size : int
+}
+DrawVertDeclaration --> "Declaration" VertexDeclaration
+@enduml

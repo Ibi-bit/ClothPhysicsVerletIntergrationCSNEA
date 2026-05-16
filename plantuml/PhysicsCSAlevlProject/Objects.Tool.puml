@@ -1,0 +1,10 @@
+@startuml
+class Tool {
+    + Name : string
+    + Tool(name:string, CursorIcon:PrimitiveBatch.Shape, Centred:bool)
+    + Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch, cursorPosition:Vector2) : void
+}
+class "Dictionary`2"<T1,T2> {
+}
+Tool o-> "Properties<string,object>" "Dictionary`2"
+@enduml

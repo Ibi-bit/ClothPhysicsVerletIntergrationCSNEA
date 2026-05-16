@@ -112,10 +112,7 @@ public partial class Game1
         catch (Exception ex)
         {
             ImGui.TextDisabled("Database unavailable.");
-            _logger.AddLog(
-                $"Could not load assignments: {ex.Message}",
-                ImGuiLogger.LogTypes.Error
-            );
+            _logger.AddLog($"Could not load assignments: {ex.Message}", ImGuiLogger.LogTypes.Error);
             return;
         }
         if (assignments.Count == 0)

@@ -28,43 +28,6 @@ public partial class Game1
         _drawConstraints = true;
     }
 
-    /// <summary>
-    /// the central draw loop for the application where every other draw function is called from
-    /// </summary>
-    /// <param name="gameTime"></param>
-    protected override void Draw(GameTime gameTime)
-    {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
-        ConfigureBasicEffect();
-        foreach (var comp in _activeMesh._components)
-        {
-            comp.Draw(GraphicsDevice, _basicEffect);
-        }
-        _spriteBatch.Begin();
-        MouseState mouseState = Mouse.GetState();
-        Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
-        bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
-
-        DrawCollisionBounds();
-        DrawMeshAndOverlays();
-
-        _activeMesh.RefreshComponentMeshes(_activeMesh.Particles);
-
-        if (!imguiWantsMouse)
-        {
-            DrawToolCursor(currentMousePos);
-        }
-
-        _spriteBatch.End();
-
-        ImGuiDraw(gameTime);
-
-        // HandleModeSelection();
-        // GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, _primitiveBatch.VertexBuffer, 0, _primitiveBatch.CurrentVertexCount / 2);
-
-        base.Draw(gameTime);
-    }
-
     private void DrawCollisionBounds()
     {
         var rect = new Rectangle(
@@ -105,7 +68,7 @@ public partial class Game1
         _basicEffect.VertexColorEnabled = true;
     }
 
-    private void DrawMeshAndOverlays()
+    private void DrawSceneContent()
     {
         if (_activeMesh?.Colliders != null)
         {
@@ -133,32 +96,34 @@ public partial class Game1
         }
     }
 
-    private void DrawToolCursor(Vector2 currentMousePos)
+    private void DrawCursorOverlay(Vector2 currentMousePos, bool imguiWantsMouse)
     {
-        const float cursorAlpha = 0.4f;
-
-        if (
-            string.IsNullOrEmpty(_selectedToolName)
-            || _currentToolSet == null
-            || !_currentToolSet.ContainsKey(_selectedToolName)
-        )
+        if (imguiWantsMouse)
         {
             return;
         }
 
-        var props = _currentToolSet[_selectedToolName].Properties;
+        const float cursorAlpha = 0.4f;
         float radius = 0f;
         Color cursorColor = Color.White * cursorAlpha;
         bool shouldDrawCursor = false;
 
-        ConfigureToolCursor(
-            currentMousePos,
-            props,
-            cursorAlpha,
-            ref radius,
-            ref cursorColor,
-            ref shouldDrawCursor
-        );
+        if (!string.IsNullOrEmpty(_selectedToolName) && _currentToolSet != null)
+        {
+            if (_currentToolSet.ContainsKey(_selectedToolName))
+            {
+                var props = _currentToolSet[_selectedToolName].Properties;
+
+                ConfigureToolCursor(
+                    currentMousePos,
+                    props,
+                    cursorAlpha,
+                    ref radius,
+                    ref cursorColor,
+                    ref shouldDrawCursor
+                );
+            }
+        }
 
         if (shouldDrawCursor && radius > 0f)
         {
@@ -167,6 +132,46 @@ public partial class Game1
         }
 
         DrawCrosshairCursor(currentMousePos, cursorColor);
+    }
+
+    /// <summary>
+    /// the central draw loop for the application where every other draw function is called from
+    /// </summary>
+    /// <param name="gameTime"></param>
+    protected override void Draw(GameTime gameTime)
+    {
+        GraphicsDevice.Clear(Color.CornflowerBlue);
+        ConfigureBasicEffect();
+
+        if (_activeMesh?._components != null)
+        {
+            foreach (var comp in _activeMesh._components)
+            {
+                comp.Draw(GraphicsDevice, _basicEffect);
+            }
+        }
+
+        _spriteBatch.Begin();
+
+        MouseState mouseState = Mouse.GetState();
+        Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+        bool imguiWantsMouse = ImGuiNET.ImGui.GetIO().WantCaptureMouse;
+
+        DrawCollisionBounds();
+        DrawSceneContent();
+
+        _activeMesh.RefreshComponentMeshes(_activeMesh.Particles);
+
+        DrawCursorOverlay(currentMousePos, imguiWantsMouse);
+
+        _spriteBatch.End();
+
+        ImGuiDraw(gameTime);
+
+        // HandleModeSelection();
+        // GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, _primitiveBatch.VertexBuffer, 0, _primitiveBatch.CurrentVertexCount / 2);
+
+        base.Draw(gameTime);
     }
 
     private void ConfigureToolCursor(

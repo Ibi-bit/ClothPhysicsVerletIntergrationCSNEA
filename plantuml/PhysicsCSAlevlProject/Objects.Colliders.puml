@@ -1,0 +1,44 @@
+@startuml
+abstract class Collider {
+    + {abstract} ContainsPoint(point:Vector2, closestPoint:Vector2) : bool
+    + {abstract} DeepCopy() : Collider
+    + <<virtual>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class CircleCollider {
+    + Radius : float
+    + CircleCollider(center:Vector2, radius:float)
+    + <<override>> DeepCopy() : Collider
+    + <<override>> ContainsPoint(point:Vector2, closestPoint:Vector2) : bool
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class RectangleCollider {
+    + <<override>> DeepCopy() : Collider
+    + <<override>> ContainsPoint(point:Vector2, closestPoint:Vector2) : bool
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class SeperatedAxisRectangleCollider {
+    + HalfWidth : float
+    + HalfHeight : float
+    + Angle : float <<get>> <<set>>
+    + <<override>> DeepCopy() : Collider
+    + SeperatedAxisRectangleCollider(rectangle:Rectangle, angle:float)
+    + <<override>> ContainsPoint(point:Vector2, closestPoint:Vector2) : bool
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class PolygonSeperatedAxisCollider {
+    + angle : float <<get>> <<set>>
+    + <<override>> DeepCopy() : Collider
+    + PolygonSeperatedAxisCollider(vertices:Vector2[])
+    + <<override>> ContainsPoint(point:Vector2, closestPoint:Vector2) : bool
+    + <<override>> Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+Collider --> "Position" Vector2
+Collider <|-- CircleCollider
+CircleCollider --> "BroadPhase" Rectangle
+Collider <|-- RectangleCollider
+RectangleCollider o-> "Rectangle" Rectangle
+PolygonSeperatedAxisCollider <|-- SeperatedAxisRectangleCollider
+SeperatedAxisRectangleCollider --> "Position" Vector2
+Collider <|-- PolygonSeperatedAxisCollider
+PolygonSeperatedAxisCollider --> "Position" Vector2
+@enduml

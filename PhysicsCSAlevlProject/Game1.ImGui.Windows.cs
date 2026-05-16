@@ -9,7 +9,6 @@ namespace PhysicsCSAlevlProject;
 /// </summary>
 public partial class Game1
 {
-
     /// <summary>
     /// Draws the structure window for loading and managing saved meshes.
     /// </summary>
@@ -43,9 +42,10 @@ public partial class Game1
 
         ImGui.End();
     }
+
     /// <summary>
     /// Draws the save window for saving the current mesh with a specified name.
-     ///
+    ///
     /// </summary>
     private void DrawSaveWindow()
     {
@@ -61,9 +61,10 @@ public partial class Game1
         }
         ImGui.End();
     }
+
     /// <summary>
-    /// Draws the readme window with instructions and tips for using the application. 
-     ///
+    /// Draws the readme window with instructions and tips for using the application.
+    ///
     /// </summary>
     private void DrawReadMeWindow()
     {
@@ -120,6 +121,7 @@ public partial class Game1
 
         ImGui.End();
     }
+
     /// <summary>
     /// draws the settings menu for changing window size, physics settings and other configuration options
     /// </summary>

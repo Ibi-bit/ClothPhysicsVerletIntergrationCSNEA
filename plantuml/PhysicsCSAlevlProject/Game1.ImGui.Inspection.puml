@@ -1,0 +1,4 @@
+@startuml
+class Game1 <<partial>> {
+}
+@enduml

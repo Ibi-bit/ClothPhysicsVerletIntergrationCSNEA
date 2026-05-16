@@ -33,7 +33,6 @@ public partial class Game1
 
         if (!_LocalorRemoteStructureTab)
         {
-            // Local structures tab
             ImGui.Text("Local Structures:");
 
             if (ImGui.Button("Refresh List"))

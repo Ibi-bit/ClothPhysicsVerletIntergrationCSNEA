@@ -78,12 +78,12 @@ public partial class Game1 : Game
     /// <summary>
     /// stores the state of the mesh before any changes are made to it for undo functionality, also stores the state of the mesh before any changes are made for redo functionality
     /// </summary>
-    private Stack<Mesh> _meshHistory;
+    private MyStack<Mesh> _meshHistory;
 
     /// <summary>
     /// stores the state of the mesh before any changes are made for redo functionality, this is cleared whenever a new change is made to the mesh to prevent redoing changes that are no longer relevant. This allows for a linear undo/redo history where the user can only redo actions that were undone, and any new action will clear the redo history to maintain consistency in the state of the mesh.
     /// </summary>
-    private Stack<Mesh> _meshRedoHistory;
+    private MyStack<Mesh> _meshRedoHistory;
 
     /// <summary>
     /// stores the current mesh that physics is itterated on and the user is interacts with
@@ -146,8 +146,8 @@ public partial class Game1 : Game
         _graphics.PreferredBackBufferHeight = 768;
         _graphics.ApplyChanges();
 
-        _meshHistory = new Stack<Mesh>();
-        _meshRedoHistory = new Stack<Mesh>();
+        _meshHistory = new MyStack<Mesh>();
+        _meshRedoHistory = new MyStack<Mesh>();
 
         _currentAssignmentTitle = "";
 

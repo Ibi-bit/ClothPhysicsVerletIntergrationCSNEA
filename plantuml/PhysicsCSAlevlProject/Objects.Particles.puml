@@ -1,0 +1,33 @@
+@startuml
+class Particle {
+    + Mass : float
+    + ID : int
+    + TotalForceMagnitude : float
+    + IsPinned : bool
+    + IsSelected : bool
+    + Particle()
+    + Particle(position:Vector2, mass:float, isPinned:bool)
+}
+class DrawableParticle {
+    + DrawableParticle()
+    + DrawableParticle(position:Vector2, mass:float, size:Vector2, color:Color)
+    + DrawableParticle(position:Vector2, mass:float, color:Color)
+    + DrawableParticle(position:Vector2, mass:float, isPinned:bool, color:Color)
+    + Draw(spriteBatch:SpriteBatch, primitiveBatch:PrimitiveBatch) : void
+}
+class OscillatingParticle {
+    + OscillationAmplitude : float
+    + OscillationFrequency : float
+    + OscillationAngle : float
+    + UpdateOscillation(deltaTime:float) : void
+    + SetAnchorPosition(newAnchor:Vector2) : void
+}
+Particle --> "Position" Vector2
+Particle --> "PreviousPosition" Vector2
+Particle --> "AccumulatedForce" Vector2
+Particle <|-- DrawableParticle
+DrawableParticle --> "Color" Color
+DrawableParticle --> "Size" Vector2
+DrawableParticle <|-- OscillatingParticle
+OscillatingParticle o-> "anchorPosition" Vector2
+@enduml
